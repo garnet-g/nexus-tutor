@@ -1,0 +1,10 @@
+{
+  "id": "explain-percentages",
+  "description": "Explain mode for percentage concept.",
+  "studentMessage": "Explain what 20% means",
+  "expectedMode": "explain",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "20% means 20 out of every 100 parts. We can write it as a fraction 20/100 or decimal 0.2.",
+  "expectGoodValidation": "pass"
+}

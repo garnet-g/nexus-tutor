@@ -1,0 +1,12 @@
+{
+  "id": "explain-fractions",
+  "description": "Explain requests should classify as explain mode.",
+  "studentMessage": "Explain fractions to me",
+  "expectedMode": "explain",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "",
+  "goodResponse": "CONCEPT\nFractions represent parts of a whole.\n\nEXAMPLE\n1/2 means one part out of two equal parts.\n\nGUIDED CHECK\nWhat fraction of a pizza is one slice from a pizza cut into 8 equal slices?",
+  "expectBadValidation": "pass",
+  "expectGoodValidation": "pass"
+}

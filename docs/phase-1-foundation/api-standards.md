@@ -589,11 +589,10 @@ Schemas mirror database column names in camelCase at API boundary.
 
 ## 18. Routes Explicitly Banned in V1
 
-Do not implement these until V2 scope unlock:
+Do not implement these until the matching V2 phase unlocks:
 
 ```
 /api/nex/voice
-/api/nex/camera
 /api/mock-exams/*
 /api/exam-simulator/*
 /api/study-groups/*
@@ -603,6 +602,14 @@ Do not implement these until V2 scope unlock:
 /api/university/*
 /api/leaderboards/*
 ```
+
+### V2 Phase 2.2 — Camera (implemented)
+
+`POST /api/nex/camera` — authenticated multipart image upload (max 5MB, jpeg/png/webp). Premium/trial gating. Vision extraction feeds `generateNexResponse` for Homework and Explain modes only. Storage bucket `nex-uploads` with student-scoped RLS.
+
+### V2 Phase 2.5 — Voice (implemented)
+
+`POST /api/nex/voice` — authenticated multipart audio upload (max 2MB, max 30s, webm/opus preferred). Premium/family gating. Server-side STT → `generateNexResponse` → TTS. Returns `audioBase64` plus text logged in `nex_messages` with `metadata.inputType: "voice"`. Counts against daily Nex limits.
 
 ---
 

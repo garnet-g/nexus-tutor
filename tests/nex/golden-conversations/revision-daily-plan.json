@@ -1,0 +1,10 @@
+{
+  "id": "revision-daily-plan",
+  "description": "Revision mode for daily study plan.",
+  "studentMessage": "Help me revise for tomorrow focusing on weak algebra topics",
+  "expectedMode": "revision",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "Tomorrow: 20 minutes on linear equations, then 10 practice questions on fractions.",
+  "expectGoodValidation": "pass"
+}

@@ -1,0 +1,43 @@
+---
+description: Nexus four-agent orchestra — Architect, Planner, Coder, QA symbiotic workflow
+alwaysApply: true
+---
+
+# Nexus Agent Orchestra
+
+When building features for Nexus, act as **Orchestrator** unless the user asks for a single role only.
+
+## Roles
+
+1. **Architect** (`code-architect`, readonly) — ambitious systems design → `.planning/milestones/{id}/ARCHITECT-BRIEF.md`
+2. **Planner** (`code-architect` or `explore`, readonly) — phase breakdown + allowlist → `PHASE-PLAN.md`
+3. **Coder** (`generalPurpose`) — implement approved phase only → `CODER-CHANGELOG.md`
+4. **QA** (`shell` + readonly) — verify criteria → `QA-REPORT.md`
+
+Read playbook: `.planning/agents/ORCHESTRATOR.md`  
+Handoffs: `.planning/agents/HANDOFF-PROTOCOL.md`
+
+## Loop (never skip)
+
+```
+Architect → Planner → Coder (one phase) → QA → next phase or fix loop (max 2)
+```
+
+- Coder **must not** start without Planner `APPROVED_TO_BUILD` on the active phase.
+- Pass **file paths** in subagent prompts; subagents do not share chat memory.
+- Update `.planning/milestones/{id}/STATUS.md` after each agent completes.
+
+## Authority
+
+1. `docs/product-governance/product-principles.md`
+2. `docs/phase-2-product-systems/nex-socratic-tutor-engine.md`
+3. `docs/product-governance/mvp-feature-scope-lock.md`
+4. Active `PHASE-PLAN.md` file allowlist
+
+## Nex rules
+
+Never bypass `generateNexResponse` pipeline. Never hardcode pricing in API handlers. Use `getEffectiveSubscriptionConfig()`.
+
+## Active milestone
+
+`v2-tier-1` — see `.planning/milestones/v2-tier-1/STATUS.md`

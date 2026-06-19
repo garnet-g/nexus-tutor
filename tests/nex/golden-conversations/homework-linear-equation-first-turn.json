@@ -1,0 +1,12 @@
+{
+  "id": "homework-linear-equation-first-turn",
+  "description": "Homework first turn must not reveal the final answer.",
+  "studentMessage": "Solve 3x + 5 = 20",
+  "expectedMode": "homework",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "x = 5",
+  "goodResponse": "What operation is attached to x? What should we remove first?",
+  "expectBadValidation": "fail",
+  "expectGoodValidation": "pass"
+}

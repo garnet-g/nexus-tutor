@@ -1,0 +1,12 @@
+{
+  "id": "assessment-fractions-misconception",
+  "description": "Assessment mode detects fraction misconceptions without dumping answers first.",
+  "studentMessage": "Assess me on fractions",
+  "expectedMode": "assessment",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "1/2 + 1/3 = 5/6. The answer is 5/6.",
+  "goodResponse": "Let's start with one question. What is 1/2 + 1/3?",
+  "expectBadValidation": "fail",
+  "expectGoodValidation": "pass"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "assessment-completion-summary",
+  "description": "Assessment mode allows feedback after a student attempt.",
+  "studentMessage": "Test my understanding of percentages",
+  "expectedMode": "assessment",
+  "attemptCount": 1,
+  "hintLevel": 1,
+  "goodResponse": "That's a common approach. Let's check with a simpler case — what is 10% of 50?",
+  "expectGoodValidation": "pass"
+}

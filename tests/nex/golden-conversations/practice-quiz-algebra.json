@@ -1,0 +1,12 @@
+{
+  "id": "practice-quiz-algebra",
+  "description": "Quiz requests should classify as practice mode.",
+  "studentMessage": "Quiz me on algebra",
+  "expectedMode": "practice",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "",
+  "goodResponse": "QUESTION\nWhat is the value of x if 2x + 4 = 10?",
+  "expectBadValidation": "pass",
+  "expectGoodValidation": "pass"
+}

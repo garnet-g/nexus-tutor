@@ -1,0 +1,19 @@
+{
+  "id": "homework-hint-escalation",
+  "description": "Hint escalation should reach level 4 only after attempts and prior hints.",
+  "studentMessage": "I'm stuck, can I get a hint?",
+  "expectedMode": "homework",
+  "initialMetadata": {
+    "hintLevel": 3,
+    "hintCount": 3,
+    "attemptCount": 3,
+    "misconceptionDetected": false
+  },
+  "attemptCount": 3,
+  "hintLevel": 4,
+  "badResponse": "Let's work through this step by step. What do you already know about this problem?",
+  "goodResponse": "Subtracting five from both sides gives 3x = 15. What should happen next?",
+  "expectBadValidation": "pass",
+  "expectGoodValidation": "pass",
+  "expectCanRevealFullSolution": true
+}

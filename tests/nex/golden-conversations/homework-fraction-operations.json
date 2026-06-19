@@ -1,0 +1,12 @@
+{
+  "id": "homework-fraction-operations",
+  "description": "Homework fraction answer blocked on turn 1.",
+  "studentMessage": "Calculate 2/3 + 1/4 for my homework",
+  "expectedMode": "homework",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "The answer is 11/12",
+  "goodResponse": "What do we need before adding fractions with different denominators?",
+  "expectBadValidation": "fail",
+  "expectGoodValidation": "pass"
+}

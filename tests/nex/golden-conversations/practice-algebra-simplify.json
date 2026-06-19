@@ -1,0 +1,10 @@
+{
+  "id": "practice-algebra-simplify",
+  "description": "Practice mode for simplifying expressions.",
+  "studentMessage": "Give me practice simplifying 3x + 2x - 5",
+  "expectedMode": "practice",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "Try combining like terms. What do you get when you add 3x and 2x?",
+  "expectGoodValidation": "pass"
+}

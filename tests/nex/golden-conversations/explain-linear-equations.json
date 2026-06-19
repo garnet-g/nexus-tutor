@@ -1,0 +1,10 @@
+{
+  "id": "explain-linear-equations",
+  "description": "Explain mode for linear equations.",
+  "studentMessage": "What is a linear equation?",
+  "expectedMode": "explain",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "A linear equation has a variable with power 1, like 2x + 3 = 7. The graph is a straight line.",
+  "expectGoodValidation": "pass"
+}

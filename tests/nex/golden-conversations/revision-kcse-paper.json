@@ -1,0 +1,10 @@
+{
+  "id": "revision-kcse-paper",
+  "description": "Revision mode for exam preparation.",
+  "studentMessage": "Help me revise for KCSE math paper 1 this week",
+  "expectedMode": "revision",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "Let's build a revision plan. Which topics feel weakest: algebra, geometry, or statistics?",
+  "expectGoodValidation": "pass"
+}

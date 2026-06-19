@@ -1,26 +1,197 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+
+  /* Garnet Labs — scholarly premium */
+  --nexus-primary: #7a1e40;
+  --nexus-primary-dark: #5c1630;
+  --nexus-secondary: #0f766e;
+  --nexus-accent: #b8860b;
+  --nexus-background: #faf6f1;
+  --nexus-surface: #ffffff;
+  --nexus-surface-elevated: #ffffff;
+  --nexus-border: #e7ddd3;
+  --nexus-text-primary: #1c1917;
+  --nexus-text-secondary: #6b6560;
+  --nexus-text-inverse: #fffbf7;
+  --nexus-success: #0d9488;
+  --nexus-warning: #d97706;
+  --nexus-danger: #dc2626;
+
+  --background: #faf6f1;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --primary: #7a1e40;
+  --primary-foreground: #fffbf7;
+  --secondary: #f0e8df;
+  --secondary-foreground: #1c1917;
+  --muted: #f0e8df;
+  --muted-foreground: #6b6560;
+  --accent: #ede4d8;
+  --accent-foreground: #7a1e40;
+  --destructive: #dc2626;
+  --border: #e7ddd3;
+  --input: #e7ddd3;
+  --ring: #7a1e40;
+  --chart-1: #7a1e40;
+  --chart-2: #0f766e;
+  --chart-3: #b8860b;
+  --chart-4: #6b6560;
+  --chart-5: #1c1917;
+  --radius: 0.875rem;
+  --sidebar: #fffbf7;
+  --sidebar-foreground: #1c1917;
+  --sidebar-primary: #7a1e40;
+  --sidebar-primary-foreground: #fffbf7;
+  --sidebar-accent: #f0e8df;
+  --sidebar-accent-foreground: #1c1917;
+  --sidebar-border: #e7ddd3;
+  --sidebar-ring: #7a1e40;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-display);
+  --color-nexus-primary: var(--nexus-primary);
+  --color-nexus-primary-dark: var(--nexus-primary-dark);
+  --color-nexus-secondary: var(--nexus-secondary);
+  --color-nexus-accent: var(--nexus-accent);
+  --color-nexus-background: var(--nexus-background);
+  --color-nexus-surface: var(--nexus-surface);
+  --color-nexus-surface-elevated: var(--nexus-surface-elevated);
+  --color-nexus-border: var(--nexus-border);
+  --color-nexus-text-primary: var(--nexus-text-primary);
+  --color-nexus-text-secondary: var(--nexus-text-secondary);
+  --color-nexus-text-inverse: var(--nexus-text-inverse);
+  --color-nexus-success: var(--nexus-success);
+  --color-nexus-warning: var(--nexus-warning);
+  --color-nexus-danger: var(--nexus-danger);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.dark {
+  --background: #141210;
+  --foreground: #faf6f1;
+  --card: #1c1917;
+  --card-foreground: #faf6f1;
+  --popover: #1c1917;
+  --popover-foreground: #faf6f1;
+  --primary: #e8a4b8;
+  --primary-foreground: #1c1917;
+  --secondary: #292524;
+  --secondary-foreground: #faf6f1;
+  --muted: #292524;
+  --muted-foreground: #a8a29e;
+  --accent: #292524;
+  --accent-foreground: #e8a4b8;
+  --destructive: #f87171;
+  --border: rgb(250 246 241 / 12%);
+  --input: rgb(250 246 241 / 15%);
+  --ring: #e8a4b8;
+  --sidebar: #1c1917;
+  --sidebar-foreground: #faf6f1;
+  --sidebar-primary: #e8a4b8;
+  --sidebar-primary-foreground: #1c1917;
+  --sidebar-accent: #292524;
+  --sidebar-accent-foreground: #faf6f1;
+  --sidebar-border: rgb(250 246 241 / 12%);
+  --sidebar-ring: #e8a4b8;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .nexus-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .nexus-hero-glow {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgb(122 30 64 / 12%), transparent 55%),
+      radial-gradient(ellipse 50% 40% at 90% 20%, rgb(15 118 110 / 8%), transparent 45%),
+      var(--background);
+  }
+
+  .nexus-card-elevated {
+    box-shadow:
+      0 1px 2px rgb(28 25 23 / 4%),
+      0 8px 24px rgb(28 25 23 / 6%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

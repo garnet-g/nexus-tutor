@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexus — Team Overview</title>
+  <style>
+    /* ── Reset & Base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: #111827;
+      background: #f9fafb;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────────── */
+    .page {
+      max-width: 860px;
+      margin: 40px auto 80px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    /* ── Cover ───────────────────────────────────────────────────── */
+    .cover {
+      background: linear-gradient(135deg, #1B4FBB 0%, #1a3a8f 100%);
+      color: #fff;
+      padding: 60px 56px 52px;
+    }
+    .cover-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 20px;
+    }
+    .cover h1 {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+    .cover-sub {
+      font-size: 20px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 36px;
+    }
+    .cover-meta {
+      display: flex;
+      gap: 28px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 22px;
+    }
+    .cover-meta span strong { color: rgba(255,255,255,0.8); }
+
+    /* ── Body ────────────────────────────────────────────────────── */
+    .body { padding: 48px 56px 56px; }
+
+    /* ── Sections ────────────────────────────────────────────────── */
+    .section { margin-bottom: 56px; }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1B4FBB;
+      border-bottom: 2px solid #e8eefb;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h2 .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #1B4FBB;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin: 28px 0 10px;
+    }
+
+    p { margin-bottom: 14px; color: #374151; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Pull Quote ───────────────────────────────────────────────── */
+    .pull-quote {
+      border-left: 4px solid #1B4FBB;
+      background: #f0f4ff;
+      border-radius: 0 8px 8px 0;
+      padding: 18px 24px;
+      margin: 24px 0;
+      font-size: 18px;
+      font-weight: 600;
+      font-style: italic;
+      color: #1B4FBB;
+    }
+
+    /* ── Journey ──────────────────────────────────────────────────── */
+    .journey {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+      background: #f0f4ff;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin: 16px 0 24px;
+    }
+    .journey-step {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1B4FBB;
+      padding: 4px 0;
+    }
+    .journey-arrow {
+      color: #93a4d4;
+      font-size: 16px;
+      margin: 0 8px;
+    }
+
+    /* ── Tables ───────────────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 8px;
+      font-size: 14px;
+    }
+    thead tr {
+      background: #1B4FBB;
+      color: #fff;
+    }
+    thead th {
+      text-align: left;
+      padding: 11px 14px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    tbody tr:nth-child(even) { background: #f9fafb; }
+    tbody tr:hover { background: #f0f4ff; }
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+      color: #374151;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    td:first-child { font-weight: 600; color: #1B4FBB; }
+
+    /* ── Pill badges ─────────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .badge-blue  { background: #dbeafe; color: #1e40af; }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-grey  { background: #f3f4f6; color: #6b7280; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+
+    /* ── Stat cards ───────────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: #f0f4ff;
+      border: 1px solid #d0dcf7;
+      border-radius: 10px;
+      padding: 20px 18px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1B4FBB;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    /* ── Pillar cards ─────────────────────────────────────────────── */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .pillar-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .pillar-card:hover { border-color: #1B4FBB; box-shadow: 0 2px 8px rgba(27,79,187,0.08); }
+    .pillar-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1B4FBB;
+      margin-bottom: 6px;
+    }
+    .pillar-desc { font-size: 13px; color: #6b7280; margin: 0; line-height: 1.5; }
+
+    /* ── Stack tags ───────────────────────────────────────────────── */
+    .stack-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0; }
+    .tag {
+      background: #e8eefb;
+      color: #1B4FBB;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────────── */
+    .doc-footer {
+      border-top: 1px solid #e5e7eb;
+      padding: 24px 56px;
+      font-size: 12px;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ── Print ────────────────────────────────────────────────────── */
+    @media print {
+      body { background: #fff; font-size: 13px; }
+      .page { box-shadow: none; border-radius: 0; margin: 0; max-width: 100%; }
+      .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .body { padding: 32px 40px; }
+      .section { page-break-inside: avoid; }
+      h2 { page-break-after: avoid; }
+    }
+    /* ── Download button ─────────────────────────────────────────── */
+    .dl-btn {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1B4FBB;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(27,79,187,0.35);
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .dl-btn:hover { background: #1a3a8f; box-shadow: 0 6px 20px rgba(27,79,187,0.45); }
+    .dl-btn svg { flex-shrink: 0; }
+  </style>
+  <script src="https://unpkg.com/html-docx-js@0.3.1/dist/html-docx.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+  <button class="dl-btn" onclick="downloadDocx()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Download as Word (.docx)
+  </button>
+  <script>
+    function downloadDocx() {
+      const style = `<style>
+        body { font-family: Arial, sans-serif; font-size: 11pt; color: #111827; }
+        h1 { font-size: 28pt; color: #1B4FBB; font-weight: bold; margin-bottom: 6pt; }
+        h2 { font-size: 16pt; color: #1B4FBB; font-weight: bold; border-bottom: 1px solid #e8eefb; padding-bottom: 4pt; margin-top: 20pt; margin-bottom: 10pt; }
+        h3 { font-size: 13pt; font-weight: bold; margin-top: 14pt; margin-bottom: 6pt; }
+        p  { margin-bottom: 8pt; line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; margin: 10pt 0; font-size: 10pt; }
+        th { background: #1B4FBB; color: #fff; padding: 6pt 8pt; text-align: left; font-weight: bold; }
+        td { padding: 6pt 8pt; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+        tr:nth-child(even) td { background: #f9fafb; }
+        .cover { background: #1B4FBB; color: #fff; padding: 30pt 40pt; margin-bottom: 20pt; }
+        .cover h1 { color: #fff; font-size: 36pt; }
+        .cover-sub { font-size: 14pt; color: rgba(255,255,255,0.85); }
+        .pull-quote { border-left: 4px solid #1B4FBB; background: #f0f4ff; padding: 10pt 16pt; margin: 12pt 0; font-size: 13pt; font-weight: 600; font-style: italic; color: #1B4FBB; }
+        .journey { background: #f0f4ff; padding: 10pt 14pt; margin: 10pt 0; color: #1B4FBB; font-weight: 600; }
+      </style>`;
+      const html = '<!DOCTYPE html><html><head><meta charset="utf-8">' + style + '</head><body>' + document.querySelector('.page').innerHTML + '</body></html>';
+      const blob = htmlDocx.asBlob(html);
+      saveAs(blob, 'nexus-team-overview.docx');
+    }
+  </script>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-label">Garnet Labs &nbsp;·&nbsp; Product Overview</div>
+    <h1>Nexus</h1>
+    <div class="cover-sub">AI-Powered Learning Platform for African Students</div>
+    <div class="cover-meta">
+      <span><strong>Version</strong> V1 MVP</span>
+      <span><strong>Date</strong> June 2026</span>
+      <span><strong>Status</strong> Pre-Launch</span>
+      <span><strong>Classification</strong> Confidential</span>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- 1. What Is Nexus -->
+    <div class="section">
+      <h2><span class="num">1</span> What Is Nexus?</h2>
+      <p>Nexus is an <strong>AI-powered personalized learning platform</strong> for students following the CBC and KCSE curricula in Kenya, with plans to expand across Africa.</p>
+      <p>Most learning apps give students videos, notes, and questions. Nexus gives them <strong>guidance, personalization, accountability, and measurable progress</strong>. It is designed to feel less like software and more like a personal teacher.</p>
+      <div class="pull-quote">"Every student deserves a personal teacher."</div>
+      <p>At the center of the platform is <strong>Nex</strong> — an AI teacher that provides personalized tutoring, practice, revision plans, exam prep, and long-term academic guidance. Every other system exists to feed or serve Nex.</p>
+    </div>
+
+    <!-- 2. Who It's For -->
+    <div class="section">
+      <h2><span class="num">2</span> Who It's For</h2>
+      <table>
+        <thead>
+          <tr><th>User</th><th>Profile</th><th>What Nexus Does for Them</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CBC Students <span class="badge badge-blue">Primary</span></td>
+            <td>Grade 4–9</td>
+            <td>Competency mastery, homework support, holiday learning, personalized study plans</td>
+          </tr>
+          <tr>
+            <td>KCSE Students <span class="badge badge-blue">Primary</span></td>
+            <td>Form 1–4</td>
+            <td>Exam preparation, past paper practice, revision planning, predicted grade tracking</td>
+          </tr>
+          <tr>
+            <td>Parents <span class="badge badge-green">Secondary</span></td>
+            <td>Linked to student account</td>
+            <td>Progress monitoring, academic insights, weak area alerts, weekly performance reports</td>
+          </tr>
+          <tr>
+            <td>Teachers <span class="badge badge-grey">V2</span></td>
+            <td>Future phase</td>
+            <td>Assignment creation, class analytics, performance reporting</td>
+          </tr>
+          <tr>
+            <td>Schools <span class="badge badge-grey">V2</span></td>
+            <td>Future phase</td>
+            <td>Institution-wide learning analytics, performance monitoring</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 3. The Product -->
+    <div class="section">
+      <h2><span class="num">3</span> The Product — Six Pillars</h2>
+      <p>Nexus is organized into six product pillars. Every pillar connects back to Nex and student learning outcomes.</p>
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-title">1 — Learn</div>
+          <p class="pillar-desc">Structured, curriculum-aligned content: notes, explanations, worked examples, and short quizzes. Mathematics first; additional subjects in V2.</p>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-title">2 — Practice</div>
+          <p class="pillar-desc">Adaptive question engine. Topic quizzes with automatic difficulty adjustment. Targets weak areas and tracks mastery over time.</p>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-title">3 — Nex AI Teacher</div>
+          <p class="pillar-desc">The heart of the platform. Nex teaches, quizzes, guides homework using Socratic method, and creates personalized revision plans.</p>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-title">4 — Progress</div>
+          <p class="pillar-desc">Continuous academic tracking: subject mastery, topic mastery, XP, learning streaks, and study consistency — all in one view.</p>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-title">5 — Revision Plans</div>
+          <p class="pillar-desc">AI-generated daily study plans based on exam dates, current performance, weak areas, and available study time.</p>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-title">6 — Parent Corner</div>
+          <p class="pillar-desc">Dedicated parent dashboard: study time, academic growth, weak subjects, predicted grades, and weekly performance reports.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Nex -->
+    <div class="section">
+      <h2><span class="num">4</span> Nex — The AI Teacher</h2>
+      <p>Nex is not a feature bolted onto a content app. It is the <strong>backbone of the entire product</strong>. Nex is warm, patient, Kenyan-aware (uses local examples like matatu fares and market prices), and adapts its language to the student's grade level. It operates in four modes:</p>
+      <table>
+        <thead>
+          <tr><th>Mode</th><th>Trigger</th><th>How Nex Responds</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Explain</td>
+            <td>"Explain fractions"</td>
+            <td>Teaches the concept, uses age-appropriate language and local examples, works through examples step by step, then checks understanding before moving on.</td>
+          </tr>
+          <tr>
+            <td>Practice</td>
+            <td>"Test me on algebra"</td>
+            <td>Generates questions one at a time, adapts difficulty based on performance (easier after 2 wrong, harder after 2 right), and summarizes weak areas at session end.</td>
+          </tr>
+          <tr>
+            <td>Homework</td>
+            <td>Student pastes a problem</td>
+            <td>Socratic method — guides thinking rather than giving the answer directly. Asks "What do you already know?" first. Full solution only after genuine student effort (3 attempts).</td>
+          </tr>
+          <tr>
+            <td>Revision</td>
+            <td>"Exams in 14 days"</td>
+            <td>Pulls mastery data and weak topics, then builds a structured study plan with daily tasks, topic priorities, and an exam countdown. Saved and tracked automatically.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:16px; font-size:13px; color:#6b7280;">Nex is powered by <strong>Gemini Flash</strong> (primary) with <strong>OpenAI</strong> as fallback. All teaching behavior follows the Nex Socratic Tutor Engine — no prompt is written ad hoc. V1 is text-only; Voice and Camera modes are V2.</p>
+    </div>
+
+    <!-- 5. Signature Features -->
+    <div class="section">
+      <h2><span class="num">5</span> Signature Features</h2>
+
+      <h3>Academic Health Score™</h3>
+      <p>Every new student completes a diagnostic assessment. Nexus generates an overall Academic Health Score (0–100) with a subject and topic breakdown — showing exactly where they're strong and where they need work.</p>
+      <div style="background:#f0f4ff; border-radius:10px; padding:18px 22px; margin:12px 0; font-size:14px;">
+        <strong style="color:#1B4FBB;">Example output:</strong><br/>
+        Academic Health Score: <strong>68/100</strong> &nbsp;·&nbsp; Math: 52% &nbsp;·&nbsp;
+        <span style="color:#059669;">✓ Geometry (strong)</span> &nbsp;·&nbsp;
+        <span style="color:#dc2626;">✗ Algebra, Fractions (weak)</span>
+      </div>
+
+      <h3>Predicted Grade Engine</h3>
+      <p>Nexus continuously estimates the student's likely exam performance based on mastery data and practice history. Predictions update dynamically as the student progresses. Visible on the dashboard for both free and premium users.</p>
+
+      <h3>Knowledge Graph</h3>
+      <p>Every curriculum topic is mapped to its prerequisites. If a student struggles with Linear Equations, Nexus identifies the underlying gaps (Fractions, Integers, Basic Algebra) and adjusts the learning path automatically — so they fix the root cause, not just the symptom.</p>
+
+      <h3>Gamification</h3>
+      <p>XP system, levels (Explorer → Scholar → Academic Warrior → Nexus Master), daily streaks, and achievement badges (e.g. <em>Algebra Master</em>, <em>7-Day Streak</em>, <em>First Diagnostic Complete</em>). Leaderboards are V2.</p>
+    </div>
+
+    <!-- 6. MVP -->
+    <div class="section">
+      <h2><span class="num">6</span> V1 MVP — First 90 Days</h2>
+      <p>The V1 goal is narrow and deliberate: <strong>validate whether students and parents will use an AI-powered study companion for CBC and KCSE.</strong> We are not trying to build Khan Academy.</p>
+
+      <h3>Core User Journey</h3>
+      <div class="journey">
+        <span class="journey-step">Sign Up</span>
+        <span class="journey-arrow">→</span>
+        <span class="journey-step">Select Curriculum</span>
+        <span class="journey-arrow">→</span>
+        <span class="journey-step">Complete Diagnostic</span>
+        <span class="journey-arrow">→</span>
+        <span class="journey-step">Get Health Score</span>
+        <span class="journey-arrow">→</span>
+        <span class="journey-step">Get Study Plan</span>
+        <span class="journey-arrow">→</span>
+        <span class="journey-step">Use Nex</span>
+        <span class="journey-arrow">→</span>
+        <span class="journey-step">Practice &amp; Track Progress</span>
+      </div>
+
+      <h3>What's In and Out</h3>
+      <table>
+        <thead>
+          <tr><th>Area</th><th>V1 — Shipping</th><th>V2 — Deferred</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Curricula</td>
+            <td>CBC + KCSE</td>
+            <td>Cambridge</td>
+          </tr>
+          <tr>
+            <td>Subjects</td>
+            <td>Mathematics only</td>
+            <td>Science, English, Kiswahili</td>
+          </tr>
+          <tr>
+            <td>Nex Modes</td>
+            <td>Explain, Practice, Homework, Revision (text)</td>
+            <td>Voice Tutor, Camera Scanning, Assessment Mode</td>
+          </tr>
+          <tr>
+            <td>Screens</td>
+            <td>13+: Landing, Onboarding, Diagnostic, Dashboard, Learn, Practice, Nex, Progress, Profile, Subscription, Parent Dashboard</td>
+            <td>Teacher Dashboard, School Portal</td>
+          </tr>
+          <tr>
+            <td>Gamification</td>
+            <td>XP, levels, badges, streaks</td>
+            <td>Leaderboards</td>
+          </tr>
+          <tr>
+            <td>Other Features</td>
+            <td>Diagnostic, Health Score, Predicted Grade, Study Plans, Parent Corner, M-Pesa payments, Free Trial</td>
+            <td>AI Mock Exams, Exam Simulator, Study Groups, Career Guidance, University Pathway Planner, Holiday Program</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 7. Monetization -->
+    <div class="section">
+      <h2><span class="num">7</span> Monetization</h2>
+      <p><strong>Freemium forever.</strong> The free plan never expires — paid plans raise daily usage limits, they don't gate core learning. Payments are via M-Pesa STK push (Kenya-first).</p>
+      <table>
+        <thead>
+          <tr><th>Plan</th><th>Price</th><th>Daily Limits</th><th>What's Included</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Free <span class="badge badge-green">Forever</span></td>
+            <td>KES 0</td>
+            <td>10 Nex msgs · 3 practice sessions</td>
+            <td>Learn, Practice, Nex (capped), Diagnostic, Health Score, Predicted Grade, Parent dashboard</td>
+          </tr>
+          <tr>
+            <td>Premium Individual</td>
+            <td><strong>KES 799</strong> / month</td>
+            <td>75 Nex msgs · 20 practice sessions</td>
+            <td>All Free + unlimited study plans, parent weekly email reports, higher daily limits</td>
+          </tr>
+          <tr>
+            <td>Family</td>
+            <td><strong>KES 2,499</strong> / month</td>
+            <td>Up to 4 students, premium limits each</td>
+            <td>All Premium for the whole household, household-level analytics</td>
+          </tr>
+          <tr>
+            <td>Free Trial</td>
+            <td>7 days</td>
+            <td>Premium limits</td>
+            <td>One-time per student, manual CTA activation</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 8. Tech Stack -->
+    <div class="section">
+      <h2><span class="num">8</span> Tech Stack</h2>
+      <table>
+        <thead>
+          <tr><th>Layer</th><th>Technology</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Frontend</td>
+            <td><div class="stack-tags"><span class="tag">Next.js 15</span><span class="tag">TypeScript</span><span class="tag">Tailwind CSS</span><span class="tag">shadcn/ui</span></div></td>
+          </tr>
+          <tr>
+            <td>Backend / DB</td>
+            <td><div class="stack-tags"><span class="tag">Supabase</span><span class="tag">PostgreSQL</span><span class="tag">Row-Level Security</span></div></td>
+          </tr>
+          <tr>
+            <td>AI</td>
+            <td><div class="stack-tags"><span class="tag">Gemini Flash (primary)</span><span class="tag">OpenAI (fallback)</span></div></td>
+          </tr>
+          <tr>
+            <td>Payments</td>
+            <td><div class="stack-tags"><span class="tag">M-Pesa STK Push</span></div></td>
+          </tr>
+          <tr>
+            <td>Notifications</td>
+            <td><div class="stack-tags"><span class="tag">Celcom SMS</span><span class="tag">Resend (email)</span></div></td>
+          </tr>
+          <tr>
+            <td>Hosting</td>
+            <td><div class="stack-tags"><span class="tag">Vercel</span></div></td>
+          </tr>
+          <tr>
+            <td>Auth</td>
+            <td><div class="stack-tags"><span class="tag">Supabase Auth</span><span class="tag">Google OAuth</span></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 9. Success Metrics -->
+    <div class="section">
+      <h2><span class="num">9</span> V1 Success Metrics (90 Days)</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">≥70%</div>
+          <div class="stat-label">Diagnostic completion rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">≥40%</div>
+          <div class="stat-label">Week 1 retention</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">≥3×</div>
+          <div class="stat-label">Nex sessions per student / week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">≥2×</div>
+          <div class="stat-label">Practice sessions per student / week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">≥20%</div>
+          <div class="stat-label">Student signups → Parent account</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Track</div>
+          <div class="stat-label">Trial → paid conversion (no target V1)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. Vision -->
+    <div class="section">
+      <h2><span class="num">10</span> Long-Term Vision</h2>
+      <p>The defining advantage of Nexus is not content — it is <strong>memory</strong>.</p>
+      <p>A student who joins in Grade 7 should reach university with an AI teacher that understands years of academic history: learning behavior, strengths, weaknesses, goals, and achievements. Nexus becomes the <strong>lifelong academic companion</strong> for every learner in Africa.</p>
+      <div class="pull-quote" style="margin-top:24px;">Become Africa's most personalized AI learning platform.</div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>Nexus Team Overview — V1</span>
+    <span>Garnet Labs &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; June 2026</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>

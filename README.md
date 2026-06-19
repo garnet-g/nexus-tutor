@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nexus — AI-powered study companion for CBC/KCSE (Kenya)
 
-## Getting Started
+## Stack
 
-First, run the development server:
+- Next.js 16 (App Router) · TypeScript · Tailwind · shadcn/ui
+- Supabase (Auth, Postgres, RLS)
+- Nex AI tutor (Gemini Flash primary, OpenAI fallback)
 
-```bash
+## Local development
+
+### Prerequisites
+
+- Node.js 20+
+- [Supabase CLI](https://supabase.com/docs/guides/cli)
+- Docker (for local Supabase)
+
+### Setup
+
+**Windows (PowerShell):** Supabase is not required globally — use the npm scripts below (they run the local CLI from `node_modules`).
+
+```powershell
+# Install dependencies (includes Supabase CLI)
+npm install
+
+# Copy environment variables
+Copy-Item .env.example .env.local
+
+# Start local Supabase (Postgres, Auth, Studio) — requires Docker Desktop running
+npm run supabase:start
+
+# Reset DB with migrations + seed
+npm run db:reset
+
+# Paste keys from `npm run supabase:status` into .env.local, then:
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**macOS / Linux:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+cp .env.example .env.local
+npm run supabase:start
+npm run db:reset
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+After `npm run supabase:start`, run `npm run supabase:status` and copy `API URL`, `anon key`, and `service_role key` into `.env.local`.
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000). Supabase Studio: [http://localhost:54323](http://localhost:54323).
 
-To learn more about Next.js, take a look at the following resources:
+### Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run supabase:start` | Start local Supabase (Docker required) |
+| `npm run supabase:status` | Show local URLs and API keys |
+| `npm run db:reset` | Apply migrations + seed data |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript check |
+| `npm test` | Vitest unit/integration tests |
+| `npm run test:scope-check` | MVP scope guardrails |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+See [docs/phase-1-foundation/technical-architecture.md](docs/phase-1-foundation/technical-architecture.md).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Documentation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Full product and engineering docs: [docs/README.md](docs/README.md).
+
+Local setup troubleshooting: [docs/LOCAL-DEV.md](docs/LOCAL-DEV.md) · Staging deploy: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+
+## Agent workflow
+
+Wave planning artifacts live in `.planning/waves/`. See `.planning/templates/` for Overseer and QA report formats.

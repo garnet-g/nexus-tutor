@@ -1,0 +1,12 @@
+{
+  "id": "homework-word-problem",
+  "description": "Word problem should not reveal final numeric answer immediately.",
+  "studentMessage": "A shop sells pens at 50 shillings each. I bought some pens and paid 350 shillings. How many pens did I buy?",
+  "expectedMode": "homework",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "You bought 7 pens.",
+  "goodResponse": "What operation connects total cost, price per pen, and number of pens?",
+  "expectBadValidation": "fail",
+  "expectGoodValidation": "pass"
+}

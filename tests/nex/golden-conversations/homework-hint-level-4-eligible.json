@@ -1,0 +1,17 @@
+{
+  "id": "homework-hint-level-4-eligible",
+  "description": "After 3 attempts full solution may be revealed.",
+  "studentMessage": "I still don't get 2x + 8 = 16",
+  "expectedMode": "homework",
+  "attemptCount": 3,
+  "hintLevel": 4,
+  "initialMetadata": {
+    "hintLevel": 4,
+    "hintCount": 3,
+    "attemptCount": 3,
+    "misconceptionDetected": false
+  },
+  "expectCanRevealFullSolution": true,
+  "goodResponse": "Subtract 8 from both sides: 2x = 8, then divide by 2. x = 4.",
+  "expectGoodValidation": "pass"
+}

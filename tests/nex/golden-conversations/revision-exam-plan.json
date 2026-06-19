@@ -1,0 +1,12 @@
+{
+  "id": "revision-exam-plan",
+  "description": "Exam countdown requests should classify as revision mode.",
+  "studentMessage": "My exam is in 14 days. Help me revise algebra.",
+  "expectedMode": "revision",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "",
+  "goodResponse": "Let's build a revision plan. Which algebra topics feel weakest right now, and how many minutes can you study each day?",
+  "expectBadValidation": "pass",
+  "expectGoodValidation": "pass"
+}

@@ -1,0 +1,328 @@
+import "server-only";
+
+import { NextResponse } from "next/server";
+
+import { generateNexResponse } from "@/lib/nex/generateNexResponse";
+import { detectNexMode } from "@/lib/nex/detectNexMode";
+import { parseSessionMetadata } from "@/lib/nex/socraticTutorEngine";
+import type { NexMode } from "@/lib/nex/types";
+import {
+  getEffectiveSubscriptionConfigWithFallback,
+  getNexDailyLimit,
+} from "@/lib/platform/getPlatformSettings";
+import { createClient } from "@/lib/supabase/server";
+import { nexChatRequestSchema } from "@/schemas/nexSchemas";
+import { parseLearningPreferencesFromDb } from "@/schemas/profileSchemas";
+import {
+  getNexDailyUsageCount,
+  getSecondsUntilNairobiMidnight,
+  getStudentPlanCode,
+  incrementNexDailyUsage,
+} from "@/server/services/nexUsageService";
+import {
+  applyAssessmentMasteryUpdate,
+  persistStudentMisconception,
+  resolveMisconceptionFromMessage,
+  shouldPersistMisconception,
+} from "@/server/services/misconceptionService";
+
+export async function POST(request: Request) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Missing or invalid session.",
+          },
+        },
+        { status: 401 },
+      );
+    }
+
+    const { data: studentProfile, error: profileError } = await supabase
+      .from("student_profiles")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (profileError || !studentProfile) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "FORBIDDEN",
+            message: "Student profile required.",
+          },
+        },
+        { status: 403 },
+      );
+    }
+
+    const body = await request.json();
+    const parsed = nexChatRequestSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "VALIDATION_ERROR",
+            message: "Invalid request body.",
+            details: parsed.error.flatten(),
+          },
+        },
+        { status: 400 },
+      );
+    }
+
+    const subscriptionConfig = await getEffectiveSubscriptionConfigWithFallback();
+    const planCode = await getStudentPlanCode(studentProfile.id);
+    const dailyLimit = getNexDailyLimit(subscriptionConfig, planCode);
+    const currentUsage = await getNexDailyUsageCount(studentProfile.id);
+
+    if (currentUsage >= dailyLimit) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "RATE_LIMITED",
+            message: "Daily Nex message limit reached.",
+            details: {
+              retryAfterSeconds: getSecondsUntilNairobiMidnight(),
+              dailyLimit,
+              currentUsage,
+            },
+          },
+        },
+        { status: 429 },
+      );
+    }
+
+    const { studentMessage, nexSessionId, topicId } = parsed.data;
+    let sessionMode: NexMode =
+      parsed.data.sessionMode ??
+      detectNexMode(studentMessage, "homework");
+
+    let sessionId = nexSessionId ?? null;
+    let sessionMetadata = parseSessionMetadata(undefined);
+    let recentMessages: Array<{ role: "student" | "nex"; content: string }> = [];
+    let activeTopicId = topicId ?? null;
+
+    if (sessionId) {
+      const { data: existingSession, error: sessionError } = await supabase
+        .from("nex_sessions")
+        .select("id, session_mode, metadata, topic_id, student_id, is_active")
+        .eq("id", sessionId)
+        .maybeSingle();
+
+      if (
+        sessionError ||
+        !existingSession ||
+        existingSession.student_id !== studentProfile.id
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "NOT_FOUND",
+              message: "Nex session not found.",
+            },
+          },
+          { status: 404 },
+        );
+      }
+
+      sessionMode = detectNexMode(
+        studentMessage,
+        (parsed.data.sessionMode ??
+          existingSession.session_mode) as NexMode,
+      );
+      sessionMetadata = parseSessionMetadata(
+        existingSession.metadata as Record<string, unknown>,
+      );
+      activeTopicId = existingSession.topic_id ?? activeTopicId;
+
+      const { data: messages } = await supabase
+        .from("nex_messages")
+        .select("role, message_content")
+        .eq("nex_session_id", sessionId)
+        .order("created_at", { ascending: true })
+        .limit(10);
+
+      recentMessages =
+        messages?.map((message) => ({
+          role: message.role as "student" | "nex",
+          content: message.message_content,
+        })) ?? [];
+    } else {
+      const { data: createdSession, error: createSessionError } = await supabase
+        .from("nex_sessions")
+        .insert({
+          student_id: studentProfile.id,
+          session_mode: sessionMode,
+          topic_id: activeTopicId,
+          metadata: sessionMetadata,
+          is_active: true,
+        })
+        .select("id")
+        .single();
+
+      if (createSessionError || !createdSession) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "INTERNAL_ERROR",
+              message: "Could not create Nex session.",
+            },
+          },
+          { status: 500 },
+        );
+      }
+
+      sessionId = createdSession.id;
+    }
+
+    const { error: studentMessageError } = await supabase
+      .from("nex_messages")
+      .insert({
+        nex_session_id: sessionId,
+        student_id: studentProfile.id,
+        role: "student",
+        message_content: studentMessage,
+        metadata: {},
+      });
+
+    if (studentMessageError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "INTERNAL_ERROR",
+            message: "Could not save student message.",
+          },
+        },
+        { status: 500 },
+      );
+    }
+
+    const previousAssessmentStatus = sessionMetadata.assessmentStatus;
+
+    const learningPreferences = parseLearningPreferencesFromDb(
+      studentProfile.learning_preferences,
+    );
+
+    const nexResult = await generateNexResponse({
+      studentId: studentProfile.id,
+      studentMessage,
+      sessionMode,
+      sessionMetadata,
+      topicId: activeTopicId,
+      recentMessages,
+      studentProfile,
+      learningPreferences,
+    });
+
+    if (
+      shouldPersistMisconception(
+        nexResult.sessionMode,
+        studentMessage,
+        nexResult.metadata.misconceptionDetected,
+      )
+    ) {
+      const misconception = resolveMisconceptionFromMessage(studentMessage);
+      if (misconception) {
+        await persistStudentMisconception(
+          studentProfile.id,
+          misconception.errorCode,
+          misconception.description,
+        ).catch(() => undefined);
+      }
+    }
+
+    if (
+      nexResult.sessionMode === "assessment" &&
+      nexResult.metadata.assessmentStatus === "completed" &&
+      previousAssessmentStatus !== "completed"
+    ) {
+      await applyAssessmentMasteryUpdate(
+        studentProfile.id,
+        activeTopicId,
+        nexResult.metadata.correctCount ?? 0,
+        nexResult.metadata.assessmentQuestionCount ?? 3,
+      ).catch(() => undefined);
+    }
+
+    const { data: nexMessage, error: nexMessageError } = await supabase
+      .from("nex_messages")
+      .insert({
+        nex_session_id: sessionId,
+        student_id: studentProfile.id,
+        role: "nex",
+        message_content: nexResult.response,
+        metadata: {
+          provider: nexResult.provider,
+          validationPassed: nexResult.validationPassed,
+        },
+      })
+      .select("id")
+      .single();
+
+    if (nexMessageError || !nexMessage) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "NEX_RESPONSE_FAILED",
+            message: "Could not save Nex response.",
+          },
+        },
+        { status: 502 },
+      );
+    }
+
+    await supabase
+      .from("nex_sessions")
+      .update({
+        session_mode: nexResult.sessionMode,
+        metadata: nexResult.metadata,
+        topic_id: activeTopicId,
+        is_active: true,
+      })
+      .eq("id", sessionId);
+
+    await incrementNexDailyUsage(studentProfile.id);
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        nexSessionId: sessionId,
+        nexMessageId: nexMessage.id,
+        nexResponse: nexResult.response,
+        sessionMode: nexResult.sessionMode,
+        provider: nexResult.provider,
+      },
+    });
+  } catch (error) {
+    console.error("NEX_RESPONSE_FAILED", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: "NEX_RESPONSE_FAILED",
+          message: "Nex could not generate a response.",
+        },
+      },
+      { status: 502 },
+    );
+  }
+}

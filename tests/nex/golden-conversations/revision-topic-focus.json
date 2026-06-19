@@ -1,0 +1,10 @@
+{
+  "id": "revision-topic-focus",
+  "description": "Revision mode focused on weak topic.",
+  "studentMessage": "I need to revise trigonometry before my test",
+  "expectedMode": "revision",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "Start with SOHCAHTOA. Can you label opposite, adjacent, and hypotenuse on a right triangle?",
+  "expectGoodValidation": "pass"
+}

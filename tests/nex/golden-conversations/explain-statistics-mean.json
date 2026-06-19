@@ -1,0 +1,10 @@
+{
+  "id": "explain-statistics-mean",
+  "description": "Explain mode for mean calculation.",
+  "studentMessage": "How do I find the mean of a data set?",
+  "expectedMode": "explain",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "Add all values together, then divide by how many values you have.",
+  "expectGoodValidation": "pass"
+}

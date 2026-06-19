@@ -1,0 +1,12 @@
+{
+  "id": "assessment-linear-equations",
+  "description": "Assessment mode triggers from understanding-check phrasing.",
+  "studentMessage": "Test my understanding of linear equations",
+  "expectedMode": "assessment",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "The answer is always x = 5.",
+  "goodResponse": "Let's start with one question. If 2x + 4 = 14, what should you do first to isolate x?",
+  "expectBadValidation": "fail",
+  "expectGoodValidation": "pass"
+}

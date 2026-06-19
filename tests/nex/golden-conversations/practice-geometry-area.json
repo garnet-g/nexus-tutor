@@ -1,0 +1,10 @@
+{
+  "id": "practice-geometry-area",
+  "description": "Practice mode for area of rectangle.",
+  "studentMessage": "Test me on area of rectangles",
+  "expectedMode": "practice",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "A rectangle has length 8 cm and width 5 cm. What is its area?",
+  "expectGoodValidation": "pass"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "explain-geometry-angles",
+  "description": "Explain mode for angle types.",
+  "studentMessage": "Explain acute and obtuse angles",
+  "expectedMode": "explain",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "goodResponse": "An acute angle is less than 90 degrees. An obtuse angle is greater than 90 but less than 180 degrees.",
+  "expectGoodValidation": "pass"
+}

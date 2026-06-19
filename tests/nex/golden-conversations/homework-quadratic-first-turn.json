@@ -1,0 +1,12 @@
+{
+  "id": "homework-quadratic-first-turn",
+  "description": "Homework must not give roots on first turn.",
+  "studentMessage": "Solve x^2 - 5x + 6 = 0",
+  "expectedMode": "homework",
+  "attemptCount": 0,
+  "hintLevel": 1,
+  "badResponse": "x = 2 or x = 3",
+  "goodResponse": "Can you factor this quadratic? What two numbers multiply to 6 and add to -5?",
+  "expectBadValidation": "fail",
+  "expectGoodValidation": "pass"
+}

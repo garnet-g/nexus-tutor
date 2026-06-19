@@ -190,8 +190,9 @@ Notifications are **best-effort** — never fail payment activation because SMS 
 ## 8. Environment Variables
 
 ```env
+CELCOM_PARTNER_ID=
 CELCOM_API_KEY=
-CELCOM_SENDER_ID=
+CELCOM_SHORTCODE=
 CELCOM_CALLBACK_URL=
 
 RESEND_API_KEY=

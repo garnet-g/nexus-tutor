@@ -1,0 +1,10 @@
+{
+  "id": "homework-misconception-signs",
+  "description": "Detect homework mode for sign errors.",
+  "studentMessage": "My answer for -3x = 9 was x = 3 but it's wrong",
+  "expectedMode": "homework",
+  "attemptCount": 1,
+  "hintLevel": 2,
+  "goodResponse": "When you divide both sides by a negative number, what happens to the sign of x?",
+  "expectGoodValidation": "pass"
+}
