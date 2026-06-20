@@ -28,6 +28,21 @@ export async function getStudentPlanCode(studentId: string): Promise<string> {
   return planCode;
 }
 
+export async function hasUsedFreeTrial(studentId: string): Promise<boolean> {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("subscription_trials")
+    .select("id")
+    .eq("student_id", studentId)
+    .maybeSingle();
+
+  return Boolean(data);
+}
+
+export function canAccessExamStudyPlan(planCode: string): boolean {
+  return planCode === "premium" || planCode === "family";
+}
+
 async function getFreePlanId(): Promise<string> {
   const supabase = createAdminClient();
   const { data, error } = await supabase

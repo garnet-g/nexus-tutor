@@ -7,10 +7,10 @@ import { useActionState, useEffect, useRef } from "react";
 
 
 import { AsyncActionButton } from "@/components/ui/async-action-button";
-
 import { FieldError } from "@/components/ui/field-error";
-
 import { FormStatus } from "@/components/ui/form-status";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { Button } from "@/components/ui/Button";
 
 import { track } from "@/lib/analytics/track";
 
@@ -130,69 +130,18 @@ export function ProfileForm({
 
     <div className="space-y-6 sm:space-y-8">
 
-      <section className="rounded-xl border border-border bg-card p-4 sm:p-6">
-
-        <h2 className="text-lg font-semibold text-foreground">Account</h2>
-
-        <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-
-          <div>
-
-            <dt className="text-muted-foreground">Curriculum</dt>
-
-            <dd className="font-medium text-foreground">{profile.curriculum}</dd>
-
-          </div>
-
-          <div>
-
-            <dt className="text-muted-foreground">Grade</dt>
-
-            <dd className="font-medium text-foreground">{profile.grade_level}</dd>
-
-          </div>
-
-          <div>
-
-            <dt className="text-muted-foreground">Plan</dt>
-
-            <dd className="font-medium capitalize text-foreground">{planCode}</dd>
-
-          </div>
-
-          <div>
-
-            <dt className="text-muted-foreground">Email</dt>
-
-            <dd className="font-medium text-foreground">{profile.email ?? "—"}</dd>
-
-          </div>
-
-        </dl>
-
-      </section>
-
-
+      <SectionCard
+        title="Edit profile"
+        description="Update your details and how Nex teaches you."
+      >
 
       <form
 
         action={formAction}
 
-        className="space-y-6 rounded-xl border border-border bg-card p-4 sm:p-6"
+        className="space-y-6"
 
       >
-
-        <div className="space-y-1">
-
-          <h2 className="text-lg font-semibold text-foreground">Edit profile</h2>
-
-          <p className="text-sm text-muted-foreground">
-
-            Update your details and how Nex teaches you.
-
-          </p>
-
-        </div>
 
 
 
@@ -563,14 +512,13 @@ export function ProfileForm({
         />
 
       </form>
+      </SectionCard>
 
 
 
       {planCode === "family" && familyInviteCode ? (
 
-        <section className="rounded-xl border border-border bg-card p-4 sm:p-6">
-
-          <h2 className="text-lg font-semibold text-foreground">Family plan</h2>
+        <SectionCard title="Family plan">
 
           <p className="mt-2 text-sm text-muted-foreground">
 
@@ -602,7 +550,7 @@ export function ProfileForm({
 
           ) : null}
 
-        </section>
+        </SectionCard>
 
       ) : null}
 
@@ -618,17 +566,19 @@ export function ProfileForm({
 
       <form action={signOutAction}>
 
-        <button
+        <Button
 
           type="submit"
 
-          className="min-h-12 w-full rounded-lg border border-border px-4 py-2 text-foreground hover:bg-muted sm:w-auto"
+          variant="outline"
+
+          className="min-h-12 w-full sm:w-auto"
 
         >
 
           Sign out
 
-        </button>
+        </Button>
 
       </form>
 
@@ -644,15 +594,10 @@ function FamilyJoinSection() {
 
   return (
 
-    <section className="rounded-xl border border-border bg-card p-4 sm:p-6">
-
-      <h2 className="text-lg font-semibold text-foreground">Join a family plan</h2>
-
-      <p className="mt-2 text-sm text-muted-foreground">
-
-        Enter a family invite code from the plan owner.
-
-      </p>
+    <SectionCard
+      title="Join a family plan"
+      description="Enter a family invite code from the plan owner."
+    >
 
       <form
 
@@ -718,7 +663,7 @@ function FamilyJoinSection() {
 
       </form>
 
-    </section>
+    </SectionCard>
 
   );
 

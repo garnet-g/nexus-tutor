@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import {
@@ -6,11 +5,16 @@ import {
   StudyPlanEmptyState,
   StudyPlanTaskList,
 } from "@/features/studyPlan/components/StudyPlanView";
+import {
+  StudyPlanDailyGoal,
+  StudyPlanExamCountdown,
+} from "@/features/studyPlan/components/StudyPlanSections";
 import { getSessionUser } from "@/server/services/authService";
+import {
+  canAccessExamStudyPlan,
+  getStudentPlanCode,
+} from "@/server/services/subscriptionService";
 import { getActiveStudyPlan } from "@/server/services/studyPlanService";
-
-const actionLinkClass =
-  "inline-flex min-h-11 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors";
 
 export default async function StudyPlanPage() {
   const sessionUser = await getSessionUser();
@@ -23,85 +27,58 @@ export default async function StudyPlanPage() {
     redirect("/diagnostic");
   }
 
-  const plan = await getActiveStudyPlan(sessionUser.studentProfile.id);
+  const profile = sessionUser.studentProfile;
+  const [plan, planCode] = await Promise.all([
+    getActiveStudyPlan(profile.id),
+    getStudentPlanCode(profile.id),
+  ]);
+
+  const canGenerateExamPlan = canAccessExamStudyPlan(planCode);
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+    <div className="space-y-6 nexus-enter">
+      <header className="space-y-2">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Study plan
+        </p>
+        <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
+          Your daily roadmap
         </h1>
         <p className="text-muted-foreground">
-          Daily goals and weak-topic prioritization based on your diagnostic and
+          Daily goals and weak-topic prioritisation from your diagnostic and
           practice performance.
         </p>
+      </header>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {plan?.dailyGoal ? (
+          <StudyPlanDailyGoal
+            minutesCompleted={plan.dailyGoal.minutesCompleted}
+            dailyGoalMinutes={plan.dailyGoal.dailyGoalMinutes}
+            isCompleted={plan.dailyGoal.isCompleted}
+          />
+        ) : (
+          <StudyPlanDailyGoal
+            minutesCompleted={0}
+            dailyGoalMinutes={20}
+            isCompleted={false}
+          />
+        )}
+
+        <StudyPlanExamCountdown
+          examCountdownDays={plan?.examCountdownDays ?? null}
+          targetCompletionDate={plan?.targetCompletionDate ?? null}
+          planTitle={plan?.planType === "exam" ? plan.title : null}
+          canAccessExamPlan={canGenerateExamPlan}
+        />
       </div>
 
-      <section className="rounded-2xl border border-border bg-card p-6">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-          Today&apos;s goal
-        </h2>
-        {plan?.dailyGoal ? (
-          <div className="mt-3 space-y-2">
-            <p className="text-2xl font-semibold text-foreground">
-              {plan.dailyGoal.minutesCompleted}/{plan.dailyGoal.dailyGoalMinutes}{" "}
-              minutes
-            </p>
-            <div className="h-2 overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary"
-                style={{
-                  width: `${Math.min(
-                    100,
-                    Math.round(
-                      (plan.dailyGoal.minutesCompleted /
-                        plan.dailyGoal.dailyGoalMinutes) *
-                        100,
-                    ),
-                  )}%`,
-                }}
-              />
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {plan.dailyGoal.isCompleted
-                ? "Daily goal complete."
-                : "Complete lessons or practice to reach your goal."}
-            </p>
-            {!plan.dailyGoal.isCompleted ? (
-              <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
-                <Link
-                  href="/practice"
-                  className={`${actionLinkClass} bg-primary text-primary-foreground hover:bg-primary/90`}
-                >
-                  Start practice
-                </Link>
-                <Link
-                  href="/learn"
-                  className={`${actionLinkClass} border border-border text-foreground hover:bg-muted`}
-                >
-                  Browse Learn
-                </Link>
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <p className="mt-3 text-sm text-muted-foreground">
-            Your daily goal will appear after your first diagnostic or plan
-            generation.
-          </p>
-        )}
-      </section>
+      <StudyPlanActions
+        hasPlan={Boolean(plan)}
+        canGenerateExamPlan={canGenerateExamPlan}
+      />
 
-      <StudyPlanActions hasPlan={Boolean(plan)} />
-
-      {plan ? (
-        <div className="space-y-4">
-          <h2 className="text-lg font-medium text-foreground">{plan.title}</h2>
-          <StudyPlanTaskList plan={plan} />
-        </div>
-      ) : (
-        <StudyPlanEmptyState />
-      )}
+      {plan ? <StudyPlanTaskList plan={plan} /> : <StudyPlanEmptyState />}
     </div>
   );
 }

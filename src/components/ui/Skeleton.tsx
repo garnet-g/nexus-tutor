@@ -122,3 +122,21 @@ export function ProgressPageSkeleton() {
     </div>
   );
 }
+
+export function StudyPlanPageSkeleton() {
+  return (
+    <div className="space-y-6 nexus-enter">
+      <div className="space-y-3">
+        <Skeleton variant="line" className="h-4 w-24" />
+        <Skeleton variant="line" className="h-9 w-48" />
+        <Skeleton variant="text" lines={2} />
+      </div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Skeleton variant="card" className="h-44" />
+        <Skeleton variant="card" className="h-44" />
+      </div>
+      <Skeleton variant="card" className="h-28" />
+      <Skeleton variant="card" className="h-64" />
+    </div>
+  );
+}

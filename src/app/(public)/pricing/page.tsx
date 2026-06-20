@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { PricingCheckout } from "@/features/pricing/components/PricingCheckout";
 import { PublicPricingDisplay } from "@/features/marketing/components/PublicPricingDisplay";
@@ -7,13 +8,23 @@ import {
 } from "@/lib/platform/getPlatformSettings";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSessionUser } from "@/server/services/authService";
+import {
+  getStudentPlanCode,
+  hasUsedFreeTrial,
+} from "@/server/services/subscriptionService";
 
 export const dynamic = "force-dynamic";
 
 export default async function PublicPricingPage() {
   const config = await getEffectiveSubscriptionConfigWithFallback();
   const sessionUser = await getSessionUser();
-  const isStudent = Boolean(sessionUser?.studentProfile);
+  const studentProfile = sessionUser?.studentProfile;
+
+  if (sessionUser && !studentProfile) {
+    redirect("/login");
+  }
+
+  const isStudent = Boolean(studentProfile);
 
   let pricingPlans: Array<{
     id: string;
@@ -22,7 +33,15 @@ export default async function PublicPricingPage() {
     amountKes: number;
   }> = [];
 
-  if (isStudent) {
+  let planCode = "free";
+  let hasUsedTrial = false;
+
+  if (studentProfile) {
+    [planCode, hasUsedTrial] = await Promise.all([
+      getStudentPlanCode(studentProfile.id),
+      hasUsedFreeTrial(studentProfile.id),
+    ]);
+
     try {
       const admin = createAdminClient();
       const { data: plans } = await admin
@@ -67,28 +86,35 @@ export default async function PublicPricingPage() {
         <div className="mb-8">
           <Link
             href="/dashboard"
-            className="text-sm font-medium text-primary hover:underline"
+            className="text-sm font-medium text-nexus-primary transition-colors hover:text-nexus-primary-dark"
           >
-            ← Back to dashboard
+            ← Back to Today
           </Link>
         </div>
       ) : null}
 
       <div className="mx-auto max-w-2xl space-y-3 text-center">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-primary">Pricing</p>
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-nexus-primary">
+          Pricing
+        </p>
         <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           {isStudent ? "Choose your plan" : "Simple, honest pricing"}
         </h1>
         <p className="text-base text-muted-foreground">
           {isStudent
-            ? "Upgrade for higher daily limits. All prices load from live platform settings."
+            ? "Upgrade for higher daily limits. All amounts load from live platform settings."
             : "Start free forever. Upgrade when you need higher daily limits."}
         </p>
       </div>
 
       <div className="mt-10">
         {isStudent ? (
-          <PricingCheckout config={config} plans={pricingPlans} />
+          <PricingCheckout
+            config={config}
+            plans={pricingPlans}
+            hasUsedTrial={hasUsedTrial}
+            currentPlanCode={planCode}
+          />
         ) : (
           <PublicPricingDisplay config={config} />
         )}

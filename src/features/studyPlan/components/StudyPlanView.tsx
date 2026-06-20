@@ -1,48 +1,50 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { BookOpen, Target } from "lucide-react";
 
+import { EmptyState } from "@/components/ui/EmptyState";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
 import { AsyncActionButton } from "@/components/ui/async-action-button";
 import type { getActiveStudyPlan } from "@/server/services/studyPlanService";
+import { cn } from "@/lib/utils";
 
 type ActivePlan = NonNullable<Awaited<ReturnType<typeof getActiveStudyPlan>>>;
 
-const actionLinkClass =
-  "inline-flex min-h-11 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors";
-
 export function StudyPlanEmptyState() {
   return (
-    <div className="rounded-2xl border border-border bg-card p-6">
-      <p className="text-sm font-medium text-foreground">No study plan yet</p>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Generate a plan from your diagnostic results, or start practicing while
-        Nexus learns your weak topics.
-      </p>
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-        <Link
-          href="/practice"
-          className={`${actionLinkClass} bg-primary text-primary-foreground hover:bg-primary/90`}
-        >
-          Start practice
-        </Link>
-        <Link
-          href="/learn"
-          className={`${actionLinkClass} border border-border text-foreground hover:bg-muted`}
-        >
-          Browse Learn
-        </Link>
-      </div>
-    </div>
+    <EmptyState
+      icon={<BookOpen className="size-6" />}
+      title="No study plan yet"
+      description="Generate a daily plan from your diagnostic results, or start practicing while Nexus learns your weak topics."
+      primaryAction={{ label: "Generate daily plan", href: "#study-plan-actions" }}
+      secondaryAction={{ label: "Start practice", href: "/practice" }}
+    />
   );
 }
 
-export function StudyPlanActions({ hasPlan }: { hasPlan: boolean }) {
-  const [loading, setLoading] = useState(false);
+interface StudyPlanActionsProps {
+  hasPlan: boolean;
+  canGenerateExamPlan: boolean;
+}
+
+export function StudyPlanActions({
+  hasPlan,
+  canGenerateExamPlan,
+}: StudyPlanActionsProps) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [loadingType, setLoadingType] = useState<"daily" | "exam" | null>(
+    null,
+  );
   const [message, setMessage] = useState<string | null>(null);
 
   async function regeneratePlan(planType: "daily" | "exam") {
-    setLoading(true);
+    setLoadingType(planType);
     setMessage(null);
 
     try {
@@ -61,37 +63,67 @@ export function StudyPlanActions({ hasPlan }: { hasPlan: boolean }) {
         throw new Error(payload.error?.message ?? "Could not regenerate plan.");
       }
 
-      window.location.reload();
+      toast({
+        tone: "success",
+        title: planType === "exam" ? "Exam plan ready" : "Daily plan ready",
+        description: payload.data?.title ?? "Your study plan has been updated.",
+      });
+      router.refresh();
     } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : "Could not regenerate plan.",
-      );
+      const errorMessage =
+        error instanceof Error ? error.message : "Could not regenerate plan.";
+      setMessage(errorMessage);
+      toast({
+        tone: "error",
+        title: "Could not generate plan",
+        description: errorMessage,
+      });
     } finally {
-      setLoading(false);
+      setLoadingType(null);
     }
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap gap-3">
+    <SectionCard
+      id="study-plan-actions"
+      title="Refresh your plan"
+      description="Daily plans prioritise weak topics. Exam plans span 14 days (Premium/trial)."
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <AsyncActionButton
           type="button"
-          isPending={loading}
+          isPending={loadingType === "daily"}
           idleLabel={hasPlan ? "Refresh daily plan" : "Generate daily plan"}
           pendingLabel="Generating..."
+          className="min-h-12"
           onClick={() => void regeneratePlan("daily")}
         />
-        <AsyncActionButton
-          type="button"
-          variant="outline"
-          isPending={loading}
-          idleLabel="Generate 14-day exam plan"
-          pendingLabel="Generating..."
-          onClick={() => void regeneratePlan("exam")}
-        />
+        {canGenerateExamPlan ? (
+          <AsyncActionButton
+            type="button"
+            variant="outline"
+            isPending={loadingType === "exam"}
+            idleLabel="Generate 14-day exam plan"
+            pendingLabel="Generating..."
+            className="min-h-12"
+            onClick={() => void regeneratePlan("exam")}
+          />
+        ) : (
+          <Button
+            variant="outline"
+            render={<Link href="/pricing" />}
+            className="min-h-12"
+          >
+            Upgrade for exam plan
+          </Button>
+        )}
       </div>
-      {message ? <p className="text-sm text-destructive">{message}</p> : null}
-    </div>
+      {message ? (
+        <p className="mt-3 text-sm text-nexus-danger" role="alert">
+          {message}
+        </p>
+      ) : null}
+    </SectionCard>
   );
 }
 
@@ -104,75 +136,108 @@ function taskPracticeHref(topicId: string | null) {
 }
 
 export function StudyPlanTaskList({ plan }: { plan: ActivePlan }) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [pendingTaskId, setPendingTaskId] = useState<string | null>(null);
+
+  async function toggleTask(taskId: string, completed: boolean) {
+    setPendingTaskId(taskId);
+
+    try {
+      const response = await fetch(`/api/study-plans/tasks/${taskId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed }),
+      });
+      const payload = await response.json();
+
+      if (!response.ok || !payload.success) {
+        throw new Error(payload.error?.message ?? "Could not update task.");
+      }
+
+      router.refresh();
+    } catch (error) {
+      toast({
+        tone: "error",
+        title: "Could not update task",
+        description:
+          error instanceof Error ? error.message : "Please try again.",
+      });
+    } finally {
+      setPendingTaskId(null);
+    }
+  }
+
+  if (plan.tasks.length === 0) {
+    return (
+      <EmptyState
+        icon={<Target className="size-6" />}
+        title="No tasks scheduled for today"
+        description="Generate a daily plan to get weak-topic tasks, or jump straight into practice."
+        primaryAction={{ label: "Start practice", href: "/practice" }}
+        secondaryAction={{ label: "Browse Learn", href: "/learn" }}
+      />
+    );
+  }
+
   return (
-    <div className="space-y-4">
-      {plan.tasks.length > 0 ? (
-        plan.tasks.map((task) => (
-          <div
-            key={task.id}
-            className="rounded-2xl border border-border bg-card p-5"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {task.taskType}
-                </p>
-                <h3 className="mt-1 text-lg font-medium text-foreground">
-                  {task.taskTitle}
-                </h3>
-                {task.topicTitle ? (
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {task.topicTitle}
+    <SectionCard title={plan.title} description="Today's checklist">
+      <ul className="space-y-3">
+        {plan.tasks.map((task) => {
+          const isPending = pendingTaskId === task.id;
+
+          return (
+            <li
+              key={task.id}
+              className={cn(
+                "rounded-xl border border-nexus-border bg-nexus-surface p-4 transition-colors",
+                task.isCompleted && "border-nexus-success/30 bg-nexus-success-soft/30",
+              )}
+            >
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={task.isCompleted}
+                  disabled={isPending}
+                  onChange={(event) =>
+                    void toggleTask(task.id, event.target.checked)
+                  }
+                  className="mt-1 size-5 shrink-0 rounded border-nexus-border accent-[var(--nexus-primary)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                  aria-label={`Mark ${task.taskTitle} as ${task.isCompleted ? "incomplete" : "complete"}`}
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    {task.taskType.replaceAll("_", " ")}
                   </p>
-                ) : null}
+                  <p
+                    className={cn(
+                      "mt-1 font-medium text-foreground",
+                      task.isCompleted && "line-through opacity-70",
+                    )}
+                  >
+                    {task.taskTitle}
+                  </p>
+                  {task.topicTitle ? (
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {task.topicTitle}
+                    </p>
+                  ) : null}
+                  {!task.isCompleted && task.topicId ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      render={<Link href={taskPracticeHref(task.topicId)} />}
+                      className="mt-3 min-h-12 px-0 text-nexus-primary hover:bg-transparent"
+                    >
+                      Practice this topic →
+                    </Button>
+                  ) : null}
+                </div>
               </div>
-              <span
-                className={
-                  task.isCompleted
-                    ? "rounded-full bg-emerald-100 px-3 py-1 text-xs text-emerald-800"
-                    : "rounded-full bg-muted px-3 py-1 text-xs text-foreground/80"
-                }
-              >
-                {task.isCompleted ? "Done" : "Pending"}
-              </span>
-            </div>
-            {!task.isCompleted ? (
-              <div className="mt-4">
-                <Link
-                  href={taskPracticeHref(task.topicId)}
-                  className={`${actionLinkClass} bg-primary text-primary-foreground hover:bg-primary/90`}
-                >
-                  {task.topicId ? "Practice this topic" : "Start practice"}
-                </Link>
-              </div>
-            ) : null}
-          </div>
-        ))
-      ) : (
-        <div className="rounded-2xl border border-border bg-card p-6">
-          <p className="text-sm font-medium text-foreground">
-            No tasks scheduled for today
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Generate a daily plan to get weak-topic tasks, or jump straight into
-            practice while your plan refreshes.
-          </p>
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            <Link
-              href="/practice"
-              className={`${actionLinkClass} bg-primary text-primary-foreground hover:bg-primary/90`}
-            >
-              Start practice
-            </Link>
-            <Link
-              href="/learn"
-              className={`${actionLinkClass} border border-border text-foreground hover:bg-muted`}
-            >
-              Browse Learn
-            </Link>
-          </div>
-        </div>
-      )}
-    </div>
+            </li>
+          );
+        })}
+      </ul>
+    </SectionCard>
   );
 }
