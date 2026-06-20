@@ -98,15 +98,16 @@ async function awardPracticeGamification(
   studentId: string,
   topicCode: string | null,
   masteryPercentage: number,
-) {
+): Promise<{ currentStreak: number; xpEarned: number }> {
   const admin = createAdminClient();
+  const xpEarned = 50;
   const { data: existingXp } = await admin
     .from("student_xp")
     .select("total_xp")
     .eq("student_id", studentId)
     .maybeSingle();
 
-  const totalXp = (existingXp?.total_xp ?? 0) + 50;
+  const totalXp = (existingXp?.total_xp ?? 0) + xpEarned;
 
   await admin.from("student_xp").upsert(
     {
@@ -135,7 +136,8 @@ async function awardPracticeGamification(
     );
   }
 
-  return updateStudentStreak(studentId);
+  const currentStreak = await updateStudentStreak(studentId);
+  return { currentStreak, xpEarned };
 }
 
 async function recalculateHealthScore(
@@ -263,7 +265,7 @@ export async function startPracticeSession(
 
   const { data: questionRows, error: questionError } = await admin
     .from("practice_questions")
-    .select("id, question_text, question_type, options, difficulty")
+    .select("id, question_text, question_type, options, difficulty, explanation")
     .eq("topic_id", input.topicId)
     .eq("difficulty", input.difficulty)
     .eq("is_active", true)
@@ -305,6 +307,8 @@ export async function startPracticeSession(
       questionType: question.question_type,
       options: question.options,
       difficulty: question.difficulty,
+      explanation:
+        question.explanation ?? "Review the core concept for this topic.",
     })),
   };
 }
@@ -477,7 +481,7 @@ export async function completePracticeSession(
 
   const topicCode = sessionTopic?.code ?? null;
 
-  const currentStreak = await awardPracticeGamification(
+  const { currentStreak, xpEarned } = await awardPracticeGamification(
     profile.id,
     topicCode ?? null,
     masteryUpdates[0]?.masteryPercentage ?? 0,
@@ -549,6 +553,7 @@ export async function completePracticeSession(
     healthScore,
     predictedGrade,
     currentStreak,
+    xpEarned,
   };
 }
 

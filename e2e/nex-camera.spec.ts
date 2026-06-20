@@ -18,7 +18,7 @@ test.describe("Nex camera affordance", () => {
   }) => {
     await loginAsStudent(page);
     await page.goto("/nex");
-    await page.getByLabel(/^mode$/i).selectOption("homework");
+    await page.getByRole("radio", { name: /homework/i }).click();
     await expect(page.getByTestId("nex-camera-button")).toBeVisible();
     await expect(page.getByTestId("nex-camera-input")).toBeAttached();
   });
@@ -26,7 +26,7 @@ test.describe("Nex camera affordance", () => {
   test("hides camera button in practice mode", async ({ page }) => {
     await loginAsStudent(page);
     await page.goto("/nex");
-    await page.getByLabel(/^mode$/i).selectOption("practice");
+    await page.getByRole("radio", { name: /practice/i }).click();
     await expect(page.getByTestId("nex-camera-button")).toHaveCount(0);
   });
 });

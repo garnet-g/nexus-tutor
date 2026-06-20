@@ -39,7 +39,10 @@ test.describe("Discovery routes — student", () => {
     await expect(
       page.getByRole("heading", { name: /assignment help/i }),
     ).toBeVisible();
-    await expect(page.getByLabel(/^mode$/i)).toHaveValue("homework");
+    await expect(page.getByRole("radio", { name: /homework/i })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
   });
 
   test("exam-prep page renders wizard", async ({ page }) => {

@@ -2,11 +2,19 @@ import { redirect } from "next/navigation";
 
 import { NexChatPanel } from "@/features/nex/components/NexChatPanel";
 import type { NexMode } from "@/lib/nex/types";
+import {
+  getEffectiveSubscriptionConfigWithFallback,
+  getNexDailyLimit,
+} from "@/lib/platform/getPlatformSettings";
 import { studentHasCameraAccess } from "@/schemas/cameraSchemas";
 import { parseLearningPreferencesFromDb } from "@/schemas/profileSchemas";
 import { studentHasVoiceAccess } from "@/schemas/voiceSchemas";
 import { getSessionUser } from "@/server/services/authService";
-import { getStudentPlanCode } from "@/server/services/nexUsageService";
+import {
+  getNexDailyUsageCount,
+  getSecondsUntilNairobiMidnight,
+  getStudentPlanCode,
+} from "@/server/services/nexUsageService";
 
 const VALID_MODES: NexMode[] = [
   "explain",
@@ -40,6 +48,11 @@ export default async function AssignmentHelpPage({
   }
 
   const planCode = await getStudentPlanCode(sessionUser.studentProfile.id);
+  const [subscriptionConfig, dailyUsage] = await Promise.all([
+    getEffectiveSubscriptionConfigWithFallback(),
+    getNexDailyUsageCount(sessionUser.studentProfile.id),
+  ]);
+  const dailyLimit = getNexDailyLimit(subscriptionConfig, planCode);
   const cameraEnabled = studentHasCameraAccess(planCode);
   const voiceEnabled = studentHasVoiceAccess(planCode);
   const initialMode = parseMode(params.mode);
@@ -66,6 +79,10 @@ export default async function AssignmentHelpPage({
         cameraEnabled={cameraEnabled}
         voiceEnabled={voiceEnabled}
         learningPreferences={learningPreferences}
+        dailyUsage={dailyUsage}
+        dailyLimit={dailyLimit}
+        retryAfterSeconds={getSecondsUntilNairobiMidnight()}
+        planCode={planCode}
       />
     </div>
   );
