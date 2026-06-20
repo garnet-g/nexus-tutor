@@ -33,6 +33,12 @@ export default function SuperAdminLayout({
                 Beta invites
               </Link>
               <Link
+                href="/admin/content"
+                className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                Content
+              </Link>
+              <Link
                 href="/admin/usage-stats"
                 className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
