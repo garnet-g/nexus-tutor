@@ -199,3 +199,61 @@ export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
 
   return { processed, emailed, errors };
 }
+
+export interface StudentWeeklySummary {
+  weekStart: string;
+  weekEnd: string;
+  studyMinutes: number;
+  healthScore: number;
+  predictedGrade: string | null;
+  weakTopics: string[];
+  activityBreakdown: Array<{ activityType: string; minutes: number }>;
+}
+
+/** In-app weekly summary — reuses the same computation as parent email reports. */
+export async function getStudentWeeklySummary(
+  studentId: string,
+  weekStartDate?: string,
+): Promise<StudentWeeklySummary> {
+  const weekStart = weekStartDate ?? getWeekStartDate();
+  const weekEnd = getWeekEndDate(weekStart);
+  const admin = createAdminClient();
+
+  const [studyMinutes, health, weakTopics, activityRows] = await Promise.all([
+    getWeeklyStudyMinutes(studentId, weekStart),
+    getLatestHealthForStudent(studentId),
+    getWeakTopics(studentId),
+    admin
+      .from("study_time_logs")
+      .select("activity_type, duration_seconds")
+      .eq("student_id", studentId)
+      .gte("logged_at", `${weekStart}T00:00:00`)
+      .lte("logged_at", `${weekEnd}T23:59:59`),
+  ]);
+
+  const breakdown = new Map<string, number>();
+  for (const row of activityRows.data ?? []) {
+    const type = row.activity_type ?? "other";
+    breakdown.set(
+      type,
+      (breakdown.get(type) ?? 0) + (row.duration_seconds ?? 0),
+    );
+  }
+
+  const activityBreakdown = Array.from(breakdown.entries())
+    .map(([activityType, seconds]) => ({
+      activityType,
+      minutes: Math.max(1, Math.round(seconds / 60)),
+    }))
+    .sort((left, right) => right.minutes - left.minutes);
+
+  return {
+    weekStart,
+    weekEnd,
+    studyMinutes,
+    healthScore: health.healthScore,
+    predictedGrade: health.predictedGrade,
+    weakTopics,
+    activityBreakdown,
+  };
+}

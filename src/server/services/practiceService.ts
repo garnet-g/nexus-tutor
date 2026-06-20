@@ -642,6 +642,9 @@ export async function getProgressSummary(studentId: string) {
     totalXp: xp?.total_xp ?? 0,
     currentLevel: xp?.current_level ?? 1,
     badges: badges?.map((badge) => badge.badge_code) ?? [],
+    badgeEarnedAt: Object.fromEntries(
+      (badges ?? []).map((badge) => [badge.badge_code, badge.earned_at]),
+    ),
   };
 }
 

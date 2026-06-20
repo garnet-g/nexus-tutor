@@ -567,3 +567,59 @@ export async function getLatestHealthScore(studentId: string) {
 
   return data;
 }
+
+/**
+ * Historical health snapshots from academic_health_scores.calculated_at.
+ * // DATA-FLAG: source is real rows written by diagnostic completion and
+ * practice recalculateHealthScore — not synthesized.
+ */
+export async function getHealthScoreHistory(
+  studentId: string,
+): Promise<Array<{ label: string; value: number }>> {
+  const admin = createAdminClient();
+
+  const { data } = await admin
+    .from("academic_health_scores")
+    .select("health_score, calculated_at, subjects(code)")
+    .eq("student_id", studentId)
+    .order("calculated_at", { ascending: true });
+
+  if (!data?.length) {
+    return [];
+  }
+
+  const mathRows = data.filter((row) => {
+    const subject = unwrapSupabaseRelation(
+      row.subjects as
+        | { code?: string }
+        | Array<{ code?: string }>
+        | null,
+    );
+    return subject?.code === "mathematics";
+  });
+
+  const rows = mathRows.length > 0 ? mathRows : data;
+  const byTimestamp = new Map<string, number[]>();
+
+  for (const row of rows) {
+    const key = row.calculated_at as string;
+    const bucket = byTimestamp.get(key) ?? [];
+    bucket.push(Number(row.health_score));
+    byTimestamp.set(key, bucket);
+  }
+
+  return Array.from(byTimestamp.entries()).map(([calculatedAt, scores]) => {
+    const average = Math.round(
+      scores.reduce((sum, score) => sum + score, 0) / scores.length,
+    );
+    const date = new Date(calculatedAt);
+
+    return {
+      label: date.toLocaleDateString("en-KE", {
+        month: "short",
+        day: "numeric",
+      }),
+      value: average,
+    };
+  });
+}
