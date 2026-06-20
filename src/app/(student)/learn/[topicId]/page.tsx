@@ -1,9 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { TopicList } from "@/features/learn/components/TopicList";
+import { TopicLearningPath } from "@/features/learn/components/TopicLearningPath";
 import { getSessionUser } from "@/server/services/authService";
 import { getTopicDetail } from "@/server/services/curriculumService";
+import { getProgressSummary } from "@/server/services/practiceService";
 
 interface TopicPageProps {
   params: Promise<{ topicId: string }>;
@@ -18,15 +19,18 @@ export default async function TopicPage({ params }: TopicPageProps) {
     redirect("/login");
   }
 
-  const topic = await getTopicDetail(
-    topicId,
-    profile.curriculum,
-    profile.grade_level,
-  );
+  const [topic, progress] = await Promise.all([
+    getTopicDetail(topicId, profile.curriculum, profile.grade_level),
+    getProgressSummary(profile.id).catch(() => null),
+  ]);
 
   if (!topic) {
     notFound();
   }
+
+  const masteryPercentage =
+    progress?.topicMastery.find((entry) => entry.topicId === topicId)
+      ?.masteryPercentage ?? 0;
 
   return (
     <div className="space-y-8">
@@ -37,7 +41,11 @@ export default async function TopicPage({ params }: TopicPageProps) {
         ]}
       />
 
-      <TopicList topic={topic} subjectName={topic.subjectName} />
+      <TopicLearningPath
+        topic={topic}
+        studentId={profile.id}
+        masteryPercentage={masteryPercentage}
+      />
     </div>
   );
 }

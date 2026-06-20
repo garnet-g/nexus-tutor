@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { LessonRenderer } from "@/features/learn/components/LessonRenderer";
 import { getSessionUser } from "@/server/services/authService";
-import { getLesson } from "@/server/services/curriculumService";
+import { getLesson, getTopicDetail } from "@/server/services/curriculumService";
 
 interface LessonPageProps {
   params: Promise<{ topicId: string; lessonId: string }>;
@@ -18,15 +18,18 @@ export default async function LessonPage({ params }: LessonPageProps) {
     redirect("/login");
   }
 
-  const lesson = await getLesson(
-    lessonId,
-    profile.curriculum,
-    profile.grade_level,
-  );
+  const [lesson, topic] = await Promise.all([
+    getLesson(lessonId, profile.curriculum, profile.grade_level),
+    getTopicDetail(topicId, profile.curriculum, profile.grade_level),
+  ]);
 
-  if (!lesson || lesson.topicId !== topicId) {
+  if (!lesson || lesson.topicId !== topicId || !topic) {
     notFound();
   }
+
+  const orderedLessonIds = topic.subtopics.flatMap((subtopic) =>
+    subtopic.lessons.map((entry) => entry.id),
+  );
 
   return (
     <div className="space-y-8">
@@ -38,7 +41,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
         ]}
       />
 
-      <LessonRenderer lesson={lesson} />
+      <LessonRenderer
+        lesson={lesson}
+        studentId={profile.id}
+        orderedLessonIds={orderedLessonIds}
+      />
     </div>
   );
 }

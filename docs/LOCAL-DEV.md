@@ -27,6 +27,25 @@ npm run dev
 
 Open http://localhost:3000 · Supabase Studio http://localhost:54323
 
+## Dev login accounts
+
+After `npm run db:reset`, fixed local accounts are created automatically (`npm run db:seed-dev-users` also works on its own):
+
+| Role | Email | Password |
+|------|-------|----------|
+| Student (ready to use) | `student@nexus.local` | `NexusDev1` |
+| Super admin | `admin@nexus.local` | `NexusDev1` |
+
+The student account skips onboarding and diagnostic — you land on `/dashboard` after login.
+
+These accounts persist across `npm run dev` restarts. You only need to re-seed after `db:reset` or wiping local Supabase Docker volumes.
+
+If accounts are missing, run:
+
+```powershell
+npm run db:seed-dev-users
+```
+
 ## Common issues
 
 | Problem | Fix |
@@ -50,13 +69,15 @@ Open http://localhost:3000 · Supabase Studio http://localhost:54323
 
 ## E2E authenticated tests (optional)
 
-Public smoke runs without credentials. Student auth gate tests require a seeded student in your local/staging Supabase:
+Public smoke runs without credentials. Student auth gate tests use the seeded dev student by default:
 
 ```powershell
-$env:E2E_STUDENT_EMAIL="student@example.com"
-$env:E2E_STUDENT_PASSWORD="your-test-password"
+$env:E2E_STUDENT_EMAIL="student@nexus.local"
+$env:E2E_STUDENT_PASSWORD="NexusDev1"
 npm run test:e2e
 ```
+
+Run `npm run db:seed-dev-users` first if those accounts do not exist yet.
 
 For CI parity locally:
 
@@ -65,7 +86,7 @@ $env:CI="true"
 npm run test:e2e:ci
 ```
 
-Do not commit credentials. Use a dedicated test account from `supabase/seed.sql` or create one manually after `db:reset`.
+Do not commit credentials. For local dev, use the seeded accounts from `npm run db:seed-dev-users` (see Dev login accounts above).
 
 ## Beta mode locally
 

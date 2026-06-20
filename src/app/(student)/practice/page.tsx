@@ -1,9 +1,22 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
-import { PracticeTopicPicker } from "@/features/practice/components/PracticeSession";
+import { PracticeLanding } from "@/features/practice/components/PracticeLanding";
+import { PracticePageSkeleton } from "@/components/ui/Skeleton";
+import {
+  getEffectiveSubscriptionConfigWithFallback,
+  getPracticeDailyLimit,
+} from "@/lib/platform/getPlatformSettings";
 import { getSessionUser } from "@/server/services/authService";
-import { listPracticeTopics } from "@/server/services/practiceService";
+import {
+  getPracticeDailyUsageCount,
+  getSecondsUntilNairobiMidnight,
+  getStudentPlanCode,
+} from "@/server/services/nexUsageService";
+import {
+  getProgressSummary,
+  listPracticeTopics,
+} from "@/server/services/practiceService";
 
 export default async function PracticePage() {
   const sessionUser = await getSessionUser();
@@ -16,27 +29,50 @@ export default async function PracticePage() {
     redirect("/diagnostic");
   }
 
-  const topics = await listPracticeTopics(sessionUser.studentProfile.curriculum);
+  const profile = sessionUser.studentProfile;
+
+  const [topics, progress, subscriptionConfig, planCode, dailyUsage] =
+    await Promise.all([
+      listPracticeTopics(profile.curriculum),
+      getProgressSummary(profile.id).catch(() => null),
+      getEffectiveSubscriptionConfigWithFallback(),
+      getStudentPlanCode(profile.id),
+      getPracticeDailyUsageCount(profile.id),
+    ]);
+
+  const masteryByTopicId = Object.fromEntries(
+    (progress?.topicMastery ?? []).map((entry) => [
+      entry.topicId,
+      entry.masteryPercentage,
+    ]),
+  );
+
+  const dailyLimit = getPracticeDailyLimit(subscriptionConfig, planCode);
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+        <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
           Practice
         </h1>
         <p className="text-muted-foreground">
-          Choose a topic and complete a focused 10-question session.
+          Ten focused questions per session. Pick a topic, choose your difficulty,
+          and build mastery one step at a time.
         </p>
       </div>
 
-      <Suspense
-        fallback={
-          <div className="rounded-2xl border border-border bg-card p-6 text-muted-foreground">
-            Loading practice topics...
-          </div>
-        }
-      >
-        <PracticeTopicPicker topics={topics} />
+      <Suspense fallback={<PracticePageSkeleton />}>
+        <PracticeLanding
+          studentId={profile.id}
+          topics={topics.map((topic) => ({
+            ...topic,
+            masteryPercentage: masteryByTopicId[topic.id] ?? 0,
+          }))}
+          dailyUsage={dailyUsage}
+          dailyLimit={dailyLimit}
+          retryAfterSeconds={getSecondsUntilNairobiMidnight()}
+          planCode={planCode}
+        />
       </Suspense>
     </div>
   );

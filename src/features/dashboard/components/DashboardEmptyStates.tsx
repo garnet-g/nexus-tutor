@@ -6,6 +6,8 @@ import { track } from "@/lib/analytics/track";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
+export { shouldShowDashboardEmptyState } from "../dashboardEmptyState";
+
 export interface DashboardEmptyStatesProps {
   showEmptyState: boolean;
 }
@@ -94,20 +96,4 @@ export function DashboardEmptyStates({
       </Card>
     </section>
   );
-}
-
-export function shouldShowDashboardEmptyState(input: {
-  topicMastery: Array<{ masteryPercentage: number }>;
-  totalXp: number;
-  currentStreak: number;
-  hasStudyPlanTasks: boolean;
-}): boolean {
-  const hasMastery =
-    input.topicMastery.length > 0 &&
-    input.topicMastery.some((topic) => topic.masteryPercentage > 0);
-
-  const hasActivity =
-    hasMastery || input.totalXp > 0 || input.currentStreak > 0;
-
-  return !hasActivity && !input.hasStudyPlanTasks;
 }

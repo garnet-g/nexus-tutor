@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { NexMark } from "@/components/NexMark";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -199,10 +200,26 @@ export function StudentMobileNav({ diagnosticComplete }: StudentNavProps) {
             const Icon = item.icon;
             const active = isActive(pathname, item.href);
 
+            // Nex is the backbone — elevate it as the centre of the nav.
+            if (item.href === "/nex") {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className="flex min-w-12 flex-1 cursor-pointer flex-col items-center justify-end gap-0.5 px-1 pb-2 text-xs font-semibold text-primary"
+                >
+                  <NexMark size={46} className="-mt-6 border-4 border-card" />
+                  {item.label}
+                </Link>
+              );
+            }
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex min-h-12 min-w-12 flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 px-1 py-2 text-xs transition-colors",
                   active
