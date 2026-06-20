@@ -4,7 +4,7 @@ import {
 } from "@/schemas/profileSchemas";
 
 import { assemblePrompt } from "./assemblePrompt";
-import { callNexModel } from "./callNexModel";
+import { callNexModel, streamNexModel } from "./callNexModel";
 import { detectNexMode } from "./detectNexMode";
 import { loadCurriculumContext } from "./loadCurriculumContext";
 import { loadStudentMemory } from "./loadStudentMemory";
@@ -27,6 +27,7 @@ import {
 export interface GenerateNexResponseOptions extends GenerateNexResponseInput {
   studentProfile?: Parameters<typeof loadStudentMemory>[0];
   learningPreferences?: LearningPreferences | null;
+  onChunk?: (chunk: string) => void | Promise<void>;
 }
 
 export async function generateNexResponse(
@@ -82,10 +83,25 @@ export async function generateNexResponse(
     learningPreferenceHints,
   });
 
-  const firstModel = await callNexModel({
-    systemPrompt: prompt.systemPrompt,
-    messages: recentMessages,
-  });
+  const invokeModel = async (
+    systemPrompt: string,
+    streamChunks: boolean,
+  ) => {
+    const modelInput = {
+      systemPrompt,
+      messages: recentMessages,
+    };
+
+    if (streamChunks && input.onChunk) {
+      return streamNexModel(modelInput, (chunk) => {
+        void input.onChunk?.(chunk);
+      });
+    }
+
+    return callNexModel(modelInput);
+  };
+
+  const firstModel = await invokeModel(prompt.systemPrompt, Boolean(input.onChunk));
 
   let response = firstModel.content;
   let provider = firstModel.provider;

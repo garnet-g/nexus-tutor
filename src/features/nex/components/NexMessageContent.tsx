@@ -17,6 +17,7 @@ import "katex/dist/katex.min.css";
 interface NexMessageContentProps {
   content: string;
   variant?: "nex" | "student";
+  isStreaming?: boolean;
 }
 
 const baseComponents: Components = {
@@ -66,6 +67,7 @@ const baseComponents: Components = {
 export function NexMessageContent({
   content,
   variant = "nex",
+  isStreaming = false,
 }: NexMessageContentProps) {
   const studentComponents: Components =
     variant === "student"
@@ -106,6 +108,9 @@ export function NexMessageContent({
         }
       : baseComponents;
 
+  const remarkPlugins = isStreaming ? [remarkGfm] : [remarkGfm, remarkMath];
+  const rehypePlugins = isStreaming ? [] : [rehypeKatex];
+
   return (
     <div
       className={cn(
@@ -114,8 +119,8 @@ export function NexMessageContent({
       )}
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex]}
+        remarkPlugins={remarkPlugins}
+        rehypePlugins={rehypePlugins}
         components={studentComponents}
       >
         {content}

@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { TopicLearningPath } from "@/features/learn/components/TopicLearningPath";
 import { getSessionUser } from "@/server/services/authService";
 import { getTopicDetail } from "@/server/services/curriculumService";
+import { getCompletedLessonIdsForTopic } from "@/server/services/lessonProgressService";
 import { getProgressSummary } from "@/server/services/practiceService";
 
 interface TopicPageProps {
@@ -19,9 +20,12 @@ export default async function TopicPage({ params }: TopicPageProps) {
     redirect("/login");
   }
 
-  const [topic, progress] = await Promise.all([
+  const [topic, progress, completedLessonIds] = await Promise.all([
     getTopicDetail(topicId, profile.curriculum, profile.grade_level),
     getProgressSummary(profile.id).catch(() => null),
+    getCompletedLessonIdsForTopic(profile.id, topicId).catch(
+      () => new Set<string>(),
+    ),
   ]);
 
   if (!topic) {
@@ -43,7 +47,7 @@ export default async function TopicPage({ params }: TopicPageProps) {
 
       <TopicLearningPath
         topic={topic}
-        studentId={profile.id}
+        completedLessonIds={Array.from(completedLessonIds)}
         masteryPercentage={masteryPercentage}
       />
     </div>

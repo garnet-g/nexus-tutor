@@ -10,95 +10,19 @@ import {
   computeMasteryUpdates,
 } from "@/lib/mastery/masteryEngine";
 import { createAdminClient } from "@/lib/supabase/admin";
-import {
-  BADGE_UPSERT_OPTIONS,
-  sevenDayStreakBadgeRow,
-  shouldAwardSevenDayStreakBadge,
-} from "@/lib/gamification/streakBadges";
 import { unwrapSupabaseRelation } from "@/lib/utils";
 import type { StudentProfile } from "@/types/database";
-
-function getNairobiDateString(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Africa/Nairobi",
-  }).format(new Date());
-}
+import { awardStudyActivity } from "@/server/services/studyActivityService";
 
 function calculateLevel(totalXp: number): number {
   return Math.max(1, Math.floor(totalXp / 100) + 1);
-}
-
-async function updateStudentStreak(studentId: string) {
-  const admin = createAdminClient();
-  const today = getNairobiDateString();
-  const { data: streak } = await admin
-    .from("student_streaks")
-    .select("*")
-    .eq("student_id", studentId)
-    .maybeSingle();
-
-  if (!streak) {
-    await admin.from("student_streaks").insert({
-      student_id: studentId,
-      current_streak: 1,
-      longest_streak: 1,
-      last_activity_date: today,
-    });
-    return 1;
-  }
-
-  const lastDate = streak.last_activity_date;
-  let currentStreak = streak.current_streak;
-
-  if (lastDate === today) {
-    return currentStreak;
-  }
-
-  const yesterday = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Africa/Nairobi",
-  }).format(new Date(Date.now() - 86_400_000));
-
-  currentStreak = lastDate === yesterday ? currentStreak + 1 : 1;
-
-  await admin
-    .from("student_streaks")
-    .update({
-      current_streak: currentStreak,
-      longest_streak: Math.max(streak.longest_streak, currentStreak),
-      last_activity_date: today,
-    })
-    .eq("student_id", studentId);
-
-  if (shouldAwardSevenDayStreakBadge(currentStreak)) {
-    await admin.from("student_badges").upsert(
-      sevenDayStreakBadgeRow(studentId),
-      BADGE_UPSERT_OPTIONS,
-    );
-
-    const { data: profile } = await admin
-      .from("student_profiles")
-      .select("full_name, phone_number")
-      .eq("id", studentId)
-      .maybeSingle();
-
-    const { sendWeeklyStreakNotification } = await import(
-      "@/server/services/notificationService"
-    );
-    await sendWeeklyStreakNotification({
-      studentId,
-      phoneNumber: profile?.phone_number ?? null,
-      studentName: profile?.full_name ?? "Student",
-    }).catch(() => undefined);
-  }
-
-  return currentStreak;
 }
 
 async function awardPracticeGamification(
   studentId: string,
   topicCode: string | null,
   masteryPercentage: number,
-): Promise<{ currentStreak: number; xpEarned: number }> {
+): Promise<{ xpEarned: number }> {
   const admin = createAdminClient();
   const xpEarned = 50;
   const { data: existingXp } = await admin
@@ -136,8 +60,7 @@ async function awardPracticeGamification(
     );
   }
 
-  const currentStreak = await updateStudentStreak(studentId);
-  return { currentStreak, xpEarned };
+  return { xpEarned };
 }
 
 async function recalculateHealthScore(
@@ -481,11 +404,18 @@ export async function completePracticeSession(
 
   const topicCode = sessionTopic?.code ?? null;
 
-  const { currentStreak, xpEarned } = await awardPracticeGamification(
+  const { xpEarned } = await awardPracticeGamification(
     profile.id,
     topicCode ?? null,
     masteryUpdates[0]?.masteryPercentage ?? 0,
   );
+
+  const { currentStreak } = await awardStudyActivity({
+    studentId: profile.id,
+    activityType: "practice",
+    activityId: sessionId,
+    durationSeconds: timeSpentSeconds,
+  });
 
   const { healthScore, predictedGrade } = sessionTopic?.subject_id
     ? await recalculateHealthScore(
@@ -494,36 +424,6 @@ export async function completePracticeSession(
         sessionTopic.subject_id,
       )
     : { healthScore: 0, predictedGrade: null };
-
-  const today = getNairobiDateString();
-  const minutesCompleted = Math.max(1, Math.round(timeSpentSeconds / 60));
-  const { data: dailyGoal } = await admin
-    .from("daily_goals")
-    .select("*")
-    .eq("student_id", profile.id)
-    .eq("goal_date", today)
-    .maybeSingle();
-
-  const nextMinutes = (dailyGoal?.minutes_completed ?? 0) + minutesCompleted;
-  const dailyGoalMinutes = dailyGoal?.daily_goal_minutes ?? 20;
-
-  await admin.from("daily_goals").upsert(
-    {
-      student_id: profile.id,
-      goal_date: today,
-      daily_goal_minutes: dailyGoalMinutes,
-      minutes_completed: nextMinutes,
-      is_completed: nextMinutes >= dailyGoalMinutes,
-    },
-    { onConflict: "student_id,goal_date" },
-  );
-
-  await admin.from("study_time_logs").insert({
-    student_id: profile.id,
-    activity_type: "practice",
-    activity_id: sessionId,
-    duration_seconds: timeSpentSeconds,
-  });
 
   const { data: progress } = await admin
     .from("student_progress")
@@ -536,8 +436,6 @@ export async function completePracticeSession(
       .from("student_progress")
       .update({
         practice_sessions_completed: progress.practice_sessions_completed + 1,
-        total_study_time_seconds:
-          progress.total_study_time_seconds + timeSpentSeconds,
       })
       .eq("id", progress.id);
   }

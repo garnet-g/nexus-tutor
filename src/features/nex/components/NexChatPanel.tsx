@@ -18,6 +18,7 @@ import { NexFollowUpChips } from "@/features/nex/components/NexFollowUpChips";
 import { NexMessageContent } from "@/features/nex/components/NexMessageContent";
 import { NexScratchpad } from "@/features/nex/components/NexScratchpad";
 import { NexThinkingIndicator } from "@/features/nex/components/NexThinkingIndicator";
+import { consumeNexChatStream } from "@/features/nex/lib/consumeNexChatStream";
 import { VoicePushToTalk } from "@/features/nex/components/VoicePushToTalk";
 import type { NexMode } from "@/lib/nex/types";
 import type { LearningPreferences } from "@/schemas/profileSchemas";
@@ -29,6 +30,7 @@ interface ChatMessage {
   id: string;
   role: ChatRole;
   content: string;
+  isStreaming?: boolean;
 }
 
 interface NexChatPanelProps {
@@ -90,9 +92,11 @@ export function NexChatPanel({
     }
 
     const studentId = crypto.randomUUID();
+    const streamingNexId = crypto.randomUUID();
     setMessages((current) => [
       ...current,
       { id: studentId, role: "student", content: trimmed },
+      { id: streamingNexId, role: "nex", content: "", isStreaming: true },
     ]);
     setInput("");
     setIsSending(true);
@@ -112,6 +116,63 @@ export function NexChatPanel({
           ...(learningPreferences ? { learningPreferences } : {}),
         }),
       });
+
+      const contentType = response.headers.get("content-type") ?? "";
+
+      if (contentType.includes("text/event-stream")) {
+        await consumeNexChatStream(response, {
+          onChunk: (text) => {
+            setMessages((current) =>
+              current.map((message) =>
+                message.id === streamingNexId
+                  ? { ...message, content: message.content + text }
+                  : message,
+              ),
+            );
+          },
+          onReplace: (text) => {
+            setMessages((current) =>
+              current.map((message) =>
+                message.id === streamingNexId ? { ...message, content: text } : message,
+              ),
+            );
+          },
+          onDone: (payload) => {
+            setSessionId(payload.nexSessionId);
+            setSessionMode(toVisibleMode(payload.sessionMode as NexMode));
+            setDailyUsage((count) => Math.min(dailyLimit, count + 1));
+            setMessages((current) =>
+              current.map((message) =>
+                message.id === streamingNexId
+                  ? {
+                      id: payload.nexMessageId,
+                      role: "nex",
+                      content: payload.nexResponse,
+                    }
+                  : message,
+              ),
+            );
+          },
+          onError: (message, partial) => {
+            if (partial) {
+              setMessages((current) =>
+                current.map((item) =>
+                  item.id === streamingNexId
+                    ? { ...item, content: partial, isStreaming: false }
+                    : item,
+                ),
+              );
+            } else {
+              setMessages((current) =>
+                current.filter((item) => item.id !== streamingNexId),
+              );
+            }
+            throw new Error(message);
+          },
+        });
+
+        return;
+      }
 
       const payload = (await response.json()) as {
         success: boolean;
@@ -133,6 +194,7 @@ export function NexChatPanel({
       };
 
       if (response.status === 429 || payload.error?.code === "RATE_LIMITED") {
+        setMessages((current) => current.filter((item) => item.id !== streamingNexId));
         setDailyUsage(payload.error?.details?.currentUsage ?? dailyLimit);
         throw new Error(
           payload.error?.message ?? "Daily Nex message limit reached.",
@@ -140,21 +202,31 @@ export function NexChatPanel({
       }
 
       if (!response.ok || !payload.success || !payload.data) {
+        setMessages((current) => current.filter((item) => item.id !== streamingNexId));
         throw new Error(payload.error?.message ?? "Nex could not respond.");
       }
 
       setSessionId(payload.data.nexSessionId);
       setSessionMode(toVisibleMode(payload.data.sessionMode));
       setDailyUsage((count) => Math.min(dailyLimit, count + 1));
-      setMessages((current) => [
-        ...current,
-        {
-          id: payload.data!.nexMessageId,
-          role: "nex",
-          content: payload.data!.nexResponse,
-        },
-      ]);
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === streamingNexId
+            ? {
+                id: payload.data!.nexMessageId,
+                role: "nex",
+                content: payload.data!.nexResponse,
+              }
+            : message,
+        ),
+      );
     } catch (sendError) {
+      setMessages((current) =>
+        current.filter(
+          (message) =>
+            !(message.id === streamingNexId && message.content.length === 0),
+        ),
+      );
       setError(
         sendError instanceof Error
           ? sendError.message
@@ -240,10 +312,17 @@ export function NexChatPanel({
                       </span>
                     </div>
                   ) : null}
-                  <NexMessageContent
-                    content={message.content}
-                    variant={message.role === "student" ? "student" : "nex"}
-                  />
+                  {message.role === "nex" &&
+                  message.isStreaming &&
+                  message.content.length === 0 ? (
+                    <NexThinkingIndicator />
+                  ) : (
+                    <NexMessageContent
+                      content={message.content}
+                      variant={message.role === "student" ? "student" : "nex"}
+                      isStreaming={message.isStreaming}
+                    />
+                  )}
                 </article>
                 {isLatestNex && showFollowUps ? (
                   <NexFollowUpChips onSelect={handleFollowUp} />
@@ -252,7 +331,12 @@ export function NexChatPanel({
             );
           })
         )}
-        {isSending ? <NexThinkingIndicator /> : null}
+        {isSending &&
+        !messages.some(
+          (message) => message.role === "nex" && message.isStreaming,
+        ) ? (
+          <NexThinkingIndicator />
+        ) : null}
       </div>
 
       {error ? (

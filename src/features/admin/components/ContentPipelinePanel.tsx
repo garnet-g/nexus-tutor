@@ -483,7 +483,6 @@ function ContentPipelinePanelInner({
           isLoadingLesson={isLoadingLesson}
           isSaving={isSaving}
           isPublishing={isPublishing}
-          adminUserId={adminUserId}
           onOpenCoverage={() => setActiveTab("coverage")}
           onSelectDraft={handleSelectDraft}
           onPublish={handlePublish}
@@ -740,7 +739,6 @@ function ReviewQueue(props: {
   isLoadingLesson: boolean;
   isSaving: boolean;
   isPublishing: boolean;
-  adminUserId: string;
   onOpenCoverage: () => void;
   onSelectDraft: (item: ContentDraftQueueItem) => void;
   onPublish: (kind: "lesson" | "question", id: string) => void;
@@ -759,7 +757,6 @@ function ReviewQueue(props: {
     isLoadingLesson,
     isSaving,
     isPublishing,
-    adminUserId,
     onOpenCoverage,
     onSelectDraft,
     onPublish,
@@ -947,8 +944,12 @@ function ReviewQueue(props: {
                   >
                     <LessonRenderer
                       lesson={lessonPreview}
-                      studentId={adminUserId}
                       orderedLessonIds={[lessonPreview.id]}
+                      initialProgress={{
+                        status: null,
+                        completedAt: null,
+                        lastViewedAt: null,
+                      }}
                     />
                   </SectionCard>
                 ) : null}

@@ -4,21 +4,25 @@ import { LessonReader } from "@/features/learn/components/LessonReader";
 
 interface LessonRendererProps {
   lesson: CurriculumLesson;
-  studentId: string;
   orderedLessonIds: string[];
+  initialProgress: {
+    status: "in_progress" | "completed" | null;
+    completedAt: string | null;
+    lastViewedAt: string | null;
+  };
 }
 
 export function LessonRenderer({
   lesson,
-  studentId,
   orderedLessonIds,
+  initialProgress,
 }: LessonRendererProps) {
   return (
     <LessonReader
       key={lesson.id}
       lesson={lesson}
-      studentId={studentId}
       orderedLessonIds={orderedLessonIds}
+      initialProgress={initialProgress}
     />
   );
 }

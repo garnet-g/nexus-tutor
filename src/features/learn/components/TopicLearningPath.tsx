@@ -15,7 +15,6 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { Button } from "@/components/ui/Button";
 import { ProgressRing } from "@/components/widgets/Charts";
 import {
-  getCompletedLessonIds,
   getLessonPathStatus,
   inferLessonType,
 } from "@/lib/learn/lessonProgress";
@@ -27,13 +26,13 @@ import type { CurriculumTopicDetail } from "@/types/curriculum";
 
 interface TopicLearningPathProps {
   topic: CurriculumTopicDetail;
-  studentId: string;
+  completedLessonIds: string[];
   masteryPercentage?: number;
 }
 
 export function TopicLearningPath({
   topic,
-  studentId,
+  completedLessonIds,
   masteryPercentage = 0,
 }: TopicLearningPathProps) {
   const orderedLessons = useMemo(
@@ -48,7 +47,10 @@ export function TopicLearningPath({
   );
 
   const orderedLessonIds = orderedLessons.map((lesson) => lesson.id);
-  const completedLessonIds = getCompletedLessonIds(studentId);
+  const completedSet = useMemo(
+    () => new Set(completedLessonIds),
+    [completedLessonIds],
+  );
   const masteryStatus = getTopicMasteryStatus(masteryPercentage);
   const totalMinutes = orderedLessons.reduce(
     (sum, lesson) => sum + lesson.estimatedMinutes,
@@ -86,7 +88,7 @@ export function TopicLearningPath({
             const status = getLessonPathStatus(
               lesson.id,
               orderedLessonIds,
-              completedLessonIds,
+              completedSet,
             );
             const isLast = index === orderedLessons.length - 1;
             const lessonType = inferLessonType({

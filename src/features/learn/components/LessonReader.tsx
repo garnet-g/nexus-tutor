@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Bookmark,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
   MessageCircle,
@@ -12,10 +13,6 @@ import {
 import { Button } from "@/components/ui/Button";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { useToast } from "@/components/ui/Toast";
-import {
-  markLessonComplete,
-  setLastReadLessonId,
-} from "@/lib/learn/lessonProgress";
 import type {
   CurriculumLesson,
   LessonContentBlock,
@@ -25,12 +22,43 @@ import { cn } from "@/lib/utils";
 
 interface LessonReaderProps {
   lesson: CurriculumLesson;
-  studentId: string;
   orderedLessonIds: string[];
+  initialProgress: {
+    status: "in_progress" | "completed" | null;
+    completedAt: string | null;
+    lastViewedAt: string | null;
+  };
 }
 
-function bookmarkKey(studentId: string, lessonId: string) {
-  return `nexus-lesson-bookmark:${studentId}:${lessonId}`;
+function bookmarkKey(lessonId: string) {
+  return `nexus-lesson-bookmark:${lessonId}`;
+}
+
+async function postLessonViewed(lessonId: string) {
+  await fetch(`/api/lessons/${lessonId}/viewed`, { method: "POST" });
+}
+
+async function postLessonComplete(
+  lessonId: string,
+  body: { durationSeconds: number; quizPassed?: boolean },
+) {
+  const response = await fetch(`/api/lessons/${lessonId}/complete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not save lesson progress.");
+  }
+
+  return response.json() as Promise<{
+    success: boolean;
+    data: {
+      alreadyCompleted: boolean;
+      xpEarned: number;
+    };
+  }>;
 }
 
 function WorkedExampleBlock({
@@ -91,10 +119,12 @@ function ShortQuizSection({
   questions,
   topicId,
   onComplete,
+  disabled,
 }: {
   questions: LessonShortQuizQuestion[];
   topicId: string;
   onComplete: () => void;
+  disabled: boolean;
 }) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -112,10 +142,10 @@ function ShortQuizSection({
   const passed = submitted && score >= Math.ceil(questions.length * 0.6);
 
   useEffect(() => {
-    if (passed) {
+    if (passed && !disabled) {
       onComplete();
     }
-  }, [passed, onComplete]);
+  }, [passed, onComplete, disabled]);
 
   return (
     <SectionCard title="Quick check" description="A short quiz to lock in what you learned.">
@@ -137,7 +167,7 @@ function ShortQuizSection({
                   <button
                     key={option}
                     type="button"
-                    disabled={submitted}
+                    disabled={submitted || disabled}
                     onClick={() =>
                       setAnswers((current) => ({ ...current, [index]: option }))
                     }
@@ -162,7 +192,7 @@ function ShortQuizSection({
         <Button
           type="button"
           className="mt-4 min-h-12"
-          disabled={Object.keys(answers).length < questions.length}
+          disabled={disabled || Object.keys(answers).length < questions.length}
           onClick={() => setSubmitted(true)}
         >
           Check answers
@@ -193,15 +223,22 @@ function ShortQuizSection({
 
 export function LessonReader({
   lesson,
-  studentId,
   orderedLessonIds,
+  initialProgress,
 }: LessonReaderProps) {
   const { toast } = useToast();
+  const openedAtRef = useRef(0);
+  const viewedSentRef = useRef(false);
+  const completingRef = useRef(false);
+  const [isCompleted, setIsCompleted] = useState(
+    initialProgress.status === "completed",
+  );
   const [bookmarked, setBookmarked] = useState(
     () =>
       typeof window !== "undefined" &&
-      window.localStorage.getItem(bookmarkKey(studentId, lesson.id)) === "1",
+      window.localStorage.getItem(bookmarkKey(lesson.id)) === "1",
   );
+
   const lessonIndex = orderedLessonIds.indexOf(lesson.id);
   const lessonNumber = lessonIndex >= 0 ? lessonIndex + 1 : 1;
   const lessonTotal = orderedLessonIds.length || 1;
@@ -211,33 +248,78 @@ export function LessonReader({
     lessonIndex >= 0 && lessonIndex < orderedLessonIds.length - 1
       ? orderedLessonIds[lessonIndex + 1]
       : null;
+  const hasQuiz = Boolean(lesson.content.shortQuiz?.questions?.length);
 
   useEffect(() => {
-    setLastReadLessonId(studentId, lesson.topicId, lesson.id);
-  }, [lesson.id, lesson.topicId, studentId]);
+    openedAtRef.current = Date.now();
+  }, [lesson.id]);
+
+  useEffect(() => {
+    if (viewedSentRef.current) {
+      return;
+    }
+
+    viewedSentRef.current = true;
+    void postLessonViewed(lesson.id).catch(() => {
+      viewedSentRef.current = false;
+    });
+  }, [lesson.id]);
+
+  const completeLesson = useCallback(
+    async (quizPassed?: boolean) => {
+      if (isCompleted || completingRef.current) {
+        return;
+      }
+
+      completingRef.current = true;
+      const durationSeconds = Math.round(
+        (Date.now() - openedAtRef.current) / 1000,
+      );
+
+      try {
+        const result = await postLessonComplete(lesson.id, {
+          durationSeconds,
+          quizPassed,
+        });
+
+        setIsCompleted(true);
+
+        if (!result.data.alreadyCompleted && result.data.xpEarned > 0) {
+          toast({
+            tone: "success",
+            title: "Lesson complete",
+            description: `+${result.data.xpEarned} XP added to your progress.`,
+          });
+        } else if (!result.data.alreadyCompleted) {
+          toast({
+            tone: "success",
+            title: "Lesson complete",
+            description: "Your progress is saved across devices.",
+          });
+        }
+      } catch {
+        toast({
+          tone: "error",
+          title: "Could not save progress",
+          description: "Check your connection and try again.",
+        });
+      } finally {
+        completingRef.current = false;
+      }
+    },
+    [isCompleted, lesson.id, toast],
+  );
 
   function toggleBookmark() {
     const next = !bookmarked;
     setBookmarked(next);
-    window.localStorage.setItem(
-      bookmarkKey(studentId, lesson.id),
-      next ? "1" : "0",
-    );
+    window.localStorage.setItem(bookmarkKey(lesson.id), next ? "1" : "0");
     toast({
       tone: next ? "success" : "info",
       title: next ? "Bookmark saved" : "Bookmark removed",
       description: next
         ? "You can return to this lesson any time from your topic path."
         : undefined,
-    });
-  }
-
-  function handleQuizComplete() {
-    markLessonComplete(studentId, lesson.id);
-    toast({
-      tone: "success",
-      title: "Lesson complete",
-      description: "Your progress has been saved on this device.",
     });
   }
 
@@ -271,9 +353,17 @@ export function LessonReader({
           <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
             {lesson.topicTitle} · {lesson.subtopicTitle}
           </p>
-          <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
-            {lesson.title}
-          </h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
+              {lesson.title}
+            </h1>
+            {isCompleted ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-nexus-success-soft px-2.5 py-1 text-xs font-medium text-nexus-success">
+                <CheckCircle2 className="size-3.5" />
+                Completed
+              </span>
+            ) : null}
+          </div>
           <p className="text-sm text-muted-foreground">
             {lesson.curriculumCode} · {lesson.estimatedMinutes} min read
           </p>
@@ -340,8 +430,21 @@ export function LessonReader({
           <ShortQuizSection
             questions={lesson.content.shortQuiz.questions}
             topicId={lesson.topicId}
-            onComplete={handleQuizComplete}
+            onComplete={() => void completeLesson(true)}
+            disabled={isCompleted}
           />
+        ) : null}
+
+        {!hasQuiz && !isCompleted ? (
+          <div className="border-t border-nexus-border pt-6">
+            <Button
+              type="button"
+              className="min-h-12"
+              onClick={() => void completeLesson()}
+            >
+              Mark lesson complete
+            </Button>
+          </div>
         ) : null}
 
         <div className="flex flex-col gap-3 border-t border-nexus-border pt-6 sm:flex-row sm:justify-between">
@@ -376,8 +479,7 @@ export function LessonReader({
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Lesson progress and bookmarks are saved on this device only — they are not
-        synced across browsers.
+        Lesson completion syncs to your account. Bookmarks stay on this device only.
       </p>
     </article>
   );

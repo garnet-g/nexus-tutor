@@ -4,7 +4,9 @@ import { NextResponse } from "next/server";
 
 import { generateNexResponse } from "@/lib/nex/generateNexResponse";
 import { detectNexMode } from "@/lib/nex/detectNexMode";
-import { parseSessionMetadata } from "@/lib/nex/socraticTutorEngine";
+import { encodeNexChatSseEvent } from "@/lib/nex/nexChatSse";
+import { parseSessionMetadata, updateSocraticState } from "@/lib/nex/socraticTutorEngine";
+import { shouldStreamNexResponse } from "@/lib/nex/shouldStreamNexResponse";
 import type { NexMode } from "@/lib/nex/types";
 import {
   getEffectiveSubscriptionConfigWithFallback,
@@ -220,7 +222,18 @@ export async function POST(request: Request) {
       studentProfile.learning_preferences,
     );
 
-    const nexResult = await generateNexResponse({
+    const metadataForRequest = updateSocraticState(
+      { ...sessionMetadata },
+      studentMessage,
+      sessionMode,
+    );
+
+    const useStreaming = shouldStreamNexResponse(
+      sessionMode,
+      metadataForRequest.attemptCount,
+    );
+
+    const generationInput = {
       studentId: studentProfile.id,
       studentMessage,
       sessionMode,
@@ -229,7 +242,129 @@ export async function POST(request: Request) {
       recentMessages,
       studentProfile,
       learningPreferences,
-    });
+    };
+
+    if (useStreaming) {
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          const encoder = new TextEncoder();
+          const enqueue = (event: string, data: unknown) => {
+            controller.enqueue(encoder.encode(encodeNexChatSseEvent(event, data)));
+          };
+
+          void (async () => {
+            let streamedText = "";
+
+            try {
+              const nexResult = await generateNexResponse({
+                ...generationInput,
+                onChunk: (chunk) => {
+                  streamedText += chunk;
+                  enqueue("chunk", { text: chunk });
+                },
+              });
+
+              if (nexResult.response !== streamedText) {
+                enqueue("replace", { text: nexResult.response });
+              }
+
+              if (
+                shouldPersistMisconception(
+                  nexResult.sessionMode,
+                  studentMessage,
+                  nexResult.metadata.misconceptionDetected,
+                )
+              ) {
+                const misconception = resolveMisconceptionFromMessage(studentMessage);
+                if (misconception) {
+                  await persistStudentMisconception(
+                    studentProfile.id,
+                    misconception.errorCode,
+                    misconception.description,
+                  ).catch(() => undefined);
+                }
+              }
+
+              if (
+                nexResult.sessionMode === "assessment" &&
+                nexResult.metadata.assessmentStatus === "completed" &&
+                previousAssessmentStatus !== "completed"
+              ) {
+                await applyAssessmentMasteryUpdate(
+                  studentProfile.id,
+                  activeTopicId,
+                  nexResult.metadata.correctCount ?? 0,
+                  nexResult.metadata.assessmentQuestionCount ?? 3,
+                ).catch(() => undefined);
+              }
+
+              const { data: nexMessage, error: nexMessageError } = await supabase
+                .from("nex_messages")
+                .insert({
+                  nex_session_id: sessionId,
+                  student_id: studentProfile.id,
+                  role: "nex",
+                  message_content: nexResult.response,
+                  metadata: {
+                    provider: nexResult.provider,
+                    validationPassed: nexResult.validationPassed,
+                  },
+                })
+                .select("id")
+                .single();
+
+              if (nexMessageError || !nexMessage) {
+                enqueue("error", {
+                  message: "Could not save Nex response.",
+                  partial: nexResult.response,
+                });
+                controller.close();
+                return;
+              }
+
+              await supabase
+                .from("nex_sessions")
+                .update({
+                  session_mode: nexResult.sessionMode,
+                  metadata: nexResult.metadata,
+                  topic_id: activeTopicId,
+                  is_active: true,
+                })
+                .eq("id", sessionId);
+
+              await incrementNexDailyUsage(studentProfile.id);
+
+              enqueue("done", {
+                nexSessionId: sessionId,
+                nexMessageId: nexMessage.id,
+                nexResponse: nexResult.response,
+                sessionMode: nexResult.sessionMode,
+                provider: nexResult.provider,
+                validationPassed: nexResult.validationPassed,
+              });
+            } catch (error) {
+              console.error("NEX_STREAM_FAILED", error);
+              enqueue("error", {
+                message: "Nex could not generate a response.",
+                partial: streamedText || undefined,
+              });
+            } finally {
+              controller.close();
+            }
+          })();
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/event-stream; charset=utf-8",
+          "Cache-Control": "no-cache, no-transform",
+          Connection: "keep-alive",
+        },
+      });
+    }
+
+    const nexResult = await generateNexResponse(generationInput);
 
     if (
       shouldPersistMisconception(

@@ -5,6 +5,8 @@ import { LessonRenderer } from "@/features/learn/components/LessonRenderer";
 import { getSessionUser } from "@/server/services/authService";
 import { getLesson, getTopicDetail } from "@/server/services/curriculumService";
 
+import { getLessonProgressState } from "@/server/services/lessonProgressService";
+
 interface LessonPageProps {
   params: Promise<{ topicId: string; lessonId: string }>;
 }
@@ -18,9 +20,14 @@ export default async function LessonPage({ params }: LessonPageProps) {
     redirect("/login");
   }
 
-  const [lesson, topic] = await Promise.all([
+  const [lesson, topic, progressState] = await Promise.all([
     getLesson(lessonId, profile.curriculum, profile.grade_level),
     getTopicDetail(topicId, profile.curriculum, profile.grade_level),
+    getLessonProgressState(profile.id, lessonId).catch(() => ({
+      status: null,
+      completedAt: null,
+      lastViewedAt: null,
+    })),
   ]);
 
   if (!lesson || lesson.topicId !== topicId || !topic) {
@@ -43,8 +50,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
       <LessonRenderer
         lesson={lesson}
-        studentId={profile.id}
         orderedLessonIds={orderedLessonIds}
+        initialProgress={progressState}
       />
     </div>
   );
