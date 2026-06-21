@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Lock, Mic } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -24,6 +25,7 @@ interface VoicePushToTalkProps {
     audioMimeType: string;
   }) => void;
   onError: (message: string) => void;
+  compact?: boolean;
   className?: string;
 }
 
@@ -52,6 +54,7 @@ export function VoicePushToTalk({
   disabled = false,
   onVoiceProcessed,
   onError,
+  compact = false,
   className,
 }: VoicePushToTalkProps) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -73,6 +76,23 @@ export function VoicePushToTalk({
   }, []);
 
   if (!voiceEnabled) {
+    if (compact) {
+      return (
+        <Link
+          href="/pricing"
+          aria-label="Upgrade for voice tutoring"
+          className={cn(
+            "inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-dashed border-nexus-border bg-nexus-surface px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-nexus-primary/40 hover:text-nexus-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+            className,
+          )}
+        >
+          <Lock className="size-3.5" aria-hidden />
+          <Mic className="size-3.5" aria-hidden />
+          Voice
+        </Link>
+      );
+    }
+
     return (
       <div
         className={cn(
@@ -233,6 +253,7 @@ export function VoicePushToTalk({
       <Button
         type="button"
         variant={isRecording ? "primary" : "secondary"}
+        size={compact ? "icon-lg" : "default"}
         data-testid="nex-voice-button"
         disabled={disabled || isUploading}
         onPointerDown={(event) => {
@@ -253,13 +274,16 @@ export function VoicePushToTalk({
             stopRecording();
           }
         }}
-        className="min-h-12 min-w-12 touch-none select-none px-4"
+        className={cn(
+          "touch-none select-none",
+          compact ? "min-h-10 min-w-10 px-0" : "min-h-12 min-w-12 px-4",
+        )}
         aria-pressed={isRecording}
         aria-label={label}
       >
-        {label}
+        {compact ? <Mic className="size-4" aria-hidden /> : label}
       </Button>
-      <span className="text-xs text-muted-foreground">
+      <span className={cn("text-xs text-muted-foreground", compact && "sr-only")}>
         Push-to-talk · max {VOICE_MAX_DURATION_SECONDS}s
       </span>
     </div>

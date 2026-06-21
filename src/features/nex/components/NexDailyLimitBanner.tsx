@@ -4,6 +4,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { BarMeter } from "@/components/widgets/Charts";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { MessageCircle } from "lucide-react";
+import { formatNexAllowanceSummary } from "@/features/nex/lib/nexTutorPresentation";
 
 interface NexDailyLimitBannerProps {
   dailyUsage: number;
@@ -11,6 +12,7 @@ interface NexDailyLimitBannerProps {
   retryAfterSeconds: number;
   planCode: string;
   atLimit: boolean;
+  compact?: boolean;
 }
 
 function formatResetTime(retryAfterSeconds: number): string {
@@ -30,8 +32,12 @@ export function NexDailyLimitBanner({
   retryAfterSeconds,
   planCode,
   atLimit,
+  compact = false,
 }: NexDailyLimitBannerProps) {
-  const remaining = Math.max(0, dailyLimit - dailyUsage);
+  const pct =
+    dailyLimit > 0
+      ? Math.min(100, Math.max(0, (dailyUsage / dailyLimit) * 100))
+      : 0;
 
   if (atLimit) {
     return (
@@ -50,6 +56,27 @@ export function NexDailyLimitBanner({
     );
   }
 
+  if (compact) {
+    return (
+      <div className="mx-4 mt-3 rounded-xl border border-nexus-border bg-nexus-surface px-3 py-2">
+        <div className="flex items-center justify-between gap-3 text-xs">
+          <span className="font-medium text-foreground">
+            {formatNexAllowanceSummary(dailyUsage, dailyLimit, true)}
+          </span>
+          <span className="tabular text-muted-foreground">
+            {Math.round(pct)}%
+          </span>
+        </div>
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-nexus-sunken">
+          <div
+            className="h-full rounded-full bg-nexus-primary transition-[width] duration-700"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <SectionCard
       className="mx-4 mt-3 border-0 bg-transparent p-0 shadow-none"
@@ -64,8 +91,7 @@ export function NexDailyLimitBanner({
           showValue
         />
         <p className="text-xs text-muted-foreground">
-          {remaining} of {dailyLimit} free message{dailyLimit === 1 ? "" : "s"}{" "}
-          left today
+          {formatNexAllowanceSummary(dailyUsage, dailyLimit, false)}
         </p>
       </div>
     </SectionCard>

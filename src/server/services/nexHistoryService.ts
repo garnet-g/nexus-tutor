@@ -13,6 +13,23 @@ import {
 const DISPLAY_MESSAGE_LIMIT = 50;
 const SESSION_CANDIDATE_LIMIT = 10;
 
+async function loadTopicTitle(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  topicId: string | null,
+): Promise<string | null> {
+  if (!topicId) {
+    return null;
+  }
+
+  const { data } = await supabase
+    .from("topics")
+    .select("title")
+    .eq("id", topicId)
+    .maybeSingle();
+
+  return typeof data?.title === "string" ? data.title : null;
+}
+
 export async function loadLatestActiveNexChat(
   studentId: string,
   topicId?: string | null,
@@ -33,10 +50,14 @@ export async function loadLatestActiveNexChat(
   );
 
   if (!session) {
+    const topicTitle = await loadTopicTitle(supabase, topicId ?? null);
+
     return {
       sessionId: null,
+      sessionStartedAt: null,
       mode: null,
       topicId: topicId ?? null,
+      topicTitle,
       messages: [],
     };
   }
@@ -50,11 +71,15 @@ export async function loadLatestActiveNexChat(
     .limit(DISPLAY_MESSAGE_LIMIT);
 
   const orderedMessages = [...((messages ?? []) as NexMessageRow[])].reverse();
+  const resolvedTopicId = session.topic_id ?? topicId ?? null;
+  const topicTitle = await loadTopicTitle(supabase, resolvedTopicId);
 
   return {
     sessionId: session.id,
+    sessionStartedAt: session.started_at,
     mode: isNexMode(session.session_mode) ? session.session_mode : null,
-    topicId: session.topic_id ?? topicId ?? null,
+    topicId: resolvedTopicId,
+    topicTitle,
     messages: mapNexMessagesForChat(orderedMessages),
   };
 }

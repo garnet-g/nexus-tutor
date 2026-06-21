@@ -19,6 +19,10 @@ import { NexFollowUpChips } from "@/features/nex/components/NexFollowUpChips";
 import { NexMessageContent } from "@/features/nex/components/NexMessageContent";
 import { NexScratchpad } from "@/features/nex/components/NexScratchpad";
 import { NexThinkingIndicator } from "@/features/nex/components/NexThinkingIndicator";
+import {
+  NexHomeworkHintLadder,
+  NexTutorContext,
+} from "@/features/nex/components/NexTutorContext";
 import { consumeNexChatStream } from "@/features/nex/lib/consumeNexChatStream";
 import { VoicePushToTalk } from "@/features/nex/components/VoicePushToTalk";
 import type { NexMode } from "@/lib/nex/types";
@@ -36,9 +40,11 @@ interface ChatMessage {
 
 interface NexChatPanelProps {
   initialSessionId?: string | null;
+  initialSessionStartedAt?: string | null;
   initialMode?: NexMode;
   initialMessages?: ChatMessage[];
   topicId?: string | null;
+  topicTitle?: string | null;
   cameraEnabled?: boolean;
   voiceEnabled?: boolean;
   learningPreferences?: LearningPreferences | null;
@@ -51,9 +57,11 @@ interface NexChatPanelProps {
 
 export function NexChatPanel({
   initialSessionId = null,
+  initialSessionStartedAt = null,
   initialMode = "homework",
   initialMessages = [],
   topicId = null,
+  topicTitle = null,
   cameraEnabled = false,
   voiceEnabled = false,
   learningPreferences = null,
@@ -71,6 +79,9 @@ export function NexChatPanel({
   const [sessionMode, setSessionMode] = useState<NexVisibleMode>(
     toVisibleMode(initialMode),
   );
+  const [showResumeBanner, setShowResumeBanner] = useState(
+    Boolean(initialSessionId && initialMessages.length > 0),
+  );
   const [dailyUsage, setDailyUsage] = useState(initialDailyUsage);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -84,11 +95,12 @@ export function NexChatPanel({
   );
 
   const lastMessage = messages[messages.length - 1];
+  const hasMessages = messages.length > 0;
   const showFollowUps =
     !isSending &&
     !atLimit &&
     lastMessage?.role === "nex" &&
-    messages.length > 0;
+    hasMessages;
 
   async function sendMessage(studentMessage: string) {
     const trimmed = studentMessage.trim();
@@ -255,11 +267,16 @@ export function NexChatPanel({
     void sendMessage(prompt);
   }
 
+  function handleSendScratchpad(notes: string) {
+    void sendMessage(`My scratchpad working:\n${notes}`);
+  }
+
   function handleNewChat() {
     setMessages([]);
     setSessionId(null);
     setInput("");
     setError(null);
+    setShowResumeBanner(false);
   }
 
   return (
@@ -295,7 +312,16 @@ export function NexChatPanel({
           value={sessionMode}
           onChange={setSessionMode}
           disabled={isSending || atLimit}
+          compact={hasMessages}
         />
+        <NexTutorContext
+          mode={sessionMode}
+          resumedMode={initialMode}
+          resumedSessionStartedAt={initialSessionStartedAt}
+          showResumeBanner={showResumeBanner}
+          onNewChat={handleNewChat}
+        />
+        {sessionMode === "homework" ? <NexHomeworkHintLadder /> : null}
       </header>
 
       <NexDailyLimitBanner
@@ -304,12 +330,14 @@ export function NexChatPanel({
         retryAfterSeconds={retryAfterSeconds}
         planCode={planCode}
         atLimit={atLimit}
+        compact={hasMessages}
       />
 
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4 no-scrollbar">
         {messages.length === 0 && !isSending ? (
           <NexChatEmptyState
             mode={sessionMode}
+            topicTitle={topicTitle}
             onSelectPrompt={handleStarterPrompt}
             disabled={atLimit}
           />
@@ -349,7 +377,7 @@ export function NexChatPanel({
                   )}
                 </article>
                 {isLatestNex && showFollowUps ? (
-                  <NexFollowUpChips onSelect={handleFollowUp} />
+                  <NexFollowUpChips mode={sessionMode} onSelect={handleFollowUp} />
                 ) : null}
               </div>
             );
@@ -369,68 +397,78 @@ export function NexChatPanel({
         </p>
       ) : null}
 
-      <NexScratchpad />
+      <NexScratchpad
+        disabled={isSending || atLimit}
+        onSendNotes={handleSendScratchpad}
+      />
 
       <form
         onSubmit={handleSend}
         className="border-t border-border px-4 py-3"
       >
-        <CameraCaptureButton
-          sessionMode={sessionMode}
-          sessionId={sessionId}
-          topicId={topicId}
-          cameraEnabled={cameraEnabled}
-          disabled={isSending || atLimit}
-          className="mb-3"
-          onPhotoProcessed={(payload) => {
-            setSessionId(payload.nexSessionId);
-            setSessionMode(toVisibleMode(payload.sessionMode));
-            setDailyUsage((count) => Math.min(dailyLimit, count + 1));
-            setMessages((current) => [
-              ...current,
-              {
-                id: crypto.randomUUID(),
-                role: "student",
-                content: payload.studentMessage,
-              },
-              {
-                id: payload.nexMessageId,
-                role: "nex",
-                content: payload.nexResponse,
-              },
-            ]);
-            setError(null);
-          }}
-          onError={(message) => setError(message)}
-        />
-        <VoicePushToTalk
-          sessionMode={sessionMode}
-          sessionId={sessionId}
-          topicId={topicId}
-          voiceEnabled={voiceEnabled}
-          disabled={isSending || atLimit}
-          className="mb-3"
-          onVoiceProcessed={(payload) => {
-            setSessionId(payload.nexSessionId);
-            setSessionMode(toVisibleMode(payload.sessionMode));
-            setDailyUsage((count) => Math.min(dailyLimit, count + 1));
-            setMessages((current) => [
-              ...current,
-              {
-                id: crypto.randomUUID(),
-                role: "student",
-                content: payload.transcript,
-              },
-              {
-                id: payload.nexMessageId,
-                role: "nex",
-                content: payload.nexResponse,
-              },
-            ]);
-            setError(null);
-          }}
-          onError={(message) => setError(message)}
-        />
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <CameraCaptureButton
+              sessionMode={sessionMode}
+              sessionId={sessionId}
+              topicId={topicId}
+              cameraEnabled={cameraEnabled}
+              disabled={isSending || atLimit}
+              compact
+              onPhotoProcessed={(payload) => {
+                setSessionId(payload.nexSessionId);
+                setSessionMode(toVisibleMode(payload.sessionMode));
+                setDailyUsage((count) => Math.min(dailyLimit, count + 1));
+                setMessages((current) => [
+                  ...current,
+                  {
+                    id: crypto.randomUUID(),
+                    role: "student",
+                    content: payload.studentMessage,
+                  },
+                  {
+                    id: payload.nexMessageId,
+                    role: "nex",
+                    content: payload.nexResponse,
+                  },
+                ]);
+                setError(null);
+              }}
+              onError={(message) => setError(message)}
+            />
+            <VoicePushToTalk
+              sessionMode={sessionMode}
+              sessionId={sessionId}
+              topicId={topicId}
+              voiceEnabled={voiceEnabled}
+              disabled={isSending || atLimit}
+              compact
+              onVoiceProcessed={(payload) => {
+                setSessionId(payload.nexSessionId);
+                setSessionMode(toVisibleMode(payload.sessionMode));
+                setDailyUsage((count) => Math.min(dailyLimit, count + 1));
+                setMessages((current) => [
+                  ...current,
+                  {
+                    id: crypto.randomUUID(),
+                    role: "student",
+                    content: payload.transcript,
+                  },
+                  {
+                    id: payload.nexMessageId,
+                    role: "nex",
+                    content: payload.nexResponse,
+                  },
+                ]);
+                setError(null);
+              }}
+              onError={(message) => setError(message)}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Scratchpad can send your working when you are ready.
+          </p>
+        </div>
         <div className="flex items-end gap-2">
           <textarea
             ref={textareaRef}

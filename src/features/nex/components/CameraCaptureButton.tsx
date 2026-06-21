@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Camera, Lock } from "lucide-react";
 import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -22,6 +23,7 @@ interface CameraCaptureButtonProps {
     sessionMode: NexMode;
   }) => void;
   onError: (message: string) => void;
+  compact?: boolean;
   className?: string;
 }
 
@@ -35,6 +37,7 @@ export function CameraCaptureButton({
   disabled = false,
   onPhotoProcessed,
   onError,
+  compact = false,
   className,
 }: CameraCaptureButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,6 +48,23 @@ export function CameraCaptureButton({
   }
 
   if (!cameraEnabled) {
+    if (compact) {
+      return (
+        <Link
+          href="/pricing"
+          aria-label="Upgrade for camera tutoring"
+          className={cn(
+            "inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-dashed border-nexus-border bg-nexus-surface px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-nexus-primary/40 hover:text-nexus-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+            className,
+          )}
+        >
+          <Lock className="size-3.5" aria-hidden />
+          <Camera className="size-3.5" aria-hidden />
+          Camera
+        </Link>
+      );
+    }
+
     return (
       <div
         className={cn(
@@ -134,13 +154,20 @@ export function CameraCaptureButton({
       <Button
         type="button"
         variant="secondary"
-        size="sm"
+        size={compact ? "icon-lg" : "sm"}
         data-testid="nex-camera-button"
         disabled={disabled || isUploading}
         onClick={() => inputRef.current?.click()}
-        className="min-h-10"
+        className={cn(!compact && "min-h-10")}
+        aria-label={isUploading ? "Reading photo" : "Camera tutoring"}
       >
-        {isUploading ? "Reading photo..." : "Camera"}
+        {compact ? (
+          <Camera className="size-4" aria-hidden />
+        ) : isUploading ? (
+          "Reading photo..."
+        ) : (
+          "Camera"
+        )}
       </Button>
     </div>
   );

@@ -10,6 +10,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import type { Components } from "react-markdown";
 
+import { parseNexTeachingSections } from "@/features/nex/lib/nexTutorPresentation";
 import { cn } from "@/lib/utils";
 
 import "katex/dist/katex.min.css";
@@ -110,6 +111,8 @@ export function NexMessageContent({
 
   const remarkPlugins = isStreaming ? [remarkGfm] : [remarkGfm, remarkMath];
   const rehypePlugins = isStreaming ? [] : [rehypeKatex];
+  const sections =
+    variant === "nex" && !isStreaming ? parseNexTeachingSections(content) : [];
 
   return (
     <div
@@ -118,13 +121,36 @@ export function NexMessageContent({
         variant === "student" && "text-nexus-text-inverse",
       )}
     >
-      <ReactMarkdown
-        remarkPlugins={remarkPlugins}
-        rehypePlugins={rehypePlugins}
-        components={studentComponents}
-      >
-        {content}
-      </ReactMarkdown>
+      {sections.length > 0 ? (
+        <div className="space-y-3">
+          {sections.map((section) => (
+            <section
+              key={`${section.label}-${section.content.slice(0, 24)}`}
+              aria-label={`${section.label} section`}
+              className="rounded-xl border border-nexus-border/70 bg-nexus-surface/70 px-3 py-2.5"
+            >
+              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-nexus-primary">
+                {section.label}
+              </p>
+              <ReactMarkdown
+                remarkPlugins={remarkPlugins}
+                rehypePlugins={rehypePlugins}
+                components={studentComponents}
+              >
+                {section.content}
+              </ReactMarkdown>
+            </section>
+          ))}
+        </div>
+      ) : (
+        <ReactMarkdown
+          remarkPlugins={remarkPlugins}
+          rehypePlugins={rehypePlugins}
+          components={studentComponents}
+        >
+          {content}
+        </ReactMarkdown>
+      )}
     </div>
   );
 }

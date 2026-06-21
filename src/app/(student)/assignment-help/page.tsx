@@ -77,9 +77,11 @@ export default async function AssignmentHelpPage({
       <NexChatPanel
         className="min-h-[calc(100dvh-14rem)] sm:min-h-[560px]"
         initialSessionId={initialChat.sessionId}
+        initialSessionStartedAt={initialChat.sessionStartedAt}
         initialMode={initialMode}
         initialMessages={initialChat.messages}
         topicId={topicId ?? initialChat.topicId}
+        topicTitle={initialChat.topicTitle}
         cameraEnabled={cameraEnabled}
         voiceEnabled={voiceEnabled}
         learningPreferences={learningPreferences}

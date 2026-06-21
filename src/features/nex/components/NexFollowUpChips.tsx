@@ -2,31 +2,32 @@
 
 import { cn } from "@/lib/utils";
 
-export const NEX_FOLLOW_UP_PROMPTS = [
-  "Give me a hint",
-  "Show an example",
-  "Quiz me on this",
-  "Explain differently",
-] as const;
+import { getFollowUpPromptsForMode } from "@/features/nex/lib/nexTutorPresentation";
+
+import type { NexVisibleMode } from "@/features/nex/components/NexModeSelector";
 
 interface NexFollowUpChipsProps {
+  mode: NexVisibleMode;
   onSelect: (prompt: string) => void;
   disabled?: boolean;
   className?: string;
 }
 
 export function NexFollowUpChips({
+  mode,
   onSelect,
   disabled = false,
   className,
 }: NexFollowUpChipsProps) {
+  const prompts = getFollowUpPromptsForMode(mode);
+
   return (
     <div
       className={cn("flex flex-wrap gap-2", className)}
       role="group"
       aria-label="Suggested follow-ups"
     >
-      {NEX_FOLLOW_UP_PROMPTS.map((prompt) => (
+      {prompts.map((prompt) => (
         <button
           key={prompt}
           type="button"

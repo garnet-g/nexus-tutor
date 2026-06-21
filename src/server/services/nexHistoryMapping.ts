@@ -23,8 +23,10 @@ export interface NexMessageRow {
 
 export interface InitialNexChatState {
   sessionId: string | null;
+  sessionStartedAt: string | null;
   mode: NexMode | null;
   topicId: string | null;
+  topicTitle: string | null;
   messages: InitialNexChatMessage[];
 }
 

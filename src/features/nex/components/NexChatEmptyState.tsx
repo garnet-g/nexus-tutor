@@ -2,43 +2,23 @@
 
 import { NexMark } from "@/components/NexMark";
 import type { NexVisibleMode } from "@/features/nex/components/NexModeSelector";
+import { getStarterPromptsForMode } from "@/features/nex/lib/nexTutorPresentation";
 import { cn } from "@/lib/utils";
-
-const STARTER_PROMPTS: Record<NexVisibleMode, string[]> = {
-  explain: [
-    "Explain fractions like I'm in Form 1",
-    "What is the Pythagoras theorem?",
-    "Help me understand linear equations",
-  ],
-  practice: [
-    "Give me a medium algebra question",
-    "Quiz me on geometry basics",
-    "One practice question on percentages",
-  ],
-  homework: [
-    "I'm stuck on a homework problem — can you guide me?",
-    "Check my working without giving the final answer",
-    "What should I try first for this word problem?",
-  ],
-  revision: [
-    "Build a 30-minute revision plan for tomorrow",
-    "What should I revise before my mock exam?",
-    "Summarise the key topics I should review",
-  ],
-};
 
 interface NexChatEmptyStateProps {
   mode: NexVisibleMode;
+  topicTitle?: string | null;
   onSelectPrompt: (prompt: string) => void;
   disabled?: boolean;
 }
 
 export function NexChatEmptyState({
   mode,
+  topicTitle = null,
   onSelectPrompt,
   disabled = false,
 }: NexChatEmptyStateProps) {
-  const prompts = STARTER_PROMPTS[mode];
+  const prompts = getStarterPromptsForMode(mode, topicTitle);
 
   return (
     <div className="flex flex-col items-center px-2 py-8 text-center sm:py-10">
@@ -48,7 +28,7 @@ export function NexChatEmptyState({
       </h2>
       <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
         Pick a starter below or type your own question. Nex guides you with
-        hints — not just answers.
+        hints, checks, and examples that match this mode.
       </p>
       <div className="mt-6 grid w-full max-w-md gap-2">
         {prompts.map((prompt) => (

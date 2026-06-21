@@ -52,16 +52,22 @@ interface NexModeSelectorProps {
   value: NexVisibleMode;
   onChange: (mode: NexVisibleMode) => void;
   disabled?: boolean;
+  compact?: boolean;
 }
 
 export function NexModeSelector({
   value,
   onChange,
   disabled = false,
+  compact = false,
 }: NexModeSelectorProps) {
   return (
     <div
-      className="grid grid-cols-2 gap-2 sm:grid-cols-4"
+      className={cn(
+        compact
+          ? "flex gap-2 overflow-x-auto pb-1 no-scrollbar"
+          : "grid grid-cols-2 gap-2 sm:grid-cols-4",
+      )}
       role="radiogroup"
       aria-label="Nex session mode"
     >
@@ -79,6 +85,8 @@ export function NexModeSelector({
             onClick={() => onChange(mode.value)}
             className={cn(
               "flex min-h-12 flex-col items-start rounded-xl border px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+              compact &&
+                "min-h-10 min-w-[7rem] flex-row items-center justify-center gap-1.5 px-3 py-2",
               isActive
                 ? "border-nexus-primary bg-nexus-primary text-nexus-text-inverse shadow-card"
                 : "border-nexus-border bg-nexus-surface text-foreground hover:bg-nexus-sunken",
@@ -92,6 +100,7 @@ export function NexModeSelector({
             <span
               className={cn(
                 "mt-1 line-clamp-2 text-xs leading-snug",
+                compact && "sr-only",
                 isActive ? "text-nexus-text-inverse/80" : "text-muted-foreground",
               )}
             >
