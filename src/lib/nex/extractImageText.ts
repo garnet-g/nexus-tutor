@@ -1,6 +1,6 @@
-export const NEX_UPLOADS_BUCKET = "nex-uploads";
+import { getGeminiVisionModel } from "./modelConfig";
 
-const GEMINI_VISION_MODEL = "gemini-2.0-flash";
+export const NEX_UPLOADS_BUCKET = "nex-uploads";
 
 const EXTRACTION_PROMPT = `You extract mathematics problem text from a student photo for a Kenyan CBC/KCSE learning app.
 
@@ -70,7 +70,7 @@ export async function extractImageText(
   }
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_VISION_MODEL}:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${getGeminiVisionModel()}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },

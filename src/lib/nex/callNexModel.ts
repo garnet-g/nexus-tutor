@@ -1,6 +1,6 @@
 import type { NexModelCallInput, NexModelCallResult } from "./types";
+import { getGeminiTextModel } from "./modelConfig";
 
-const GEMINI_MODEL = "gemini-2.0-flash";
 const OPENAI_MODEL = "gpt-4o-mini";
 const LLM_TIMEOUT_MS = 20_000;
 
@@ -51,9 +51,10 @@ async function callGemini(input: NexModelCallInput): Promise<string> {
   try {
     const conversation = buildConversationText(input.messages);
     const prompt = `${input.systemPrompt}\n\nConversation so far:\n${conversation}\n\nNex:`;
+    const model = getGeminiTextModel();
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -220,9 +221,10 @@ async function streamGemini(
   try {
     const conversation = buildConversationText(input.messages);
     const prompt = `${input.systemPrompt}\n\nConversation so far:\n${conversation}\n\nNex:`;
+    const model = getGeminiTextModel();
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -500,8 +502,9 @@ Reply with JSON only: { "revealsFinalAnswer": true | false, "reason": "..." }`;
 
     if (hasGemini) {
       const apiKey = process.env.GEMINI_API_KEY!;
+      const model = getGeminiTextModel();
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

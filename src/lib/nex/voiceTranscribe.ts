@@ -1,4 +1,5 @@
-const GEMINI_MODEL = "gemini-2.0-flash";
+import { getGeminiTextModel } from "./modelConfig";
+
 const KENYA_ENGLISH_LOCALE_HINT =
   "The speaker is a Kenyan student using English (en-KE). Transcribe clearly.";
 
@@ -35,7 +36,7 @@ async function transcribeWithGemini(
 Return only the spoken transcript with no commentary.`;
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${getGeminiTextModel()}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },

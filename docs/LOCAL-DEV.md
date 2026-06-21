@@ -115,6 +115,9 @@ Optional in `.env.local` for real model calls:
 ```
 GEMINI_API_KEY=your-gemini-key
 OPENAI_API_KEY=your-openai-key
+NEX_GEMINI_TEXT_MODEL=gemini-3.5-flash
+NEX_GEMINI_VISION_MODEL=gemini-3.5-flash
+NEX_GEMINI_TTS_MODEL=gemini-3.1-flash-tts
 ```
 
 - Text + vision: Gemini primary, OpenAI fallback (`callNexModel`)
