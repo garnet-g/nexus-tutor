@@ -11,7 +11,7 @@ export const nexModeSchema = z.enum([
 ]);
 
 export const nexChatRequestSchema = z.object({
-  nexSessionId: z.string().uuid().optional(),
+  nexSessionId: z.string().uuid().optional().nullable(),
   studentMessage: z
     .string()
     .min(1, "Message is required")
