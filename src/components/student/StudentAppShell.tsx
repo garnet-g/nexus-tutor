@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   BarChart3,
   BookOpen,
+  CalendarCheck,
   CalendarDays,
   Flame,
   Home,
@@ -33,6 +34,7 @@ type NavItem = {
 const PRIMARY_NAV: NavItem[] = [
   { href: "/dashboard", label: "Today", icon: Home },
   { href: "/learn", label: "Learn", icon: BookOpen },
+  { href: "/revision", label: "Revision", icon: CalendarCheck },
   { href: "/nex", label: "Nex", nex: true },
   { href: "/practice", label: "Practice", icon: Target },
   { href: "/progress", label: "Progress", icon: BarChart3 },
@@ -46,9 +48,9 @@ const SECONDARY_NAV: NavItem[] = [
 const MOBILE_NAV: NavItem[] = [
   { href: "/dashboard", label: "Today", icon: Home },
   { href: "/learn", label: "Learn", icon: BookOpen },
+  { href: "/revision", label: "Revision", icon: CalendarCheck },
   { href: "/nex", label: "Nex", nex: true },
   { href: "/practice", label: "Practice", icon: Target },
-  { href: "/progress", label: "Progress", icon: BarChart3 },
 ];
 
 function isActive(pathname: string, href: string): boolean {

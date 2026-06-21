@@ -4,6 +4,7 @@ import { randomBytes } from "node:crypto";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getKcseMathRevisionHubForStudent } from "@/server/services/kcseMathRevisionService";
 
 const INVITE_CODE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const WEAK_MASTERY_THRESHOLD = 60;
@@ -16,6 +17,10 @@ export interface LinkedStudentOverview {
   weeklyStudyMinutes: number;
   healthScore: number | null;
   weakTopics: string[];
+  mathReadinessScore: number | null;
+  mathReadinessLabel: string | null;
+  nextMathRepairTopic: string | null;
+  revisionPrivacyNote: string;
   linkedAt: string | null;
 }
 
@@ -288,10 +293,16 @@ export async function getLinkedStudentsOverview(
     const gradeLevel = String((profile as { grade_level?: string }).grade_level ?? "");
     const curriculum = String((profile as { curriculum?: string }).curriculum ?? "");
 
-    const [weeklyStudyMinutes, healthScore, weakTopics] = await Promise.all([
+    const [weeklyStudyMinutes, healthScore, weakTopics, revisionHub] = await Promise.all([
       getWeeklyStudyMinutes(studentId),
       getLatestHealthScore(studentId),
       getWeakTopics(studentId),
+      getKcseMathRevisionHubForStudent({
+        studentId,
+        studentName: fullName,
+        curriculum,
+        gradeLevel,
+      }).catch(() => null),
     ]);
 
     overviews.push({
@@ -302,6 +313,12 @@ export async function getLinkedStudentsOverview(
       weeklyStudyMinutes,
       healthScore,
       weakTopics,
+      mathReadinessScore: revisionHub?.readiness.score ?? null,
+      mathReadinessLabel: revisionHub?.readiness.label ?? null,
+      nextMathRepairTopic: revisionHub?.weakTopicRepair[0]?.title ?? null,
+      revisionPrivacyNote:
+        revisionHub?.trustSummary.chatPrivacy ??
+        "Tutor chat text stays private; parents see progress signals only.",
       linkedAt: link.linked_at,
     });
   }

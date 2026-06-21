@@ -143,6 +143,34 @@ export function ParentDashboard({ linkedStudents }: ParentDashboardProps) {
                   </dd>
                 </div>
               </dl>
+
+              <div className="mt-4 rounded-xl border border-border bg-muted/40 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      KCSE maths revision
+                    </p>
+                    <p className="mt-1 text-sm text-foreground/80">
+                      {student.nextMathRepairTopic
+                        ? `Next repair topic: ${student.nextMathRepairTopic}`
+                        : "Next repair topic appears after maths practice."}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-semibold text-foreground">
+                      {student.mathReadinessScore !== null
+                        ? `${student.mathReadinessScore}%`
+                        : "-"}
+                    </p>
+                    <p className="text-xs font-medium text-muted-foreground">
+                      {student.mathReadinessLabel ?? "No readiness yet"}
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                  {student.revisionPrivacyNote}
+                </p>
+              </div>
             </article>
           ))
         )}
