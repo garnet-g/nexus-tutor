@@ -1,8 +1,13 @@
 import type { NexModelCallInput, NexModelCallResult } from "./types";
-import { getGeminiTextModel } from "./modelConfig";
+import {
+  getGeminiTextModel,
+  getGeminiThinkingLevel,
+  getNexModelMaxOutputTokens,
+} from "./modelConfig";
 
 const OPENAI_MODEL = "gpt-4o-mini";
 const LLM_TIMEOUT_MS = 20_000;
+const GEMINI_JUDGE_MAX_OUTPUT_TOKENS = 512;
 
 function buildConversationText(messages: NexModelCallInput["messages"]): string {
   return messages
@@ -62,7 +67,10 @@ async function callGemini(input: NexModelCallInput): Promise<string> {
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: input.maxTokens ?? 500,
+            maxOutputTokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
+            thinkingConfig: {
+              thinkingLevel: getGeminiThinkingLevel(),
+            },
           },
         }),
         signal: controller.signal,
@@ -107,7 +115,7 @@ async function callOpenAI(input: NexModelCallInput): Promise<string> {
       body: JSON.stringify({
         model: OPENAI_MODEL,
         temperature: 0.7,
-        max_tokens: input.maxTokens ?? 500,
+        max_tokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
         messages: [
           { role: "system", content: input.systemPrompt },
           ...input.messages.map((message) => ({
@@ -232,7 +240,10 @@ async function streamGemini(
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: input.maxTokens ?? 500,
+            maxOutputTokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
+            thinkingConfig: {
+              thinkingLevel: getGeminiThinkingLevel(),
+            },
           },
         }),
         signal: controller.signal,
@@ -326,7 +337,7 @@ async function streamOpenAI(
       body: JSON.stringify({
         model: OPENAI_MODEL,
         temperature: 0.7,
-        max_tokens: input.maxTokens ?? 500,
+        max_tokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
         stream: true,
         messages: [
           { role: "system", content: input.systemPrompt },
@@ -510,7 +521,13 @@ Reply with JSON only: { "revealsFinalAnswer": true | false, "reason": "..." }`;
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: judgePrompt }] }],
-            generationConfig: { temperature: 0, maxOutputTokens: 120 },
+            generationConfig: {
+              temperature: 0,
+              maxOutputTokens: GEMINI_JUDGE_MAX_OUTPUT_TOKENS,
+              thinkingConfig: {
+                thinkingLevel: getGeminiThinkingLevel(),
+              },
+            },
           }),
           signal: judgeController.signal,
         },

@@ -1,4 +1,4 @@
-import { getGeminiVisionModel } from "./modelConfig";
+import { getGeminiThinkingLevel, getGeminiVisionModel } from "./modelConfig";
 
 export const NEX_UPLOADS_BUCKET = "nex-uploads";
 
@@ -91,6 +91,9 @@ export async function extractImageText(
         generationConfig: {
           temperature: 0.2,
           maxOutputTokens: 512,
+          thinkingConfig: {
+            thinkingLevel: getGeminiThinkingLevel(),
+          },
         },
       }),
     },

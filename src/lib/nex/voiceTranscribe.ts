@@ -1,4 +1,4 @@
-import { getGeminiTextModel } from "./modelConfig";
+import { getGeminiTextModel, getGeminiThinkingLevel } from "./modelConfig";
 
 const KENYA_ENGLISH_LOCALE_HINT =
   "The speaker is a Kenyan student using English (en-KE). Transcribe clearly.";
@@ -56,7 +56,10 @@ Return only the spoken transcript with no commentary.`;
         ],
         generationConfig: {
           temperature: 0,
-          maxOutputTokens: 256,
+          maxOutputTokens: 512,
+          thinkingConfig: {
+            thinkingLevel: getGeminiThinkingLevel(),
+          },
         },
       }),
     },

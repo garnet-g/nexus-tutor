@@ -118,6 +118,8 @@ OPENAI_API_KEY=your-openai-key
 NEX_GEMINI_TEXT_MODEL=gemini-3.5-flash
 NEX_GEMINI_VISION_MODEL=gemini-3.5-flash
 NEX_GEMINI_TTS_MODEL=gemini-3.1-flash-tts
+NEX_GEMINI_THINKING_LEVEL=low
+NEX_MODEL_MAX_OUTPUT_TOKENS=1600
 ```
 
 - Text + vision: Gemini primary, OpenAI fallback (`callNexModel`)
