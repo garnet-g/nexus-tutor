@@ -1,5 +1,6 @@
 "use client";
 
+import { RotateCcw } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
 import { NexMark } from "@/components/NexMark";
@@ -36,6 +37,7 @@ interface ChatMessage {
 interface NexChatPanelProps {
   initialSessionId?: string | null;
   initialMode?: NexMode;
+  initialMessages?: ChatMessage[];
   topicId?: string | null;
   cameraEnabled?: boolean;
   voiceEnabled?: boolean;
@@ -50,6 +52,7 @@ interface NexChatPanelProps {
 export function NexChatPanel({
   initialSessionId = null,
   initialMode = "homework",
+  initialMessages = [],
   topicId = null,
   cameraEnabled = false,
   voiceEnabled = false,
@@ -60,7 +63,9 @@ export function NexChatPanel({
   planCode,
   className,
 }: NexChatPanelProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() =>
+    initialMessages.map((message) => ({ ...message, isStreaming: false })),
+  );
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(initialSessionId);
   const [sessionMode, setSessionMode] = useState<NexVisibleMode>(
@@ -250,6 +255,13 @@ export function NexChatPanel({
     void sendMessage(prompt);
   }
 
+  function handleNewChat() {
+    setMessages([]);
+    setSessionId(null);
+    setInput("");
+    setError(null);
+  }
+
   return (
     <Card
       className={cn(
@@ -258,14 +270,26 @@ export function NexChatPanel({
       )}
     >
       <header className="space-y-3 border-b border-border px-4 py-3">
-        <div className="flex items-center gap-3">
-          <NexMark size={32} />
-          <div>
-            <p className="font-heading text-sm font-semibold text-foreground">
-              Nex
-            </p>
-            <p className="text-xs text-muted-foreground">Your AI teacher</p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <NexMark size={32} />
+            <div>
+              <p className="font-heading text-sm font-semibold text-foreground">
+                Nex
+              </p>
+              <p className="text-xs text-muted-foreground">Your AI teacher</p>
+            </div>
           </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleNewChat}
+            disabled={isSending}
+          >
+            <RotateCcw className="size-3.5" aria-hidden="true" />
+            New chat
+          </Button>
         </div>
         <NexModeSelector
           value={sessionMode}

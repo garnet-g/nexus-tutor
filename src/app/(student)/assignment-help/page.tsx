@@ -10,6 +10,7 @@ import { studentHasCameraAccess } from "@/schemas/cameraSchemas";
 import { parseLearningPreferencesFromDb } from "@/schemas/profileSchemas";
 import { studentHasVoiceAccess } from "@/schemas/voiceSchemas";
 import { getSessionUser } from "@/server/services/authService";
+import { loadLatestActiveNexChat } from "@/server/services/nexHistoryService";
 import {
   getNexDailyUsageCount,
   getSecondsUntilNairobiMidnight,
@@ -48,15 +49,16 @@ export default async function AssignmentHelpPage({
   }
 
   const planCode = await getStudentPlanCode(sessionUser.studentProfile.id);
-  const [subscriptionConfig, dailyUsage] = await Promise.all([
+  const topicId = params.topicId ?? null;
+  const [subscriptionConfig, dailyUsage, initialChat] = await Promise.all([
     getEffectiveSubscriptionConfigWithFallback(),
     getNexDailyUsageCount(sessionUser.studentProfile.id),
+    loadLatestActiveNexChat(sessionUser.studentProfile.id, topicId),
   ]);
   const dailyLimit = getNexDailyLimit(subscriptionConfig, planCode);
   const cameraEnabled = studentHasCameraAccess(planCode);
   const voiceEnabled = studentHasVoiceAccess(planCode);
-  const initialMode = parseMode(params.mode);
-  const topicId = params.topicId ?? null;
+  const initialMode = parseMode(params.mode ?? initialChat.mode ?? undefined);
   const learningPreferences = parseLearningPreferencesFromDb(
     sessionUser.studentProfile.learning_preferences,
   );
@@ -74,8 +76,10 @@ export default async function AssignmentHelpPage({
       </div>
       <NexChatPanel
         className="min-h-[calc(100dvh-14rem)] sm:min-h-[560px]"
+        initialSessionId={initialChat.sessionId}
         initialMode={initialMode}
-        topicId={topicId}
+        initialMessages={initialChat.messages}
+        topicId={topicId ?? initialChat.topicId}
         cameraEnabled={cameraEnabled}
         voiceEnabled={voiceEnabled}
         learningPreferences={learningPreferences}
