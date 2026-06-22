@@ -44,7 +44,6 @@ const HARDCODED_PRICING_PATTERNS = [
 ];
 
 const BANNED_SUBJECT_CODES = [
-  /['"]kiswahili['"]/,
   /['"]cambridge['"]/,
 ];
 
@@ -109,8 +108,12 @@ for (const file of files) {
 const seedPaths = [
   join(ROOT, 'supabase/seed.sql'),
   join(ROOT, 'supabase/seed/curriculum_math.sql'),
+  join(ROOT, 'supabase/seed/curriculum_math_kcse.sql'),
   join(ROOT, 'supabase/seed/curriculum_science.sql'),
   join(ROOT, 'supabase/seed/curriculum_english.sql'),
+  join(ROOT, 'supabase/seed/curriculum_english_kcse.sql'),
+  join(ROOT, 'supabase/seed/curriculum_chemistry.sql'),
+  join(ROOT, 'supabase/seed/curriculum_kiswahili.sql'),
 ];
 
 for (const seedPath of seedPaths) {
