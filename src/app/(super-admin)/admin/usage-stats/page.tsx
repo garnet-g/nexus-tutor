@@ -1,138 +1,194 @@
-import { createAdminClient } from "@/lib/supabase/admin";
+import { NexOpsReviewPanel } from "@/features/admin/components/NexOpsReviewPanel";
+import {
+  loadNexOpsSnapshot,
+  type NexOpsModeSummary,
+  type NexOpsProviderSummary,
+} from "@/server/services/nexOpsService";
 
 export const dynamic = "force-dynamic";
 
-function getNairobiDateString(date = new Date()): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Africa/Nairobi",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
+function formatNumber(value: number): string {
+  return new Intl.NumberFormat("en-US").format(value);
 }
 
-type StudentRow = {
-  studentId: string;
-  fullName: string;
-  curriculum: string;
-  gradeLevel: string;
-  nexMessages: number;
-  practiceSessions: number;
-};
+function formatKes(value: number): string {
+  if (value === 0) {
+    return "KES 0";
+  }
 
-async function loadUsageStats() {
-  const admin = createAdminClient();
-  const today = getNairobiDateString();
+  if (value > 0 && value < 1) {
+    return `KES ${value.toFixed(2)}`;
+  }
 
-  const { data: todayRows } = await admin
-    .from("nex_daily_usage")
-    .select(
-      "student_id, nex_message_count, practice_session_count, student_profiles(full_name, curriculum, grade_level)",
-    )
-    .eq("usage_date", today)
-    .order("nex_message_count", { ascending: false })
-    .limit(100);
+  return `KES ${new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 2,
+  }).format(value)}`;
+}
 
-  const students: StudentRow[] = (todayRows ?? []).map((row) => {
-    const profile =
-      row.student_profiles &&
-      typeof row.student_profiles === "object" &&
-      !Array.isArray(row.student_profiles)
-        ? (row.student_profiles as { full_name?: string; curriculum?: string; grade_level?: string })
-        : null;
+function formatUsd(value: number): string {
+  return `~$${value < 0.01 ? value.toFixed(4) : value.toFixed(2)} USD`;
+}
 
-    return {
-      studentId: row.student_id,
-      fullName: profile?.full_name ?? "Unknown",
-      curriculum: profile?.curriculum ?? "—",
-      gradeLevel: profile?.grade_level ?? "—",
-      nexMessages: row.nex_message_count ?? 0,
-      practiceSessions: row.practice_session_count ?? 0,
-    };
-  });
+function StatCard({
+  label,
+  value,
+  note,
+}: {
+  label: string;
+  value: string;
+  note?: string;
+}) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-5">
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="mt-3 font-heading text-3xl font-semibold tracking-tight">
+        {value}
+      </p>
+      {note ? <p className="mt-2 text-xs text-muted-foreground">{note}</p> : null}
+    </div>
+  );
+}
 
-  const totalNexMessages = students.reduce((sum, s) => sum + s.nexMessages, 0);
-  const totalPracticeSessions = students.reduce((sum, s) => sum + s.practiceSessions, 0);
+function ProviderTable({ rows }: { rows: NexOpsProviderSummary[] }) {
+  return (
+    <section className="overflow-hidden rounded-lg border border-border bg-card">
+      <div className="border-b border-border px-5 py-4">
+        <h2 className="font-heading text-lg font-semibold">
+          Cost by model (last 7 days)
+        </h2>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[720px] text-sm">
+          <thead>
+            <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
+              <th className="px-5 py-3 font-medium">Provider</th>
+              <th className="px-5 py-3 text-right font-medium">Messages</th>
+              <th className="px-5 py-3 text-right font-medium">Est. tokens</th>
+              <th className="px-5 py-3 text-right font-medium">Est. cost (KES)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="px-5 py-8 text-center text-muted-foreground"
+                >
+                  No Nex model calls recorded in the last 7 days.
+                </td>
+              </tr>
+            ) : (
+              rows.map((row) => (
+                <tr key={row.providerKey} className="border-b border-border last:border-0">
+                  <td className="px-5 py-4 font-medium">{row.provider}</td>
+                  <td className="px-5 py-4 text-right font-mono">
+                    {formatNumber(row.messages)}
+                  </td>
+                  <td className="px-5 py-4 text-right font-mono">
+                    {formatNumber(row.estimatedTokens)}
+                  </td>
+                  <td className="px-5 py-4 text-right font-mono">
+                    {formatKes(row.estimatedCostKes)}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
 
-  return { today, students, totalNexMessages, totalPracticeSessions };
+function ModeGrid({ rows }: { rows: NexOpsModeSummary[] }) {
+  return (
+    <section className="rounded-lg border border-border bg-card">
+      <div className="border-b border-border px-5 py-4">
+        <h2 className="font-heading text-lg font-semibold">
+          Usage by mode (last 7 days)
+        </h2>
+      </div>
+      <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
+        {rows.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            No mode activity recorded yet.
+          </p>
+        ) : (
+          rows.map((row) => (
+            <div key={row.mode} className="rounded-lg border border-border bg-background p-4">
+              <p className="text-sm text-muted-foreground">{row.mode}</p>
+              <p className="mt-2 font-heading text-2xl font-semibold">
+                {formatNumber(row.messages)}
+              </p>
+            </div>
+          ))
+        )}
+      </div>
+    </section>
+  );
 }
 
 export default async function UsageStatsPage() {
-  const { today, students, totalNexMessages, totalPracticeSessions } =
-    await loadUsageStats();
+  const snapshot = await loadNexOpsSnapshot();
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Usage stats</h1>
-        <p className="text-muted-foreground">
-          Per-student AI and practice activity for today ({today}, Nairobi time).
+    <div className="space-y-7">
+      <div className="space-y-3 border-b border-border pb-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+          Operations
         </p>
+        <div className="space-y-2">
+          <h1 className="font-heading text-3xl font-semibold tracking-tight">
+            Nex ops
+          </h1>
+          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+            Nex message volume, estimated token spend, fallback rate, and flagged
+            conversation review ({snapshot.date}, Nairobi time).
+          </p>
+        </div>
       </div>
 
-      <section className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-border bg-primary p-5">
-          <p className="text-sm text-muted-foreground">Active students today</p>
-          <p className="mt-1 text-3xl font-semibold">{students.length}</p>
-        </div>
-        <div className="rounded-2xl border border-border bg-primary p-5">
-          <p className="text-sm text-muted-foreground">Total Nex messages</p>
-          <p className="mt-1 text-3xl font-semibold">{totalNexMessages}</p>
-        </div>
-        <div className="rounded-2xl border border-border bg-primary p-5">
-          <p className="text-sm text-muted-foreground">Total practice sessions</p>
-          <p className="mt-1 text-3xl font-semibold">{totalPracticeSessions}</p>
-        </div>
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          label="Messages today"
+          value={formatNumber(snapshot.summary.messagesToday)}
+        />
+        <StatCard
+          label="Messages (7d)"
+          value={formatNumber(snapshot.summary.messages7d)}
+        />
+        <StatCard
+          label="Est. tokens (7d)"
+          value={formatNumber(snapshot.summary.estimatedTokens7d)}
+          note={`~${snapshot.pricing.charsPerToken} chars/token estimate`}
+        />
+        <StatCard
+          label="Est. cost (7d)"
+          value={formatKes(snapshot.summary.estimatedCostKes)}
+          note={formatUsd(snapshot.summary.estimatedCostUsd)}
+        />
+        <StatCard
+          label="Fallback rate"
+          value={`${snapshot.summary.fallbackRatePercent.toFixed(1)}%`}
+          note="OpenAI fallback vs Gemini primary"
+        />
+        <StatCard
+          label="Open reviews"
+          value={formatNumber(snapshot.summary.openFlaggedCount)}
+          note="Validation failures still needing review"
+        />
       </section>
 
-      <section className="rounded-2xl border border-border bg-primary">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-muted-foreground">
-                <th className="px-4 py-3 font-medium">Student</th>
-                <th className="px-4 py-3 font-medium">Curriculum</th>
-                <th className="px-4 py-3 font-medium">Grade</th>
-                <th className="px-4 py-3 font-medium text-right">Nex msgs</th>
-                <th className="px-4 py-3 font-medium text-right">Practice</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-8 text-center text-muted-foreground"
-                  >
-                    No activity recorded today yet.
-                  </td>
-                </tr>
-              ) : (
-                students.map((student) => (
-                  <tr
-                    key={student.studentId}
-                    className="border-b border-border last:border-0 hover:bg-muted/30"
-                  >
-                    <td className="px-4 py-3 font-medium">{student.fullName}</td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {student.curriculum}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {student.gradeLevel}
-                    </td>
-                    <td className="px-4 py-3 text-right font-mono">
-                      {student.nexMessages}
-                    </td>
-                    <td className="px-4 py-3 text-right font-mono">
-                      {student.practiceSessions}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <ProviderTable rows={snapshot.byProvider} />
+      <ModeGrid rows={snapshot.byMode} />
+      <NexOpsReviewPanel initialItems={snapshot.flagged} />
+
+      <p className="text-xs leading-5 text-muted-foreground">
+        Token and cost values are estimates from stored prompt/response text. Override
+        pricing with NEX_GEMINI_INPUT_USD_PER_MILLION,
+        NEX_GEMINI_OUTPUT_USD_PER_MILLION, NEX_OPENAI_INPUT_USD_PER_MILLION,
+        NEX_OPENAI_OUTPUT_USD_PER_MILLION, and NEX_USD_TO_KES_RATE.
+      </p>
     </div>
   );
 }

@@ -95,6 +95,30 @@ export async function POST(request: Request) {
       return apiErrorResponse("NOT_FOUND", "Topic not found.", 404);
     }
 
+    if (message === "INVALID_SUBTOPIC") {
+      return apiErrorResponse(
+        "INVALID_SUBTOPIC",
+        "The selected subtopic does not belong to this topic.",
+        400,
+      );
+    }
+
+    if (message === "NO_QUESTIONS_FOR_SUBTOPIC") {
+      return apiErrorResponse(
+        "NO_QUESTIONS_FOR_SUBTOPIC",
+        "No practice questions are available for this subtopic at the selected difficulty.",
+        404,
+      );
+    }
+
+    if (message === "NO_QUESTIONS_FOR_TOPIC") {
+      return apiErrorResponse(
+        "NO_QUESTIONS_FOR_TOPIC",
+        "No practice questions are available for this topic at the selected difficulty.",
+        404,
+      );
+    }
+
     if (message === "NO_QUESTIONS") {
       return apiErrorResponse(
         "NOT_FOUND",

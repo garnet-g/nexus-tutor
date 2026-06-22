@@ -35,7 +35,9 @@ interface FeedbackState {
 interface PracticeRunnerProps {
   studentId: string;
   topicId: string;
+  subtopicId?: string;
   topicTitle: string;
+  subtopicTitle?: string;
   difficulty: PracticeDifficulty;
   initialMastery: number;
   reviewQuestions?: ReviewQuestion[];
@@ -48,7 +50,9 @@ interface PracticeRunnerProps {
 export function PracticeRunner({
   studentId,
   topicId,
+  subtopicId,
   topicTitle,
+  subtopicTitle,
   difficulty,
   initialMastery,
   reviewQuestions,
@@ -99,6 +103,7 @@ export function PracticeRunner({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             topicId,
+            ...(subtopicId ? { subtopicId } : {}),
             difficulty,
             questionCount: 10,
           }),
@@ -123,7 +128,7 @@ export function PracticeRunner({
     }
 
     void startSession();
-  }, [difficulty, isReview, reviewQuestions, topicId]);
+  }, [difficulty, isReview, reviewQuestions, subtopicId, topicId]);
 
   const currentQuestion = questions[currentIndex];
   const options = Array.isArray(currentQuestion?.options)
@@ -331,7 +336,9 @@ export function PracticeRunner({
         <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
           <span>
             Question {currentIndex + 1} of {questions.length}
-            {isReview ? " · Review" : ` · ${topicTitle}`}
+            {isReview
+              ? " · Review"
+              : ` · ${subtopicTitle ? `${subtopicTitle} · ` : ""}${topicTitle}`}
           </span>
           <span className="tabular">{elapsedSeconds}s</span>
         </div>

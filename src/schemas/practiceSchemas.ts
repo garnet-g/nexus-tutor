@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const practiceStartSchema = z.object({
   topicId: z.string().uuid(),
+  subtopicId: z.string().uuid().optional(),
   difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
   questionCount: z.number().int().min(5).max(20).default(10),
 });

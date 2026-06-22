@@ -13,10 +13,7 @@ import {
   getSecondsUntilNairobiMidnight,
   getStudentPlanCode,
 } from "@/server/services/nexUsageService";
-import {
-  getProgressSummary,
-  listPracticeTopics,
-} from "@/server/services/practiceService";
+import { listPracticeCurriculumTree } from "@/server/services/practiceService";
 
 export default async function PracticePage() {
   const sessionUser = await getSessionUser();
@@ -31,21 +28,17 @@ export default async function PracticePage() {
 
   const profile = sessionUser.studentProfile;
 
-  const [topics, progress, subscriptionConfig, planCode, dailyUsage] =
+  const [curriculumTree, subscriptionConfig, planCode, dailyUsage] =
     await Promise.all([
-      listPracticeTopics(profile.curriculum),
-      getProgressSummary(profile.id).catch(() => null),
+      listPracticeCurriculumTree(
+        profile.curriculum,
+        profile.grade_level,
+        profile.id,
+      ),
       getEffectiveSubscriptionConfigWithFallback(),
       getStudentPlanCode(profile.id),
       getPracticeDailyUsageCount(profile.id),
     ]);
-
-  const masteryByTopicId = Object.fromEntries(
-    (progress?.topicMastery ?? []).map((entry) => [
-      entry.topicId,
-      entry.masteryPercentage,
-    ]),
-  );
 
   const dailyLimit = getPracticeDailyLimit(subscriptionConfig, planCode);
 
@@ -56,18 +49,15 @@ export default async function PracticePage() {
           Practice
         </h1>
         <p className="text-muted-foreground">
-          Ten focused questions per session. Pick a topic, choose your difficulty,
-          and build mastery one step at a time.
+          Ten focused questions per session. Pick a subject, topic, and chapter,
+          then choose your difficulty.
         </p>
       </div>
 
       <Suspense fallback={<PracticePageSkeleton />}>
         <PracticeLanding
           studentId={profile.id}
-          topics={topics.map((topic) => ({
-            ...topic,
-            masteryPercentage: masteryByTopicId[topic.id] ?? 0,
-          }))}
+          curriculumTree={curriculumTree}
           dailyUsage={dailyUsage}
           dailyLimit={dailyLimit}
           retryAfterSeconds={getSecondsUntilNairobiMidnight()}

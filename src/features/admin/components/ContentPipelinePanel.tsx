@@ -14,6 +14,7 @@ import { BarMeter } from "@/components/widgets/Charts";
 import { LessonRenderer } from "@/features/learn/components/LessonRenderer";
 import {
   QUESTION_COVERAGE_TARGET,
+  SUBTOPIC_QUESTION_COVERAGE_TARGET,
   type ContentCoverageCurriculum,
   type ContentDraftQueueItem,
   type DraftQuestionQueueItem,
@@ -76,7 +77,6 @@ function mapGenerateError(code?: string, fallback?: string) {
 }
 
 function ContentPipelinePanelInner({
-  adminUserId,
   initialCoverage,
   initialDrafts,
 }: ContentPipelinePanelProps) {
@@ -530,7 +530,7 @@ function CoverageBrowser({
         <SectionCard
           key={curriculum.code}
           title={`${curriculum.code} Mathematics`}
-          description="Published vs draft lessons and question bank coverage per difficulty (target ≥20)."
+          description={`Published vs draft lessons and question bank coverage per difficulty (topic target ≥${QUESTION_COVERAGE_TARGET}, subtopic preferred ≥${SUBTOPIC_QUESTION_COVERAGE_TARGET}).`}
         >
           <div className="space-y-4">
             {curriculum.topics.map((topic) => (
@@ -570,21 +570,35 @@ function CoverageBrowser({
                   {topic.subtopics.map((subtopic) => (
                     <li
                       key={subtopic.id}
-                      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-nexus-border bg-nexus-surface px-4 py-3"
+                      className="rounded-xl border border-nexus-border bg-nexus-surface px-4 py-3"
                     >
-                      <div>
-                        <p className="font-medium text-foreground">{subtopic.title}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {subtopic.publishedLessonCount} published · {subtopic.draftLessonCount} draft
-                        </p>
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <p className="font-medium text-foreground">{subtopic.title}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {subtopic.publishedLessonCount} published ·{" "}
+                            {subtopic.draftLessonCount} draft lessons
+                          </p>
+                        </div>
+                        <SubtopicLessonGenerator
+                          curriculum={curriculum.code}
+                          subtopicId={subtopic.id}
+                          subtopicTitle={subtopic.title}
+                          gradeLevels={curriculum.gradeLevels}
+                          onGenerate={onGenerateLesson}
+                        />
                       </div>
-                      <SubtopicLessonGenerator
-                        curriculum={curriculum.code}
-                        subtopicId={subtopic.id}
-                        subtopicTitle={subtopic.title}
-                        gradeLevels={curriculum.gradeLevels}
-                        onGenerate={onGenerateLesson}
-                      />
+                      <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                        {(["easy", "medium", "hard"] as const).map((difficulty) => (
+                          <BarMeter
+                            key={difficulty}
+                            value={subtopic.questionCounts[difficulty]}
+                            max={SUBTOPIC_QUESTION_COVERAGE_TARGET}
+                            label={`${difficulty} (subtopic)`}
+                            showValue
+                          />
+                        ))}
+                      </div>
                     </li>
                   ))}
                 </ul>

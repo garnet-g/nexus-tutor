@@ -1,6 +1,7 @@
 import type { Curriculum } from "@/types/database";
 
 export const QUESTION_COVERAGE_TARGET = 20;
+export const SUBTOPIC_QUESTION_COVERAGE_TARGET = 10;
 
 export const GRADE_LEVELS_BY_CURRICULUM: Record<Curriculum, string[]> = {
   CBC: ["Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9"],
@@ -13,6 +14,11 @@ export interface ContentCoverageSubtopic {
   title: string;
   publishedLessonCount: number;
   draftLessonCount: number;
+  questionCounts: {
+    easy: number;
+    medium: number;
+    hard: number;
+  };
 }
 
 export interface ContentCoverageTopic {

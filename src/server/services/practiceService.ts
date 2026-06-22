@@ -9,9 +9,25 @@ import {
   averageTopicMastery,
   computeMasteryUpdates,
 } from "@/lib/mastery/masteryEngine";
+import {
+  isTopicVisibleForGrade,
+  TIER1_SUBJECT_CODES,
+} from "@/lib/curriculum/contentModel";
+import {
+  emptyQuestionCounts,
+  incrementQuestionCount,
+  MIN_QUESTIONS_TO_START_PRACTICE,
+  nodeNeedsContent,
+  practiceReadyByDifficulty,
+} from "@/lib/curriculum/practiceCoverage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { unwrapSupabaseRelation } from "@/lib/utils";
 import type { StudentProfile } from "@/types/database";
+import type {
+  PracticeCurriculumSubject,
+  PracticeCurriculumSubtopic,
+  PracticeCurriculumTopic,
+} from "@/types/practice";
 import { awardStudyActivity } from "@/server/services/studyActivityService";
 
 function calculateLevel(totalXp: number): number {
@@ -166,43 +182,349 @@ async function recalculateHealthScore(
   return { healthScore, predictedGrade };
 }
 
+async function getCurriculumId(curriculum: StudentProfile["curriculum"]) {
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("curricula")
+    .select("id")
+    .eq("code", curriculum)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  return data?.id ?? null;
+}
+
+async function resolveStudentGradeSortOrder(
+  curriculum: StudentProfile["curriculum"],
+  gradeLevel: string,
+): Promise<number | null> {
+  const normalized = gradeLevel.trim();
+  if (!normalized) {
+    return null;
+  }
+
+  const admin = createAdminClient();
+  const curriculumId = await getCurriculumId(curriculum);
+  if (!curriculumId) {
+    return null;
+  }
+
+  const { data: byDisplayName } = await admin
+    .from("grade_levels")
+    .select("sort_order")
+    .eq("curriculum_id", curriculumId)
+    .eq("is_active", true)
+    .eq("display_name", normalized)
+    .maybeSingle();
+
+  if (byDisplayName) {
+    return byDisplayName.sort_order;
+  }
+
+  const normalizedCode = normalized.toLowerCase().replace(/\s+/g, "_");
+  const { data: byCode } = await admin
+    .from("grade_levels")
+    .select("sort_order")
+    .eq("curriculum_id", curriculumId)
+    .eq("is_active", true)
+    .eq("code", normalizedCode)
+    .maybeSingle();
+
+  return byCode?.sort_order ?? null;
+}
+
+type PracticeTopicRow = {
+  id: string;
+  title: string;
+  subject_id: string;
+  min_grade_sort_order: number | null;
+  subjects: { curriculum_id: string; code: string } | Array<{ curriculum_id: string; code: string }>;
+};
+
+async function validatePracticeTopic(
+  profile: StudentProfile,
+  topicId: string,
+): Promise<PracticeTopicRow> {
+  const admin = createAdminClient();
+  const curriculumId = await getCurriculumId(profile.curriculum);
+
+  if (!curriculumId) {
+    throw new Error("NOT_FOUND");
+  }
+
+  const { data: topic, error } = await admin
+    .from("topics")
+    .select("id, title, subject_id, min_grade_sort_order, subjects(curriculum_id, code)")
+    .eq("id", topicId)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error || !topic) {
+    throw new Error("NOT_FOUND");
+  }
+
+  const subject = unwrapSupabaseRelation(topic.subjects);
+  if (!subject || subject.curriculum_id !== curriculumId) {
+    throw new Error("NOT_FOUND");
+  }
+
+  const studentGradeSortOrder = await resolveStudentGradeSortOrder(
+    profile.curriculum,
+    profile.grade_level,
+  );
+
+  if (
+    !isTopicVisibleForGrade(topic.min_grade_sort_order ?? 1, studentGradeSortOrder)
+  ) {
+    throw new Error("NOT_FOUND");
+  }
+
+  return topic as PracticeTopicRow;
+}
+
+async function validatePracticeSubtopic(topicId: string, subtopicId: string) {
+  const admin = createAdminClient();
+  const { data: subtopic, error } = await admin
+    .from("subtopics")
+    .select("id, title, topic_id")
+    .eq("id", subtopicId)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error || !subtopic || subtopic.topic_id !== topicId) {
+    throw new Error("INVALID_SUBTOPIC");
+  }
+
+  return subtopic;
+}
+
+function isPublishableQuestion(row: {
+  correct_answer: unknown;
+  explanation: string | null;
+}) {
+  if (row.correct_answer === null || row.correct_answer === undefined) {
+    return false;
+  }
+
+  return Boolean(row.explanation?.trim());
+}
+
+export async function listPracticeCurriculumTree(
+  curriculum: StudentProfile["curriculum"],
+  gradeLevel: string,
+  studentId: string,
+): Promise<PracticeCurriculumSubject[]> {
+  const admin = createAdminClient();
+  const curriculumId = await getCurriculumId(curriculum);
+
+  if (!curriculumId) {
+    return [];
+  }
+
+  const studentGradeSortOrder = await resolveStudentGradeSortOrder(curriculum, gradeLevel);
+
+  const { data: subjects } = await admin
+    .from("subjects")
+    .select("id, code, name")
+    .eq("curriculum_id", curriculumId)
+    .eq("is_active", true)
+    .in("code", [...TIER1_SUBJECT_CODES])
+    .order("name", { ascending: true });
+
+  if (!subjects?.length) {
+    return [];
+  }
+
+  const subjectIds = subjects.map((subject) => subject.id);
+  const { data: topics } = await admin
+    .from("topics")
+    .select("id, code, title, sort_order, subject_id, min_grade_sort_order")
+    .in("subject_id", subjectIds)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  const visibleTopics = (topics ?? []).filter((topic) =>
+    isTopicVisibleForGrade(topic.min_grade_sort_order ?? 1, studentGradeSortOrder),
+  );
+
+  if (!visibleTopics.length) {
+    return subjects.map((subject) => ({
+      id: subject.id,
+      code: subject.code,
+      name: subject.name,
+      topics: [],
+    }));
+  }
+
+  const topicIds = visibleTopics.map((topic) => topic.id);
+  const { data: subtopics } = await admin
+    .from("subtopics")
+    .select("id, code, title, sort_order, topic_id")
+    .in("topic_id", topicIds)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  const subtopicIds = (subtopics ?? []).map((subtopic) => subtopic.id);
+  const { data: lessons } = subtopicIds.length
+    ? await admin
+        .from("lessons")
+        .select("subtopic_id")
+        .in("subtopic_id", subtopicIds)
+        .eq("is_active", true)
+        .eq("review_status", "published")
+    : { data: [] };
+
+  const lessonCountBySubtopic = new Map<string, number>();
+  for (const lesson of lessons ?? []) {
+    lessonCountBySubtopic.set(
+      lesson.subtopic_id,
+      (lessonCountBySubtopic.get(lesson.subtopic_id) ?? 0) + 1,
+    );
+  }
+
+  const { data: questionRows } = await admin
+    .from("practice_questions")
+    .select("topic_id, subtopic_id, difficulty, correct_answer, explanation")
+    .in("topic_id", topicIds)
+    .eq("is_active", true)
+    .eq("review_status", "published");
+
+  const topicQuestionCounts = new Map<string, ReturnType<typeof emptyQuestionCounts>>();
+  const subtopicQuestionCounts = new Map<string, ReturnType<typeof emptyQuestionCounts>>();
+
+  for (const question of questionRows ?? []) {
+    if (!isPublishableQuestion(question)) {
+      continue;
+    }
+
+    const topicCounts = topicQuestionCounts.get(question.topic_id) ?? emptyQuestionCounts();
+    topicQuestionCounts.set(
+      question.topic_id,
+      incrementQuestionCount(topicCounts, question.difficulty),
+    );
+
+    if (question.subtopic_id) {
+      const subtopicCounts =
+        subtopicQuestionCounts.get(question.subtopic_id) ?? emptyQuestionCounts();
+      subtopicQuestionCounts.set(
+        question.subtopic_id,
+        incrementQuestionCount(subtopicCounts, question.difficulty),
+      );
+    }
+  }
+
+  const { data: masteryRows } = await admin
+    .from("topic_mastery")
+    .select("topic_id, mastery_percentage")
+    .eq("student_id", studentId);
+
+  const masteryByTopicId = new Map(
+    (masteryRows ?? []).map((row) => [row.topic_id, Number(row.mastery_percentage)]),
+  );
+
+  const subtopicsByTopic = new Map<string, PracticeCurriculumSubtopic[]>();
+  for (const subtopic of subtopics ?? []) {
+    const questionCounts = subtopicQuestionCounts.get(subtopic.id) ?? emptyQuestionCounts();
+    const entry: PracticeCurriculumSubtopic = {
+      id: subtopic.id,
+      code: subtopic.code,
+      title: subtopic.title,
+      lessonCount: lessonCountBySubtopic.get(subtopic.id) ?? 0,
+      questionCounts,
+      practiceReady: practiceReadyByDifficulty(questionCounts),
+      needsContent: nodeNeedsContent(questionCounts),
+    };
+    const list = subtopicsByTopic.get(subtopic.topic_id) ?? [];
+    list.push(entry);
+    subtopicsByTopic.set(subtopic.topic_id, list);
+  }
+
+  const topicsBySubject = new Map<string, PracticeCurriculumTopic[]>();
+  for (const topic of visibleTopics) {
+    const questionCounts = topicQuestionCounts.get(topic.id) ?? emptyQuestionCounts();
+    const topicSubtopics = subtopicsByTopic.get(topic.id) ?? [];
+    const lessonCount = topicSubtopics.reduce(
+      (total, subtopic) => total + subtopic.lessonCount,
+      0,
+    );
+
+    const entry: PracticeCurriculumTopic = {
+      id: topic.id,
+      code: topic.code,
+      title: topic.title,
+      masteryPercentage: masteryByTopicId.get(topic.id) ?? 0,
+      lessonCount,
+      questionCounts,
+      practiceReady: practiceReadyByDifficulty(questionCounts),
+      needsContent: nodeNeedsContent(questionCounts),
+      subtopics: topicSubtopics,
+    };
+
+    const list = topicsBySubject.get(topic.subject_id) ?? [];
+    list.push(entry);
+    topicsBySubject.set(topic.subject_id, list);
+  }
+
+  return subjects.map((subject) => ({
+    id: subject.id,
+    code: subject.code,
+    name: subject.name,
+    topics: topicsBySubject.get(subject.id) ?? [],
+  }));
+}
+
 export async function startPracticeSession(
   profile: StudentProfile,
   input: {
     topicId: string;
+    subtopicId?: string;
     difficulty: "easy" | "medium" | "hard";
     questionCount: number;
   },
 ) {
   const admin = createAdminClient();
+  const topic = await validatePracticeTopic(profile, input.topicId);
 
-  const { data: topic, error: topicError } = await admin
-    .from("topics")
-    .select("id, title")
-    .eq("id", input.topicId)
-    .maybeSingle();
-
-  if (topicError || !topic) {
-    throw new Error("NOT_FOUND");
+  let subtopicTitle: string | null = null;
+  if (input.subtopicId) {
+    const subtopic = await validatePracticeSubtopic(input.topicId, input.subtopicId);
+    subtopicTitle = subtopic.title;
   }
 
-  const { data: questionRows, error: questionError } = await admin
+  let questionQuery = admin
     .from("practice_questions")
-    .select("id, question_text, question_type, options, difficulty, explanation")
+    .select(
+      "id, question_text, question_type, options, difficulty, explanation, correct_answer",
+    )
     .eq("topic_id", input.topicId)
     .eq("difficulty", input.difficulty)
     .eq("is_active", true)
-    .limit(input.questionCount * 3);
+    .eq("review_status", "published")
+    .not("correct_answer", "is", null)
+    .not("explanation", "is", null);
+
+  if (input.subtopicId) {
+    questionQuery = questionQuery.eq("subtopic_id", input.subtopicId);
+  }
+
+  const { data: questionRows, error: questionError } = await questionQuery.limit(
+    input.questionCount * 3,
+  );
 
   if (questionError) {
     throw new Error(questionError.message);
   }
 
-  const shuffled = [...(questionRows ?? [])].sort(() => Math.random() - 0.5);
+  const publishable = (questionRows ?? []).filter((question) =>
+    isPublishableQuestion(question),
+  );
+  const shuffled = [...publishable].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, input.questionCount);
 
-  if (selected.length === 0) {
-    throw new Error("NO_QUESTIONS");
+  if (selected.length < MIN_QUESTIONS_TO_START_PRACTICE) {
+    throw new Error(
+      input.subtopicId ? "NO_QUESTIONS_FOR_SUBTOPIC" : "NO_QUESTIONS_FOR_TOPIC",
+    );
   }
 
   const { data: session, error: sessionError } = await admin
@@ -224,14 +546,14 @@ export async function startPracticeSession(
   return {
     practiceSessionId: session.id,
     topicTitle: topic.title,
+    subtopicTitle,
     questions: selected.map((question) => ({
       practiceQuestionId: question.id,
       questionText: question.question_text,
       questionType: question.question_type,
       options: question.options,
       difficulty: question.difficulty,
-      explanation:
-        question.explanation ?? "Review the core concept for this topic.",
+      explanation: question.explanation ?? "Review the core concept for this topic.",
     })),
   };
 }

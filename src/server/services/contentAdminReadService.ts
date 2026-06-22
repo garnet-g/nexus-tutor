@@ -18,6 +18,7 @@ const MATHEMATICS_SUBJECT_CODE = "mathematics";
 export {
   GRADE_LEVELS_BY_CURRICULUM,
   QUESTION_COVERAGE_TARGET,
+  SUBTOPIC_QUESTION_COVERAGE_TARGET,
 } from "@/types/contentAdmin";
 
 export type {
@@ -118,7 +119,7 @@ export async function getMathematicsContentCoverage(): Promise<
 
     const { data: questions } = await admin
       .from("practice_questions")
-      .select("topic_id, difficulty")
+      .select("topic_id, subtopic_id, difficulty")
       .in("topic_id", topicIds)
       .eq("review_status", "published")
       .eq("is_active", true);
@@ -127,17 +128,34 @@ export async function getMathematicsContentCoverage(): Promise<
       string,
       { easy: number; medium: number; hard: number }
     >();
+    const questionsBySubtopic = new Map<
+      string,
+      { easy: number; medium: number; hard: number }
+    >();
 
     for (const question of questions ?? []) {
-      const counts = questionsByTopic.get(question.topic_id) ?? emptyQuestionCounts();
+      const topicCounts = questionsByTopic.get(question.topic_id) ?? emptyQuestionCounts();
       if (question.difficulty === "easy") {
-        counts.easy += 1;
+        topicCounts.easy += 1;
       } else if (question.difficulty === "medium") {
-        counts.medium += 1;
+        topicCounts.medium += 1;
       } else if (question.difficulty === "hard") {
-        counts.hard += 1;
+        topicCounts.hard += 1;
       }
-      questionsByTopic.set(question.topic_id, counts);
+      questionsByTopic.set(question.topic_id, topicCounts);
+
+      if (question.subtopic_id) {
+        const subtopicCounts =
+          questionsBySubtopic.get(question.subtopic_id) ?? emptyQuestionCounts();
+        if (question.difficulty === "easy") {
+          subtopicCounts.easy += 1;
+        } else if (question.difficulty === "medium") {
+          subtopicCounts.medium += 1;
+        } else if (question.difficulty === "hard") {
+          subtopicCounts.hard += 1;
+        }
+        questionsBySubtopic.set(question.subtopic_id, subtopicCounts);
+      }
     }
 
     const subtopicsByTopic = new Map<string, ContentCoverageSubtopic[]>();
@@ -148,6 +166,7 @@ export async function getMathematicsContentCoverage(): Promise<
         title: subtopic.title,
         publishedLessonCount: publishedBySubtopic.get(subtopic.id) ?? 0,
         draftLessonCount: draftBySubtopic.get(subtopic.id) ?? 0,
+        questionCounts: questionsBySubtopic.get(subtopic.id) ?? emptyQuestionCounts(),
       };
       const list = subtopicsByTopic.get(subtopic.topic_id) ?? [];
       list.push(entry);
