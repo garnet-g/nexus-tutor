@@ -151,6 +151,7 @@ export async function callNexModel(
 ): Promise<NexModelCallResult> {
   const hasGemini = Boolean(process.env.GEMINI_API_KEY);
   const hasOpenAI = Boolean(process.env.OPENAI_API_KEY);
+  const allowOpenAIFallback = input.allowOpenAIFallback ?? true;
 
   if (!hasGemini && !hasOpenAI) {
     return {
@@ -165,13 +166,15 @@ export async function callNexModel(
         content: await callGemini(input),
         provider: "gemini",
       };
-    } catch {
-      if (hasOpenAI) {
+    } catch (error) {
+      if (allowOpenAIFallback && hasOpenAI) {
         return {
           content: await callOpenAI(input),
           provider: "openai",
         };
       }
+
+      throw error;
     }
   }
 

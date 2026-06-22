@@ -408,6 +408,7 @@ async function callModelForLesson(
       systemPrompt,
       messages: [{ role: "student", content: userPrompt + retrySuffix }],
       maxTokens: 4000,
+      allowOpenAIFallback: false,
     });
 
     try {
@@ -458,6 +459,7 @@ async function callModelForQuestions(
       systemPrompt,
       messages: [{ role: "student", content: userPrompt + retrySuffix }],
       maxTokens: 4000,
+      allowOpenAIFallback: false,
     });
 
     try {

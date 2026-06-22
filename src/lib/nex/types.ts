@@ -80,6 +80,7 @@ export interface NexModelCallInput {
   systemPrompt: string;
   messages: NexMessageTurn[];
   maxTokens?: number;
+  allowOpenAIFallback?: boolean;
 }
 
 export interface NexModelCallResult {
