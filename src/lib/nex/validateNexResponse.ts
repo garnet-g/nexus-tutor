@@ -18,7 +18,7 @@ const FINAL_ANSWER_PATTERNS = [
 ];
 
 const OUT_OF_SCOPE_DECLINE_PATTERNS = [
-  /\b(history|kiswahili|cambridge|french|german)\b/i,
+  /\b(history|cambridge|french|german)\b/i,
 ];
 
 export const HOMEWORK_SAFE_FALLBACK =
