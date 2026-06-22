@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 
 
-type UserRole = "student" | "parent" | "super_admin";
+type UserRole = "student" | "parent" | "super_admin" | "support";
 
 
 
@@ -104,7 +104,7 @@ async function getAuthContext(request: NextRequest, response: NextResponse) {
 
 
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
@@ -164,6 +164,8 @@ export async function middleware(request: NextRequest) {
 
     pathname.startsWith("/progress") ||
 
+    pathname.startsWith("/revision") ||
+
     pathname.startsWith("/study-plan") ||
 
     pathname.startsWith("/profile");
@@ -196,6 +198,8 @@ export async function middleware(request: NextRequest) {
 
       pathname.startsWith("/progress") ||
 
+      pathname.startsWith("/revision") ||
+
       pathname.startsWith("/study-plan"));
 
 
@@ -204,7 +208,7 @@ export async function middleware(request: NextRequest) {
 
     const redirectPath =
 
-      role === "super_admin"
+      role === "super_admin" || role === "support"
 
         ? "/admin/platform-settings"
 
@@ -336,7 +340,7 @@ export async function middleware(request: NextRequest) {
 
 
 
-    if (role !== "super_admin") {
+    if (role !== "super_admin" && role !== "support") {
 
       return NextResponse.redirect(new URL("/login", request.url));
 
@@ -373,6 +377,8 @@ export const config = {
     "/exam-simulator/:path*",
 
     "/progress/:path*",
+
+    "/revision/:path*",
 
     "/study-plan/:path*",
 

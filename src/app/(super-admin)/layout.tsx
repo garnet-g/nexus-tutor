@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
+import { AdminMobileNav, AdminSidebarNav } from "@/features/admin/components/AdminNav";
 import { signOutAction } from "@/server/actions/authActions";
 
 export default function SuperAdminLayout({
@@ -9,53 +10,74 @@ export default function SuperAdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="dark flex min-h-full flex-col bg-background text-foreground">
-      <header className="sticky top-0 z-20 border-b border-border bg-card/90 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-6">
-            <Link
-              href="/admin/platform-settings"
-              className="font-heading text-lg font-semibold tracking-tight"
-            >
-              Nexus Admin
-            </Link>
-            <nav className="flex gap-1 text-sm">
+    <div className="dark min-h-screen bg-nexus-background text-foreground">
+      <div className="flex min-h-screen">
+        {/* Sidebar (md and up) */}
+        <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-nexus-border bg-nexus-sunken md:flex">
+          <div className="flex h-16 items-center gap-2.5 border-b border-nexus-border px-5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary font-heading text-base font-bold text-primary-foreground">
+              N
+            </span>
+            <div className="leading-tight">
+              <p className="font-heading text-sm font-semibold tracking-tight">
+                Nexus
+              </p>
+              <p className="text-xs text-muted-foreground">Admin console</p>
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto px-3 py-4">
+            <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              Manage
+            </p>
+            <AdminSidebarNav />
+          </div>
+          <div className="border-t border-nexus-border px-3 py-3">
+            <p className="px-3 pb-1 text-xs text-muted-foreground">
+              Signed in as super admin
+            </p>
+            <form action={signOutAction} className="px-1">
+              <Button
+                type="submit"
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start text-muted-foreground hover:text-foreground"
+              >
+                Sign out
+              </Button>
+            </form>
+          </div>
+        </aside>
+
+        {/* Main column */}
+        <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+          {/* Mobile top bar */}
+          <header className="sticky top-0 z-20 border-b border-nexus-border bg-nexus-sunken/95 backdrop-blur-md md:hidden">
+            <div className="flex h-14 items-center justify-between px-4">
               <Link
                 href="/admin/platform-settings"
-                className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="flex items-center gap-2 font-heading text-base font-semibold tracking-tight"
               >
-                Platform settings
+                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
+                  N
+                </span>
+                Nexus Admin
               </Link>
-              <Link
-                href="/admin/beta-invites"
-                className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                Beta invites
-              </Link>
-              <Link
-                href="/admin/content"
-                className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                Content
-              </Link>
-              <Link
-                href="/admin/usage-stats"
-                className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                Usage stats
-              </Link>
-            </nav>
-          </div>
-          <form action={signOutAction}>
-            <Button type="submit" variant="outline" size="sm">
-              Sign out
-            </Button>
-          </form>
+              <form action={signOutAction}>
+                <Button type="submit" variant="outline" size="sm">
+                  Sign out
+                </Button>
+              </form>
+            </div>
+            <div className="px-3 pb-2">
+              <AdminMobileNav />
+            </div>
+          </header>
+
+          <main className="flex-1 px-5 py-7 sm:px-8 sm:py-9">
+            <div className="mx-auto w-full max-w-6xl space-y-7">{children}</div>
+          </main>
         </div>
-      </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
-        {children}
-      </main>
+      </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import { updateDraftQuestionRequestSchema } from "@/schemas/contentGenerationSchemas";
+import { recordAdminAudit } from "@/server/services/adminAuditService";
 import { updateDraftQuestion } from "@/server/services/contentGenerationService";
 import { requireSuperAdmin } from "@/server/services/superAdminGuard";
 
@@ -65,6 +66,19 @@ export async function PATCH(request: Request) {
 
   try {
     const result = await updateDraftQuestion(parsed.data);
+    await recordAdminAudit({
+      actorUserId: auth.userId,
+      actorRole: "super_admin",
+      action: "content.question_draft.update",
+      targetType: "draft_question",
+      targetId: parsed.data.id,
+      metadata: {
+        questionId: parsed.data.id,
+        questionType: parsed.data.questionType,
+        difficulty: parsed.data.difficulty,
+        optionCount: parsed.data.options.length,
+      },
+    });
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     const mapped = mapServiceError(error);

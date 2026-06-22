@@ -3,6 +3,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import { updateDraftLessonRequestSchema } from "@/schemas/contentGenerationSchemas";
+import { recordAdminAudit } from "@/server/services/adminAuditService";
 import { updateDraftLesson } from "@/server/services/contentGenerationService";
 import { requireSuperAdmin } from "@/server/services/superAdminGuard";
 
@@ -65,6 +66,19 @@ export async function PATCH(request: Request) {
 
   try {
     const result = await updateDraftLesson(parsed.data);
+    await recordAdminAudit({
+      actorUserId: auth.userId,
+      actorRole: "super_admin",
+      action: "content.lesson_draft.update",
+      targetType: "draft_lesson",
+      targetId: parsed.data.id,
+      metadata: {
+        lessonId: parsed.data.id,
+        title: parsed.data.title,
+        blockCount: parsed.data.blocks.length,
+        quizQuestionCount: parsed.data.shortQuiz?.questions.length ?? 0,
+      },
+    });
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     const mapped = mapServiceError(error);

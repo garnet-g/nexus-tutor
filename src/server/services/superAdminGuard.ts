@@ -9,11 +9,24 @@ function getRoleFromAppMetadata(
   return typeof role === "string" ? role : null;
 }
 
+export const ADMIN_ROLES = ["super_admin", "support"] as const;
+export type AdminRole = (typeof ADMIN_ROLES)[number];
+
+export type AdminRoleAuthResult =
+  | { ok: true; userId: string; role: AdminRole }
+  | { ok: false; status: 401 | 403; message: string };
+
 export type SuperAdminAuthResult =
   | { ok: true; userId: string }
   | { ok: false; status: 401 | 403; message: string };
 
-export async function requireSuperAdmin(): Promise<SuperAdminAuthResult> {
+function isAdminRole(role: string | null): role is AdminRole {
+  return role !== null && (ADMIN_ROLES as readonly string[]).includes(role);
+}
+
+export async function requireAdminRole(
+  allowedRoles: readonly AdminRole[],
+): Promise<AdminRoleAuthResult> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -28,7 +41,9 @@ export async function requireSuperAdmin(): Promise<SuperAdminAuthResult> {
     };
   }
 
-  if (getRoleFromAppMetadata(user.app_metadata) !== "super_admin") {
+  const role = getRoleFromAppMetadata(user.app_metadata);
+
+  if (!isAdminRole(role) || !allowedRoles.includes(role)) {
     return {
       ok: false,
       status: 403,
@@ -36,5 +51,15 @@ export async function requireSuperAdmin(): Promise<SuperAdminAuthResult> {
     };
   }
 
-  return { ok: true, userId: user.id };
+  return { ok: true, userId: user.id, role };
+}
+
+export async function requireSuperAdmin(): Promise<SuperAdminAuthResult> {
+  const result = await requireAdminRole(["super_admin"]);
+
+  if (!result.ok) {
+    return { ok: false, status: result.status, message: result.message };
+  }
+
+  return { ok: true, userId: result.userId };
 }

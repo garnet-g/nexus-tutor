@@ -1,8 +1,11 @@
+import { redirect } from "next/navigation";
+
 import { PlatformSettingsEditor } from "@/features/admin/components/PlatformSettingsEditor";
 
 import { getEffectiveSubscriptionConfigWithFallback } from "@/lib/platform/getPlatformSettings";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireSuperAdmin } from "@/server/services/superAdminGuard";
 
 
 
@@ -31,6 +34,11 @@ type AuditLogEntry = {
 
 
 export default async function PlatformSettingsPage() {
+
+  const auth = await requireSuperAdmin();
+  if (!auth.ok) {
+    redirect("/login");
+  }
 
   const config = await getEffectiveSubscriptionConfigWithFallback();
 

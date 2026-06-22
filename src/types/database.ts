@@ -1,6 +1,6 @@
 import type { LearningPreferences } from "@/schemas/profileSchemas";
 
-export type UserRole = "student" | "parent" | "super_admin";
+export type UserRole = "student" | "parent" | "super_admin" | "support";
 
 export type Curriculum = "CBC" | "KCSE";
 
