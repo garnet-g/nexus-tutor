@@ -21,13 +21,13 @@ created: 2026-06-22
 |-------|-------|--------|
 | 0 | Generation-scope constant | COMPLETE |
 | 1 | Subject + skeleton seed (Kiswahili, Chemistry, + KCSE Math/English fill-out) | COMPLETE |
-| 2 | Generalize generation + admin-read services | PENDING |
-| 3 | Additive lesson block types | PENDING |
-| 4 | Generalize seed-export pipeline | PENDING |
-| 5 | Unblock Nex tutor | PENDING |
-| 6 | Surface subjects in student UI | PENDING |
-| 6.5 | Empty-node gating (prod-ready visibility filter) | PENDING |
-| 7 | Generate/review/publish/export content | PENDING |
+| 2 | Generalize generation + admin-read services | COMPLETE |
+| 3 | Additive lesson block types | COMPLETE |
+| 4 | Generalize seed-export pipeline | COMPLETE |
+| 5 | Unblock Nex tutor | COMPLETE |
+| 6 | Surface subjects in student UI | COMPLETE |
+| 6.5 | Empty-node gating (prod-ready visibility filter) | COMPLETE |
+| 7 | Generate/review/publish/export content | PENDING (human gate) |
 | 8 | Production-readiness QA gate | PENDING |
 
 ## Open gates

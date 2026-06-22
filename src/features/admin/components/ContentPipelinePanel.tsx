@@ -12,6 +12,7 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { ToastProvider, useToast } from "@/components/ui/Toast";
 import { BarMeter } from "@/components/widgets/Charts";
 import { LessonRenderer } from "@/features/learn/components/LessonRenderer";
+import type { ContentCoverageSubject } from "@/server/services/contentAdminReadService";
 import {
   QUESTION_COVERAGE_TARGET,
   SUBTOPIC_QUESTION_COVERAGE_TARGET,
@@ -25,7 +26,7 @@ import { cn } from "@/lib/utils";
 
 interface ContentPipelinePanelProps {
   adminUserId: string;
-  initialCoverage: ContentCoverageCurriculum[];
+  initialSubjects: ContentCoverageSubject[];
   initialDrafts: ContentDraftQueueItem[];
 }
 
@@ -64,7 +65,7 @@ interface DraftLessonDetail {
 function mapGenerateError(code?: string, fallback?: string) {
   switch (code) {
     case "SCOPE_VIOLATION":
-      return "Content generation is limited to Mathematics (V1).";
+      return "Content generation is not enabled for this subject.";
     case "GENERATION_INVALID_OUTPUT":
       return "The model returned invalid JSON. No draft was saved.";
     case "GENERATION_DEDUPED":
@@ -77,13 +78,22 @@ function mapGenerateError(code?: string, fallback?: string) {
 }
 
 function ContentPipelinePanelInner({
-  initialCoverage,
+  initialSubjects,
   initialDrafts,
 }: ContentPipelinePanelProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"coverage" | "review">("coverage");
-  const [coverage, setCoverage] = useState(initialCoverage);
+  const [subjects, setSubjects] = useState(initialSubjects);
+  const [selectedSubjectCode, setSelectedSubjectCode] = useState(
+    initialSubjects[0]?.code ?? "mathematics",
+  );
+  const coverage = useMemo(
+    () => subjects.find((subject) => subject.code === selectedSubjectCode)?.curricula ?? [],
+    [subjects, selectedSubjectCode],
+  );
+  const selectedSubjectName =
+    subjects.find((subject) => subject.code === selectedSubjectCode)?.name ?? "Subject";
   const [drafts, setDrafts] = useState(initialDrafts);
   const [pendingGenerate, setPendingGenerate] = useState<PendingGenerate | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -122,13 +132,15 @@ function ContentPipelinePanelInner({
 
   async function refreshData() {
     const [coverageResponse, draftsResponse] = await Promise.all([
-      fetch("/api/admin/content/coverage"),
+      fetch("/api/admin/content/coverage?all=true"),
       fetch("/api/admin/content/drafts"),
     ]);
 
     const coveragePayload = (await coverageResponse.json()) as {
       success: boolean;
-      data?: ContentCoverageCurriculum[];
+      data?:
+        | ContentCoverageCurriculum[]
+        | { subjects: ContentCoverageSubject[] };
     };
     const draftsPayload = (await draftsResponse.json()) as {
       success: boolean;
@@ -136,7 +148,17 @@ function ContentPipelinePanelInner({
     };
 
     if (coveragePayload.success && coveragePayload.data) {
-      setCoverage(coveragePayload.data);
+      if (Array.isArray(coveragePayload.data)) {
+        setSubjects((current) =>
+          current.map((subject) =>
+            subject.code === selectedSubjectCode
+              ? { ...subject, curricula: coveragePayload.data as ContentCoverageCurriculum[] }
+              : subject,
+          ),
+        );
+      } else if ("subjects" in coveragePayload.data) {
+        setSubjects(coveragePayload.data.subjects);
+      }
     }
 
     if (draftsPayload.success && draftsPayload.data) {
@@ -406,8 +428,26 @@ function ContentPipelinePanelInner({
       <div className="space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight">Content pipeline</h1>
         <p className="text-muted-foreground">
-          Generate Mathematics drafts, review them here, then publish. Students only see published content.
+          Generate lesson and question drafts by subject, review them here, then publish. Students only see published content on topics that meet readiness thresholds.
         </p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Label htmlFor="content-subject" className="sr-only">
+          Subject
+        </Label>
+        <select
+          id="content-subject"
+          className="min-h-11 rounded-xl border border-nexus-border bg-background px-3 text-sm"
+          value={selectedSubjectCode}
+          onChange={(event) => setSelectedSubjectCode(event.target.value)}
+        >
+          {subjects.map((subject) => (
+            <option key={subject.code} value={subject.code}>
+              {subject.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="Content pipeline sections">
@@ -471,6 +511,7 @@ function ContentPipelinePanelInner({
       {activeTab === "coverage" ? (
         <CoverageBrowser
           coverage={coverage}
+          subjectName={selectedSubjectName}
           onGenerateLesson={(input) => setPendingGenerate(input)}
           onGenerateQuestions={(input) => setPendingGenerate(input)}
         />
@@ -508,18 +549,20 @@ function ContentPipelinePanelInner({
 
 function CoverageBrowser({
   coverage,
+  subjectName,
   onGenerateLesson,
   onGenerateQuestions,
 }: {
   coverage: ContentCoverageCurriculum[];
+  subjectName: string;
   onGenerateLesson: (input: Extract<PendingGenerate, { type: "lesson" }>) => void;
   onGenerateQuestions: (input: Extract<PendingGenerate, { type: "questions" }>) => void;
 }) {
   if (!coverage.length) {
     return (
       <EmptyState
-        title="No Mathematics coverage found"
-        description="Seed the database with Mathematics topics before generating content."
+        title={`No ${subjectName} coverage found`}
+        description={`Seed ${subjectName} topics before generating content.`}
       />
     );
   }
@@ -529,7 +572,7 @@ function CoverageBrowser({
       {coverage.map((curriculum) => (
         <SectionCard
           key={curriculum.code}
-          title={`${curriculum.code} Mathematics`}
+          title={`${curriculum.code} ${subjectName}`}
           description={`Published vs draft lessons and question bank coverage per difficulty (topic target ≥${QUESTION_COVERAGE_TARGET}, subtopic preferred ≥${SUBTOPIC_QUESTION_COVERAGE_TARGET}).`}
         >
           <div className="space-y-4">
@@ -540,7 +583,12 @@ function CoverageBrowser({
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <h3 className="font-heading text-base font-semibold">{topic.title}</h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-heading text-base font-semibold">{topic.title}</h3>
+                      <span className="rounded-full bg-nexus-sunken px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                        {topic.readinessLabel.replace("_", "-")}
+                      </span>
+                    </div>
                     <p className="mt-1 text-sm text-muted-foreground">
                       Lessons: {topic.publishedLessonCount} published · {topic.draftLessonCount} draft
                     </p>
@@ -905,6 +953,48 @@ function ReviewQueue(props: {
                                   onUpdateBlock(index, { ...block, answer: event.target.value })
                                 }
                                 placeholder="Answer"
+                              />
+                            </div>
+                          ) : block.type === "chemical_equation" ? (
+                            <div className="space-y-2">
+                              <textarea
+                                className="min-h-20 w-full rounded-xl border border-nexus-border bg-nexus-surface px-3 py-2 text-sm"
+                                value={block.equation}
+                                onChange={(event) =>
+                                  onUpdateBlock(index, { ...block, equation: event.target.value })
+                                }
+                                placeholder="Equation (KaTeX)"
+                              />
+                              <Input
+                                value={block.caption ?? ""}
+                                onChange={(event) =>
+                                  onUpdateBlock(index, {
+                                    ...block,
+                                    caption: event.target.value || undefined,
+                                  })
+                                }
+                                placeholder="Caption (optional)"
+                              />
+                            </div>
+                          ) : block.type === "comprehension_passage" ? (
+                            <div className="space-y-2">
+                              <Input
+                                value={block.title ?? ""}
+                                onChange={(event) =>
+                                  onUpdateBlock(index, {
+                                    ...block,
+                                    title: event.target.value || undefined,
+                                  })
+                                }
+                                placeholder="Passage title (optional)"
+                              />
+                              <textarea
+                                className="min-h-28 w-full rounded-xl border border-nexus-border bg-nexus-surface px-3 py-2 text-sm"
+                                value={block.passage}
+                                onChange={(event) =>
+                                  onUpdateBlock(index, { ...block, passage: event.target.value })
+                                }
+                                placeholder="Passage text"
                               />
                             </div>
                           ) : (

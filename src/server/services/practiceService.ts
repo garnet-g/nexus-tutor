@@ -10,8 +10,9 @@ import {
   computeMasteryUpdates,
 } from "@/lib/mastery/masteryEngine";
 import {
+  ACTIVE_SUBJECT_CODES,
+  isTopicPracticeReady,
   isTopicVisibleForGrade,
-  TIER1_SUBJECT_CODES,
 } from "@/lib/curriculum/contentModel";
 import {
   emptyQuestionCounts,
@@ -328,7 +329,7 @@ export async function listPracticeCurriculumTree(
     .select("id, code, name")
     .eq("curriculum_id", curriculumId)
     .eq("is_active", true)
-    .in("code", [...TIER1_SUBJECT_CODES])
+    .in("code", [...ACTIVE_SUBJECT_CODES])
     .order("name", { ascending: true });
 
   if (!subjects?.length) {
@@ -442,6 +443,10 @@ export async function listPracticeCurriculumTree(
   const topicsBySubject = new Map<string, PracticeCurriculumTopic[]>();
   for (const topic of visibleTopics) {
     const questionCounts = topicQuestionCounts.get(topic.id) ?? emptyQuestionCounts();
+    if (!isTopicPracticeReady(questionCounts)) {
+      continue;
+    }
+
     const topicSubtopics = subtopicsByTopic.get(topic.id) ?? [];
     const lessonCount = topicSubtopics.reduce(
       (total, subtopic) => total + subtopic.lessonCount,
@@ -465,12 +470,14 @@ export async function listPracticeCurriculumTree(
     topicsBySubject.set(topic.subject_id, list);
   }
 
-  return subjects.map((subject) => ({
-    id: subject.id,
-    code: subject.code,
-    name: subject.name,
-    topics: topicsBySubject.get(subject.id) ?? [],
-  }));
+  return subjects
+    .map((subject) => ({
+      id: subject.id,
+      code: subject.code,
+      name: subject.name,
+      topics: topicsBySubject.get(subject.id) ?? [],
+    }))
+    .filter((subject) => subject.topics.length > 0);
 }
 
 export async function startPracticeSession(

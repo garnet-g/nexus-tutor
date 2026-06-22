@@ -9,6 +9,7 @@ import {
   type FormEvent,
 } from "react";
 
+import { ACTIVE_SUBJECT_CODES } from "@/lib/curriculum/contentModel";
 import { AsyncActionButton } from "@/components/ui/async-action-button";
 import { FieldError } from "@/components/ui/field-error";
 import { FormStatus } from "@/components/ui/form-status";
@@ -113,8 +114,13 @@ export function OnboardingForm() {
         <p className="font-medium">Beta expectations</p>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>
-            Nexus beta focuses on <strong>mathematics only</strong> — other subjects
-            will arrive in later releases.
+            Nexus covers{" "}
+            <strong>
+              {ACTIVE_SUBJECT_CODES.map(
+                (code) => code.charAt(0).toUpperCase() + code.slice(1),
+              ).join(", ")}
+            </strong>
+            . Empty topics stay hidden until lessons and practice banks are published.
           </li>
           <li>
             Study plans, streaks, and weekly reports use{" "}

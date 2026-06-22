@@ -32,6 +32,7 @@ export interface ContentCoverageTopic {
     medium: number;
     hard: number;
   };
+  readinessLabel: "NOT_READY" | "LEARN_READY" | "PRACTICE_READY" | "PROD_READY";
   subtopics: ContentCoverageSubtopic[];
 }
 

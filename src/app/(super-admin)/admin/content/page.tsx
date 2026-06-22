@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 
 import { ContentPipelinePanel } from "@/features/admin/components/ContentPipelinePanel";
 import {
+  getActiveSubjectsContentCoverage,
   getContentDraftQueue,
-  getMathematicsContentCoverage,
 } from "@/server/services/contentAdminReadService";
 import { requireSuperAdmin } from "@/server/services/superAdminGuard";
 
@@ -15,15 +15,15 @@ export default async function AdminContentPage() {
     redirect("/login");
   }
 
-  const [coverage, drafts] = await Promise.all([
-    getMathematicsContentCoverage(),
+  const [subjects, drafts] = await Promise.all([
+    getActiveSubjectsContentCoverage(),
     getContentDraftQueue(),
   ]);
 
   return (
     <ContentPipelinePanel
       adminUserId={auth.userId}
-      initialCoverage={coverage}
+      initialSubjects={subjects}
       initialDrafts={drafts}
     />
   );

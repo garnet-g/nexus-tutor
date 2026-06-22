@@ -5,6 +5,7 @@ import {
   MIN_PRACTICE_QUESTIONS_PER_TOPIC,
   MIN_TOPICS_PER_SUBJECT,
   TIER1_SUBJECT_CODES,
+  ACTIVE_SUBJECT_CODES,
 } from "@/lib/curriculum/contentModel";
 
 describe("curriculumService", () => {
@@ -12,6 +13,11 @@ describe("curriculumService", () => {
     expect(TIER1_SUBJECT_CODES).toEqual(["mathematics", "science", "english"]);
     expect(TIER1_SUBJECT_CODES).not.toContain("kiswahili");
     expect(TIER1_SUBJECT_CODES).not.toContain("cambridge");
+  });
+
+  it("extends active subject codes for tier 2 pipeline subjects", () => {
+    expect(ACTIVE_SUBJECT_CODES).toContain("kiswahili");
+    expect(ACTIVE_SUBJECT_CODES).toContain("chemistry");
   });
 
   it("allows topics at or one grade above the student", () => {
