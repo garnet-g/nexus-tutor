@@ -2,7 +2,9 @@ export type LessonBlockType =
   | "heading"
   | "paragraph"
   | "example"
-  | "tip";
+  | "tip"
+  | "chemical_equation"
+  | "comprehension_passage";
 
 export interface LessonHeadingBlock {
   type: "heading";
@@ -26,11 +28,25 @@ export interface LessonTipBlock {
   content: string;
 }
 
+export interface LessonChemicalEquationBlock {
+  type: "chemical_equation";
+  equation: string;
+  caption?: string;
+}
+
+export interface LessonComprehensionPassageBlock {
+  type: "comprehension_passage";
+  title?: string;
+  passage: string;
+}
+
 export type LessonContentBlock =
   | LessonHeadingBlock
   | LessonParagraphBlock
   | LessonExampleBlock
-  | LessonTipBlock;
+  | LessonTipBlock
+  | LessonChemicalEquationBlock
+  | LessonComprehensionPassageBlock;
 
 export interface LessonShortQuizQuestion {
   questionText: string;

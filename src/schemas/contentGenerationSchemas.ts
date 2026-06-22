@@ -22,11 +22,25 @@ const lessonTipBlockSchema = z.object({
   content: z.string().min(1),
 });
 
+const lessonChemicalEquationBlockSchema = z.object({
+  type: z.literal("chemical_equation"),
+  equation: z.string().min(1),
+  caption: z.string().min(1).optional(),
+});
+
+const lessonComprehensionPassageBlockSchema = z.object({
+  type: z.literal("comprehension_passage"),
+  title: z.string().min(1).optional(),
+  passage: z.string().min(1),
+});
+
 export const lessonBlockSchema = z.discriminatedUnion("type", [
   lessonHeadingBlockSchema,
   lessonParagraphBlockSchema,
   lessonExampleBlockSchema,
   lessonTipBlockSchema,
+  lessonChemicalEquationBlockSchema,
+  lessonComprehensionPassageBlockSchema,
 ]);
 
 export const lessonShortQuizQuestionSchema = z.object({

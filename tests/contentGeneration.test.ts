@@ -131,6 +131,32 @@ describe("contentGenerationSchemas", () => {
 
     expect(generatedQuestionSchema.safeParse(shortAnswer).success).toBe(true);
   });
+
+  it("accepts chemical_equation and comprehension_passage blocks", () => {
+    const lesson = generatedLessonSchema.parse({
+      title: "Acids and Bases",
+      estimatedMinutes: 12,
+      blocks: [
+        { type: "heading", content: "Acids" },
+        { type: "paragraph", content: "An acid releases H+ ions in water." },
+        {
+          type: "chemical_equation",
+          equation: "HCl + H_2O -> H_3O^+ + Cl^-",
+          caption: "Hydrochloric acid in water",
+        },
+        {
+          type: "comprehension_passage",
+          title: "Kifungu",
+          passage: "Juma aliamka asubuhi na mapema...",
+        },
+        { type: "tip", content: "Balance equations before checking states." },
+      ],
+    });
+
+    expect(lesson.blocks).toHaveLength(5);
+    expect(lessonBlockSchema.safeParse(lesson.blocks[2]).success).toBe(true);
+    expect(lessonBlockSchema.safeParse(lesson.blocks[3]).success).toBe(true);
+  });
 });
 
 describe("draft insert contract", () => {

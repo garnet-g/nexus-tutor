@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
 import {
   Bookmark,
   CheckCircle2,
@@ -19,6 +22,8 @@ import type {
   LessonShortQuizQuestion,
 } from "@/types/curriculum";
 import { cn } from "@/lib/utils";
+
+import "katex/dist/katex.min.css";
 
 interface LessonReaderProps {
   lesson: CurriculumLesson;
@@ -59,6 +64,65 @@ async function postLessonComplete(
       xpEarned: number;
     };
   }>;
+}
+
+function ChemicalEquationBlock({
+  block,
+  topicId,
+}: {
+  block: Extract<LessonContentBlock, { type: "chemical_equation" }>;
+  topicId: string;
+}) {
+  const markdown = `$$\n${block.equation}\n$$`;
+
+  return (
+    <SectionCard className="bg-nexus-sunken/50">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-sm font-semibold uppercase tracking-wide text-nexus-primary">
+          Chemical equation
+        </p>
+        <Link
+          href={`/nex?topicId=${topicId}&mode=explain`}
+          className="inline-flex min-h-11 shrink-0 items-center gap-1 text-sm font-medium text-nexus-primary hover:bg-nexus-primary-soft"
+        >
+          <MessageCircle className="size-4" />
+          Ask Nex
+        </Link>
+      </div>
+      <div className="mt-4 overflow-x-auto text-foreground">
+        <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+          {markdown}
+        </ReactMarkdown>
+      </div>
+      {block.caption ? (
+        <p className="mt-3 text-sm leading-7 text-muted-foreground">{block.caption}</p>
+      ) : null}
+    </SectionCard>
+  );
+}
+
+function ComprehensionPassageBlock({
+  block,
+  topicId,
+}: {
+  block: Extract<LessonContentBlock, { type: "comprehension_passage" }>;
+  topicId: string;
+}) {
+  return (
+    <div className="group space-y-3 rounded-[18px] border border-nexus-border bg-card px-5 py-4">
+      {block.title ? (
+        <h3 className="font-heading text-lg font-semibold text-foreground">{block.title}</h3>
+      ) : null}
+      <p className="whitespace-pre-wrap leading-8 text-foreground/90">{block.passage}</p>
+      <Link
+        href={`/nex?topicId=${topicId}&mode=explain`}
+        className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-nexus-primary opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100"
+      >
+        <MessageCircle className="size-4" />
+        Ask Nex about this passage
+      </Link>
+    </div>
+  );
 }
 
 function WorkedExampleBlock({
@@ -419,6 +483,22 @@ export function LessonReader({
                     <p className="font-semibold text-nexus-warning">Key idea</p>
                     <p className="mt-2">{block.content}</p>
                   </div>
+                );
+              case "chemical_equation":
+                return (
+                  <ChemicalEquationBlock
+                    key={`chemical-equation-${index}`}
+                    block={block}
+                    topicId={lesson.topicId}
+                  />
+                );
+              case "comprehension_passage":
+                return (
+                  <ComprehensionPassageBlock
+                    key={`comprehension-passage-${index}`}
+                    block={block}
+                    topicId={lesson.topicId}
+                  />
                 );
               default:
                 return null;
