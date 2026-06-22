@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ACTIVE_SUBJECT_CODES, getTopicReadinessLabel } from "@/lib/curriculum/contentModel";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Curriculum } from "@/types/database";
 import type {
@@ -12,8 +13,6 @@ import {
   GRADE_LEVELS_BY_CURRICULUM,
   QUESTION_COVERAGE_TARGET,
 } from "@/types/contentAdmin";
-
-const MATHEMATICS_SUBJECT_CODE = "mathematics";
 
 export {
   GRADE_LEVELS_BY_CURRICULUM,
@@ -34,11 +33,18 @@ function emptyQuestionCounts() {
   return { easy: 0, medium: 0, hard: 0 };
 }
 
-export async function getMathematicsContentCoverage(): Promise<
-  ContentCoverageCurriculum[]
-> {
+export interface ContentCoverageSubject {
+  code: string;
+  name: string;
+  curricula: ContentCoverageCurriculum[];
+}
+
+async function getSubjectContentCoverageForCurricula(
+  subjectCode: string,
+  subjectName: string,
+  curricula: Curriculum[],
+): Promise<ContentCoverageSubject> {
   const admin = createAdminClient();
-  const curricula: Curriculum[] = ["CBC", "KCSE"];
   const result: ContentCoverageCurriculum[] = [];
 
   for (const curriculumCode of curricula) {
@@ -57,11 +63,16 @@ export async function getMathematicsContentCoverage(): Promise<
       .from("subjects")
       .select("id")
       .eq("curriculum_id", curriculum.id)
-      .eq("code", MATHEMATICS_SUBJECT_CODE)
+      .eq("code", subjectCode)
       .eq("is_active", true)
       .maybeSingle();
 
     if (!subject) {
+      result.push({
+        code: curriculumCode,
+        gradeLevels: [...GRADE_LEVELS_BY_CURRICULUM[curriculumCode]],
+        topics: [],
+      });
       continue;
     }
 
@@ -183,6 +194,9 @@ export async function getMathematicsContentCoverage(): Promise<
         (total, subtopic) => total + subtopic.draftLessonCount,
         0,
       );
+      const subtopicsWithLesson = subtopicRows.filter(
+        (subtopic) => subtopic.publishedLessonCount > 0,
+      ).length;
 
       return {
         id: topic.id,
@@ -191,6 +205,12 @@ export async function getMathematicsContentCoverage(): Promise<
         publishedLessonCount,
         draftLessonCount,
         questionCounts: questionsByTopic.get(topic.id) ?? emptyQuestionCounts(),
+        readinessLabel: getTopicReadinessLabel({
+          publishedLessonCount,
+          subtopicCount: subtopicRows.length,
+          subtopicsWithLesson,
+          questionCounts: questionsByTopic.get(topic.id) ?? emptyQuestionCounts(),
+        }),
         subtopics: subtopicRows,
       };
     });
@@ -202,7 +222,62 @@ export async function getMathematicsContentCoverage(): Promise<
     });
   }
 
-  return result;
+  return {
+    code: subjectCode,
+    name: subjectName,
+    curricula: result,
+  };
+}
+
+const SUBJECT_CURRICULA: Record<string, Curriculum[]> = {
+  mathematics: ["CBC", "KCSE"],
+  science: ["CBC", "KCSE"],
+  english: ["CBC", "KCSE"],
+  kiswahili: ["CBC", "KCSE"],
+  chemistry: ["KCSE"],
+};
+
+const SUBJECT_DISPLAY_NAMES: Record<string, string> = {
+  mathematics: "Mathematics",
+  science: "Science",
+  english: "English",
+  kiswahili: "Kiswahili",
+  chemistry: "Chemistry",
+};
+
+export async function getSubjectContentCoverage(
+  subjectCode: string,
+): Promise<ContentCoverageSubject | null> {
+  const curricula = SUBJECT_CURRICULA[subjectCode];
+  if (!curricula) {
+    return null;
+  }
+
+  return getSubjectContentCoverageForCurricula(
+    subjectCode,
+    SUBJECT_DISPLAY_NAMES[subjectCode] ?? subjectCode,
+    curricula,
+  );
+}
+
+export async function getActiveSubjectsContentCoverage(): Promise<ContentCoverageSubject[]> {
+  const subjects: ContentCoverageSubject[] = [];
+
+  for (const subjectCode of ACTIVE_SUBJECT_CODES) {
+    const coverage = await getSubjectContentCoverage(subjectCode);
+    if (coverage) {
+      subjects.push(coverage);
+    }
+  }
+
+  return subjects;
+}
+
+export async function getMathematicsContentCoverage(): Promise<
+  ContentCoverageCurriculum[]
+> {
+  const coverage = await getSubjectContentCoverage("mathematics");
+  return coverage?.curricula ?? [];
 }
 
 export async function getContentDraftQueue(): Promise<ContentDraftQueueItem[]> {

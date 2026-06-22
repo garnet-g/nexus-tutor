@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ACTIVE_SUBJECT_CODES } from "@/lib/curriculum/contentModel";
 import { callNexModel } from "@/lib/nex/callNexModel";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Curriculum } from "@/types/database";
@@ -16,8 +17,6 @@ import {
   type GeneratedLesson,
   type GeneratedQuestion,
 } from "@/schemas/contentGenerationSchemas";
-
-const MATHEMATICS_SUBJECT_CODE = "mathematics";
 
 interface SubtopicContext {
   subtopicId: string;
@@ -76,10 +75,91 @@ export interface DiscardDraftResult {
   isActive: false;
 }
 
-function assertMathematicsScope(subjectCode: string): void {
-  if (subjectCode !== MATHEMATICS_SUBJECT_CODE) {
+export function assertSubjectInGenerationScope(subjectCode: string): void {
+  if (!(ACTIVE_SUBJECT_CODES as readonly string[]).includes(subjectCode)) {
     throw new Error("SCOPE_VIOLATION");
   }
+}
+
+function standardsLabel(curriculum: Curriculum, subjectName: string): string {
+  return curriculum === "CBC"
+    ? `KICD/CBC ${subjectName} standards`
+    : `KNEC/KCSE ${subjectName} standards`;
+}
+
+function subjectAuthoringRules(subjectCode: string): string[] {
+  switch (subjectCode) {
+    case "chemistry":
+      return [
+        "Use correct IUPAC names and balanced equations. When a chemical equation is central, emit a `chemical_equation` block.",
+        "State units. Reference Kenyan industrial/real-life contexts (e.g. soda ash at Magadi) where natural.",
+      ];
+    case "kiswahili":
+      return [
+        "Andika kwa Kiswahili sanifu. Kwa ufahamu, tumia kizuizi cha `comprehension_passage`.",
+        "Usitumie mtindo wa mfano wa hatua za hesabu; tumia mifano ya lugha, sarufi, na fasihi.",
+      ];
+    default:
+      return [
+        "Use Kenyan contexts in word problems (chapati, matatu fares, shillings, local names).",
+      ];
+  }
+}
+
+function lessonRequiredBlocksGuidance(subjectCode: string): string {
+  switch (subjectCode) {
+    case "kiswahili":
+      return "Include heading, paragraph(s), (where relevant) a `comprehension_passage` block, and a tip block.";
+    case "chemistry":
+      return "Include heading, paragraph, at least one worked `example` OR `chemical_equation` block, and a tip block.";
+    default:
+      return "Include heading, paragraph, at least one worked example with steps, and a tip block.";
+  }
+}
+
+function lessonBlockSchemaExample(subjectCode: string): unknown {
+  const baseBlocks: unknown[] = [
+    { type: "heading", content: "..." },
+    { type: "paragraph", content: "..." },
+  ];
+
+  if (subjectCode === "kiswahili") {
+    baseBlocks.push({
+      type: "comprehension_passage",
+      title: "Kifungu",
+      passage: "...",
+    });
+  } else if (subjectCode === "chemistry") {
+    baseBlocks.push({
+      type: "chemical_equation",
+      equation: "2H_2 + O_2 -> 2H_2O",
+      caption: "...",
+    });
+  } else {
+    baseBlocks.push({
+      type: "example",
+      title: "Worked Example",
+      steps: ["Step 1 ..."],
+      answer: "...",
+    });
+  }
+
+  baseBlocks.push({ type: "tip", content: "..." });
+
+  return {
+    title: "string",
+    estimatedMinutes: 10,
+    blocks: baseBlocks,
+    shortQuiz: {
+      questions: [
+        {
+          questionText: "...",
+          options: ["A", "B", "C"],
+          correctAnswer: "B",
+        },
+      ],
+    },
+  };
 }
 
 function extractJsonFromModelOutput(raw: string): unknown {
@@ -90,51 +170,30 @@ function extractJsonFromModelOutput(raw: string): unknown {
 }
 
 function buildLessonSystemPrompt(context: SubtopicContext, gradeLevel: string): string {
-  const standards =
-    context.curriculumCode === "CBC"
-      ? "KICD/CBC Mathematics standards"
-      : "KNEC/KCSE Mathematics standards";
+  const standards = standardsLabel(context.curriculumCode, context.subjectName);
+  const authoringRules = subjectAuthoringRules(context.subjectCode);
+  const requiredBlocks = lessonRequiredBlocksGuidance(context.subjectCode);
 
   return [
-    `You are a curriculum author for Kenyan ${context.curriculumCode} Mathematics.`,
+    `You are a curriculum author for Kenyan ${context.curriculumCode} ${context.subjectName}.`,
     `Write ONE lesson aligned to ${standards} for ${gradeLevel}.`,
     "Rules:",
-    "- Use Kenyan contexts in word problems (chapati, matatu fares, shillings, local names).",
+    ...authoringRules.map((rule) => `- ${rule}`),
     "- Grade-appropriate vocabulary only.",
     "- Focus on ONE concept per lesson.",
-    "- Include heading, paragraph, at least one worked example with steps, and a tip block.",
+    `- ${requiredBlocks}`,
     "- Optional shortQuiz with 1-3 multiple-choice questions.",
     "- Return JSON ONLY matching this schema:",
-    JSON.stringify(
-      {
-        title: "string",
-        estimatedMinutes: 10,
-        blocks: [
-          { type: "heading", content: "..." },
-          { type: "paragraph", content: "..." },
-          {
-            type: "example",
-            title: "Worked Example",
-            steps: ["Step 1 ..."],
-            answer: "...",
-          },
-          { type: "tip", content: "..." },
-        ],
-        shortQuiz: {
-          questions: [
-            {
-              questionText: "...",
-              options: ["A", "B", "C"],
-              correctAnswer: "B",
-            },
-          ],
-        },
-      },
-      null,
-      2,
-    ),
+    JSON.stringify(lessonBlockSchemaExample(context.subjectCode), null, 2),
     "Do not wrap JSON in markdown fences.",
   ].join("\n");
+}
+
+export function buildLessonSystemPromptForTest(
+  context: SubtopicContext,
+  gradeLevel: string,
+): string {
+  return buildLessonSystemPrompt(context, gradeLevel);
 }
 
 function buildQuestionBankSystemPrompt(
@@ -143,19 +202,25 @@ function buildQuestionBankSystemPrompt(
   difficulty: string,
   count: number,
 ): string {
-  const standards =
-    context.curriculumCode === "CBC"
-      ? "KICD/CBC Mathematics standards"
-      : "KNEC/KCSE Mathematics standards";
+  const standards = standardsLabel(context.curriculumCode, context.subjectName);
+  const contextRules =
+    context.subjectCode === "kiswahili"
+      ? ["- Andika maswali kwa Kiswahili sanifu.", "- Tumia muktadha wa Kenya inapofaa."]
+      : context.subjectCode === "chemistry"
+        ? [
+            "- Use correct IUPAC names, units, and balanced equations where relevant.",
+            "- Reference Kenyan industrial/real-life contexts where natural.",
+          ]
+        : ["- Kenyan contexts in word problems."];
 
   return [
-    `You are a question bank author for Kenyan ${context.curriculumCode} Mathematics.`,
+    `You are a question bank author for Kenyan ${context.curriculumCode} ${context.subjectName}.`,
     `Write ${count} unique ${difficulty} practice questions for ${gradeLevel}.`,
     `Topic: ${context.topicTitle}.`,
     context.subtopicTitle ? `Subtopic: ${context.subtopicTitle}.` : "",
     `Align to ${standards}.`,
     "Rules:",
-    "- Kenyan contexts in word problems.",
+    ...contextRules,
     "- Each question must be distinct.",
     "- questionType is multiple_choice or short_answer.",
     "- For multiple_choice, options must include the correctAnswer exactly.",
@@ -232,7 +297,7 @@ async function loadSubtopicContext(
     throw new Error("CURRICULUM_MISMATCH");
   }
 
-  assertMathematicsScope(subject.code);
+  assertSubjectInGenerationScope(subject.code);
 
   return {
     subtopicId: subtopic.id,
@@ -288,7 +353,7 @@ async function loadTopicContext(
     throw new Error("CURRICULUM_MISMATCH");
   }
 
-  assertMathematicsScope(subject.code);
+  assertSubjectInGenerationScope(subject.code);
 
   let subtopicTitle: string | undefined;
   if (subtopicId) {
@@ -327,7 +392,7 @@ async function callModelForLesson(
   const systemPrompt = buildLessonSystemPrompt(context, gradeLevel);
   const userPrompt = [
     `Generate a lesson for subtopic "${context.subtopicTitle}"`,
-    `under topic "${context.topicTitle}" (${context.curriculumCode} Mathematics).`,
+    `under topic "${context.topicTitle}" (${context.curriculumCode} ${context.subjectName}).`,
     `Target grade: ${gradeLevel}.`,
   ].join(" ");
 
