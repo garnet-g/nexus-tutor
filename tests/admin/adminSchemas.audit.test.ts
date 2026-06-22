@@ -16,6 +16,7 @@ const EXPECTED_ACTIONS = [
   "content.question_draft.update",
   "assessment.calibration.create",
   "subscription.comp",
+  "user.profile.update",
   "user.impersonate.start",
   "user.impersonate.end",
   "nex_flag.create",

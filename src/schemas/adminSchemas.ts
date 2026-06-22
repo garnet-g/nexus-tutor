@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { GRADE_LEVELS_BY_CURRICULUM } from "@/types/contentAdmin";
+
 export const platformSettingsPatchSchema = z.object({
   freeDailyNexMessageLimit: z.number().int().min(1).max(500).optional(),
   freeDailyPracticeSessionLimit: z.number().int().min(1).max(500).optional(),
@@ -28,6 +30,7 @@ export const auditLogActionSchema = z.enum([
   "content.question_draft.update",
   "assessment.calibration.create",
   "subscription.comp",
+  "user.profile.update",
   "user.impersonate.start",
   "user.impersonate.end",
   "nex_flag.create",
@@ -110,6 +113,36 @@ export const impersonationStartSchema = z.object({
 });
 
 export type ImpersonationStartInput = z.infer<typeof impersonationStartSchema>;
+
+export const adminStudentProfileUpdateSchema = z
+  .object({
+    fullName: z.string().trim().min(2).max(120),
+    email: z.string().trim().email().nullable().optional(),
+    phoneNumber: z
+      .string()
+      .trim()
+      .regex(/^(\+254\d{9})?$/, "Use +254 format, e.g. +254712345678")
+      .nullable()
+      .optional(),
+    curriculum: z.enum(["CBC", "KCSE"]),
+    gradeLevel: z.string().trim().min(1).max(40),
+    schoolName: z.string().trim().max(200).nullable().optional(),
+    targetGrade: z.string().trim().max(20).nullable().optional(),
+    isActive: z.boolean(),
+    changeReason: z.string().trim().min(3).max(500),
+  })
+  .refine(
+    (value) =>
+      GRADE_LEVELS_BY_CURRICULUM[value.curriculum].includes(value.gradeLevel),
+    {
+      message: "Grade level must belong to the selected curriculum.",
+      path: ["gradeLevel"],
+    },
+  );
+
+export type AdminStudentProfileUpdateInput = z.infer<
+  typeof adminStudentProfileUpdateSchema
+>;
 
 // --- Phase 3b: Nex conversation review schemas ---
 

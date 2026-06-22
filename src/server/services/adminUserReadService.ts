@@ -216,6 +216,7 @@ export type UserDetail = {
   curriculum: string | null;
   gradeLevel: string | null;
   schoolName: string | null;
+  targetGrade: string | null;
   isActive: boolean;
   createdAt: string;
   subscription: UserSubscriptionDetail;
@@ -244,7 +245,7 @@ export async function getUserDetail(
   const { data: profile, error: profileError } = await admin
     .from("student_profiles")
     .select(
-      "id, user_id, full_name, email, phone_number, curriculum, grade_level, school_name, is_active, created_at",
+      "id, user_id, full_name, email, phone_number, curriculum, grade_level, school_name, target_grade, is_active, created_at",
     )
     .eq("id", studentId)
     .maybeSingle();
@@ -396,6 +397,7 @@ export async function getUserDetail(
     curriculum: profile.curriculum ?? null,
     gradeLevel: profile.grade_level ?? null,
     schoolName: profile.school_name ?? null,
+    targetGrade: profile.target_grade ?? null,
     isActive: profile.is_active ?? true,
     createdAt: profile.created_at,
     subscription,

@@ -13,6 +13,7 @@ import {
   PATCH as couponPATCH,
 } from "@/app/api/admin/payments/coupons/[id]/route";
 import { POST as compPOST } from "@/app/api/admin/users/[id]/comp/route";
+import { PATCH as profilePATCH } from "@/app/api/admin/users/[id]/profile/route";
 import {
   DELETE as impersonateDELETE,
   POST as impersonatePOST,
@@ -98,6 +99,26 @@ function makeBuilder(table: string) {
     limit: vi.fn(() => builder),
     update: vi.fn(() => builder),
     insert: vi.fn(async () => ({ error: null })),
+    single: vi.fn(async () => {
+      if (table === "student_profiles") {
+        return {
+          data: {
+            id: "student-1",
+            user_id: "auth-user-1",
+            full_name: "Amina Otieno",
+            email: "amina@example.test",
+            phone_number: "+254712345678",
+            curriculum: "KCSE",
+            grade_level: "Form 3",
+            school_name: "Nairobi School",
+            target_grade: "A-",
+            is_active: true,
+          },
+          error: null,
+        };
+      }
+      return { data: null, error: null };
+    }),
     maybeSingle: vi.fn(async () => {
       if (table === "student_profiles") {
         return { data: { id: "student-1" }, error: null };
@@ -233,6 +254,103 @@ describe("Phase 3 admin mutation route contracts", () => {
         targetType: "student",
         targetId: "student-1",
       }),
+    );
+  });
+
+  it("rejects support on student profile correction before touching service-role writes", async () => {
+    rejectSupport();
+
+    const response = await profilePATCH(
+      new Request("https://nexus.test/api/admin/users/student-1/profile", {
+        method: "PATCH",
+        body: JSON.stringify({
+          fullName: "Amina Otieno",
+          curriculum: "KCSE",
+          gradeLevel: "Form 3",
+          targetGrade: "A-",
+          changeReason: "Wrong class selected during onboarding.",
+        }),
+        headers: { "content-type": "application/json" },
+      }),
+      params(),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(body.error.code).toBe("FORBIDDEN");
+    expect(from).not.toHaveBeenCalled();
+    expect(recordAdminAudit).not.toHaveBeenCalled();
+  });
+
+  it("validates student profile correction body before service-role writes", async () => {
+    allowSuperAdmin();
+
+    const response = await profilePATCH(
+      new Request("https://nexus.test/api/admin/users/student-1/profile", {
+        method: "PATCH",
+        body: JSON.stringify({
+          fullName: "Amina Otieno",
+          curriculum: "CBC",
+          gradeLevel: "Form 3",
+          changeReason: "Wrong class selected during onboarding.",
+        }),
+        headers: { "content-type": "application/json" },
+      }),
+      params(),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error.code).toBe("VALIDATION_ERROR");
+    expect(from).not.toHaveBeenCalled();
+    expect(recordAdminAudit).not.toHaveBeenCalled();
+  });
+
+  it("lets super_admin correct a student profile and records a redacted audit trail", async () => {
+    allowSuperAdmin();
+
+    const response = await profilePATCH(
+      new Request("https://nexus.test/api/admin/users/student-1/profile", {
+        method: "PATCH",
+        body: JSON.stringify({
+          fullName: "Amina Otieno",
+          email: "amina@example.test",
+          phoneNumber: "+254712345678",
+          curriculum: "KCSE",
+          gradeLevel: "Form 3",
+          schoolName: "Nairobi School",
+          targetGrade: "A-",
+          isActive: true,
+          changeReason: "Wrong class selected during onboarding.",
+        }),
+        headers: { "content-type": "application/json" },
+      }),
+      params(),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.success).toBe(true);
+    expect(touchedTables).toEqual(["student_profiles", "student_profiles"]);
+    expect(recordAdminAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actorUserId: "super-1",
+        actorRole: "super_admin",
+        action: "user.profile.update",
+        targetType: "student",
+        targetId: "student-1",
+        metadata: expect.objectContaining({
+          studentId: "student-1",
+          reason: "Wrong class selected during onboarding.",
+          changedFields: expect.arrayContaining(["gradeLevel"]),
+        }),
+      }),
+    );
+    expect(recordAdminAudit.mock.calls[0]?.[0].metadata).not.toHaveProperty(
+      "email",
+    );
+    expect(recordAdminAudit.mock.calls[0]?.[0].metadata).not.toHaveProperty(
+      "phoneNumber",
     );
   });
 

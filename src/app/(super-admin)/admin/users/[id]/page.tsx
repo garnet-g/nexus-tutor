@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { CompSubscriptionForm } from "@/features/admin/components/CompSubscriptionForm";
 import { PageHeader, Panel, StatCard } from "@/features/admin/components/adminUi";
+import { StudentProfileCorrectionForm } from "@/features/admin/components/StudentProfileCorrectionForm";
 import { ViewAsStudentPanel } from "@/features/admin/components/ViewAsStudentPanel";
 import { cn } from "@/lib/utils";
 import {
@@ -213,13 +214,36 @@ export default async function UserDetailPage({
       </Panel>
 
       {isSuperAdmin ? (
-        <div className="grid gap-6 lg:grid-cols-2">
-          <CompSubscriptionForm studentId={detail.id} />
-          <ViewAsStudentPanel
-            studentId={detail.id}
-            studentName={detail.fullName}
+        <section className="space-y-4">
+          <div className="border-b border-nexus-border pb-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              Super admin controls
+            </p>
+            <h2 className="mt-1 font-heading text-xl font-semibold tracking-tight text-foreground">
+              Account operations
+            </h2>
+          </div>
+          <StudentProfileCorrectionForm
+            detail={{
+              id: detail.id,
+              fullName: detail.fullName,
+              email: detail.email,
+              phoneNumber: detail.phoneNumber,
+              curriculum: detail.curriculum,
+              gradeLevel: detail.gradeLevel,
+              schoolName: detail.schoolName,
+              targetGrade: detail.targetGrade,
+              isActive: detail.isActive,
+            }}
           />
-        </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <CompSubscriptionForm studentId={detail.id} />
+            <ViewAsStudentPanel
+              studentId={detail.id}
+              studentName={detail.fullName}
+            />
+          </div>
+        </section>
       ) : (
         <Panel title="Admin actions">
           <p className="text-sm text-muted-foreground">
