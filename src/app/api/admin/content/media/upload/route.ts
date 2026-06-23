@@ -9,7 +9,7 @@ import {
   uploadContentMedia,
 } from "@/lib/supabase/contentMediaStorage";
 import { recordAdminAudit } from "@/server/services/adminAuditService";
-import { requireSuperAdmin } from "@/server/services/superAdminGuard";
+import { requireContentAuthor } from "@/server/services/contentAuthorGuard";
 
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
@@ -23,7 +23,7 @@ const ALLOWED_MIME_TYPES = new Set([
 const MAX_BYTES = 10 * 1024 * 1024;
 
 export async function POST(request: Request) {
-  const auth = await requireSuperAdmin();
+  const auth = await requireContentAuthor();
   if (!auth.ok) {
     return NextResponse.json(
       {
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
 
     await recordAdminAudit({
       actorUserId: auth.userId,
-      actorRole: "super_admin",
+      actorRole: auth.role,
       action: "content.media.upload",
       targetType: "storage_object",
       targetId: objectPath,

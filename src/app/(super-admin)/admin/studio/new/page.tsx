@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { NewLessonStudioForm } from "@/features/admin/studio/components/NewLessonStudioForm";
 import { getActiveSubjectsContentCoverage } from "@/server/services/contentAdminReadService";
-import { requireSuperAdmin } from "@/server/services/superAdminGuard";
+import { requireContentAuthor } from "@/server/services/contentAuthorGuard";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +11,7 @@ export default async function StudioNewLessonPage({
 }: {
   searchParams: Promise<{ subtopicId?: string }>;
 }) {
-  const auth = await requireSuperAdmin();
+  const auth = await requireContentAuthor();
   if (!auth.ok) {
     redirect("/login");
   }

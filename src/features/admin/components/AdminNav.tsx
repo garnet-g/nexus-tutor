@@ -133,7 +133,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/platform-settings", label: "Platform settings", icon: SettingsIcon },
   { href: "/admin/beta-invites", label: "Beta invites", icon: TicketIcon },
   { href: "/admin/users", label: "Users", icon: UsersIcon },
-  { href: "/admin/content", label: "Content", icon: LayersIcon },
+  { href: "/admin/studio", label: "Content", icon: LayersIcon },
   { href: "/admin/assessment", label: "Assessment", icon: ClipboardCheckIcon },
   { href: "/admin/usage-stats", label: "Usage stats", icon: BarChartIcon },
   { href: "/admin/payments", label: "Payments", icon: WalletIcon },

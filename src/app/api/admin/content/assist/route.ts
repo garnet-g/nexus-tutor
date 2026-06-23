@@ -2,25 +2,23 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
-import { generateContentRequestSchema } from "@/schemas/contentGenerationSchemas";
-import {
-  generateLessonDraft,
-  generateQuestionBankDraft,
-} from "@/server/services/contentGenerationService";
-import { requireSuperAdmin } from "@/server/services/superAdminGuard";
+import { contentAssistRequestSchema } from "@/schemas/contentAssistSchemas";
+import { recordAdminAudit } from "@/server/services/adminAuditService";
+import { runContentAssist } from "@/server/services/contentAssistService";
+import { requireContentAuthor } from "@/server/services/contentAuthorGuard";
 
-function mapServiceError(error: unknown): { status: number; code: string; message: string } {
+function mapAssistError(error: unknown): { status: number; code: string; message: string } {
   const message = error instanceof Error ? error.message : "Unexpected error.";
 
   if (message === "NOT_FOUND") {
-    return { status: 404, code: "NOT_FOUND", message: "Scope not found." };
+    return { status: 404, code: "NOT_FOUND", message: "Scope or block not found." };
   }
 
   if (message === "SCOPE_VIOLATION") {
     return {
       status: 403,
       code: "SCOPE_VIOLATION",
-      message: "Content generation is limited to Mathematics (V1).",
+      message: "Subject is outside the active generation scope.",
     };
   }
 
@@ -36,23 +34,23 @@ function mapServiceError(error: unknown): { status: number; code: string; messag
     return {
       status: 422,
       code: "GENERATION_INVALID_OUTPUT",
-      message: "Model output failed validation. No draft was saved.",
-    };
-  }
-
-  if (message === "GENERATION_DEDUPED") {
-    return {
-      status: 409,
-      code: "GENERATION_DEDUPED",
-      message: "All generated questions were duplicates of existing items.",
+      message: "Model output failed validation.",
     };
   }
 
   return { status: 500, code: "INTERNAL_ERROR", message };
 }
 
+const ASSIST_AUDIT_ACTIONS = {
+  draft_lesson: "content.assist.draft_lesson",
+  expand_section: "content.assist.expand_section",
+  simplify: "content.assist.simplify",
+  generate_questions: "content.assist.generate_questions",
+  rewrite_block: "content.assist.rewrite_block",
+} as const;
+
 export async function POST(request: Request) {
-  const auth = await requireSuperAdmin();
+  const auth = await requireContentAuthor();
   if (!auth.ok) {
     return NextResponse.json(
       {
@@ -76,7 +74,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const parsed = generateContentRequestSchema.safeParse(body);
+  const parsed = contentAssistRequestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
       {
@@ -91,30 +89,33 @@ export async function POST(request: Request) {
   }
 
   try {
-    if (parsed.data.type === "lesson") {
-      const result = await generateLessonDraft({
-        subtopicId: parsed.data.subtopicId,
-        curriculum: parsed.data.curriculum,
-        gradeLevel: parsed.data.gradeLevel,
-        adminId: auth.userId,
-      });
-
-      return NextResponse.json({ success: true, data: result });
-    }
-
-    const result = await generateQuestionBankDraft({
-      topicId: parsed.data.topicId,
-      subtopicId: parsed.data.subtopicId,
-      difficulty: parsed.data.difficulty,
-      count: parsed.data.count,
-      curriculum: parsed.data.curriculum,
-      gradeLevel: parsed.data.gradeLevel,
+    const { model, result } = await runContentAssist({
+      ...parsed.data,
       adminId: auth.userId,
     });
 
-    return NextResponse.json({ success: true, data: result });
+    await recordAdminAudit({
+      actorUserId: auth.userId,
+      actorRole: auth.role,
+      action: ASSIST_AUDIT_ACTIONS[parsed.data.action],
+      targetType: parsed.data.action === "generate_questions" ? "topic" : "subtopic",
+      targetId:
+        parsed.data.action === "generate_questions"
+          ? parsed.data.topicId
+          : parsed.data.subtopicId,
+      metadata: { action: parsed.data.action, model },
+      request,
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        model,
+        ...(typeof result === "object" && result !== null ? (result as Record<string, unknown>) : {}),
+      },
+    });
   } catch (error) {
-    const mapped = mapServiceError(error);
+    const mapped = mapAssistError(error);
     return NextResponse.json(
       {
         success: false,

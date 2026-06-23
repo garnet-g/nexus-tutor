@@ -4,6 +4,7 @@ import { PageHeader } from "@/features/admin/components/adminUi";
 import { PlatformSettingsEditor } from "@/features/admin/components/PlatformSettingsEditor";
 import { getEffectiveSubscriptionConfigWithFallback } from "@/lib/platform/getPlatformSettings";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isContentAutoApproveEnabled } from "@/server/services/contentApprovalService";
 import { requireSuperAdmin } from "@/server/services/superAdminGuard";
 
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ export default async function PlatformSettingsPage() {
   }
 
   const config = await getEffectiveSubscriptionConfigWithFallback();
+  const contentAutoApproveEnabled = await isContentAutoApproveEnabled();
 
   let auditLog: AuditLogEntry[] = [];
 
@@ -50,7 +52,11 @@ export default async function PlatformSettingsPage() {
         description="Update pricing, daily limits, and promotions. Changes apply within 60 seconds."
       />
 
-      <PlatformSettingsEditor initialConfig={config} initialAuditLog={auditLog} />
+      <PlatformSettingsEditor
+        initialConfig={config}
+        initialAuditLog={auditLog}
+        initialContentAutoApproveEnabled={contentAutoApproveEnabled}
+      />
     </>
   );
 }

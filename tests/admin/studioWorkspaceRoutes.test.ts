@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PATCH as bulkPATCH } from "@/app/api/admin/content/studio/topics/[topicId]/questions/bulk/route";
 import { PATCH as reorderPATCH } from "@/app/api/admin/content/studio/subtopics/[subtopicId]/lessons/reorder/route";
 
-const requireSuperAdmin = vi.fn();
-vi.mock("@/server/services/superAdminGuard", () => ({
-  requireSuperAdmin: (...args: unknown[]) => requireSuperAdmin(...args),
+const requireContentAuthor = vi.fn();
+vi.mock("@/server/services/contentAuthorGuard", () => ({
+  requireContentAuthor: (...args: unknown[]) => requireContentAuthor(...args),
 }));
 
 const bulkSaveTopicQuestions = vi.fn();
@@ -24,7 +24,7 @@ const topicId = "00000000-0000-4000-8000-000000000501";
 const subtopicId = "00000000-0000-4000-8000-000000000502";
 
 beforeEach(() => {
-  requireSuperAdmin.mockReset().mockResolvedValue({ ok: true, userId: "super-1" });
+  requireContentAuthor.mockReset().mockResolvedValue({ ok: true, userId: "super-1", role: "super_admin" });
   bulkSaveTopicQuestions.mockReset().mockResolvedValue({
     createdIds: ["q-new"],
     updatedIds: [],

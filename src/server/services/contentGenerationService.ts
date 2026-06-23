@@ -18,6 +18,11 @@ import {
   type GeneratedLesson,
   type GeneratedQuestion,
 } from "@/schemas/contentGenerationSchemas";
+import {
+  approveAndPublish,
+  archiveReviewContent,
+  submitForReview,
+} from "@/server/services/contentApprovalService";
 
 interface SubtopicContext {
   subtopicId: string;
@@ -539,14 +544,50 @@ function toLessonContent(lesson: GeneratedLesson): LessonContent {
   };
 }
 
+export async function getSubtopicAuthoringContext(
+  subtopicId: string,
+  curriculum: Curriculum,
+): Promise<SubtopicContext> {
+  return loadSubtopicContext(subtopicId, curriculum);
+}
+
+export async function produceLessonFromModel(input: {
+  subtopicId: string;
+  curriculum: Curriculum;
+  gradeLevel: string;
+}): Promise<{ lesson: GeneratedLesson; model: string }> {
+  const context = await loadSubtopicContext(input.subtopicId, input.curriculum);
+  return callModelForLesson(context, input.gradeLevel);
+}
+
+export async function produceQuestionsFromModel(input: {
+  topicId: string;
+  subtopicId?: string;
+  curriculum: Curriculum;
+  gradeLevel: string;
+  difficulty: "easy" | "medium" | "hard";
+  count: number;
+}): Promise<{ questions: GeneratedQuestion[]; model: string }> {
+  const context = await loadTopicContext(input.topicId, input.curriculum, input.subtopicId);
+  return callModelForQuestions(
+    context,
+    input.gradeLevel,
+    input.difficulty,
+    input.count,
+  );
+}
+
 export async function generateLessonDraft(
   input: Parameters<typeof generateLessonDraftInputSchema.parse>[0],
 ): Promise<GeneratedLessonDraftResult> {
   const parsed = generateLessonDraftInputSchema.parse(input);
-  const context = await loadSubtopicContext(parsed.subtopicId, parsed.curriculum);
 
   try {
-    const { lesson, model } = await callModelForLesson(context, parsed.gradeLevel);
+    const { lesson, model } = await produceLessonFromModel({
+      subtopicId: parsed.subtopicId,
+      curriculum: parsed.curriculum,
+      gradeLevel: parsed.gradeLevel,
+    });
     const admin = createAdminClient();
     const sortOrder = await getNextLessonSortOrder(parsed.subtopicId);
     const content = toLessonContent(lesson);
@@ -612,19 +653,16 @@ export async function generateQuestionBankDraft(
   input: Parameters<typeof generateQuestionBankDraftInputSchema.parse>[0],
 ): Promise<GeneratedQuestionDraftResult> {
   const parsed = generateQuestionBankDraftInputSchema.parse(input);
-  const context = await loadTopicContext(
-    parsed.topicId,
-    parsed.curriculum,
-    parsed.subtopicId,
-  );
 
   try {
-    const { questions, model } = await callModelForQuestions(
-      context,
-      parsed.gradeLevel,
-      parsed.difficulty,
-      parsed.count,
-    );
+    const { questions, model } = await produceQuestionsFromModel({
+      topicId: parsed.topicId,
+      subtopicId: parsed.subtopicId,
+      curriculum: parsed.curriculum,
+      gradeLevel: parsed.gradeLevel,
+      difficulty: parsed.difficulty,
+      count: parsed.count,
+    });
 
     const existingTexts = await getExistingQuestionTexts(parsed.topicId);
     const uniqueQuestions = questions.filter(
@@ -712,32 +750,49 @@ export async function publishDraft(
     throw new Error("NOT_FOUND");
   }
 
-  if (existing.review_status !== "draft") {
-    throw new Error("CONFLICT");
+  if (existing.review_status === "in_review") {
+    const result = await approveAndPublish({
+      kind: parsed.kind,
+      id: parsed.id,
+      adminId: parsed.adminId,
+    });
+
+    if (result.reviewStatus !== "published" || !result.isActive) {
+      throw new Error("CONFLICT");
+    }
+
+    return {
+      id: result.id,
+      kind: result.kind,
+      reviewStatus: "published",
+      isActive: true,
+    };
   }
 
-  const { error: updateError } = await admin
-    .from(table)
-    .update({
-      review_status: "published",
-      is_active: true,
-      published_by: parsed.adminId,
-      ...(parsed.kind === "lesson"
-        ? { updated_at: new Date().toISOString() }
-        : {}),
-    })
-    .eq("id", parsed.id);
+  if (existing.review_status === "draft") {
+    const result = await submitForReview({
+      kind: parsed.kind,
+      id: parsed.id,
+      adminId: parsed.adminId,
+    });
 
-  if (updateError) {
-    throw new Error(updateError.message);
+    if (result.reviewStatus === "in_review") {
+      throw new Error("PENDING_REVIEW");
+    }
+
+    if (result.reviewStatus !== "published" || !result.isActive) {
+      throw new Error("CONFLICT");
+    }
+
+    return {
+      id: result.id,
+      kind: result.kind,
+      reviewStatus: "published",
+      isActive: true,
+    };
   }
 
-  return {
-    id: parsed.id,
-    kind: parsed.kind,
-    reviewStatus: "published",
-    isActive: true,
-  };
+  throw new Error("CONFLICT");
 }
 
 export async function discardDraft(
@@ -757,28 +812,23 @@ export async function discardDraft(
     throw new Error("NOT_FOUND");
   }
 
-  if (existing.review_status !== "draft") {
+  if (existing.review_status !== "draft" && existing.review_status !== "in_review") {
     throw new Error("CONFLICT");
   }
 
-  const { error: updateError } = await admin
-    .from(table)
-    .update({
-      review_status: "archived",
-      is_active: false,
-      ...(parsed.kind === "lesson"
-        ? { updated_at: new Date().toISOString() }
-        : {}),
-    })
-    .eq("id", parsed.id);
+  const result = await archiveReviewContent({
+    kind: parsed.kind,
+    id: parsed.id,
+    adminId: parsed.adminId,
+  });
 
-  if (updateError) {
-    throw new Error(updateError.message);
+  if (result.reviewStatus !== "archived" || result.isActive) {
+    throw new Error("CONFLICT");
   }
 
   return {
-    id: parsed.id,
-    kind: parsed.kind,
+    id: result.id,
+    kind: result.kind,
     reviewStatus: "archived",
     isActive: false,
   };
@@ -885,14 +935,16 @@ export async function getDraftLessonForPreview(lessonId: string): Promise<{
   topicTitle: string;
   subjectId: string;
   curriculumCode: Curriculum;
+  reviewStatus: "draft" | "in_review";
+  reviewNotes: string | null;
 } | null> {
   const admin = createAdminClient();
 
   const { data: lesson } = await admin
     .from("lessons")
-    .select("id, title, content, estimated_minutes, sort_order, subtopic_id, review_status")
+    .select("id, title, content, estimated_minutes, sort_order, subtopic_id, review_status, review_notes")
     .eq("id", lessonId)
-    .eq("review_status", "draft")
+    .in("review_status", ["draft", "in_review"])
     .maybeSingle();
 
   if (!lesson) {
@@ -951,6 +1003,8 @@ export async function getDraftLessonForPreview(lessonId: string): Promise<{
     topicTitle: topic.title,
     subjectId: subject.id,
     curriculumCode: curriculumRow.code as Curriculum,
+    reviewStatus: lesson.review_status as "draft" | "in_review",
+    reviewNotes: lesson.review_notes,
   };
 }
 
@@ -1023,6 +1077,7 @@ export async function createManualDraftLesson(
       is_active: false,
       review_status: "draft",
       generated_by: adminId,
+      author_id: adminId,
       generated_model: null,
     })
     .select("id, title, estimated_minutes, content")

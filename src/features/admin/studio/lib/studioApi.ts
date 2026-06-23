@@ -19,6 +19,8 @@ export type StudioLessonDetail = {
   topicTitle: string;
   subjectId: string;
   curriculumCode: string;
+  reviewStatus: "draft" | "in_review";
+  reviewNotes: string | null;
 };
 
 export async function fetchStudioLesson(lessonId: string): Promise<StudioLessonDetail> {

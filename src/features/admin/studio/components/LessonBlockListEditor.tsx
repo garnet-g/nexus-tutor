@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils";
 interface LessonBlockListEditorProps {
   blocks: LessonContentBlock[];
   onChange: (blocks: LessonContentBlock[]) => void;
+  selectedBlockId?: string | null;
+  onSelectBlock?: (blockId: string | null) => void;
 }
 
 function reorderBlocks(
@@ -32,7 +34,12 @@ function reorderBlocks(
   return next;
 }
 
-export function LessonBlockListEditor({ blocks, onChange }: LessonBlockListEditorProps) {
+export function LessonBlockListEditor({
+  blocks,
+  onChange,
+  selectedBlockId = null,
+  onSelectBlock,
+}: LessonBlockListEditorProps) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [slashQuery, setSlashQuery] = useState("");
   const [slashOpen, setSlashOpen] = useState(false);
@@ -94,9 +101,20 @@ export function LessonBlockListEditor({ blocks, onChange }: LessonBlockListEdito
           className={cn(
             "rounded-2xl border border-nexus-border bg-nexus-surface",
             dragIndex === index && "opacity-60",
+            selectedBlockId && block.id === selectedBlockId && "ring-2 ring-primary/40",
           )}
         >
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-nexus-border px-4 py-3">
+          <div
+            className="flex flex-wrap items-center justify-between gap-2 border-b border-nexus-border px-4 py-3"
+            onClick={() => onSelectBlock?.(block.id ?? null)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                onSelectBlock?.(block.id ?? null);
+              }
+            }}
+            role={onSelectBlock ? "button" : undefined}
+            tabIndex={onSelectBlock ? 0 : undefined}
+          >
             <div className="flex items-center gap-2">
               <span
                 className="cursor-grab text-xs text-muted-foreground"

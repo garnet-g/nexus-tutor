@@ -3,13 +3,13 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import { listSubtopicLessons } from "@/server/services/contentStudioService";
-import { requireSuperAdmin } from "@/server/services/superAdminGuard";
+import { requireContentAuthor } from "@/server/services/contentAuthorGuard";
 
 export async function GET(
   _request: Request,
   context: { params: Promise<{ subtopicId: string }> },
 ) {
-  const auth = await requireSuperAdmin();
+  const auth = await requireContentAuthor();
   if (!auth.ok) {
     return NextResponse.json(
       {

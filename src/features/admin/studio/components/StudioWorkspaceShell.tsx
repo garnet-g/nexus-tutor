@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import type { ContentCoverageSubject } from "@/types/contentAdmin";
 
+import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/features/admin/components/adminUi";
 import {
   CurriculumTreeRail,
@@ -25,6 +27,11 @@ export function StudioWorkspaceShell({ subjects }: StudioWorkspaceShellProps) {
         eyebrow="Authoring Studio"
         title="Curriculum workspace"
         description="Browse the full curriculum tree, manage subtopic lessons, and edit topic question banks by hand."
+        actions={
+          <Button variant="outline" render={<Link href="/admin/studio/review" />}>
+            Review queue
+          </Button>
+        }
       />
 
       <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">

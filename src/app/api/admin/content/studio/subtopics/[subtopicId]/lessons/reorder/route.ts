@@ -5,13 +5,13 @@ import { NextResponse } from "next/server";
 import { reorderSubtopicLessonsRequestSchema } from "@/schemas/contentStudioSchemas";
 import { recordAdminAudit } from "@/server/services/adminAuditService";
 import { reorderSubtopicLessons } from "@/server/services/contentStudioService";
-import { requireSuperAdmin } from "@/server/services/superAdminGuard";
+import { requireContentAuthor } from "@/server/services/contentAuthorGuard";
 
 export async function PATCH(
   request: Request,
   context: { params: Promise<{ subtopicId: string }> },
 ) {
-  const auth = await requireSuperAdmin();
+  const auth = await requireContentAuthor();
   if (!auth.ok) {
     return NextResponse.json(
       {
@@ -59,7 +59,7 @@ export async function PATCH(
     const data = await reorderSubtopicLessons(parsed.data);
     await recordAdminAudit({
       actorUserId: auth.userId,
-      actorRole: "super_admin",
+      actorRole: auth.role,
       action: "content.lessons.reorder",
       targetType: "subtopic",
       targetId: subtopicId,

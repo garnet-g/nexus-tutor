@@ -6,6 +6,7 @@ import { DataTable, type Column } from "@/features/admin/components/DataTable";
 import { Field, Input, Select, Textarea } from "@/features/admin/components/adminForm";
 import { EmptyState, Panel, StatusBadge } from "@/features/admin/components/adminUi";
 import { toastError, toastSuccess } from "@/features/admin/components/toast";
+import { assistGenerateQuestions } from "@/features/admin/studio/lib/studioAssistApi";
 import {
   bulkSaveTopicQuestions,
   createBlankQuestionRow,
@@ -17,6 +18,8 @@ import {
   type TopicQuestionsResponse,
 } from "@/features/admin/studio/lib/studioWorkspaceApi";
 import type { StudioReviewStatus } from "@/types/contentStudio";
+import { GRADE_LEVELS_BY_CURRICULUM } from "@/types/contentAdmin";
+import type { Curriculum } from "@/types/database";
 import { Button } from "@/components/ui/Button";
 
 interface TopicQuestionBankPanelProps {
@@ -44,6 +47,10 @@ export function TopicQuestionBankPanel({ topicId, topicTitle }: TopicQuestionBan
   const [rows, setRows] = useState<EditableQuestionRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [assistGrade, setAssistGrade] = useState("Form 1");
+  const [assistDifficulty, setAssistDifficulty] = useState<"easy" | "medium" | "hard">("medium");
+  const [assistCount, setAssistCount] = useState(3);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -56,6 +63,10 @@ export function TopicQuestionBankPanel({ topicId, topicTitle }: TopicQuestionBan
         }
         setData(response);
         setRows(response.questions.map(toEditableQuestionRow));
+        const grades = GRADE_LEVELS_BY_CURRICULUM[response.context.curriculumCode as Curriculum];
+        if (grades?.[0]) {
+          setAssistGrade(grades[0]);
+        }
       })
       .catch((error: unknown) => {
         if (!active) {
@@ -76,6 +87,43 @@ export function TopicQuestionBankPanel({ topicId, topicTitle }: TopicQuestionBan
       active = false;
     };
   }, [topicId]);
+
+  async function handleGenerateQuestions() {
+    if (!data) {
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const generated = await assistGenerateQuestions({
+        topicId,
+        curriculum: data.context.curriculumCode as Curriculum,
+        gradeLevel: assistGrade,
+        difficulty: assistDifficulty,
+        count: assistCount,
+      });
+
+      const newRows = generated.questions.map((question) => ({
+        ...createBlankQuestionRow(topicId),
+        questionText: question.questionText,
+        questionType: question.questionType,
+        options: question.options,
+        correctAnswer: question.correctAnswer,
+        difficulty: question.difficulty,
+        explanation: question.explanation,
+      }));
+
+      setRows((current) => [...current, ...newRows]);
+      toastSuccess("Questions generated", "Review draft rows and save all when ready.");
+    } catch (error) {
+      toastError(
+        "Could not generate questions",
+        error instanceof Error ? error.message : undefined,
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  }
 
   async function reloadQuestions() {
     const response = await fetchTopicQuestions(topicId);
@@ -334,6 +382,46 @@ export function TopicQuestionBankPanel({ topicId, topicTitle }: TopicQuestionBan
       >
         <span className="sr-only">CSV format hint</span>
       </Field>
+
+      {data ? (
+        <div className="mb-5 grid gap-3 rounded-2xl border border-nexus-border bg-nexus-sunken/30 p-4 sm:grid-cols-4">
+          <Field label="AI grade">
+            <Select value={assistGrade} onChange={(event) => setAssistGrade(event.target.value)}>
+              {GRADE_LEVELS_BY_CURRICULUM[data.context.curriculumCode as Curriculum].map((grade) => (
+                <option key={grade} value={grade}>
+                  {grade}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label="Difficulty">
+            <Select
+              value={assistDifficulty}
+              onChange={(event) =>
+                setAssistDifficulty(event.target.value as "easy" | "medium" | "hard")
+              }
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </Select>
+          </Field>
+          <Field label="Count">
+            <Input
+              type="number"
+              min={1}
+              max={10}
+              value={assistCount}
+              onChange={(event) => setAssistCount(Number(event.target.value))}
+            />
+          </Field>
+          <div className="flex items-end">
+            <Button type="button" disabled={isGenerating} onClick={() => void handleGenerateQuestions()}>
+              {isGenerating ? "Generating…" : "AI generate questions"}
+            </Button>
+          </div>
+        </div>
+      ) : null}
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Loading questions…</p>

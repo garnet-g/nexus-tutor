@@ -80,3 +80,15 @@ export interface DraftQuestionQueueItem {
 }
 
 export type ContentDraftQueueItem = DraftLessonQueueItem | DraftQuestionQueueItem;
+
+export interface ReviewLessonQueueItem extends DraftLessonQueueItem {
+  submittedAt: string | null;
+  reviewNotes: string | null;
+}
+
+export interface ReviewQuestionQueueItem extends DraftQuestionQueueItem {
+  submittedAt: string | null;
+  reviewNotes: string | null;
+}
+
+export type ContentReviewQueueItem = ReviewLessonQueueItem | ReviewQuestionQueueItem;

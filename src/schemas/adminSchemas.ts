@@ -14,6 +14,7 @@ export const platformSettingsPatchSchema = z.object({
   promotionPremiumAmountKes: z.number().int().min(1).max(100_000).nullable().optional(),
   premiumAmountKes: z.number().int().min(1).max(100_000).optional(),
   familyAmountKes: z.number().int().min(1).max(100_000).optional(),
+  contentAutoApproveEnabled: z.boolean().optional(),
   changeReason: z.string().max(500).optional(),
 });
 

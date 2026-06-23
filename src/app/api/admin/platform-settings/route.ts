@@ -27,6 +27,7 @@ const PLATFORM_SETTING_MAP: Record<string, string> = {
   promotionTitle: "promotion_title",
   promotionEndsAt: "promotion_ends_at",
   promotionPremiumAmountKes: "promotion_premium_amount_kes",
+  contentAutoApproveEnabled: "content_auto_approve_enabled",
 };
 
 async function upsertPlatformSetting(

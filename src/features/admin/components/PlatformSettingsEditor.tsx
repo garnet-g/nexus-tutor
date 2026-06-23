@@ -21,11 +21,13 @@ interface AuditLogEntry {
 interface PlatformSettingsEditorProps {
   initialConfig: EffectiveSubscriptionConfig;
   initialAuditLog: AuditLogEntry[];
+  initialContentAutoApproveEnabled: boolean;
 }
 
 export function PlatformSettingsEditor({
   initialConfig,
   initialAuditLog,
+  initialContentAutoApproveEnabled,
 }: PlatformSettingsEditorProps) {
   const [config, setConfig] = useState(initialConfig);
   const [auditLog, setAuditLog] = useState(initialAuditLog);
@@ -44,6 +46,7 @@ export function PlatformSettingsEditor({
     promotionTitle: initialConfig.promotion.title ?? "",
     promotionEndsAt: initialConfig.promotion.endsAt ?? "",
     promotionPremiumAmountKes: "",
+    contentAutoApproveEnabled: initialContentAutoApproveEnabled,
   });
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -253,6 +256,26 @@ export function PlatformSettingsEditor({
                 }
               />
             </Field>
+          </div>
+
+          <div className="space-y-4 border-t border-nexus-border pt-5">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              Content publishing
+            </h3>
+            <Checkbox
+              label="Auto-approve trusted authors (still requires quality gates)"
+              checked={form.contentAutoApproveEnabled}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  contentAutoApproveEnabled: event.target.checked,
+                }))
+              }
+            />
+            <p className="text-xs text-muted-foreground">
+              When enabled, lessons and questions marked with the author trust flag publish on
+              submit if all quality gates pass. Otherwise content enters the review queue.
+            </p>
           </div>
 
           <Field label="Change reason">

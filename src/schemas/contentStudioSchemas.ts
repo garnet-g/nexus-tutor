@@ -5,7 +5,7 @@ import { generatedQuestionSchema } from "@/schemas/contentGenerationSchemas";
 export const studioQuestionRowSchema = generatedQuestionSchema.extend({
   id: z.string().uuid().optional(),
   subtopicId: z.string().uuid().nullable().optional(),
-  reviewStatus: z.enum(["draft", "published", "archived"]).optional(),
+  reviewStatus: z.enum(["draft", "in_review", "published", "archived"]).optional(),
   isActive: z.boolean().optional(),
   delete: z.boolean().optional(),
 });

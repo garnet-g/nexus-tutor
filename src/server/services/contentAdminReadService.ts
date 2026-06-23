@@ -9,6 +9,7 @@ import type {
   ContentCoverageSubtopic,
   ContentCoverageTopic,
   ContentDraftQueueItem,
+  ContentReviewQueueItem,
 } from "@/types/contentAdmin";
 import {
   GRADE_LEVELS_BY_CURRICULUM,
@@ -431,6 +432,160 @@ export async function getContentDraftQueue(): Promise<ContentDraftQueueItem[]> {
     }
 
     return 0;
+  });
+}
+
+export async function getContentReviewQueue(): Promise<ContentReviewQueueItem[]> {
+  const admin = createAdminClient();
+  const items: ContentReviewQueueItem[] = [];
+
+  const { data: reviewLessons } = await admin
+    .from("lessons")
+    .select(
+      "id, title, estimated_minutes, updated_at, generated_model, subtopic_id, submitted_for_review_at, review_notes",
+    )
+    .eq("review_status", "in_review")
+    .order("submitted_for_review_at", { ascending: false });
+
+  for (const lesson of reviewLessons ?? []) {
+    const { data: subtopic } = await admin
+      .from("subtopics")
+      .select("id, title, topic_id")
+      .eq("id", lesson.subtopic_id)
+      .maybeSingle();
+
+    if (!subtopic) {
+      continue;
+    }
+
+    const { data: topic } = await admin
+      .from("topics")
+      .select("id, title, subject_id")
+      .eq("id", subtopic.topic_id)
+      .maybeSingle();
+
+    if (!topic) {
+      continue;
+    }
+
+    const { data: subject } = await admin
+      .from("subjects")
+      .select("curriculum_id")
+      .eq("id", topic.subject_id)
+      .maybeSingle();
+
+    if (!subject) {
+      continue;
+    }
+
+    const { data: curriculumRow } = await admin
+      .from("curricula")
+      .select("code")
+      .eq("id", subject.curriculum_id)
+      .maybeSingle();
+
+    if (!curriculumRow) {
+      continue;
+    }
+
+    items.push({
+      kind: "lesson",
+      id: lesson.id,
+      title: lesson.title,
+      estimatedMinutes: lesson.estimated_minutes,
+      curriculumCode: curriculumRow.code as Curriculum,
+      topicId: topic.id,
+      topicTitle: topic.title,
+      subtopicId: subtopic.id,
+      subtopicTitle: subtopic.title,
+      generatedModel: lesson.generated_model,
+      updatedAt: lesson.updated_at,
+      submittedAt: lesson.submitted_for_review_at,
+      reviewNotes: lesson.review_notes,
+    });
+  }
+
+  const { data: reviewQuestions } = await admin
+    .from("practice_questions")
+    .select(
+      "id, question_text, question_type, options, correct_answer, difficulty, explanation, generated_model, topic_id, subtopic_id, submitted_for_review_at, review_notes",
+    )
+    .eq("review_status", "in_review")
+    .order("submitted_for_review_at", { ascending: false });
+
+  for (const question of reviewQuestions ?? []) {
+    const { data: topic } = await admin
+      .from("topics")
+      .select("id, title, subject_id")
+      .eq("id", question.topic_id)
+      .maybeSingle();
+
+    if (!topic) {
+      continue;
+    }
+
+    const { data: subject } = await admin
+      .from("subjects")
+      .select("curriculum_id")
+      .eq("id", topic.subject_id)
+      .maybeSingle();
+
+    if (!subject) {
+      continue;
+    }
+
+    const { data: curriculumRow } = await admin
+      .from("curricula")
+      .select("code")
+      .eq("id", subject.curriculum_id)
+      .maybeSingle();
+
+    if (!curriculumRow) {
+      continue;
+    }
+
+    let subtopicTitle: string | null = null;
+    if (question.subtopic_id) {
+      const { data: subtopic } = await admin
+        .from("subtopics")
+        .select("id, title")
+        .eq("id", question.subtopic_id)
+        .maybeSingle();
+      subtopicTitle = subtopic?.title ?? null;
+    }
+
+    const options = Array.isArray(question.options)
+      ? (question.options as string[])
+      : null;
+    const correctAnswer =
+      typeof question.correct_answer === "string"
+        ? question.correct_answer
+        : String(question.correct_answer ?? "");
+
+    items.push({
+      kind: "question",
+      id: question.id,
+      questionText: question.question_text,
+      questionType: question.question_type as "multiple_choice" | "short_answer",
+      options,
+      correctAnswer,
+      difficulty: question.difficulty as "easy" | "medium" | "hard",
+      explanation: question.explanation,
+      curriculumCode: curriculumRow.code as Curriculum,
+      topicId: topic.id,
+      topicTitle: topic.title,
+      subtopicId: question.subtopic_id,
+      subtopicTitle,
+      generatedModel: question.generated_model,
+      submittedAt: question.submitted_for_review_at,
+      reviewNotes: question.review_notes,
+    });
+  }
+
+  return items.sort((left, right) => {
+    const leftTime = left.submittedAt ?? "";
+    const rightTime = right.submittedAt ?? "";
+    return rightTime.localeCompare(leftTime);
   });
 }
 

@@ -2,11 +2,11 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
-import { getContentDraftQueue } from "@/server/services/contentAdminReadService";
-import { requireSuperAdmin } from "@/server/services/superAdminGuard";
+import { getContentReviewQueue } from "@/server/services/contentAdminReadService";
+import { requireContentAuthor } from "@/server/services/contentAuthorGuard";
 
 export async function GET() {
-  const auth = await requireSuperAdmin();
+  const auth = await requireContentAuthor();
   if (!auth.ok) {
     return NextResponse.json(
       {
@@ -17,6 +17,6 @@ export async function GET() {
     );
   }
 
-  const drafts = await getContentDraftQueue();
-  return NextResponse.json({ success: true, data: drafts });
+  const queue = await getContentReviewQueue();
+  return NextResponse.json({ success: true, data: queue });
 }

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { createManualDraftLessonRequestSchema } from "@/schemas/contentGenerationSchemas";
 import { recordAdminAudit } from "@/server/services/adminAuditService";
 import { createManualDraftLesson } from "@/server/services/contentGenerationService";
-import { requireSuperAdmin } from "@/server/services/superAdminGuard";
+import { requireContentAuthor } from "@/server/services/contentAuthorGuard";
 
 function mapServiceError(error: unknown): { status: number; code: string; message: string } {
   const message = error instanceof Error ? error.message : "Unexpected error.";
@@ -26,7 +26,7 @@ function mapServiceError(error: unknown): { status: number; code: string; messag
 }
 
 export async function POST(request: Request) {
-  const auth = await requireSuperAdmin();
+  const auth = await requireContentAuthor();
   if (!auth.ok) {
     return NextResponse.json(
       {
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     const result = await createManualDraftLesson(parsed.data, auth.userId);
     await recordAdminAudit({
       actorUserId: auth.userId,
-      actorRole: "super_admin",
+      actorRole: auth.role,
       action: "content.lesson_draft.create",
       targetType: "draft_lesson",
       targetId: result.lessonId,

@@ -1,6 +1,6 @@
 import type { Curriculum } from "@/types/database";
 
-export type StudioReviewStatus = "draft" | "published" | "archived";
+export type StudioReviewStatus = "draft" | "in_review" | "published" | "archived";
 
 export interface StudioLessonSummary {
   id: string;

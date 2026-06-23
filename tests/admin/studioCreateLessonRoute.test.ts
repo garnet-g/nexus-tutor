@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { POST as createLessonPOST } from "@/app/api/admin/content/drafts/lesson/create/route";
 
-const requireSuperAdmin = vi.fn();
-vi.mock("@/server/services/superAdminGuard", () => ({
-  requireSuperAdmin: (...args: unknown[]) => requireSuperAdmin(...args),
+const requireContentAuthor = vi.fn();
+vi.mock("@/server/services/contentAuthorGuard", () => ({
+  requireContentAuthor: (...args: unknown[]) => requireContentAuthor(...args),
 }));
 
 const createManualDraftLesson = vi.fn();
@@ -21,7 +21,7 @@ const subtopicId = "00000000-0000-4000-8000-000000000201";
 const lessonId = "00000000-0000-4000-8000-000000000202";
 
 beforeEach(() => {
-  requireSuperAdmin.mockReset().mockResolvedValue({ ok: true, userId: "super-1" });
+  requireContentAuthor.mockReset().mockResolvedValue({ ok: true, userId: "super-1", role: "super_admin" });
   createManualDraftLesson.mockReset().mockResolvedValue({
     lessonId,
     title: "Untitled lesson",
@@ -61,7 +61,7 @@ describe("POST /api/admin/content/drafts/lesson/create", () => {
   });
 
   it("rejects unauthenticated callers", async () => {
-    requireSuperAdmin.mockResolvedValue({
+    requireContentAuthor.mockResolvedValue({
       ok: false,
       status: 401,
       message: "Missing session.",
