@@ -10,6 +10,7 @@ import { Download, ExternalLink, MessageCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { formatStudentQuestionText } from "@/lib/content/questionText";
 import type { LessonContentBlock, LessonInlineQuestionBlock } from "@/types/curriculum";
 import { cn } from "@/lib/utils";
 
@@ -386,7 +387,9 @@ function InlineQuestionBlock({ block }: { block: LessonInlineQuestionBlock }) {
 
   return (
     <SectionCard title="Self-check" description="Pause and test your understanding.">
-      <p className="font-medium text-foreground">{block.questionText}</p>
+      <p className="font-medium text-foreground">
+        {formatStudentQuestionText(block.questionText)}
+      </p>
 
       {isMcq ? (
         <div className="mt-3 grid gap-2">

@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import type { PracticeCompleteResult } from "@/features/practice/components/PracticeResults";
 import { PracticeResults } from "@/features/practice/components/PracticeResults";
 import type { PracticeDifficulty } from "@/features/practice/components/PracticeLanding";
+import { formatStudentQuestionText } from "@/lib/content/questionText";
 import {
   addToReviewQueue,
   removeFromReviewQueue,
@@ -193,7 +194,7 @@ export function PracticeRunner({
       if (!payload.data.isCorrect) {
         addToReviewQueue(studentId, {
           practiceQuestionId: currentQuestion.practiceQuestionId,
-          questionText: currentQuestion.questionText,
+          questionText: formatStudentQuestionText(currentQuestion.questionText),
           questionType: currentQuestion.questionType,
           options: currentQuestion.options,
           difficulty: currentQuestion.difficulty,
@@ -329,6 +330,7 @@ export function PracticeRunner({
   }
 
   const lastAnswerCorrect = feedback?.isCorrect ?? false;
+  const currentQuestionText = formatStudentQuestionText(currentQuestion.questionText);
 
   return (
     <div className="space-y-6 nexus-enter">
@@ -353,7 +355,7 @@ export function PracticeRunner({
       {!feedback ? (
         <SectionCard>
           <h2 className="font-heading text-xl font-semibold text-foreground">
-            {currentQuestion.questionText}
+            {currentQuestionText}
           </h2>
 
           <div className="mt-6 space-y-3">

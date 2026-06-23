@@ -1,5 +1,6 @@
 import "server-only";
 
+import { formatStudentQuestionText } from "@/lib/content/questionText";
 import { ACTIVE_SUBJECT_CODES } from "@/lib/curriculum/contentModel";
 import { callNexModel } from "@/lib/nex/callNexModel";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -228,6 +229,7 @@ function buildQuestionBankSystemPrompt(
     "Rules:",
     ...contextRules,
     "- Each question must be distinct.",
+    "- questionText must contain only the actual question prompt. Do not prefix it with titles like \"KCSE algebra practice 1:\" or \"Grade-level medium review:\".",
     "- questionType is multiple_choice or short_answer.",
     "- For multiple_choice, options must include the correctAnswer exactly.",
     "- Return JSON ONLY matching:",
@@ -473,6 +475,7 @@ async function callModelForQuestions(
       const bank = generatedQuestionBankSchema.parse(parsed);
       const questions = bank.questions.slice(0, count).map((question) => ({
         ...question,
+        questionText: formatStudentQuestionText(question.questionText),
         difficulty,
       }));
       return { questions, model: result.provider };

@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { formatStudentQuestionText } from "@/lib/content/questionText";
+
 interface DiagnosticQuestion {
   diagnosticQuestionId: string;
   topicId: string;
@@ -237,7 +239,7 @@ export function DiagnosticFlow() {
           {currentQuestion.difficulty}
         </p>
         <h2 className="mt-2 text-xl font-medium text-foreground">
-          {currentQuestion.questionText}
+          {formatStudentQuestionText(currentQuestion.questionText)}
         </h2>
 
         <div className="mt-6 space-y-3">

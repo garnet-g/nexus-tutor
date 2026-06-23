@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
+import { formatStudentQuestionText } from "@/lib/content/questionText";
 import { remainingSeconds } from "@/lib/mockExams/examSimulatorEngine";
 import type { MockExamReviewQuestion } from "@/lib/mockExams/mockExamEngine";
 import { cn } from "@/lib/utils";
@@ -255,7 +256,7 @@ export function ExamSimulatorShell({
                   <div className="flex items-start justify-between gap-3">
                     <p className="text-sm leading-relaxed text-foreground sm:text-base">
                       <span className="font-semibold">{index + 1}.</span>{" "}
-                      {question.question_text}
+                      {formatStudentQuestionText(question.question_text)}
                     </p>
                     <span className="mt-0.5 shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
                       {question.difficulty}
@@ -509,7 +510,7 @@ function MarkedQuestion({ question }: { question: MockExamReviewQuestion }) {
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm leading-relaxed text-foreground">
           <span className="font-semibold">{question.sortOrder + 1}.</span>{" "}
-          {question.questionText}
+          {formatStudentQuestionText(question.questionText)}
         </p>
         <StatusBadge correct={question.isCorrect} />
       </div>

@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { useToast } from "@/components/ui/Toast";
+import { formatStudentQuestionText } from "@/lib/content/questionText";
 import type {
   CurriculumLesson,
   LessonShortQuizQuestion,
@@ -103,7 +104,9 @@ function ShortQuizSection({
             key={index}
             className="rounded-[18px] border border-nexus-border bg-nexus-surface p-4"
           >
-            <p className="font-medium text-foreground">{question.questionText}</p>
+            <p className="font-medium text-foreground">
+              {formatStudentQuestionText(question.questionText)}
+            </p>
             <div className="mt-3 grid gap-2">
               {question.options.map((option) => {
                 const selected = answers[index] === option;
