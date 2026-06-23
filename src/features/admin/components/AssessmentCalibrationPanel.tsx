@@ -3,13 +3,11 @@
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { FormStatus } from "@/components/ui/form-status";
+import { Field, Input, Select, Textarea } from "@/features/admin/components/adminForm";
 import { PageHeader } from "@/features/admin/components/adminUi";
+import { toastError, toastSuccess } from "@/features/admin/components/toast";
 import { KCSE_SUBJECT_BLUEPRINTS } from "@/lib/assessment/kcseSubjectBlueprints";
 import { kcseCalibrationSourcePolicy } from "@/schemas/kcseCalibrationSchemas";
-
-const fieldClass =
-  "w-full rounded-lg border border-nexus-border bg-nexus-sunken px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
 
 type ExtractionStatus = "machine_readable" | "needs_ocr";
 
@@ -80,10 +78,6 @@ function parseTopicSignals(
 export function AssessmentCalibrationPanel() {
   const [form, setForm] = useState(initialForm);
   const [isSaving, setIsSaving] = useState(false);
-  const [status, setStatus] = useState<{
-    tone: "error" | "success" | "info";
-    message: string;
-  } | null>(null);
 
   const readinessSummary = useMemo(
     () =>
@@ -116,7 +110,6 @@ export function AssessmentCalibrationPanel() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSaving(true);
-    setStatus(null);
 
     try {
       const payload = {
@@ -145,10 +138,7 @@ export function AssessmentCalibrationPanel() {
         throw new Error(result.error?.message ?? "Could not save calibration.");
       }
 
-      setStatus({
-        tone: "success",
-        message: "Calibration metadata saved.",
-      });
+      toastSuccess("Calibration metadata saved");
       setForm((current) => ({
         ...current,
         sourceLabel: "",
@@ -158,11 +148,10 @@ export function AssessmentCalibrationPanel() {
         notes: "",
       }));
     } catch (error) {
-      setStatus({
-        tone: "error",
-        message:
-          error instanceof Error ? error.message : "Could not save calibration.",
-      });
+      toastError(
+        "Could not save calibration",
+        error instanceof Error ? error.message : undefined,
+      );
     } finally {
       setIsSaving(false);
     }
@@ -222,46 +211,39 @@ export function AssessmentCalibrationPanel() {
         className="grid gap-6 rounded-2xl border border-nexus-border bg-nexus-surface p-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)]"
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="space-y-1 text-sm">
-            <span className="text-muted-foreground">Subject</span>
-            <select
+          <Field label="Subject">
+            <Select
               value={form.subjectCode}
               onChange={(event) => updateForm("subjectCode", event.target.value)}
-              className={fieldClass}
             >
               {KCSE_SUBJECT_BLUEPRINTS.map((subject) => (
                 <option key={subject.id} value={subject.id}>
                   {subject.displayName}
                 </option>
               ))}
-            </select>
-          </label>
+            </Select>
+          </Field>
 
-          <label className="space-y-1 text-sm">
-            <span className="text-muted-foreground">Paper</span>
-            <input
+          <Field label="Paper">
+            <Input
               type="number"
               min={1}
               max={3}
               value={form.paperNumber}
               onChange={(event) => updateForm("paperNumber", event.target.value)}
-              className={fieldClass}
             />
-          </label>
+          </Field>
 
-          <label className="space-y-1 text-sm sm:col-span-2">
-            <span className="text-muted-foreground">Source label</span>
-            <input
+          <Field label="Source label" className="sm:col-span-2">
+            <Input
               value={form.sourceLabel}
               onChange={(event) => updateForm("sourceLabel", event.target.value)}
               placeholder="2024 KCSE Mathematics Paper 1"
-              className={fieldClass}
             />
-          </label>
+          </Field>
 
-          <label className="space-y-1 text-sm">
-            <span className="text-muted-foreground">Extraction status</span>
-            <select
+          <Field label="Extraction status">
+            <Select
               value={form.extractionStatus}
               onChange={(event) =>
                 updateForm(
@@ -269,55 +251,46 @@ export function AssessmentCalibrationPanel() {
                   event.target.value as ExtractionStatus,
                 )
               }
-              className={fieldClass}
             >
               <option value="machine_readable">Machine readable</option>
               <option value="needs_ocr">Needs OCR</option>
-            </select>
-          </label>
+            </Select>
+          </Field>
 
-          <label className="space-y-1 text-sm">
-            <span className="text-muted-foreground">Command verbs</span>
-            <input
+          <Field label="Command verbs">
+            <Input
               value={form.commandVerbs}
               onChange={(event) => updateForm("commandVerbs", event.target.value)}
               placeholder="solve, simplify, calculate"
-              className={fieldClass}
             />
-          </label>
+          </Field>
 
-          <label className="space-y-1 text-sm">
-            <span className="text-muted-foreground">Mark allocation</span>
-            <input
+          <Field label="Mark allocation">
+            <Input
               value={form.markAllocation}
               onChange={(event) =>
                 updateForm("markAllocation", event.target.value)
               }
               placeholder="3:20,2:13"
-              className={fieldClass}
             />
-          </label>
+          </Field>
 
-          <label className="space-y-1 text-sm">
-            <span className="text-muted-foreground">Topic signals</span>
-            <input
+          <Field label="Topic signals">
+            <Input
               value={form.topicSignals}
               onChange={(event) => updateForm("topicSignals", event.target.value)}
               placeholder="algebra:8,geometry:5"
-              className={fieldClass}
             />
-          </label>
+          </Field>
 
-          <label className="space-y-1 text-sm sm:col-span-2">
-            <span className="text-muted-foreground">Operator notes</span>
-            <textarea
+          <Field label="Operator notes" className="sm:col-span-2">
+            <Textarea
               value={form.notes}
               onChange={(event) => updateForm("notes", event.target.value)}
               rows={4}
               placeholder="Metadata-only observation notes"
-              className={fieldClass}
             />
-          </label>
+          </Field>
         </div>
 
         <aside className="space-y-4 rounded-xl border border-nexus-border bg-nexus-sunken p-4">
@@ -329,12 +302,6 @@ export function AssessmentCalibrationPanel() {
               <li>Do not paste source questions, answers, or passages.</li>
             </ul>
           </div>
-
-          <FormStatus
-            tone={status?.tone}
-            message={status?.message}
-            className="w-full"
-          />
 
           <Button type="submit" fullWidth disabled={isSaving}>
             {isSaving ? "Saving..." : "Save calibration"}

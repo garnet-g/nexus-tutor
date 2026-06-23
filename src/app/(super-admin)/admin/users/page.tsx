@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { PageHeader, Panel } from "@/features/admin/components/adminUi";
-import { cn } from "@/lib/utils";
+import { FilterTabs, PageHeader, Panel } from "@/features/admin/components/adminUi";
+import { UsersTable } from "@/features/admin/components/UsersTable";
 import { usersQuerySchema } from "@/schemas/adminSchemas";
 import {
   type DirectoryUserRow,
@@ -20,40 +19,6 @@ const TYPE_FILTERS = [
   { value: "student", label: "Students" },
   { value: "parent", label: "Parents" },
 ] as const;
-
-function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Africa/Nairobi",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date(iso));
-}
-
-function SubscriptionPill({ status }: { status: string | null }) {
-  if (!status) {
-    return <span className="text-muted-foreground">—</span>;
-  }
-
-  const isActive = status === "active";
-  const isTrial = status === "trialing";
-  const className = isActive
-    ? "bg-primary/15 text-primary"
-    : isTrial
-      ? "bg-nexus-accent-soft text-nexus-warning"
-      : "bg-nexus-sunken text-muted-foreground";
-
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
-        className,
-      )}
-    >
-      {status}
-    </span>
-  );
-}
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -121,100 +86,15 @@ export default async function UsersPage({
                 className="w-48 rounded-lg border border-nexus-border bg-nexus-sunken px-3 py-1.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
             </form>
-            <div className="flex flex-wrap gap-1">
-              {TYPE_FILTERS.map((filter) => {
-                const isActive = activeType === filter.value;
-                return (
-                  <a
-                    key={filter.value || "all"}
-                    href={filterHref(filter.value)}
-                    className={cn(
-                      "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
-                      isActive
-                        ? "bg-primary/15 text-foreground"
-                        : "text-muted-foreground hover:bg-nexus-sunken hover:text-foreground",
-                    )}
-                  >
-                    {filter.label}
-                  </a>
-                );
-              })}
-            </div>
+            <FilterTabs
+              options={TYPE_FILTERS}
+              activeValue={activeType}
+              hrefFor={filterHref}
+            />
           </div>
         }
       >
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-nexus-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th className="px-5 py-3 font-medium">Name</th>
-                <th className="px-5 py-3 font-medium">Type</th>
-                <th className="px-5 py-3 font-medium">Grade / Curriculum</th>
-                <th className="px-5 py-3 font-medium">Subscription</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Joined</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="px-5 py-10 text-center text-muted-foreground"
-                  >
-                    No accounts match these filters.
-                  </td>
-                </tr>
-              ) : (
-                users.map((user) => (
-                  <tr
-                    key={`${user.type}-${user.id}`}
-                    className="border-b border-nexus-border last:border-0 hover:bg-nexus-sunken/60"
-                  >
-                    <td className="px-5 py-3 font-medium text-foreground">
-                      {user.type === "student" ? (
-                        <Link
-                          href={`/admin/users/${user.id}`}
-                          className="hover:text-primary hover:underline"
-                        >
-                          {user.fullName}
-                        </Link>
-                      ) : (
-                        user.fullName
-                      )}
-                    </td>
-                    <td className="px-5 py-3 capitalize text-muted-foreground">
-                      {user.type}
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground">
-                      {user.type === "student"
-                        ? `${user.gradeLevel || "—"} · ${user.curriculum || "—"}`
-                        : "—"}
-                    </td>
-                    <td className="px-5 py-3">
-                      <SubscriptionPill status={user.subscriptionStatus} />
-                    </td>
-                    <td className="px-5 py-3">
-                      <span
-                        className={cn(
-                          "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                          user.isActive
-                            ? "bg-primary/15 text-primary"
-                            : "bg-nexus-border/40 text-muted-foreground",
-                        )}
-                      >
-                        {user.isActive ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 tabular-nums text-muted-foreground">
-                      {formatDate(user.createdAt)}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <UsersTable rows={users} />
       </Panel>
     </>
   );

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { PageHeader } from "@/features/admin/components/adminUi";
 import { BetaInvitesPanel } from "@/features/admin/components/BetaInvitesPanel";
 import {
   listBetaInvites,
@@ -24,16 +25,14 @@ export default async function BetaInvitesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Beta invites</h1>
-        <p className="text-muted-foreground">
-          Generate invite codes for private beta signup when BETA_INVITE_REQUIRED is
-          enabled.
-        </p>
-      </div>
+    <>
+      <PageHeader
+        eyebrow="Growth"
+        title="Beta invites"
+        description="Generate invite codes for private beta signup when BETA_INVITE_REQUIRED is enabled."
+      />
 
       <BetaInvitesPanel initialInvites={invites} />
-    </div>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import { Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Panel } from "@/features/admin/components/adminUi";
+import { toastError, toastSuccess } from "@/features/admin/components/toast";
 import { GRADE_LEVELS_BY_CURRICULUM } from "@/types/contentAdmin";
 import type { Curriculum } from "@/types/database";
 
@@ -60,8 +61,6 @@ export function StudentProfileCorrectionForm({
   const [isActive, setIsActive] = useState(detail.isActive);
   const [changeReason, setChangeReason] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   function handleCurriculumChange(nextCurriculum: Curriculum) {
     setCurriculum(nextCurriculum);
@@ -71,8 +70,6 @@ export function StudentProfileCorrectionForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
-    setMessage(null);
-    setError(null);
 
     try {
       const response = await fetch(`/api/admin/users/${detail.id}/profile`, {
@@ -93,16 +90,16 @@ export function StudentProfileCorrectionForm({
       const payload = (await response.json()) as ProfilePatchResponse;
 
       if (!response.ok || !payload.success) {
-        setError(payload.error?.message ?? "Could not update this profile.");
+        toastError("Could not update this profile", payload.error?.message);
         return;
       }
 
       const count = payload.data?.changedFields.length ?? 0;
-      setMessage(count === 0 ? "No profile fields changed." : "Profile updated.");
+      toastSuccess(count === 0 ? "No profile fields changed" : "Profile updated");
       setChangeReason("");
       router.refresh();
     } catch {
-      setError("Network error. Please try again.");
+      toastError("Network error", "Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -234,9 +231,6 @@ export function StudentProfileCorrectionForm({
             className="w-full rounded-xl border border-nexus-border bg-nexus-surface px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </label>
-
-        {error ? <p className="text-sm text-nexus-danger">{error}</p> : null}
-        {message ? <p className="text-sm text-primary">{message}</p> : null}
 
         <Button type="submit" disabled={isSubmitting} variant="primary">
           <Save className="size-4" />

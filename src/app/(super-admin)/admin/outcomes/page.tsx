@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { AtRiskParentSmsPanel } from "@/features/admin/components/AtRiskParentSmsPanel";
-import { PageHeader, Panel, StatCard } from "@/features/admin/components/adminUi";
-import { cn } from "@/lib/utils";
+import { FilterTabs, PageHeader, Panel, StatCard } from "@/features/admin/components/adminUi";
 import { outcomesQuerySchema } from "@/schemas/adminSchemas";
 import {
   type OutcomesDashboardData,
@@ -108,28 +107,13 @@ export default async function OutcomesPage({
         title="Breakdown by curriculum & grade"
         padded={false}
         action={
-          <div className="flex flex-wrap gap-1">
-            {CURRICULUM_FILTERS.map((filter) => {
-              const href = filter.value
-                ? `/admin/outcomes?curriculum=${filter.value}`
-                : "/admin/outcomes";
-              const isActive = activeCurriculum === filter.value;
-              return (
-                <a
-                  key={filter.value || "all"}
-                  href={href}
-                  className={cn(
-                    "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
-                    isActive
-                      ? "bg-primary/15 text-foreground"
-                      : "text-muted-foreground hover:bg-nexus-sunken hover:text-foreground",
-                  )}
-                >
-                  {filter.label}
-                </a>
-              );
-            })}
-          </div>
+          <FilterTabs
+            options={CURRICULUM_FILTERS}
+            activeValue={activeCurriculum}
+            hrefFor={(value) =>
+              value ? `/admin/outcomes?curriculum=${value}` : "/admin/outcomes"
+            }
+          />
         }
       >
         <div className="overflow-x-auto">

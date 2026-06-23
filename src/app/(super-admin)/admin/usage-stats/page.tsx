@@ -1,5 +1,11 @@
 import { NexOpsReviewPanel } from "@/features/admin/components/NexOpsReviewPanel";
 import {
+  EmptyState,
+  PageHeader,
+  Panel,
+  StatCard,
+} from "@/features/admin/components/adminUi";
+import {
   loadNexOpsSnapshot,
   type NexOpsModeSummary,
   type NexOpsProviderSummary,
@@ -29,102 +35,71 @@ function formatUsd(value: number): string {
   return `~$${value < 0.01 ? value.toFixed(4) : value.toFixed(2)} USD`;
 }
 
-function StatCard({
-  label,
-  value,
-  note,
-}: {
-  label: string;
-  value: string;
-  note?: string;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-5">
-      <p className="text-sm text-muted-foreground">{label}</p>
-      <p className="mt-3 font-heading text-3xl font-semibold tracking-tight">
-        {value}
-      </p>
-      {note ? <p className="mt-2 text-xs text-muted-foreground">{note}</p> : null}
-    </div>
-  );
-}
-
 function ProviderTable({ rows }: { rows: NexOpsProviderSummary[] }) {
   return (
-    <section className="overflow-hidden rounded-lg border border-border bg-card">
-      <div className="border-b border-border px-5 py-4">
-        <h2 className="font-heading text-lg font-semibold">
-          Cost by model (last 7 days)
-        </h2>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] text-sm">
-          <thead>
-            <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-              <th className="px-5 py-3 font-medium">Provider</th>
-              <th className="px-5 py-3 text-right font-medium">Messages</th>
-              <th className="px-5 py-3 text-right font-medium">Est. tokens</th>
-              <th className="px-5 py-3 text-right font-medium">Est. cost (KES)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={4}
-                  className="px-5 py-8 text-center text-muted-foreground"
-                >
-                  No Nex model calls recorded in the last 7 days.
-                </td>
+    <Panel title="Cost by model (last 7 days)" padded={rows.length === 0}>
+      {rows.length === 0 ? (
+        <EmptyState title="No Nex model calls recorded in the last 7 days." />
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px] text-sm">
+            <thead>
+              <tr className="border-b border-nexus-border text-left text-xs uppercase tracking-wide text-muted-foreground">
+                <th className="px-5 py-3 font-medium">Provider</th>
+                <th className="px-5 py-3 text-right font-medium">Messages</th>
+                <th className="px-5 py-3 text-right font-medium">Est. tokens</th>
+                <th className="px-5 py-3 text-right font-medium">Est. cost (KES)</th>
               </tr>
-            ) : (
-              rows.map((row) => (
-                <tr key={row.providerKey} className="border-b border-border last:border-0">
-                  <td className="px-5 py-4 font-medium">{row.provider}</td>
-                  <td className="px-5 py-4 text-right font-mono">
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr
+                  key={row.providerKey}
+                  className="border-b border-nexus-border last:border-0 hover:bg-nexus-sunken/60"
+                >
+                  <td className="px-5 py-3 font-medium">{row.provider}</td>
+                  <td className="px-5 py-3 text-right font-mono tabular-nums">
                     {formatNumber(row.messages)}
                   </td>
-                  <td className="px-5 py-4 text-right font-mono">
+                  <td className="px-5 py-3 text-right font-mono tabular-nums">
                     {formatNumber(row.estimatedTokens)}
                   </td>
-                  <td className="px-5 py-4 text-right font-mono">
+                  <td className="px-5 py-3 text-right font-mono tabular-nums">
                     {formatKes(row.estimatedCostKes)}
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </section>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Panel>
   );
 }
 
 function ModeGrid({ rows }: { rows: NexOpsModeSummary[] }) {
   return (
-    <section className="rounded-lg border border-border bg-card">
-      <div className="border-b border-border px-5 py-4">
-        <h2 className="font-heading text-lg font-semibold">
-          Usage by mode (last 7 days)
-        </h2>
-      </div>
-      <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
-        {rows.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No mode activity recorded yet.
-          </p>
-        ) : (
-          rows.map((row) => (
-            <div key={row.mode} className="rounded-lg border border-border bg-background p-4">
-              <p className="text-sm text-muted-foreground">{row.mode}</p>
-              <p className="mt-2 font-heading text-2xl font-semibold">
+    <Panel title="Usage by mode (last 7 days)">
+      {rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          No mode activity recorded yet.
+        </p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {rows.map((row) => (
+            <div
+              key={row.mode}
+              className="rounded-xl border border-nexus-border bg-nexus-sunken p-4"
+            >
+              <p className="text-sm capitalize text-muted-foreground">{row.mode}</p>
+              <p className="mt-1 font-heading text-2xl font-semibold tabular-nums text-foreground">
                 {formatNumber(row.messages)}
               </p>
             </div>
-          ))
-        )}
-      </div>
-    </section>
+          ))}
+        </div>
+      )}
+    </Panel>
   );
 }
 
@@ -132,23 +107,14 @@ export default async function UsageStatsPage() {
   const snapshot = await loadNexOpsSnapshot();
 
   return (
-    <div className="space-y-7">
-      <div className="space-y-3 border-b border-border pb-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-          Operations
-        </p>
-        <div className="space-y-2">
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">
-            Nex ops
-          </h1>
-          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-            Nex message volume, estimated token spend, fallback rate, and flagged
-            conversation review ({snapshot.date}, Nairobi time).
-          </p>
-        </div>
-      </div>
+    <>
+      <PageHeader
+        eyebrow="Operations"
+        title="Usage stats"
+        description={`Nex message volume, estimated token spend, fallback rate, and flagged conversation review (${snapshot.date}, Nairobi time).`}
+      />
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Messages today"
           value={formatNumber(snapshot.summary.messagesToday)}
@@ -160,22 +126,22 @@ export default async function UsageStatsPage() {
         <StatCard
           label="Est. tokens (7d)"
           value={formatNumber(snapshot.summary.estimatedTokens7d)}
-          note={`~${snapshot.pricing.charsPerToken} chars/token estimate`}
+          hint={`~${snapshot.pricing.charsPerToken} chars/token estimate`}
         />
         <StatCard
           label="Est. cost (7d)"
           value={formatKes(snapshot.summary.estimatedCostKes)}
-          note={formatUsd(snapshot.summary.estimatedCostUsd)}
+          hint={formatUsd(snapshot.summary.estimatedCostUsd)}
         />
         <StatCard
           label="Fallback rate"
           value={`${snapshot.summary.fallbackRatePercent.toFixed(1)}%`}
-          note="OpenAI fallback vs Gemini primary"
+          hint="OpenAI fallback vs Gemini primary"
         />
         <StatCard
           label="Open reviews"
           value={formatNumber(snapshot.summary.openFlaggedCount)}
-          note="Validation failures still needing review"
+          hint="Validation failures still needing review"
         />
       </section>
 
@@ -189,6 +155,6 @@ export default async function UsageStatsPage() {
         NEX_GEMINI_OUTPUT_USD_PER_MILLION, NEX_OPENAI_INPUT_USD_PER_MILLION,
         NEX_OPENAI_OUTPUT_USD_PER_MILLION, and NEX_USD_TO_KES_RATE.
       </p>
-    </div>
+    </>
   );
 }

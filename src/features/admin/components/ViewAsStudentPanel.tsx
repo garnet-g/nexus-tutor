@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { Field, Textarea } from "@/features/admin/components/adminForm";
 import { Panel } from "@/features/admin/components/adminUi";
+import { useConfirm } from "@/features/admin/components/ConfirmDialog";
+import { toastError } from "@/features/admin/components/toast";
 
 interface ViewAsStudentPanelProps {
   studentId: string;
@@ -18,12 +21,22 @@ export function ViewAsStudentPanel({
   const router = useRouter();
   const [reason, setReason] = useState("");
   const [isStarting, setIsStarting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { confirm, dialog } = useConfirm();
 
   async function handleStart(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const ok = await confirm({
+      title: `View ${studentName}'s account?`,
+      description:
+        "This opens a read-only, time-boxed, audited render of their dashboard. It does not sign in as the user.",
+      confirmLabel: "Start session",
+    });
+    if (!ok) {
+      return;
+    }
+
     setIsStarting(true);
-    setError(null);
 
     try {
       const response = await fetch(
@@ -42,13 +55,13 @@ export function ViewAsStudentPanel({
       };
 
       if (!response.ok || !payload.success || !payload.data) {
-        setError(payload.error?.message ?? "Could not start view-as session.");
+        toastError("Could not start view-as session", payload.error?.message);
         return;
       }
 
       router.push(payload.data.viewUrl);
     } catch {
-      setError("Network error. Please try again.");
+      toastError("Network error", "Please try again.");
     } finally {
       setIsStarting(false);
     }
@@ -59,10 +72,10 @@ export function ViewAsStudentPanel({
       title="View as student"
       description="Open a read-only, time-boxed render of this student's dashboard. The session is audited and never signs in as the user."
     >
+      {dialog}
       <form onSubmit={handleStart} className="space-y-4">
-        <label className="block space-y-1.5 text-sm">
-          <span className="text-muted-foreground">Reason</span>
-          <textarea
+        <Field label="Reason">
+          <Textarea
             value={reason}
             onChange={(event) => setReason(event.target.value)}
             required
@@ -70,11 +83,8 @@ export function ViewAsStudentPanel({
             maxLength={500}
             rows={2}
             placeholder={`Why view ${studentName}'s account?`}
-            className="w-full rounded-lg border border-nexus-border bg-nexus-sunken px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
-        </label>
-
-        {error ? <p className="text-sm text-nexus-danger">{error}</p> : null}
+        </Field>
 
         <Button type="submit" disabled={isStarting} variant="outline">
           {isStarting ? "Starting…" : "View as student"}
