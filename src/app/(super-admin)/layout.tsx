@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
 import { AdminMobileNav, AdminSidebarNav } from "@/features/admin/components/AdminNav";
+import { AdminToaster } from "@/features/admin/components/AdminToaster";
 import { signOutAction } from "@/server/actions/authActions";
 
 export default function SuperAdminLayout({
@@ -78,6 +79,7 @@ export default function SuperAdminLayout({
           </main>
         </div>
       </div>
+      <AdminToaster />
     </div>
   );
 }

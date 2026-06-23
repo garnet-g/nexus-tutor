@@ -9,7 +9,9 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { ToastProvider, useToast } from "@/components/ui/Toast";
+import { PageHeader } from "@/features/admin/components/adminUi";
+import { useConfirm } from "@/features/admin/components/ConfirmDialog";
+import { toastError, toastInfo, toastSuccess } from "@/features/admin/components/toast";
 import { BarMeter } from "@/components/widgets/Charts";
 import { LessonRenderer } from "@/features/learn/components/LessonRenderer";
 import type { ContentCoverageSubject } from "@/server/services/contentAdminReadService";
@@ -82,7 +84,7 @@ function ContentPipelinePanelInner({
   initialDrafts,
 }: ContentPipelinePanelProps) {
   const router = useRouter();
-  const { toast } = useToast();
+  const { confirm, dialog } = useConfirm();
   const [activeTab, setActiveTab] = useState<"coverage" | "review">("coverage");
   const [subjects, setSubjects] = useState(initialSubjects);
   const [selectedSubjectCode, setSelectedSubjectCode] = useState(
@@ -179,11 +181,7 @@ function ContentPipelinePanelInner({
       };
 
       if (!response.ok || !payload.success || !payload.data) {
-        toast({
-          tone: "error",
-          title: "Could not load lesson draft",
-          description: payload.error?.message ?? "Try again.",
-        });
+        toastError("Could not load lesson draft", payload.error?.message ?? "Try again.");
         return;
       }
 
@@ -240,22 +238,19 @@ function ContentPipelinePanelInner({
       };
 
       if (!response.ok || !payload.success) {
-        toast({
-          tone: "error",
-          title: "Generation failed",
-          description: mapGenerateError(payload.error?.code, payload.error?.message),
-        });
+        toastError(
+          "Generation failed",
+          mapGenerateError(payload.error?.code, payload.error?.message),
+        );
         return;
       }
 
-      toast({
-        tone: "success",
-        title: "Draft created",
-        description:
-          pendingGenerate.type === "lesson"
-            ? "Review the new lesson in the queue before publishing."
-            : `${payload.data?.questionIds?.length ?? 0} question drafts added.`,
-      });
+      toastSuccess(
+        "Draft created",
+        pendingGenerate.type === "lesson"
+          ? "Review the new lesson in the queue before publishing."
+          : `${payload.data?.questionIds?.length ?? 0} question drafts added.`,
+      );
 
       setPendingGenerate(null);
       setActiveTab("review");
@@ -271,6 +266,15 @@ function ContentPipelinePanelInner({
   }
 
   async function handlePublish(kind: "lesson" | "question", id: string) {
+    const ok = await confirm({
+      title: `Publish this ${kind}?`,
+      description: "Students will see it on the next refresh once readiness thresholds are met.",
+      confirmLabel: "Publish",
+    });
+    if (!ok) {
+      return;
+    }
+
     setIsPublishing(true);
     try {
       const response = await fetch("/api/admin/content/publish", {
@@ -284,15 +288,11 @@ function ContentPipelinePanelInner({
       };
 
       if (!response.ok || !payload.success) {
-        toast({
-          tone: "error",
-          title: "Publish failed",
-          description: payload.error?.message ?? "Try again.",
-        });
+        toastError("Publish failed", payload.error?.message ?? "Try again.");
         return;
       }
 
-      toast({ tone: "success", title: "Published", description: "Students can see this after refresh." });
+      toastSuccess("Published", "Students can see this after refresh.");
       setLessonDetail(null);
       setSelectedDraftId(null);
       await refreshData();
@@ -302,6 +302,16 @@ function ContentPipelinePanelInner({
   }
 
   async function handleDiscard(kind: "lesson" | "question", id: string) {
+    const ok = await confirm({
+      title: `Discard this ${kind} draft?`,
+      description: "This permanently removes the draft. It cannot be recovered.",
+      confirmLabel: "Discard",
+      destructive: true,
+    });
+    if (!ok) {
+      return;
+    }
+
     setIsPublishing(true);
     try {
       const response = await fetch("/api/admin/content/discard", {
@@ -315,15 +325,11 @@ function ContentPipelinePanelInner({
       };
 
       if (!response.ok || !payload.success) {
-        toast({
-          tone: "error",
-          title: "Discard failed",
-          description: payload.error?.message ?? "Try again.",
-        });
+        toastError("Discard failed", payload.error?.message ?? "Try again.");
         return;
       }
 
-      toast({ tone: "info", title: "Draft discarded" });
+      toastInfo("Draft discarded");
       setLessonDetail(null);
       setSelectedDraftId(null);
       await refreshData();
@@ -357,15 +363,11 @@ function ContentPipelinePanelInner({
       };
 
       if (!response.ok || !payload.success) {
-        toast({
-          tone: "error",
-          title: "Save failed",
-          description: payload.error?.message ?? "Check block fields and try again.",
-        });
+        toastError("Save failed", payload.error?.message ?? "Check block fields and try again.");
         return;
       }
 
-      toast({ tone: "success", title: "Draft saved" });
+      toastSuccess("Draft saved");
       await refreshData();
     } finally {
       setIsSaving(false);
@@ -395,15 +397,11 @@ function ContentPipelinePanelInner({
       };
 
       if (!response.ok || !payload.success) {
-        toast({
-          tone: "error",
-          title: "Save failed",
-          description: payload.error?.message ?? "Check fields and try again.",
-        });
+        toastError("Save failed", payload.error?.message ?? "Check fields and try again.");
         return;
       }
 
-      toast({ tone: "success", title: "Question draft saved" });
+      toastSuccess("Question draft saved");
       await refreshData();
     } finally {
       setIsSaving(false);
@@ -425,12 +423,12 @@ function ContentPipelinePanelInner({
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Content pipeline</h1>
-        <p className="text-muted-foreground">
-          Generate lesson and question drafts by subject, review them here, then publish. Students only see published content on topics that meet readiness thresholds.
-        </p>
-      </div>
+      {dialog}
+      <PageHeader
+        eyebrow="Content"
+        title="Content pipeline"
+        description="Generate lesson and question drafts by subject, review them here, then publish. Students only see published content on topics that meet readiness thresholds."
+      />
 
       <div className="flex flex-wrap items-center gap-2">
         <Label htmlFor="content-subject" className="sr-only">
@@ -1192,9 +1190,5 @@ function QuestionDraftEditor({
 }
 
 export function ContentPipelinePanel(props: ContentPipelinePanelProps) {
-  return (
-    <ToastProvider>
-      <ContentPipelinePanelInner {...props} />
-    </ToastProvider>
-  );
+  return <ContentPipelinePanelInner {...props} />;
 }

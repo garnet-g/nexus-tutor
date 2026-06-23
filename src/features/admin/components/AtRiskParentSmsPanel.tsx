@@ -3,7 +3,10 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { Textarea } from "@/features/admin/components/adminForm";
 import { Panel } from "@/features/admin/components/adminUi";
+import { useConfirm } from "@/features/admin/components/ConfirmDialog";
+import { toastError, toastSuccess } from "@/features/admin/components/toast";
 import { cn } from "@/lib/utils";
 
 type AtRiskStudent = {
@@ -53,13 +56,19 @@ export function AtRiskParentSmsPanel({
     Object.fromEntries(students.map((student) => [student.studentId, defaultSms(student)])),
   );
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [errorById, setErrorById] = useState<Record<string, string | null>>({});
-  const [successById, setSuccessById] = useState<Record<string, string | null>>({});
+  const { confirm, dialog } = useConfirm();
 
   async function sendSms(student: AtRiskStudent) {
+    const ok = await confirm({
+      title: `Send SMS to ${student.studentName}'s parent?`,
+      description: "The message will be delivered to the linked parent phone.",
+      confirmLabel: "Send SMS",
+    });
+    if (!ok) {
+      return;
+    }
+
     setBusyId(student.studentId);
-    setErrorById((current) => ({ ...current, [student.studentId]: null }));
-    setSuccessById((current) => ({ ...current, [student.studentId]: null }));
 
     try {
       const response = await fetch("/api/admin/outcomes/parent-sms", {
@@ -77,25 +86,21 @@ export function AtRiskParentSmsPanel({
       };
 
       if (!response.ok || !payload.success || !payload.data) {
-        setErrorById((current) => ({
-          ...current,
-          [student.studentId]:
-            payload.error?.code === "NO_PARENT_PHONE"
-              ? "No active parent phone is linked."
-              : payload.error?.message ?? "Could not send SMS.",
-        }));
+        toastError(
+          "Could not send SMS",
+          payload.error?.code === "NO_PARENT_PHONE"
+            ? "No active parent phone is linked."
+            : payload.error?.message,
+        );
         return;
       }
 
-      setSuccessById((current) => ({
-        ...current,
-        [student.studentId]: `SMS ${payload.data?.smsStatus ?? "sent"}.`,
-      }));
+      toastSuccess(
+        `SMS ${payload.data?.smsStatus ?? "sent"}`,
+        `Delivered to ${student.studentName}'s parent.`,
+      );
     } catch {
-      setErrorById((current) => ({
-        ...current,
-        [student.studentId]: "Network error. Please try again.",
-      }));
+      toastError("Network error", "Please try again.");
     } finally {
       setBusyId(null);
     }
@@ -107,6 +112,7 @@ export function AtRiskParentSmsPanel({
       description={`Health score below ${riskThreshold} or trending down. Parent SMS is single-recipient only.`}
       padded={false}
     >
+      {dialog}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -160,7 +166,7 @@ export function AtRiskParentSmsPanel({
                   <td className="min-w-80 px-5 py-3">
                     {canWrite ? (
                       <div className="space-y-2">
-                        <textarea
+                        <Textarea
                           value={messages[row.studentId] ?? defaultSms(row)}
                           onChange={(event) =>
                             setMessages((current) => ({
@@ -171,29 +177,16 @@ export function AtRiskParentSmsPanel({
                           minLength={5}
                           maxLength={480}
                           rows={3}
-                          className="w-full rounded-lg border border-nexus-border bg-nexus-surface px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                         />
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => void sendSms(row)}
-                            disabled={busyId === row.studentId}
-                          >
-                            {busyId === row.studentId ? "Sending..." : "Send SMS"}
-                          </Button>
-                          {errorById[row.studentId] ? (
-                            <span className="text-xs text-nexus-danger">
-                              {errorById[row.studentId]}
-                            </span>
-                          ) : null}
-                          {successById[row.studentId] ? (
-                            <span className="text-xs text-primary">
-                              {successById[row.studentId]}
-                            </span>
-                          ) : null}
-                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => void sendSms(row)}
+                          disabled={busyId === row.studentId}
+                        >
+                          {busyId === row.studentId ? "Sending…" : "Send SMS"}
+                        </Button>
                       </div>
                     ) : (
                       <span className="text-sm text-muted-foreground">

@@ -1,15 +1,14 @@
 import { redirect } from "next/navigation";
 
 import { CouponManagerPanel } from "@/features/admin/components/CouponManagerPanel";
-import { PageHeader, Panel, StatCard } from "@/features/admin/components/adminUi";
-import { cn } from "@/lib/utils";
+import { FilterTabs, PageHeader, Panel, StatCard } from "@/features/admin/components/adminUi";
+import { PaymentsLedgerTable } from "@/features/admin/components/PaymentsLedgerTable";
 import { paymentsQuerySchema } from "@/schemas/adminSchemas";
 import {
   type AdminCoupon,
   listCoupons,
 } from "@/server/services/adminCouponService";
 import {
-  type PaymentLedgerRow,
   type PaymentsDashboardData,
   getPaymentsDashboard,
 } from "@/server/services/adminPaymentsReadService";
@@ -42,41 +41,6 @@ const STATUS_FILTERS = [
 
 function formatKes(amount: number): string {
   return `KES ${amount.toLocaleString()}`;
-}
-
-function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Africa/Nairobi",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(new Date(iso));
-}
-
-function StatusPill({ status }: { status: PaymentLedgerRow["status"] }) {
-  const isSuccess = status === "paid";
-  const isFailed =
-    status === "failed" || status === "cancelled" || status === "expired";
-
-  const className = isSuccess
-    ? "bg-primary/15 text-primary"
-    : isFailed
-      ? "bg-nexus-danger/15 text-nexus-danger"
-      : "bg-nexus-sunken text-muted-foreground";
-
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
-        className,
-      )}
-    >
-      {status}
-    </span>
-  );
 }
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -168,86 +132,16 @@ export default async function PaymentsPage({
         description="Most recent M-Pesa payment attempts."
         padded={false}
         action={
-          <div className="flex flex-wrap gap-1">
-            {STATUS_FILTERS.map((filter) => {
-              const href = filter.value
-                ? `/admin/payments?status=${filter.value}`
-                : "/admin/payments";
-              const isActive = activeStatus === filter.value;
-              return (
-                <a
-                  key={filter.value || "all"}
-                  href={href}
-                  className={cn(
-                    "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
-                    isActive
-                      ? "bg-primary/15 text-foreground"
-                      : "text-muted-foreground hover:bg-nexus-sunken hover:text-foreground",
-                  )}
-                >
-                  {filter.label}
-                </a>
-              );
-            })}
-          </div>
+          <FilterTabs
+            options={STATUS_FILTERS}
+            activeValue={activeStatus}
+            hrefFor={(value) =>
+              value ? `/admin/payments?status=${value}` : "/admin/payments"
+            }
+          />
         }
       >
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-nexus-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th className="px-5 py-3 font-medium">Date</th>
-                <th className="px-5 py-3 font-medium">Student</th>
-                <th className="px-5 py-3 font-medium">Phone</th>
-                <th className="px-5 py-3 font-medium">Plan</th>
-                <th className="px-5 py-3 text-right font-medium">Amount</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Receipt / Ref</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ledger.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-5 py-10 text-center text-muted-foreground"
-                  >
-                    No payments match these filters yet.
-                  </td>
-                </tr>
-              ) : (
-                ledger.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="border-b border-nexus-border last:border-0 hover:bg-nexus-sunken/60"
-                  >
-                    <td className="px-5 py-3 tabular-nums text-muted-foreground">
-                      {formatDate(row.createdAt)}
-                    </td>
-                    <td className="px-5 py-3 font-medium text-foreground">
-                      {row.studentName}
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground">
-                      {row.phoneNumber}
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground">
-                      {row.planName}
-                    </td>
-                    <td className="px-5 py-3 text-right font-mono tabular-nums text-foreground">
-                      {row.amountKes.toLocaleString()}
-                    </td>
-                    <td className="px-5 py-3">
-                      <StatusPill status={row.status} />
-                    </td>
-                    <td className="px-5 py-3 font-mono text-xs text-muted-foreground">
-                      {row.mpesaReceiptNumber ?? row.checkoutRequestId ?? "—"}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <PaymentsLedgerTable rows={ledger} />
       </Panel>
     </>
   );

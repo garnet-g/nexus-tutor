@@ -3,8 +3,9 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { Panel } from "@/features/admin/components/adminUi";
-import { cn } from "@/lib/utils";
+import { Field, Select, Textarea } from "@/features/admin/components/adminForm";
+import { Panel, StatusBadge, type BadgeTone } from "@/features/admin/components/adminUi";
+import { toastError, toastSuccess } from "@/features/admin/components/toast";
 
 type FlagStatus = "open" | "resolved" | "escalated";
 
@@ -37,6 +38,12 @@ const STATUS_OPTIONS: { value: FlagStatus | ""; label: string }[] = [
   { value: "", label: "All" },
 ];
 
+function statusTone(status: FlagStatus): BadgeTone {
+  if (status === "open") return "danger";
+  if (status === "escalated") return "warning";
+  return "success";
+}
+
 function formatDate(iso: string): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "Africa/Nairobi",
@@ -49,26 +56,6 @@ function formatDate(iso: string): string {
   }).format(new Date(iso));
 }
 
-function StatusPill({ status }: { status: FlagStatus }) {
-  const className =
-    status === "open"
-      ? "bg-nexus-danger/15 text-nexus-danger"
-      : status === "escalated"
-        ? "bg-amber-500/15 text-amber-300"
-        : "bg-primary/15 text-primary";
-
-  return (
-    <span
-      className={cn(
-        "inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
-        className,
-      )}
-    >
-      {status}
-    </span>
-  );
-}
-
 export function NexFlagReviewPanel({
   initialFlags,
   canWrite,
@@ -78,13 +65,9 @@ export function NexFlagReviewPanel({
   const [notesById, setNotesById] = useState<Record<string, string>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   async function refresh(nextStatus = status) {
     setIsLoading(true);
-    setError(null);
-    setMessage(null);
 
     try {
       const params = new URLSearchParams({ limit: "100" });
@@ -100,13 +83,13 @@ export function NexFlagReviewPanel({
       };
 
       if (!response.ok || !payload.success || !payload.data) {
-        setError(payload.error?.message ?? "Could not load Nex flags.");
+        toastError("Could not load Nex flags", payload.error?.message);
         return;
       }
 
       setFlags(payload.data.flags);
     } catch {
-      setError("Network error. Please try again.");
+      toastError("Network error", "Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -114,8 +97,6 @@ export function NexFlagReviewPanel({
 
   async function updateFlag(flagId: string, nextStatus: "resolved" | "escalated") {
     setBusyId(flagId);
-    setError(null);
-    setMessage(null);
 
     try {
       const response = await fetch(`/api/admin/nex-ops/flags/${flagId}`, {
@@ -133,7 +114,7 @@ export function NexFlagReviewPanel({
       };
 
       if (!response.ok || !payload.success || !payload.data) {
-        setError(payload.error?.message ?? "Could not update flag.");
+        toastError("Could not update flag", payload.error?.message);
         return;
       }
 
@@ -142,9 +123,9 @@ export function NexFlagReviewPanel({
           flag.id === flagId ? payload.data?.flag ?? flag : flag,
         ),
       );
-      setMessage(`Flag marked ${nextStatus}.`);
+      toastSuccess(`Flag marked ${nextStatus}`);
     } catch {
-      setError("Network error. Please try again.");
+      toastError("Network error", "Please try again.");
     } finally {
       setBusyId(null);
     }
@@ -161,21 +142,22 @@ export function NexFlagReviewPanel({
       padded={false}
       action={
         <div className="flex flex-wrap items-center gap-2">
-          <select
+          <Select
             value={status}
             onChange={(event) => {
               const nextStatus = event.target.value as FlagStatus | "";
               setStatus(nextStatus);
               void refresh(nextStatus);
             }}
-            className="rounded-lg border border-nexus-border bg-nexus-sunken px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+            className="w-auto"
+            aria-label="Filter flag status"
           >
             {STATUS_OPTIONS.map((option) => (
               <option key={option.value || "all"} value={option.value}>
                 {option.label}
               </option>
             ))}
-          </select>
+          </Select>
           <Button
             type="button"
             variant="outline"
@@ -183,14 +165,11 @@ export function NexFlagReviewPanel({
             onClick={() => void refresh()}
             disabled={isLoading}
           >
-            {isLoading ? "Refreshing..." : "Refresh"}
+            {isLoading ? "Refreshing…" : "Refresh"}
           </Button>
         </div>
       }
     >
-      {error ? <p className="px-5 pt-4 text-sm text-nexus-danger">{error}</p> : null}
-      {message ? <p className="px-5 pt-4 text-sm text-primary">{message}</p> : null}
-
       <div className="divide-y divide-nexus-border">
         {flags.length === 0 ? (
           <p className="px-5 py-10 text-center text-sm text-muted-foreground">
@@ -202,7 +181,9 @@ export function NexFlagReviewPanel({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <StatusPill status={flag.status} />
+                    <StatusBadge tone={statusTone(flag.status)}>
+                      {flag.status}
+                    </StatusBadge>
                     <span className="text-xs uppercase tracking-wide text-muted-foreground">
                       {flag.source}
                     </span>
@@ -234,9 +215,8 @@ export function NexFlagReviewPanel({
 
               {canWrite && flag.status === "open" ? (
                 <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
-                  <label className="block space-y-1.5 text-sm">
-                    <span className="text-muted-foreground">Review notes</span>
-                    <textarea
+                  <Field label="Review notes">
+                    <Textarea
                       value={notesById[flag.id] ?? ""}
                       onChange={(event) =>
                         setNotesById((current) => ({
@@ -246,9 +226,8 @@ export function NexFlagReviewPanel({
                       }
                       maxLength={2000}
                       rows={2}
-                      className="w-full rounded-lg border border-nexus-border bg-nexus-sunken px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
-                  </label>
+                  </Field>
                   <div className="flex flex-wrap gap-2">
                     <Button
                       type="button"

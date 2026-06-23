@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
@@ -103,6 +104,155 @@ export function StatCard({ label, value, hint, icon }: StatCardProps) {
         {value}
       </p>
       {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+    </div>
+  );
+}
+
+export type BadgeTone = "success" | "warning" | "danger" | "neutral" | "info";
+
+const BADGE_TONE: Record<BadgeTone, string> = {
+  success: "bg-primary/15 text-primary",
+  warning: "bg-nexus-accent-soft text-nexus-warning",
+  danger: "bg-nexus-danger/15 text-nexus-danger",
+  neutral: "bg-nexus-sunken text-muted-foreground",
+  info: "bg-nexus-secondary/15 text-nexus-secondary",
+};
+
+interface StatusBadgeProps {
+  children: ReactNode;
+  tone?: BadgeTone;
+  className?: string;
+}
+
+/** Pill badge used for statuses across admin tables. */
+export function StatusBadge({ children, tone = "neutral", className }: StatusBadgeProps) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
+        BADGE_TONE[tone],
+        className,
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+interface EmptyStateProps {
+  title: string;
+  description?: ReactNode;
+  icon?: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}
+
+/** Centered empty state for panels and tables with no data. */
+export function EmptyState({ title, description, icon, action, className }: EmptyStateProps) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center gap-2 px-6 py-12 text-center",
+        className,
+      )}
+    >
+      {icon ? (
+        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-nexus-sunken text-muted-foreground">
+          {icon}
+        </span>
+      ) : null}
+      <p className="font-medium text-foreground">{title}</p>
+      {description ? (
+        <p className="max-w-sm text-sm text-muted-foreground">{description}</p>
+      ) : null}
+      {action ? <div className="mt-2">{action}</div> : null}
+    </div>
+  );
+}
+
+interface FilterTabsOption {
+  value: string;
+  label: string;
+}
+
+interface FilterTabsProps {
+  options: readonly FilterTabsOption[];
+  activeValue: string;
+  /** Builds the href for a given option value. */
+  hrefFor: (value: string) => string;
+  className?: string;
+}
+
+/** Link-based pill filter group (preserves server-rendered query-param navigation). */
+export function FilterTabs({ options, activeValue, hrefFor, className }: FilterTabsProps) {
+  return (
+    <div className={cn("flex flex-wrap gap-1", className)}>
+      {options.map((option) => {
+        const isActive = activeValue === option.value;
+        return (
+          <Link
+            key={option.value || "all"}
+            href={hrefFor(option.value)}
+            aria-current={isActive ? "true" : undefined}
+            className={cn(
+              "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+              isActive
+                ? "bg-primary/15 text-foreground"
+                : "text-muted-foreground hover:bg-nexus-sunken hover:text-foreground",
+            )}
+          >
+            {option.label}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+interface SearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+  "aria-label"?: string;
+}
+
+/**
+ * Controlled search input with a clear button. Presentational (no hooks) so it
+ * is usable from both server and client components.
+ */
+export function SearchInput({
+  value,
+  onChange,
+  placeholder = "Search…",
+  className,
+  "aria-label": ariaLabel,
+}: SearchInputProps) {
+  return (
+    <div className={cn("relative", className)}>
+      <svg
+        viewBox="0 0 24 24"
+        width="15"
+        height="15"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
+      </svg>
+      <input
+        type="search"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        aria-label={ariaLabel ?? placeholder}
+        className="w-56 rounded-lg border border-nexus-border bg-nexus-sunken py-1.5 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-primary focus:ring-2 focus:ring-primary/20"
+      />
     </div>
   );
 }

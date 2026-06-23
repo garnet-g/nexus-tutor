@@ -3,8 +3,10 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { Panel } from "@/features/admin/components/adminUi";
-import { cn } from "@/lib/utils";
+import { Field, Input, Select } from "@/features/admin/components/adminForm";
+import { Panel, StatusBadge } from "@/features/admin/components/adminUi";
+import { useConfirm } from "@/features/admin/components/ConfirmDialog";
+import { toastError, toastSuccess } from "@/features/admin/components/toast";
 
 type DiscountType = "percent" | "fixed";
 type CouponPlan = "premium" | "family" | "any";
@@ -27,9 +29,6 @@ interface CouponManagerPanelProps {
   initialCoupons: AdminCoupon[];
   canWrite: boolean;
 }
-
-const fieldClass =
-  "w-full rounded-lg border border-nexus-border bg-nexus-sunken px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
 
 function formatDiscount(coupon: AdminCoupon): string {
   if (coupon.discountType === "percent") {
@@ -65,14 +64,11 @@ export function CouponManagerPanel({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const { confirm, dialog } = useConfirm();
 
   async function createCoupon(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
-    setError(null);
-    setSuccess(null);
 
     try {
       const response = await fetch("/api/admin/payments/coupons", {
@@ -94,7 +90,7 @@ export function CouponManagerPanel({
       };
 
       if (!response.ok || !payload.success || !payload.data) {
-        setError(payload.error?.message ?? "Could not create coupon.");
+        toastError("Could not create coupon", payload.error?.message);
         return;
       }
 
@@ -107,21 +103,30 @@ export function CouponManagerPanel({
         maxUses: "",
         expiresAt: "",
       });
-      setSuccess("Coupon created.");
+      toastSuccess("Coupon created");
     } catch {
-      setError("Network error. Please try again.");
+      toastError("Network error", "Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  async function deactivateCoupon(couponId: string) {
-    setBusyId(couponId);
-    setError(null);
-    setSuccess(null);
+  async function deactivateCoupon(coupon: AdminCoupon) {
+    const ok = await confirm({
+      title: `Deactivate coupon ${coupon.code}?`,
+      description:
+        "It will stop redeeming immediately. This cannot be undone from here.",
+      confirmLabel: "Deactivate",
+      destructive: true,
+    });
+    if (!ok) {
+      return;
+    }
+
+    setBusyId(coupon.id);
 
     try {
-      const response = await fetch(`/api/admin/payments/coupons/${couponId}`, {
+      const response = await fetch(`/api/admin/payments/coupons/${coupon.id}`, {
         method: "PATCH",
       });
       const payload = (await response.json()) as {
@@ -131,18 +136,18 @@ export function CouponManagerPanel({
       };
 
       if (!response.ok || !payload.success || !payload.data) {
-        setError(payload.error?.message ?? "Could not deactivate coupon.");
+        toastError("Could not deactivate coupon", payload.error?.message);
         return;
       }
 
       setCoupons((current) =>
-        current.map((coupon) =>
-          coupon.id === couponId ? payload.data!.coupon : coupon,
+        current.map((existing) =>
+          existing.id === coupon.id ? payload.data!.coupon : existing,
         ),
       );
-      setSuccess("Coupon deactivated.");
+      toastSuccess("Coupon deactivated");
     } catch {
-      setError("Network error. Please try again.");
+      toastError("Network error", "Please try again.");
     } finally {
       setBusyId(null);
     }
@@ -153,15 +158,15 @@ export function CouponManagerPanel({
       title="Coupon manager"
       description="Create and deactivate growth coupons. Redemption is handled outside this admin surface."
     >
+      {dialog}
       <div className="space-y-5">
         {canWrite ? (
           <form
             onSubmit={createCoupon}
             className="grid gap-3 rounded-xl border border-nexus-border bg-nexus-sunken p-4 lg:grid-cols-6"
           >
-            <label className="space-y-1 text-sm lg:col-span-2">
-              <span className="text-muted-foreground">Code</span>
-              <input
+            <Field label="Code" className="lg:col-span-2">
+              <Input
                 value={form.code}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, code: event.target.value }))
@@ -169,12 +174,10 @@ export function CouponManagerPanel({
                 required
                 minLength={3}
                 maxLength={40}
-                className={fieldClass}
               />
-            </label>
-            <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Type</span>
-              <select
+            </Field>
+            <Field label="Type">
+              <Select
                 value={form.discountType}
                 onChange={(event) =>
                   setForm((current) => ({
@@ -182,15 +185,13 @@ export function CouponManagerPanel({
                     discountType: event.target.value as DiscountType,
                   }))
                 }
-                className={fieldClass}
               >
                 <option value="percent">Percent</option>
                 <option value="fixed">Fixed KES</option>
-              </select>
-            </label>
-            <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Value</span>
-              <input
+              </Select>
+            </Field>
+            <Field label="Value">
+              <Input
                 type="number"
                 min={1}
                 max={form.discountType === "percent" ? 100 : 1000000}
@@ -201,12 +202,10 @@ export function CouponManagerPanel({
                     discountValue: event.target.value,
                   }))
                 }
-                className={fieldClass}
               />
-            </label>
-            <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Plan</span>
-              <select
+            </Field>
+            <Field label="Plan">
+              <Select
                 value={form.appliesToPlan}
                 onChange={(event) =>
                   setForm((current) => ({
@@ -214,16 +213,14 @@ export function CouponManagerPanel({
                     appliesToPlan: event.target.value as CouponPlan,
                   }))
                 }
-                className={fieldClass}
               >
                 <option value="any">Any</option>
                 <option value="premium">Premium</option>
                 <option value="family">Family</option>
-              </select>
-            </label>
-            <label className="space-y-1 text-sm">
-              <span className="text-muted-foreground">Max uses</span>
-              <input
+              </Select>
+            </Field>
+            <Field label="Max uses">
+              <Input
                 type="number"
                 min={1}
                 value={form.maxUses}
@@ -233,12 +230,10 @@ export function CouponManagerPanel({
                     maxUses: event.target.value,
                   }))
                 }
-                className={fieldClass}
               />
-            </label>
-            <label className="space-y-1 text-sm lg:col-span-2">
-              <span className="text-muted-foreground">Expires at</span>
-              <input
+            </Field>
+            <Field label="Expires at" className="lg:col-span-2">
+              <Input
                 type="datetime-local"
                 value={form.expiresAt}
                 onChange={(event) =>
@@ -247,12 +242,11 @@ export function CouponManagerPanel({
                     expiresAt: event.target.value,
                   }))
                 }
-                className={fieldClass}
               />
-            </label>
+            </Field>
             <div className="flex items-end lg:col-span-4">
               <Button type="submit" variant="primary" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create coupon"}
+                {isSubmitting ? "Creating…" : "Create coupon"}
               </Button>
             </div>
           </form>
@@ -261,9 +255,6 @@ export function CouponManagerPanel({
             Support can review coupons. Create and deactivate actions require super admin.
           </p>
         )}
-
-        {error ? <p className="text-sm text-nexus-danger">{error}</p> : null}
-        {success ? <p className="text-sm text-primary">{success}</p> : null}
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -311,16 +302,9 @@ export function CouponManagerPanel({
                       {formatDate(coupon.expiresAt)}
                     </td>
                     <td className="px-3 py-3">
-                      <span
-                        className={cn(
-                          "rounded-full px-2.5 py-0.5 text-xs font-medium",
-                          coupon.isActive
-                            ? "bg-primary/15 text-primary"
-                            : "bg-nexus-sunken text-muted-foreground",
-                        )}
-                      >
+                      <StatusBadge tone={coupon.isActive ? "success" : "neutral"}>
                         {coupon.isActive ? "Active" : "Inactive"}
-                      </span>
+                      </StatusBadge>
                     </td>
                     <td className="px-3 py-3 text-right">
                       {canWrite && coupon.isActive ? (
@@ -328,7 +312,7 @@ export function CouponManagerPanel({
                           type="button"
                           variant="outline"
                           size="sm"
-                          onClick={() => void deactivateCoupon(coupon.id)}
+                          onClick={() => void deactivateCoupon(coupon)}
                           disabled={busyId === coupon.id}
                         >
                           Deactivate
