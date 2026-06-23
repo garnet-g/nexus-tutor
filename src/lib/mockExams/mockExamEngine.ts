@@ -167,6 +167,73 @@ export interface MarkedAnswer {
   studentAnswer: unknown;
 }
 
+/** A single graded question surfaced to the student on the results ("marked paper") screen. */
+export interface MockExamReviewQuestion {
+  questionId: string;
+  sortOrder: number;
+  questionText: string;
+  questionType: QuestionType;
+  options: string[] | null;
+  difficulty: "easy" | "medium" | "hard";
+  topicTitle: string;
+  correctAnswer: string;
+  yourAnswer: string | null;
+  isCorrect: boolean;
+  explanation: string | null;
+}
+
+export interface ReviewQuestionInput {
+  id: string;
+  sortOrder: number;
+  questionText: string;
+  questionType: QuestionType;
+  options: string[] | null;
+  difficulty: "easy" | "medium" | "hard";
+  topicTitle: string;
+  correctAnswer: string;
+  explanation: string | null;
+}
+
+function normalizeStudentAnswer(value: unknown): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  const text = String(value).trim();
+  return text.length > 0 ? text : null;
+}
+
+/**
+ * Joins exam questions with the graded answers into the per-question review the
+ * results screen renders. Pure: takes already-loaded data, returns sorted rows.
+ * Correct answers/explanations are only ever assembled here (post-submission),
+ * never sent to the client during the exam.
+ */
+export function buildMockExamReview(
+  questions: ReviewQuestionInput[],
+  marked: MarkedAnswer[],
+): MockExamReviewQuestion[] {
+  const markedByQuestion = new Map(marked.map((entry) => [entry.questionId, entry]));
+
+  return [...questions]
+    .sort((left, right) => left.sortOrder - right.sortOrder)
+    .map((question) => {
+      const mark = markedByQuestion.get(question.id);
+      return {
+        questionId: question.id,
+        sortOrder: question.sortOrder,
+        questionText: question.questionText,
+        questionType: question.questionType,
+        options: question.options,
+        difficulty: question.difficulty,
+        topicTitle: question.topicTitle,
+        correctAnswer: question.correctAnswer,
+        yourAnswer: normalizeStudentAnswer(mark?.studentAnswer),
+        isCorrect: mark?.isCorrect ?? false,
+        explanation: question.explanation,
+      };
+    });
+}
+
 export function scoreMockExamAnswers(
   questions: Array<{
     id: string;

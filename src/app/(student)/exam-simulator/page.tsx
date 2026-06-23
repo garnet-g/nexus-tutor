@@ -37,11 +37,18 @@ export default async function ExamSimulatorPage({
     redirect("/exam-prep");
   }
 
-  const { data: questions } = await admin
-    .from("mock_exam_questions")
-    .select("id, question_text, question_type, options, difficulty, sort_order")
-    .eq("mock_exam_session_id", simulator.mock_exam_session_id)
-    .order("sort_order", { ascending: true });
+  const [{ data: questions }, { data: examSession }] = await Promise.all([
+    admin
+      .from("mock_exam_questions")
+      .select("id, question_text, question_type, options, difficulty, sort_order")
+      .eq("mock_exam_session_id", simulator.mock_exam_session_id)
+      .order("sort_order", { ascending: true }),
+    admin
+      .from("mock_exam_sessions")
+      .select("exam_style, curriculum, question_count")
+      .eq("id", simulator.mock_exam_session_id)
+      .maybeSingle(),
+  ]);
 
   if (!questions?.length) {
     redirect("/exam-prep");
@@ -59,6 +66,12 @@ export default async function ExamSimulatorPage({
         simulatorSessionId={simulator.id}
         endsAt={simulator.ends_at}
         questions={questions}
+        examMeta={{
+          curriculum: examSession?.curriculum ?? sessionUser.studentProfile.curriculum,
+          gradeLevel: sessionUser.studentProfile.grade_level,
+          examStyle: examSession?.exam_style ?? "kcse_style",
+          questionCount: examSession?.question_count ?? questions.length,
+        }}
       />
     </div>
   );

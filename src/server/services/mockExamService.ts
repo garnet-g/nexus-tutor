@@ -17,12 +17,31 @@ import {
   resolveSessionStatusOnSubmit,
 } from "@/lib/mockExams/examSimulatorEngine";
 import {
+  buildMockExamReview,
   scoreMockExamAnswers,
   selectMockExamQuestions,
+  type MockExamReviewQuestion,
   type PracticeQuestionPoolItem,
 } from "@/lib/mockExams/mockExamEngine";
+import type { QuestionType } from "@/lib/diagnostic/types";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { StudentProfile } from "@/types/database";
+
+export type { MockExamReviewQuestion } from "@/lib/mockExams/mockExamEngine";
+
+/** Unwrap a Supabase relation (object or single-element array) to its title. */
+function relationTitle(relation: unknown): string {
+  const value = Array.isArray(relation) ? relation[0] : relation;
+  if (value && typeof value === "object" && "title" in value) {
+    return String((value as { title?: unknown }).title ?? "Topic");
+  }
+  return "Topic";
+}
+
+/** Coerce a JSONB options column into a string[] (or null for non-MCQ). */
+function toOptionStrings(value: unknown): string[] | null {
+  return Array.isArray(value) ? value.map((option) => String(option)) : null;
+}
 import type { MockExamStyle } from "@/schemas/mockExamSchemas";
 import { studentHasMockExamAccess } from "@/schemas/mockExamSchemas";
 import { getStudentPlanCode } from "@/server/services/nexUsageService";
@@ -293,7 +312,9 @@ export async function submitMockExamSession(
 
   const { data: questions } = await admin
     .from("mock_exam_questions")
-    .select("id, topic_id, question_type, correct_answer, topics(title)")
+    .select(
+      "id, topic_id, question_text, question_type, options, correct_answer, difficulty, sort_order, explanation, topics(title)",
+    )
     .eq("mock_exam_session_id", mockExamSessionId)
     .order("sort_order", { ascending: true });
 
@@ -305,20 +326,31 @@ export async function submitMockExamSession(
     questions.map((question) => ({
       id: question.id,
       topicId: question.topic_id,
-      questionType: question.question_type as "multiple_choice" | "numeric" | "short_answer",
+      questionType: question.question_type as QuestionType,
       correctAnswer: question.correct_answer,
     })),
     answers,
     gradeAnswer,
   );
 
+  const review: MockExamReviewQuestion[] = buildMockExamReview(
+    questions.map((question) => ({
+      id: question.id,
+      sortOrder: question.sort_order ?? 0,
+      questionText: question.question_text,
+      questionType: question.question_type as QuestionType,
+      options: toOptionStrings(question.options),
+      difficulty: question.difficulty as "easy" | "medium" | "hard",
+      topicTitle: relationTitle(question.topics),
+      correctAnswer: String(question.correct_answer ?? ""),
+      explanation: question.explanation ?? null,
+    })),
+    scored.marked,
+  );
+
   const weakTopicTitles = questions
     .filter((question) => scored.weakTopicIds.includes(question.topic_id))
-    .map((question) =>
-      question.topics && typeof question.topics === "object" && "title" in question.topics
-        ? String((question.topics as { title?: string }).title ?? "Topic")
-        : "Topic",
-    );
+    .map((question) => relationTitle(question.topics));
 
   const { data: previousHealth } = await admin
     .from("academic_health_scores")
@@ -368,6 +400,7 @@ export async function submitMockExamSession(
     analysis,
     correctCount: scored.correctCount,
     totalCount: questions.length,
+    review,
   };
 }
 
