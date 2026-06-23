@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { PracticeLanding } from "@/features/practice/components/PracticeLanding";
@@ -35,6 +35,28 @@ const tree: PracticeCurriculumSubject[] = [
             needsContent: false,
           },
         ],
+      },
+    ],
+  },
+];
+
+const multiSubjectTree: PracticeCurriculumSubject[] = [
+  ...tree,
+  {
+    id: "subject-2",
+    code: "science",
+    name: "Science",
+    topics: [
+      {
+        id: "topic-2",
+        code: "cells",
+        title: "Cells and Tissues",
+        masteryPercentage: 10,
+        lessonCount: 4,
+        questionCounts: { easy: 9, medium: 8, hard: 7 },
+        practiceReady: { easy: true, medium: true, hard: true },
+        needsContent: false,
+        subtopics: [],
       },
     ],
   },
@@ -92,5 +114,28 @@ describe("PracticeLanding", () => {
 
     expect(screen.getAllByText("Needs content").length).toBeGreaterThan(0);
     expect(screen.queryByText("Ready")).toBeNull();
+  });
+
+  it("lets students select non-math practice subjects when service data is ready", () => {
+    render(
+      <PracticeLanding
+        studentId="student-1"
+        curriculumTree={multiSubjectTree}
+        dailyUsage={0}
+        dailyLimit={3}
+        retryAfterSeconds={3600}
+        planCode="free"
+      />,
+    );
+
+    const scienceButton = screen.getByRole("button", { name: "Science" });
+
+    expect((scienceButton as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.queryByText("V2")).toBeNull();
+
+    fireEvent.click(scienceButton);
+
+    expect(screen.getByRole("heading", { name: "Cells and Tissues" })).toBeTruthy();
+    expect(screen.queryByText(/Mathematics is active in V1/i)).toBeNull();
   });
 });

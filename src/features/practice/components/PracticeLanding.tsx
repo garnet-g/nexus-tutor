@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Lock, RotateCcw, Target } from "lucide-react";
+import { RotateCcw, Target } from "lucide-react";
 
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -24,7 +24,7 @@ import type {
 } from "@/types/practice";
 import { cn } from "@/lib/utils";
 
-const V1_ACTIVE_SUBJECT_CODE = "mathematics";
+const PRIMARY_SUBJECT_CODE = "mathematics";
 
 interface PracticeLandingProps {
   studentId: string;
@@ -85,16 +85,19 @@ export function PracticeLanding({
   const sortedSubjects = useMemo(
     () =>
       [...curriculumTree].sort((a, b) => {
-        if (a.code === V1_ACTIVE_SUBJECT_CODE) return -1;
-        if (b.code === V1_ACTIVE_SUBJECT_CODE) return 1;
+        if (a.code === PRIMARY_SUBJECT_CODE) return -1;
+        if (b.code === PRIMARY_SUBJECT_CODE) return 1;
         return a.name.localeCompare(b.name);
       }),
     [curriculumTree],
   );
+  const runnerTopicId = searchParams.get("topicId");
+  const runnerSubtopicId = searchParams.get("subtopicId");
 
   const defaultSubject =
-    sortedSubjects.find((subject) => subject.code === V1_ACTIVE_SUBJECT_CODE) ??
-    sortedSubjects[0];
+    sortedSubjects.find((subject) =>
+      subject.topics.some((topic) => topic.id === runnerTopicId),
+    ) ?? sortedSubjects[0];
 
   const [activeSubjectId, setActiveSubjectId] = useState(defaultSubject?.id ?? "");
   const [selectedTopicId, setSelectedTopicId] = useState<string | null>(
@@ -112,8 +115,6 @@ export function PracticeLanding({
     (subtopic) => subtopic.id === selectedSubtopicId,
   );
 
-  const runnerTopicId = searchParams.get("topicId");
-  const runnerSubtopicId = searchParams.get("subtopicId");
   const sessionDifficulty =
     (searchParams.get("difficulty") as PracticeDifficulty | null) ?? difficulty;
   const reviewMode = searchParams.get("review") === "1";
@@ -177,10 +178,6 @@ export function PracticeLanding({
   }
 
   function handleSubjectChange(subject: PracticeCurriculumSubject) {
-    if (subject.code !== V1_ACTIVE_SUBJECT_CODE) {
-      return;
-    }
-
     setActiveSubjectId(subject.id);
     setSelectedTopicId(subject.topics[0]?.id ?? null);
     setSelectedSubtopicId(null);
@@ -256,41 +253,41 @@ export function PracticeLanding({
             Subject
           </h2>
           <p className="text-sm text-muted-foreground">
-            Mathematics is active in V1. Other subjects unlock in a later release.
+            Choose any subject with published practice coverage for your grade.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           {sortedSubjects.map((subject) => {
-            const isActiveSubject = subject.code === V1_ACTIVE_SUBJECT_CODE;
             const isSelected = subject.id === activeSubjectId;
 
             return (
               <button
                 key={subject.id}
                 type="button"
-                disabled={!isActiveSubject}
+                aria-label={subject.name}
                 onClick={() => handleSubjectChange(subject)}
                 className={cn(
-                  "inline-flex min-h-12 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition",
-                  isSelected && isActiveSubject
+                  "inline-flex min-h-12 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition active:translate-y-px",
+                  isSelected
                     ? "bg-nexus-primary text-nexus-text-inverse shadow-card"
-                    : isActiveSubject
-                      ? "border border-nexus-border bg-nexus-surface text-foreground hover:bg-nexus-sunken"
-                      : "cursor-not-allowed border border-dashed border-nexus-border bg-nexus-sunken/60 text-muted-foreground",
+                    : "border-nexus-border bg-nexus-surface text-foreground hover:bg-nexus-sunken",
                 )}
               >
-                {!isActiveSubject ? <Lock className="size-4" /> : null}
                 {subject.name}
-                {!isActiveSubject ? (
-                  <span className="text-xs uppercase tracking-wide">V2</span>
-                ) : null}
+                <span
+                  aria-hidden="true"
+                  className="rounded-full bg-nexus-sunken px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                >
+                  {subject.topics.length} topic
+                  {subject.topics.length === 1 ? "" : "s"}
+                </span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {activeSubject?.code === V1_ACTIVE_SUBJECT_CODE ? (
+      {activeSubject ? (
         <>
           <div className="space-y-3">
             <div>

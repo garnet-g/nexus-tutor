@@ -40,6 +40,11 @@ export default async function LearnPage() {
       entry.masteryPercentage,
     ]),
   );
+  const readySubjectNames = subjects.map((subject) => subject.name);
+  const subjectSummary =
+    readySubjectNames.length > 0
+      ? `${readySubjectNames.join(", ")} ready for guided lessons and mastery tracking.`
+      : "Learning paths are being prepared for your profile.";
 
   return (
     <div className="space-y-8">
@@ -48,8 +53,8 @@ export default async function LearnPage() {
           Learn
         </h1>
         <p className="text-muted-foreground">
-          {profile.curriculum} · {profile.grade_level.replace("_", " ")} — Mathematics is
-          active in V1. Science and English unlock in V2.
+          {profile.curriculum} · {profile.grade_level.replace("_", " ")} —{" "}
+          {subjectSummary}
         </p>
       </div>
 

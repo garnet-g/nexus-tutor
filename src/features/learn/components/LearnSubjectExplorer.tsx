@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Lock } from "lucide-react";
 
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -11,8 +10,7 @@ import { averageMastery } from "@/lib/learn/masteryStatus";
 import type { CurriculumSubject, CurriculumTopic } from "@/types/curriculum";
 import { cn } from "@/lib/utils";
 
-// SCOPE-FLAG: Science and English subjects exist in Tier 1 seeds but remain inactive in V1 per scope lock §3.
-const V1_ACTIVE_SUBJECT_CODE = "mathematics";
+const PRIMARY_SUBJECT_CODE = "mathematics";
 
 interface LearnSubjectExplorerProps {
   subjects: CurriculumSubject[];
@@ -28,16 +26,15 @@ export function LearnSubjectExplorer({
   const sortedSubjects = useMemo(
     () =>
       [...subjects].sort((a, b) => {
-        if (a.code === V1_ACTIVE_SUBJECT_CODE) return -1;
-        if (b.code === V1_ACTIVE_SUBJECT_CODE) return 1;
+        if (a.code === PRIMARY_SUBJECT_CODE) return -1;
+        if (b.code === PRIMARY_SUBJECT_CODE) return 1;
         return a.name.localeCompare(b.name);
       }),
     [subjects],
   );
 
   const [activeSubjectCode, setActiveSubjectCode] = useState(
-    sortedSubjects.find((subject) => subject.code === V1_ACTIVE_SUBJECT_CODE)
-      ?.code ?? sortedSubjects[0]?.code ?? V1_ACTIVE_SUBJECT_CODE,
+    sortedSubjects[0]?.code ?? "",
   );
 
   const activeSubject = sortedSubjects.find(
@@ -65,43 +62,38 @@ export function LearnSubjectExplorer({
     <div className="space-y-6 nexus-enter">
       <div className="flex flex-wrap gap-2">
         {sortedSubjects.map((subject) => {
-          const isActiveSubject = subject.code === V1_ACTIVE_SUBJECT_CODE;
           const isSelected = subject.code === activeSubjectCode;
 
           return (
             <button
               key={subject.id}
               type="button"
-              disabled={!isActiveSubject}
-              onClick={() => {
-                if (isActiveSubject) {
-                  setActiveSubjectCode(subject.code);
-                }
-              }}
+              aria-label={subject.name}
+              onClick={() => setActiveSubjectCode(subject.code)}
               className={cn(
-                "inline-flex min-h-12 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition",
-                isSelected && isActiveSubject
+                "inline-flex min-h-12 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition active:translate-y-px",
+                isSelected
                   ? "bg-nexus-primary text-nexus-text-inverse shadow-card"
-                  : isActiveSubject
-                    ? "border border-nexus-border bg-nexus-surface text-foreground hover:bg-nexus-sunken"
-                    : "cursor-not-allowed border border-dashed border-nexus-border bg-nexus-sunken/60 text-muted-foreground",
+                  : "border-nexus-border bg-nexus-surface text-foreground hover:bg-nexus-sunken",
               )}
             >
-              {!isActiveSubject ? <Lock className="size-4" /> : null}
               {subject.name}
-              {!isActiveSubject ? (
-                <span className="text-xs uppercase tracking-wide">V2</span>
-              ) : null}
+              <span
+                aria-hidden="true"
+                className="rounded-full bg-nexus-sunken px-2 py-0.5 text-xs font-medium text-muted-foreground"
+              >
+                {subject.topicCount} topic{subject.topicCount === 1 ? "" : "s"}
+              </span>
             </button>
           );
         })}
       </div>
 
-      {activeSubject?.code === V1_ACTIVE_SUBJECT_CODE ? (
+      {activeSubject ? (
         <>
           <SectionCard
             title={activeSubject.name}
-            description="Your active V1 subject. Work through topics in order or jump to what you need today."
+            description="Work through topics in order or jump to what you need today."
           >
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <ProgressRing
@@ -124,7 +116,7 @@ export function LearnSubjectExplorer({
           {activeTopics.length === 0 ? (
             <EmptyState
               title="Topics coming soon"
-              description="Mathematics topics for your grade are being prepared. Try practice or ask Nex while we finish seeding content."
+              description={`${activeSubject.name} topics for your grade are being prepared. Try practice or ask Nex while we finish publishing content.`}
               primaryAction={{ label: "Start practice", href: "/practice" }}
               secondaryAction={{ label: "Ask Nex", href: "/nex" }}
             />
