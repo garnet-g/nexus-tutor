@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { Curriculum } from "@/types/database";
 import type {
   ContentCoverageCurriculum,
+  ContentCoverageSubject,
   ContentCoverageSubtopic,
   ContentCoverageTopic,
   ContentDraftQueueItem,
@@ -22,6 +23,7 @@ export {
 
 export type {
   ContentCoverageCurriculum,
+  ContentCoverageSubject,
   ContentCoverageSubtopic,
   ContentCoverageTopic,
   ContentDraftQueueItem,
@@ -31,12 +33,6 @@ export type {
 
 function emptyQuestionCounts() {
   return { easy: 0, medium: 0, hard: 0 };
-}
-
-export interface ContentCoverageSubject {
-  code: string;
-  name: string;
-  curricula: ContentCoverageCurriculum[];
 }
 
 async function getSubjectContentCoverageForCurricula(

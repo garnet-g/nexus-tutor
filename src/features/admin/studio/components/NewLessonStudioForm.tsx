@@ -3,14 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import type { ContentCoverageCurriculum } from "@/types/contentAdmin";
+import type { ContentCoverageSubject } from "@/types/contentAdmin";
 import type { Curriculum } from "@/types/database";
-
-type ContentCoverageSubject = {
-  code: string;
-  name: string;
-  curricula: ContentCoverageCurriculum[];
-};
 
 import { Field, Input, Select } from "@/features/admin/components/adminForm";
 import { PageHeader, Panel } from "@/features/admin/components/adminUi";
@@ -18,18 +12,56 @@ import { toastError } from "@/features/admin/components/toast";
 import { createStudioLesson } from "@/features/admin/studio/lib/studioApi";
 import { Button } from "@/components/ui/Button";
 
-interface NewLessonStudioFormProps {
-  subjects: ContentCoverageSubject[];
+type Placement = {
+  subjectCode: string;
+  curriculumCode: Curriculum;
+  topicId: string;
+  subtopicId: string;
+};
+
+function findInitialPlacement(
+  subjects: ContentCoverageSubject[],
+  initialSubtopicId?: string,
+): Placement | null {
+  if (!initialSubtopicId) {
+    return null;
+  }
+
+  for (const subject of subjects) {
+    for (const curriculum of subject.curricula) {
+      for (const topic of curriculum.topics) {
+        const match = topic.subtopics.find((subtopic) => subtopic.id === initialSubtopicId);
+        if (match) {
+          return {
+            subjectCode: subject.code,
+            curriculumCode: curriculum.code,
+            topicId: topic.id,
+            subtopicId: match.id,
+          };
+        }
+      }
+    }
+  }
+
+  return null;
 }
 
-export function NewLessonStudioForm({ subjects }: NewLessonStudioFormProps) {
+interface NewLessonStudioFormProps {
+  subjects: ContentCoverageSubject[];
+  initialSubtopicId?: string;
+}
+
+export function NewLessonStudioForm({ subjects, initialSubtopicId }: NewLessonStudioFormProps) {
   const router = useRouter();
-  const [subjectCode, setSubjectCode] = useState(subjects[0]?.code ?? "");
-  const [curriculumCode, setCurriculumCode] = useState<Curriculum>(
-    subjects[0]?.curricula[0]?.code ?? "CBC",
+  const initialPlacement = findInitialPlacement(subjects, initialSubtopicId);
+  const [subjectCode, setSubjectCode] = useState(
+    initialPlacement?.subjectCode ?? subjects[0]?.code ?? "",
   );
-  const [topicId, setTopicId] = useState("");
-  const [subtopicId, setSubtopicId] = useState("");
+  const [curriculumCode, setCurriculumCode] = useState<Curriculum>(
+    initialPlacement?.curriculumCode ?? subjects[0]?.curricula[0]?.code ?? "CBC",
+  );
+  const [topicId, setTopicId] = useState(initialPlacement?.topicId ?? "");
+  const [subtopicId, setSubtopicId] = useState(initialPlacement?.subtopicId ?? "");
   const [title, setTitle] = useState("");
   const [estimatedMinutes, setEstimatedMinutes] = useState(10);
   const [isCreating, setIsCreating] = useState(false);

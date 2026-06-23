@@ -42,6 +42,12 @@ export interface ContentCoverageCurriculum {
   topics: ContentCoverageTopic[];
 }
 
+export interface ContentCoverageSubject {
+  code: string;
+  name: string;
+  curricula: ContentCoverageCurriculum[];
+}
+
 export interface DraftLessonQueueItem {
   kind: "lesson";
   id: string;
