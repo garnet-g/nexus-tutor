@@ -995,7 +995,9 @@ function ReviewQueue(props: {
                                 placeholder="Passage text"
                               />
                             </div>
-                          ) : (
+                          ) : block.type === "heading" ||
+                            block.type === "paragraph" ||
+                            block.type === "tip" ? (
                             <textarea
                               className="min-h-20 w-full rounded-xl border border-nexus-border bg-nexus-surface px-3 py-2 text-sm"
                               value={block.content}
@@ -1003,6 +1005,11 @@ function ReviewQueue(props: {
                                 onUpdateBlock(index, { ...block, content: event.target.value })
                               }
                             />
+                          ) : (
+                            <p className="text-sm text-muted-foreground">
+                              This block type is read-only in the legacy editor until Authoring
+                              Studio ships.
+                            </p>
                           )}
                         </div>
                       ))}

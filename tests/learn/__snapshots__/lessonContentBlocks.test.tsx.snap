@@ -1,0 +1,148 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LessonContentBlocks > renders legacy published lesson blocks identically 1`] = `
+<div>
+  <div
+    class="space-y-2"
+  >
+    <div
+      class="flex items-start justify-between gap-3"
+    >
+      <h2
+        class="font-heading text-xl font-semibold tracking-tight text-foreground"
+      >
+        Introduction to Linear Equations
+      </h2>
+      <a
+        class="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-lg px-2 text-sm font-medium text-nexus-primary hover:bg-nexus-primary-soft"
+        href="/nex?topicId=00000000-0000-4000-8000-000000000099&mode=explain"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-message-circle size-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"
+          />
+        </svg>
+        Ask Nex
+      </a>
+    </div>
+  </div>
+  <div
+    class="group space-y-2"
+  >
+    <p
+      class="leading-8 text-foreground/90"
+    >
+      A linear equation has one variable raised to the power of one. In Kenya, you might use them to work out matatu fares.
+    </p>
+    <a
+      class="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-nexus-primary opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100"
+      href="/nex?topicId=00000000-0000-4000-8000-000000000099&mode=explain"
+    >
+      <svg
+        aria-hidden="true"
+        class="lucide lucide-message-circle size-4"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"
+        />
+      </svg>
+      Ask Nex about this
+    </a>
+  </div>
+  <section
+    class="rounded-[22px] border border-nexus-border shadow-card p-5 bg-nexus-sunken/50"
+  >
+    <div
+      class="flex items-start justify-between gap-3"
+    >
+      <h3
+        class="text-sm font-semibold uppercase tracking-wide text-nexus-primary"
+      >
+        Worked Example 1
+      </h3>
+      <a
+        class="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-nexus-primary hover:bg-nexus-primary-soft"
+        href="/nex?topicId=00000000-0000-4000-8000-000000000099&mode=explain"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-message-circle size-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"
+          />
+        </svg>
+        Ask Nex
+      </a>
+    </div>
+    <ol
+      class="mt-4 space-y-3"
+    >
+      <li
+        class="rounded-xl border border-nexus-border bg-nexus-surface px-4 py-3 text-sm leading-7 text-foreground"
+      >
+        <span
+          class="mr-2 font-semibold text-nexus-primary"
+        >
+          Step 
+          1
+          .
+        </span>
+        Write the equation: 2x + 5 = 13
+      </li>
+    </ol>
+    <button
+      class="group/button inline-flex shrink-0 cursor-pointer items-center justify-center rounded-xl border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all duration-200 outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 gap-1.5 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3 mt-4 min-h-11"
+      data-slot="button"
+      tabindex="0"
+      type="button"
+    >
+      Show next step
+    </button>
+  </section>
+  <div
+    class="rounded-[18px] border border-nexus-accent/30 bg-nexus-accent-soft px-5 py-4 text-sm leading-7 text-foreground"
+  >
+    <p
+      class="font-semibold text-nexus-warning"
+    >
+      Key idea
+    </p>
+    <p
+      class="mt-2"
+    >
+      Always perform the same operation on both sides of the equation.
+    </p>
+  </div>
+</div>
+`;

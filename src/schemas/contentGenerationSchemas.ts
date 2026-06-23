@@ -1,53 +1,17 @@
 import { z } from "zod";
 
-const lessonHeadingBlockSchema = z.object({
-  type: z.literal("heading"),
-  content: z.string().min(1),
-});
+import {
+  lessonBlockSchema,
+  lessonShortQuizQuestionSchema,
+} from "@/schemas/lessonContentSchemas";
 
-const lessonParagraphBlockSchema = z.object({
-  type: z.literal("paragraph"),
-  content: z.string().min(1),
-});
-
-const lessonExampleBlockSchema = z.object({
-  type: z.literal("example"),
-  title: z.string().min(1),
-  steps: z.array(z.string().min(1)).min(1),
-  answer: z.string().min(1),
-});
-
-const lessonTipBlockSchema = z.object({
-  type: z.literal("tip"),
-  content: z.string().min(1),
-});
-
-const lessonChemicalEquationBlockSchema = z.object({
-  type: z.literal("chemical_equation"),
-  equation: z.string().min(1),
-  caption: z.string().min(1).optional(),
-});
-
-const lessonComprehensionPassageBlockSchema = z.object({
-  type: z.literal("comprehension_passage"),
-  title: z.string().min(1).optional(),
-  passage: z.string().min(1),
-});
-
-export const lessonBlockSchema = z.discriminatedUnion("type", [
-  lessonHeadingBlockSchema,
-  lessonParagraphBlockSchema,
-  lessonExampleBlockSchema,
-  lessonTipBlockSchema,
-  lessonChemicalEquationBlockSchema,
-  lessonComprehensionPassageBlockSchema,
-]);
-
-export const lessonShortQuizQuestionSchema = z.object({
-  questionText: z.string().min(1),
-  options: z.array(z.string().min(1)).min(2),
-  correctAnswer: z.string().min(1),
-});
+export {
+  lessonBlockSchema,
+  lessonContentSchema,
+  lessonShortQuizQuestionSchema,
+  parseLessonContent,
+} from "@/schemas/lessonContentSchemas";
+export type { LessonBlock, LessonContentParsed } from "@/schemas/lessonContentSchemas";
 
 export const generatedLessonSchema = z.object({
   title: z.string().min(1).max(200),
@@ -172,7 +136,6 @@ export const updateDraftQuestionRequestSchema = generatedQuestionSchema.extend({
   id: z.string().uuid(),
 });
 
-export type LessonBlock = z.infer<typeof lessonBlockSchema>;
 export type GeneratedLesson = z.infer<typeof generatedLessonSchema>;
 export type GeneratedQuestion = z.infer<typeof generatedQuestionSchema>;
 export type GeneratedQuestionBank = z.infer<typeof generatedQuestionBankSchema>;
