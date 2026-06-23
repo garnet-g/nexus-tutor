@@ -136,6 +136,12 @@ export const updateDraftQuestionRequestSchema = generatedQuestionSchema.extend({
   id: z.string().uuid(),
 });
 
+export const createManualDraftLessonRequestSchema = z.object({
+  subtopicId: z.string().uuid(),
+  title: z.string().min(1).max(200).optional(),
+  estimatedMinutes: z.number().int().min(5).max(60).optional(),
+});
+
 export type GeneratedLesson = z.infer<typeof generatedLessonSchema>;
 export type GeneratedQuestion = z.infer<typeof generatedQuestionSchema>;
 export type GeneratedQuestionBank = z.infer<typeof generatedQuestionBankSchema>;

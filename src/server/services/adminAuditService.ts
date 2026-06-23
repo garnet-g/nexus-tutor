@@ -10,6 +10,8 @@ export type AdminAuditAction =
   | "content.publish"
   | "content.discard"
   | "content.lesson_draft.update"
+  | "content.lesson_draft.create"
+  | "content.media.upload"
   | "content.question_draft.update"
   | "assessment.calibration.create"
   | "subscription.comp"

@@ -13,6 +13,7 @@ import {
   publishDraftInputSchema,
   discardDraftInputSchema,
   updateDraftLessonRequestSchema,
+  createManualDraftLessonRequestSchema,
   updateDraftQuestionRequestSchema,
   type GeneratedLesson,
   type GeneratedQuestion,
@@ -950,5 +951,92 @@ export async function getDraftLessonForPreview(lessonId: string): Promise<{
     topicTitle: topic.title,
     subjectId: subject.id,
     curriculumCode: curriculumRow.code as Curriculum,
+  };
+}
+
+export async function createManualDraftLesson(
+  input: Parameters<typeof createManualDraftLessonRequestSchema.parse>[0],
+  adminId: string,
+): Promise<{
+  lessonId: string;
+  title: string;
+  estimatedMinutes: number;
+  content: LessonContent;
+  subtopicId: string;
+}> {
+  const parsed = createManualDraftLessonRequestSchema.parse(input);
+  const admin = createAdminClient();
+
+  const { data: subtopic, error: subtopicError } = await admin
+    .from("subtopics")
+    .select("id, title, topic_id")
+    .eq("id", parsed.subtopicId)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (subtopicError || !subtopic) {
+    throw new Error("NOT_FOUND");
+  }
+
+  const { data: topic } = await admin
+    .from("topics")
+    .select("id, subject_id")
+    .eq("id", subtopic.topic_id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!topic) {
+    throw new Error("NOT_FOUND");
+  }
+
+  const { data: subject } = await admin
+    .from("subjects")
+    .select("code")
+    .eq("id", topic.subject_id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!subject) {
+    throw new Error("NOT_FOUND");
+  }
+
+  assertSubjectInGenerationScope(subject.code);
+
+  const title = parsed.title?.trim() || "Untitled lesson";
+  const estimatedMinutes = parsed.estimatedMinutes ?? 10;
+  const sortOrder = await getNextLessonSortOrder(parsed.subtopicId);
+  const content: LessonContent = {
+    blocks: [
+      { type: "heading", content: title },
+      { type: "paragraph", content: "Start writing your lesson here." },
+    ],
+  };
+
+  const { data: inserted, error } = await admin
+    .from("lessons")
+    .insert({
+      subtopic_id: parsed.subtopicId,
+      title,
+      content,
+      estimated_minutes: estimatedMinutes,
+      sort_order: sortOrder,
+      is_active: false,
+      review_status: "draft",
+      generated_by: adminId,
+      generated_model: null,
+    })
+    .select("id, title, estimated_minutes, content")
+    .single();
+
+  if (error || !inserted) {
+    throw new Error(error?.message ?? "Could not create lesson draft.");
+  }
+
+  return {
+    lessonId: inserted.id,
+    title: inserted.title,
+    estimatedMinutes: inserted.estimated_minutes,
+    content: inserted.content as LessonContent,
+    subtopicId: parsed.subtopicId,
   };
 }

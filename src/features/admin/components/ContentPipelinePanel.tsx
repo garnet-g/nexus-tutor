@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BookOpen, ClipboardList, Loader2, Sparkles } from "lucide-react";
 
@@ -1016,6 +1017,14 @@ function ReviewQueue(props: {
                     </div>
 
                     <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="min-h-11"
+                        render={<Link href={`/admin/studio/${lessonDetail.id}`} />}
+                      >
+                        Open in Studio
+                      </Button>
                       <Button
                         type="button"
                         className="min-h-11"
