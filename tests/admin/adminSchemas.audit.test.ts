@@ -24,6 +24,9 @@ const EXPECTED_ACTIONS = [
   "parent.sms.send",
   "coupon.create",
   "coupon.deactivate",
+  "support_case.create",
+  "support_case.update",
+  "feature_rollout.upsert",
 ] as const;
 
 describe("auditLogActionSchema", () => {

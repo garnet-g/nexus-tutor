@@ -39,6 +39,9 @@ export const auditLogActionSchema = z.enum([
   "parent.sms.send",
   "coupon.create",
   "coupon.deactivate",
+  "support_case.create",
+  "support_case.update",
+  "feature_rollout.upsert",
 ]);
 
 export const auditLogQuerySchema = z.object({

@@ -130,8 +130,10 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
+  { href: "/admin", label: "Command center", icon: BarChartIcon },
   { href: "/admin/platform-settings", label: "Platform settings", icon: SettingsIcon },
   { href: "/admin/beta-invites", label: "Beta invites", icon: TicketIcon },
+  { href: "/admin/campaigns", label: "Campaigns", icon: TrendingUpIcon },
   { href: "/admin/users", label: "Users", icon: UsersIcon },
   { href: "/admin/studio", label: "Content", icon: LayersIcon },
   { href: "/admin/assessment", label: "Assessment", icon: ClipboardCheckIcon },
@@ -139,10 +141,15 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/payments", label: "Payments", icon: WalletIcon },
   { href: "/admin/outcomes", label: "Outcomes", icon: TrendingUpIcon },
   { href: "/admin/nex-ops", label: "Nex ops", icon: CpuIcon },
+  { href: "/admin/support", label: "Support", icon: ShieldIcon },
+  { href: "/admin/rollouts", label: "Rollouts", icon: SettingsIcon },
   { href: "/admin/audit-log", label: "Audit log", icon: ShieldIcon },
 ];
 
 function isActive(pathname: string, href: string): boolean {
+  if (href === "/admin") {
+    return pathname === "/admin";
+  }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 

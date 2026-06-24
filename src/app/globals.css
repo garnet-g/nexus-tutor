@@ -5,8 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-sans: var(--font-hanken), system-ui, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, serif;
+  /* Primary typeface: Geist (free, OFL). Clean neutral sans, no flourishes,
+     used for both body and display headings. */
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-display: var(--font-geist), system-ui, sans-serif;
 
   /* Nexus — warm scholarship (Design System v2.0: emerald + amber on paper) */
   --nexus-primary: #15564b;
@@ -300,6 +302,42 @@
     transform: translateY(-2px);
     box-shadow: var(--shadow-float);
   }
+
+  .nexus-scanline {
+    background-image:
+      linear-gradient(rgb(251 248 243 / 8%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(251 248 243 / 6%) 1px, transparent 1px);
+    background-size:
+      100% 28px,
+      28px 100%;
+  }
+
+  .nexus-revision-marquee {
+    animation: nexusMarquee 24s linear infinite;
+  }
+
+  .nexus-reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 760ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: transform, opacity;
+  }
+
+  .nexus-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nexus-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
 }
 
 @keyframes nexShimmer {
@@ -325,6 +363,15 @@
   }
 }
 
+@keyframes nexusMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -332,5 +379,9 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .nexus-revision-marquee {
+    animation: none;
   }
 }

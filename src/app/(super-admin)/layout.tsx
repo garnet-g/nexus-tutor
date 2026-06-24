@@ -55,7 +55,7 @@ export default function SuperAdminLayout({
           <header className="sticky top-0 z-20 border-b border-nexus-border bg-nexus-sunken/95 backdrop-blur-md md:hidden">
             <div className="flex h-14 items-center justify-between px-4">
               <Link
-                href="/admin/platform-settings"
+                href="/admin"
                 className="flex items-center gap-2 font-heading text-base font-semibold tracking-tight"
               >
                 <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">

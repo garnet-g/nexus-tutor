@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Hanken_Grotesk, Fraunces } from "next/font/google";
+import { Geist } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
 import "./globals.css";
 
-const hanken = Hanken_Grotesk({
-  variable: "--font-hanken",
+// Primary typeface: Geist — a clean, neutral, free (OFL) geometric sans with no
+// decorative flourishes. Used site-wide for both body and display via the font
+// variables in globals.css.
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  axes: ["SOFT", "opsz"],
 });
 
 export const metadata: Metadata = {
@@ -31,7 +28,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("h-full antialiased", hanken.variable, fraunces.variable)}
+      className={cn("h-full antialiased", geist.variable)}
     >
       <head>
         <script

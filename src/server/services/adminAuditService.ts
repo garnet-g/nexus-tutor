@@ -35,7 +35,10 @@ export type AdminAuditAction =
   | "nex_flag.resolve"
   | "parent.sms.send"
   | "coupon.create"
-  | "coupon.deactivate";
+  | "coupon.deactivate"
+  | "support_case.create"
+  | "support_case.update"
+  | "feature_rollout.upsert";
 
 export type AdminAuditLogEntry = {
   id: string;
