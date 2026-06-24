@@ -7,6 +7,7 @@ import {
 import {
   editableRowsToCsv,
   parseQuestionCsv,
+  toEditableQuestionRow,
   type EditableQuestionRow,
 } from "@/features/admin/studio/lib/studioWorkspaceApi";
 
@@ -41,6 +42,24 @@ describe("contentStudioSchemas", () => {
 });
 
 describe("studioWorkspaceApi CSV helpers", () => {
+  it("removes generated practice titles when loading editable question rows", () => {
+    const row = toEditableQuestionRow({
+      id: "00000000-0000-4000-8000-000000000402",
+      topicId,
+      subtopicId: null,
+      questionText: "KCSE trigonometry practice 1: What is sin 30°?",
+      questionType: "short_answer",
+      options: [],
+      correctAnswer: "1/2",
+      difficulty: "easy",
+      explanation: "sin 30° = 1/2.",
+      reviewStatus: "draft",
+      isActive: false,
+    });
+
+    expect(row.questionText).toBe("What is sin 30°?");
+  });
+
   it("round-trips editable rows to CSV and back", () => {
     const rows: EditableQuestionRow[] = [
       {

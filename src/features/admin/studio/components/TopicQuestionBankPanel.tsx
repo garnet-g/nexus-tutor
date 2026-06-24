@@ -21,6 +21,7 @@ import type { StudioReviewStatus } from "@/types/contentStudio";
 import { GRADE_LEVELS_BY_CURRICULUM } from "@/types/contentAdmin";
 import type { Curriculum } from "@/types/database";
 import { Button } from "@/components/ui/Button";
+import { formatStudentQuestionText } from "@/lib/content/questionText";
 
 interface TopicQuestionBankPanelProps {
   topicId: string;
@@ -105,7 +106,7 @@ export function TopicQuestionBankPanel({ topicId, topicTitle }: TopicQuestionBan
 
       const newRows = generated.questions.map((question) => ({
         ...createBlankQuestionRow(topicId),
-        questionText: question.questionText,
+        questionText: formatStudentQuestionText(question.questionText),
         questionType: question.questionType,
         options: question.options,
         correctAnswer: question.correctAnswer,

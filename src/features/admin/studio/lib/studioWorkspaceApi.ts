@@ -2,6 +2,7 @@ import {
   parseCsvOptions,
   questionCsvRowSchema,
 } from "@/schemas/contentStudioSchemas";
+import { formatStudentQuestionText } from "@/lib/content/questionText";
 import type {
   BulkSaveQuestionsResult,
   StudioLessonSummary,
@@ -74,6 +75,7 @@ export type EditableQuestionRow = StudioQuestionRow & {
 export function toEditableQuestionRow(question: StudioQuestionRow): EditableQuestionRow {
   return {
     ...question,
+    questionText: formatStudentQuestionText(question.questionText),
     clientKey: question.id,
     isNew: false,
     markDelete: false,
@@ -111,7 +113,7 @@ export async function bulkSaveTopicQuestions(
       questions: rows.map((row) => ({
         id: row.isNew ? undefined : row.id,
         subtopicId: row.subtopicId,
-        questionText: row.questionText,
+        questionText: formatStudentQuestionText(row.questionText),
         questionType: row.questionType,
         options: row.questionType === "multiple_choice" ? row.options : [],
         correctAnswer: row.correctAnswer,
@@ -193,7 +195,7 @@ export function parseQuestionCsv(text: string, topicId: string): CsvImportResult
       id: "",
       topicId,
       subtopicId: parsed.data.subtopicId ?? null,
-      questionText: parsed.data.questionText,
+      questionText: formatStudentQuestionText(parsed.data.questionText),
       questionType: parsed.data.questionType,
       options,
       correctAnswer: parsed.data.correctAnswer,
@@ -269,7 +271,7 @@ export function editableRowsToCsv(rows: EditableQuestionRow[]): string {
       .filter((row) => !row.markDelete)
       .map((row) =>
         [
-          row.questionText,
+          formatStudentQuestionText(row.questionText),
           row.questionType,
           row.options.join("|"),
           row.correctAnswer,
