@@ -7,6 +7,57 @@
 
 ---
 
+## 0. AUDIT CORRECTION (added 2026-06-25, post-QA, by orchestrator audit)
+
+> The original Phase-D QA below was run against a **corrupted seed file** and so reported
+> several wrong figures. This section supersedes the original where they conflict. Two real
+> defects were found and **fixed**; the rest of the implementation is sound.
+
+### Defects found and fixed after QA
+
+1. **Seed file encoding corruption (BLOCKER) — fixed in `64a0811`.**
+   `supabase/seed/curriculum_math_kcse_content.sql` was a mix of UTF-16LE and UTF-8 with
+   **27,698 NUL bytes** (would fail `psql`/`db reset`) plus **4 em-dashes** mangled into
+   `U+FFFD`+control-char sequences (broke 2 lesson JSON casts). Because Docker was down, the
+   live load never ran, so this slipped past QA. **Also why QA's counts were wrong:** QA grepped
+   the corrupted file, whose UTF-16 regions don't match an ASCII `INSERT` pattern, so it
+   **undercounted**. Fixed: normalized to clean UTF-8 (0 NUL, valid UTF-8), em-dashes restored.
+
+2. **LaTeX escaping over-correction (rendering defect) — fixed in `0a08d4f`.**
+   Commit `7759e38` doubled backslashes in **all** practice-question fields. That is correct for
+   the **JSONB** fields (`options`, `correct_answer`) but **wrong** for the **plain SQL string**
+   fields (`question_text`, `explanation`), where KaTeX needs a single `\frac`. 48 non-JSONB
+   strings were de-doubled so practice math renders.
+
+### Corrected counts (verified against the repaired file)
+
+| Topic | Lessons | All subtopics covered | Questions (E/M/H) | PROD_READY (static) |
+| --- | ---: | --- | --- | --- |
+| `integers` | 10 | ✅ 4/4 | 16 / 16 / 18 = 50 | ✅ |
+| `algebraic_expressions` | 5 | ✅ 3/3 | 8 / 9 / 8 = 25 | ✅ |
+| `rates_ratio_proportion` | 5 | ✅ 4/4 | 9 / 9 / 7 = 25 | ✅ |
+| **Total** | **20** | — | **100** | — |
+
+(Original QA reported 15 lessons / 75 questions — an artifact of the corruption.)
+
+### Independent verification added
+- All **20 lessons validate against the real `lessonContentSchema`** (new permanent guard:
+  `tests/content/kcseMathSeedContent.test.ts`).
+- All **100 questions** parse; every `correct_answer` matches one of its 4 options.
+- Both added subtopics (`integer_applications`, `percentage_applications`) are inserted before
+  the lessons that reference them; all other referenced subtopics exist in the skeleton seed.
+- Full suite: **384 tests pass**.
+
+### Corrected verdict
+
+**Static / code: PASS.** All three topics meet the `PROD_READY` bar; renderer wiring complete;
+escaping correct per-field; seed is clean, idempotent-by-construction, schema-valid.
+**Live verification (Task 10 DB load + Task 11 visual/English-regression): STILL PENDING** —
+requires Docker, which is unavailable. This is the only outstanding item before a full
+production sign-off.
+
+---
+
 ## 1. What was done
 
 | Check | Method | Result |
