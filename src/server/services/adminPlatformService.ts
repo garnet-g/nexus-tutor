@@ -591,7 +591,7 @@ export async function getSystemHealth(): Promise<AdminSystemHealthItem[]> {
           : "healthy",
       detail: nexOps
         ? `${nexOps.messagesToday.toLocaleString()} messages today`
-        : "No Nex telemetry available.",
+        : "No Nex activity data available.",
     },
     {
       name: "M-Pesa ledger",

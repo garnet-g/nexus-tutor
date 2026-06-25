@@ -1,6 +1,6 @@
 import { StudentAppShell } from "@/components/student/StudentAppShell";
 import { getSessionUser } from "@/server/services/authService";
-import { getProgressSummary } from "@/server/services/practiceService";
+import { getStudentChromeData } from "@/server/services/studentExperienceService";
 
 export default async function StudentLayout({
   children,
@@ -13,14 +13,18 @@ export default async function StudentLayout({
 
   let currentStreak = 0;
   let totalXp = 0;
+  let planCode = "free";
+  let navBadges: Record<string, string> = {};
 
   if (profile && diagnosticComplete) {
     try {
-      const progress = await getProgressSummary(profile.id);
-      currentStreak = progress.currentStreak;
-      totalXp = progress.totalXp;
+      const chrome = await getStudentChromeData(profile);
+      currentStreak = chrome.currentStreak;
+      totalXp = chrome.totalXp;
+      planCode = chrome.planCode;
+      navBadges = chrome.navBadges;
     } catch {
-      // Non-fatal: the you-strip simply starts at zero.
+      // Non-fatal: the student shell simply starts with empty counts.
     }
   }
 
@@ -29,6 +33,8 @@ export default async function StudentLayout({
       studentName={profile?.full_name ?? "Student"}
       currentStreak={currentStreak}
       totalXp={totalXp}
+      planCode={planCode}
+      navBadges={navBadges}
       diagnosticComplete={diagnosticComplete}
     >
       {children}

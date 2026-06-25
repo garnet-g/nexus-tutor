@@ -4,45 +4,117 @@ import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   BarChart3,
+  BookMarked,
   BookOpen,
+  Brain,
+  CalendarCheck,
   CalendarDays,
+  Clock3,
   CornerDownLeft,
+  Download,
   Home,
+  Library,
+  ListChecks,
+  RotateCcw,
   Search,
   Sparkles,
   Target,
   User,
 } from "lucide-react";
 
+import { STUDENT_NAV_GROUPS } from "@/features/student/studentExperience";
 import { cn } from "@/lib/utils";
 
-interface CommandItem {
+type SearchItem = {
   id: string;
   label: string;
-  group: "Go to" | "Actions";
+  group: "Pages" | "Actions";
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   keywords?: string;
-}
+};
 
-const COMMANDS: CommandItem[] = [
-  { id: "dashboard", label: "Today", group: "Go to", href: "/dashboard", icon: Home, keywords: "dashboard home" },
-  { id: "learn", label: "Learn", group: "Go to", href: "/learn", icon: BookOpen, keywords: "topics lessons" },
-  { id: "nex", label: "Nex", group: "Go to", href: "/nex", icon: Sparkles, keywords: "tutor ai chat" },
-  { id: "practice", label: "Practice", group: "Go to", href: "/practice", icon: Target, keywords: "questions session" },
-  { id: "progress", label: "Progress", group: "Go to", href: "/progress", icon: BarChart3, keywords: "mastery health score" },
-  { id: "study-plan", label: "Study Plan", group: "Go to", href: "/study-plan", icon: CalendarDays, keywords: "daily goal" },
-  { id: "profile", label: "Profile", group: "Go to", href: "/profile", icon: User, keywords: "account settings" },
-  { id: "ask-nex", label: "Ask Nex a question", group: "Actions", href: "/nex", icon: Sparkles, keywords: "help explain homework" },
-  { id: "start-practice", label: "Start a practice session", group: "Actions", href: "/practice", icon: Target, keywords: "quiz" },
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  "/dashboard": Home,
+  "/continue": RotateCcw,
+  "/tasks": ListChecks,
+  "/learn": BookOpen,
+  "/study-search": Search,
+  "/library": Library,
+  "/study-plan": CalendarDays,
+  "/weekly-goal": CalendarCheck,
+  "/practice": Target,
+  "/revision": CalendarCheck,
+  "/weak-areas": Target,
+  "/mistakes": BookMarked,
+  "/readiness": BarChart3,
+  "/mock-exams": Clock3,
+  "/nex": Sparkles,
+  "/nex-memory": Brain,
+  "/saved": BookMarked,
+  "/focus": Clock3,
+  "/offline": Download,
+  "/progress": BarChart3,
+  "/profile": User,
+};
+
+const PAGE_ITEMS: SearchItem[] = STUDENT_NAV_GROUPS.flatMap((group) =>
+  group.items.map((item) => ({
+    id: item.href,
+    label: item.label,
+    group: "Pages" as const,
+    href: item.href,
+    icon: ICONS[item.href] ?? Search,
+    keywords: `${group.label} ${item.featureId ?? ""}`,
+  })),
+);
+
+const ACTION_ITEMS: SearchItem[] = [
+  {
+    id: "ask-nex",
+    label: "Ask Nex a question",
+    group: "Actions",
+    href: "/nex",
+    icon: Sparkles,
+    keywords: "help explain homework",
+  },
+  {
+    id: "start-practice",
+    label: "Start practice",
+    group: "Actions",
+    href: "/practice",
+    icon: Target,
+    keywords: "quiz questions",
+  },
+  {
+    id: "set-weekly-goal",
+    label: "Set weekly goal",
+    group: "Actions",
+    href: "/weekly-goal",
+    icon: CalendarCheck,
+    keywords: "parent visible target",
+  },
+  {
+    id: "start-focus",
+    label: "Start focus session",
+    group: "Actions",
+    href: "/focus",
+    icon: Clock3,
+    keywords: "timer minutes",
+  },
 ];
 
-interface CommandPaletteProps {
+const SEARCH_ITEMS = [...PAGE_ITEMS, ...ACTION_ITEMS];
+
+interface StudySearchPaletteProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
+export function StudySearchPalette({
+  open,
+  onOpenChange,
+}: StudySearchPaletteProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -50,9 +122,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return COMMANDS;
-    return COMMANDS.filter((command) =>
-      `${command.label} ${command.keywords ?? ""}`.toLowerCase().includes(q),
+    if (!q) return SEARCH_ITEMS;
+    return SEARCH_ITEMS.filter((item) =>
+      `${item.label} ${item.keywords ?? ""}`.toLowerCase().includes(q),
     );
   }, [query]);
 
@@ -68,15 +140,15 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   if (!open) return null;
 
-  function closePalette() {
+  function close() {
     onOpenChange(false);
     setQuery("");
     setActive(0);
   }
 
-  function run(command: CommandItem) {
-    closePalette();
-    router.push(command.href);
+  function run(item: SearchItem) {
+    close();
+    router.push(item.href);
   }
 
   function handleKeyDown(event: React.KeyboardEvent) {
@@ -88,10 +160,10 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       setActive((index) => Math.max(index - 1, 0));
     } else if (event.key === "Enter") {
       event.preventDefault();
-      const command = results[safeActive];
-      if (command) run(command);
+      const item = results[safeActive];
+      if (item) run(item);
     } else if (event.key === "Escape") {
-      closePalette();
+      close();
     }
   }
 
@@ -99,16 +171,16 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     <div className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[12vh]">
       <button
         type="button"
-        aria-label="Close command palette"
-        onClick={closePalette}
+        aria-label="Close study search"
+        onClick={close}
         className="absolute inset-0 bg-nexus-ink/30 backdrop-blur-sm"
       />
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Command palette"
+        aria-label="Study search"
         onKeyDown={handleKeyDown}
-        className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-nexus-border bg-nexus-surface shadow-float"
+        className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-nexus-border bg-nexus-surface shadow-float"
       >
         <div className="flex items-center gap-2.5 border-b border-nexus-border px-4">
           <Search className="size-4 text-nexus-text-muted" />
@@ -119,7 +191,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               setQuery(event.target.value);
               setActive(0);
             }}
-            placeholder="Search or jump to…"
+            placeholder="Find lessons, topics, questions..."
             className="h-12 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-nexus-text-muted"
           />
           <kbd className="rounded-md border border-nexus-border bg-nexus-sunken px-1.5 py-0.5 text-[10px] font-medium text-nexus-text-muted">
@@ -127,28 +199,28 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
           </kbd>
         </div>
 
-        <div className="max-h-[320px] overflow-y-auto p-2">
+        <div className="max-h-[360px] overflow-y-auto p-2">
           {results.length === 0 ? (
             <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-              No matches. Try “practice” or “Nex”.
+              No matches. Try practice, saved, or focus.
             </p>
           ) : (
-            results.map((command, index) => {
+            results.map((item, index) => {
               const showHeader =
-                index === 0 || results[index - 1].group !== command.group;
-              const Icon = command.icon;
+                index === 0 || results[index - 1].group !== item.group;
+              const Icon = item.icon;
               const isActive = index === safeActive;
               return (
-                <Fragment key={command.id}>
+                <Fragment key={item.id}>
                   {showHeader ? (
                     <p className="px-2 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-nexus-text-muted">
-                      {command.group}
+                      {item.group}
                     </p>
                   ) : null}
                   <button
                     type="button"
                     onMouseEnter={() => setActive(index)}
-                    onClick={() => run(command)}
+                    onClick={() => run(item)}
                     className={cn(
                       "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors",
                       isActive
@@ -157,7 +229,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     )}
                   >
                     <Icon className="size-4 shrink-0" />
-                    <span className="flex-1">{command.label}</span>
+                    <span className="flex-1">{item.label}</span>
                     {isActive ? (
                       <CornerDownLeft className="size-3.5 text-nexus-text-muted" />
                     ) : null}

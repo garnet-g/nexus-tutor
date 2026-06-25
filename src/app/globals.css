@@ -272,21 +272,25 @@
     display: none;
   }
 
-  .admin-sidebar-scroll {
+  .admin-sidebar-scroll,
+  .student-sidebar-scroll {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in oklch, var(--nexus-text-muted) 38%, transparent)
       transparent;
   }
 
-  .admin-sidebar-scroll::-webkit-scrollbar {
+  .admin-sidebar-scroll::-webkit-scrollbar,
+  .student-sidebar-scroll::-webkit-scrollbar {
     width: 8px;
   }
 
-  .admin-sidebar-scroll::-webkit-scrollbar-track {
+  .admin-sidebar-scroll::-webkit-scrollbar-track,
+  .student-sidebar-scroll::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .admin-sidebar-scroll::-webkit-scrollbar-thumb {
+  .admin-sidebar-scroll::-webkit-scrollbar-thumb,
+  .student-sidebar-scroll::-webkit-scrollbar-thumb {
     border: 2px solid transparent;
     border-radius: 9999px;
     background-clip: content-box;
@@ -297,7 +301,8 @@
     );
   }
 
-  .admin-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  .admin-sidebar-scroll::-webkit-scrollbar-thumb:hover,
+  .student-sidebar-scroll::-webkit-scrollbar-thumb:hover {
     background-color: color-mix(
       in oklch,
       var(--nexus-text-muted) 55%,
