@@ -39,7 +39,7 @@ export default async function AdminCommandCenterPage() {
     <>
       <PageHeader
         eyebrow="Operations"
-        title="Command center"
+        title="Dashboard"
         description="Daily view across growth, learning quality, Nex safety, support, revenue, and controlled rollouts."
         actions={
           <>

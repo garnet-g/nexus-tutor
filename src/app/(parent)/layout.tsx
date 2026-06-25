@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { signOutAction } from "@/server/actions/authActions";
 import { getSessionUser } from "@/server/services/authService";
@@ -23,6 +24,7 @@ export default async function ParentLayout({
           </Link>
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <span>{sessionUser?.parentProfile?.full_name ?? "Parent"}</span>
+            <ThemeToggle />
             <form action={signOutAction}>
               <Button type="submit" variant="outline" size="sm">
                 Sign out

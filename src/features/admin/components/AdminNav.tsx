@@ -129,36 +129,80 @@ type NavItem = {
   icon: (props: IconProps) => ReactElement;
 };
 
-const NAV_ITEMS: NavItem[] = [
-  { href: "/admin", label: "Command center", icon: BarChartIcon },
-  { href: "/admin/inbox", label: "Task inbox", icon: ClipboardCheckIcon },
-  { href: "/admin/alerts", label: "Alerts", icon: ShieldIcon },
-  { href: "/admin/platform-settings", label: "Platform settings", icon: SettingsIcon },
-  { href: "/admin/roles", label: "Roles", icon: UsersIcon },
-  { href: "/admin/beta-invites", label: "Beta invites", icon: TicketIcon },
-  { href: "/admin/campaigns", label: "Campaigns", icon: TrendingUpIcon },
-  { href: "/admin/experiments", label: "Experiments", icon: TrendingUpIcon },
-  { href: "/admin/users", label: "Users", icon: UsersIcon },
-  { href: "/admin/communications", label: "Communications", icon: TicketIcon },
-  { href: "/admin/studio", label: "Content", icon: LayersIcon },
-  { href: "/admin/content-calendar", label: "Content calendar", icon: ClipboardCheckIcon },
-  { href: "/admin/assessment", label: "Assessment", icon: ClipboardCheckIcon },
-  { href: "/admin/usage-stats", label: "Usage stats", icon: BarChartIcon },
-  { href: "/admin/payments", label: "Payments", icon: WalletIcon },
-  { href: "/admin/revenue-ops", label: "Revenue ops", icon: WalletIcon },
-  { href: "/admin/outcomes", label: "Outcomes", icon: TrendingUpIcon },
-  { href: "/admin/nex-ops", label: "Nex ops", icon: CpuIcon },
-  { href: "/admin/ai-quality", label: "AI quality", icon: CpuIcon },
-  { href: "/admin/support", label: "Support", icon: ShieldIcon },
-  { href: "/admin/rollouts", label: "Rollouts", icon: SettingsIcon },
-  { href: "/admin/health", label: "System health", icon: SettingsIcon },
-  { href: "/admin/reports", label: "Reports", icon: BarChartIcon },
-  { href: "/admin/search", label: "Search", icon: BarChartIcon },
-  { href: "/admin/saved-views", label: "Saved views", icon: LayersIcon },
-  { href: "/admin/bulk-actions", label: "Bulk actions", icon: ClipboardCheckIcon },
-  { href: "/admin/approvals", label: "Approvals", icon: ClipboardCheckIcon },
-  { href: "/admin/audit-log", label: "Audit log", icon: ShieldIcon },
+type NavGroup = {
+  label: string;
+  items: NavItem[];
+};
+
+export const ADMIN_PRIMARY_HREF = "/admin";
+
+export const ADMIN_NAV_GROUPS: NavGroup[] = [
+  {
+    label: "Overview",
+    items: [
+      { href: "/admin", label: "Dashboard", icon: BarChartIcon },
+      { href: "/admin/inbox", label: "Task inbox", icon: ClipboardCheckIcon },
+      { href: "/admin/search", label: "Search", icon: BarChartIcon },
+      { href: "/admin/reports", label: "Reports", icon: BarChartIcon },
+    ],
+  },
+  {
+    label: "People",
+    items: [
+      { href: "/admin/users", label: "Users", icon: UsersIcon },
+      { href: "/admin/roles", label: "Roles", icon: UsersIcon },
+      { href: "/admin/support", label: "Support", icon: ShieldIcon },
+      { href: "/admin/communications", label: "Communications", icon: TicketIcon },
+    ],
+  },
+  {
+    label: "Learning",
+    items: [
+      { href: "/admin/studio", label: "Content", icon: LayersIcon },
+      { href: "/admin/content-calendar", label: "Content calendar", icon: ClipboardCheckIcon },
+      { href: "/admin/assessment", label: "Assessment", icon: ClipboardCheckIcon },
+      { href: "/admin/ai-quality", label: "AI quality", icon: CpuIcon },
+      { href: "/admin/outcomes", label: "Outcomes", icon: TrendingUpIcon },
+    ],
+  },
+  {
+    label: "Revenue",
+    items: [
+      { href: "/admin/payments", label: "Payments", icon: WalletIcon },
+      { href: "/admin/revenue-ops", label: "Revenue ops", icon: WalletIcon },
+      { href: "/admin/campaigns", label: "Campaigns", icon: TrendingUpIcon },
+    ],
+  },
+  {
+    label: "Growth",
+    items: [
+      { href: "/admin/beta-invites", label: "Beta invites", icon: TicketIcon },
+      { href: "/admin/experiments", label: "Experiments", icon: TrendingUpIcon },
+      { href: "/admin/rollouts", label: "Rollouts", icon: SettingsIcon },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      { href: "/admin/alerts", label: "Alerts", icon: ShieldIcon },
+      { href: "/admin/bulk-actions", label: "Bulk actions", icon: ClipboardCheckIcon },
+      { href: "/admin/approvals", label: "Approvals", icon: ClipboardCheckIcon },
+      { href: "/admin/saved-views", label: "Saved views", icon: LayersIcon },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { href: "/admin/health", label: "System health", icon: SettingsIcon },
+      { href: "/admin/usage-stats", label: "Usage stats", icon: BarChartIcon },
+      { href: "/admin/nex-ops", label: "Nex ops", icon: CpuIcon },
+      { href: "/admin/platform-settings", label: "Platform settings", icon: SettingsIcon },
+      { href: "/admin/audit-log", label: "Audit log", icon: ShieldIcon },
+    ],
+  },
 ];
+
+const NAV_ITEMS = ADMIN_NAV_GROUPS.flatMap((group) => group.items);
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/admin") {
@@ -172,34 +216,51 @@ export function AdminSidebarNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col gap-1" aria-label="Admin sections">
-      {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-        const active = isActive(pathname, href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            aria-current={active ? "page" : undefined}
-            className={cn(
-              "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-              active
-                ? "bg-primary/15 text-foreground"
-                : "text-muted-foreground hover:bg-nexus-surface hover:text-foreground",
-            )}
-          >
-            <span
-              className={cn(
-                "absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary transition-opacity",
-                active ? "opacity-100" : "opacity-0",
-              )}
-            />
-            <Icon
-              className={cn(active ? "text-primary" : "text-muted-foreground/80")}
-            />
-            {label}
-          </Link>
-        );
-      })}
+    <nav className="space-y-3" aria-label="Admin sections">
+      {ADMIN_NAV_GROUPS.map((group) => (
+        <section
+          key={group.label}
+          className="rounded-2xl border border-nexus-border/70 bg-nexus-surface/55 p-1.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.03)]"
+        >
+          <div className="flex items-center justify-between gap-3 px-2 pb-1 pt-1.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/75">
+              {group.label}
+            </p>
+            <span className="font-mono text-[10px] tabular-nums text-muted-foreground/55">
+              {group.items.length}
+            </span>
+          </div>
+          <div className="space-y-0.5">
+            {group.items.map(({ href, label, icon: Icon }) => {
+              const active = isActive(pathname, href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "group relative flex min-h-9 items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-200 active:translate-y-px",
+                    active
+                      ? "bg-primary text-primary-foreground shadow-[0_8px_18px_rgb(21_86_75/0.18)]"
+                      : "text-muted-foreground hover:bg-nexus-sunken hover:text-foreground",
+                  )}
+                >
+                  <Icon
+                    className={cn(
+                      "shrink-0 transition-colors",
+                      active
+                        ? "text-primary-foreground"
+                        : "text-muted-foreground/75 group-hover:text-foreground",
+                    )}
+                    size={17}
+                  />
+                  <span className="truncate">{label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      ))}
     </nav>
   );
 }

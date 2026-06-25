@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { AdminMobileNav, AdminSidebarNav } from "@/features/admin/components/AdminNav";
 import { AdminToaster } from "@/features/admin/components/AdminToaster";
@@ -11,41 +12,43 @@ export default function SuperAdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="dark min-h-screen bg-nexus-background text-foreground">
+    <div className="min-h-screen bg-nexus-background text-foreground">
       <div className="flex min-h-screen">
         {/* Sidebar (md and up) */}
-        <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-nexus-border bg-nexus-sunken md:flex">
-          <div className="flex h-16 items-center gap-2.5 border-b border-nexus-border px-5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary font-heading text-base font-bold text-primary-foreground">
+        <aside className="sticky top-0 hidden h-dvh w-[17rem] shrink-0 flex-col border-r border-nexus-border bg-nexus-sunken md:flex">
+          <div className="flex h-16 items-center gap-2.5 border-b border-nexus-border bg-nexus-surface/55 px-4">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary font-heading text-base font-bold text-primary-foreground shadow-[0_10px_24px_rgb(21_86_75/0.2)]">
               N
             </span>
-            <div className="leading-tight">
+            <Link href="/admin" className="min-w-0 leading-tight">
               <p className="font-heading text-sm font-semibold tracking-tight">
                 Nexus
               </p>
               <p className="text-xs text-muted-foreground">Admin console</p>
-            </div>
+            </Link>
           </div>
-          <div className="flex-1 overflow-y-auto px-3 py-4">
-            <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Manage
-            </p>
+          <div className="admin-sidebar-scroll min-h-0 flex-1 overflow-y-auto px-2.5 py-3">
             <AdminSidebarNav />
           </div>
-          <div className="border-t border-nexus-border px-3 py-3">
-            <p className="px-3 pb-1 text-xs text-muted-foreground">
-              Signed in as super admin
-            </p>
-            <form action={signOutAction} className="px-1">
-              <Button
-                type="submit"
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start text-muted-foreground hover:text-foreground"
-              >
-                Sign out
-              </Button>
-            </form>
+          <div className="border-t border-nexus-border bg-nexus-surface/70 px-3 py-3">
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-nexus-border/70 bg-nexus-sunken/70 px-3 py-2.5">
+              <div className="min-w-0">
+                <p className="truncate text-xs text-muted-foreground">
+                  Signed in as super admin
+                </p>
+                <form action={signOutAction}>
+                  <Button
+                    type="submit"
+                    variant="ghost"
+                    size="sm"
+                    className="mt-1 h-auto justify-start px-0 py-0 text-xs text-muted-foreground hover:bg-transparent hover:text-foreground"
+                  >
+                    Sign out
+                  </Button>
+                </form>
+              </div>
+              <ThemeToggle className="shrink-0" />
+            </div>
           </div>
         </aside>
 
@@ -63,11 +66,14 @@ export default function SuperAdminLayout({
                 </span>
                 Nexus Admin
               </Link>
-              <form action={signOutAction}>
-                <Button type="submit" variant="outline" size="sm">
-                  Sign out
-                </Button>
-              </form>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <form action={signOutAction}>
+                  <Button type="submit" variant="outline" size="sm">
+                    Sign out
+                  </Button>
+                </form>
+              </div>
             </div>
             <div className="px-3 pb-2">
               <AdminMobileNav />

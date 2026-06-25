@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +37,7 @@ export function PublicShell({ children }: PublicShellProps) {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeToggle className="hidden sm:flex" />
             <Link
               href="/login"
               className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground md:hidden"
