@@ -1,0 +1,4 @@
+-- KCSE Form 1 Mathematics — Wave 1 Batch 1
+-- Topics: fractions (re-instate + rebuild), natural_numbers, factors, divisibility_tests, decimals
+-- Idempotent seed: subtopics, lessons, practice questions.
+-- Authoring standard: docs/superpowers/plans/2026-06-25-kcse-math-CONTENT-GUIDE.md
