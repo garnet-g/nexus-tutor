@@ -12,6 +12,10 @@ const SEED_FILES = [
     path: "supabase/seed/curriculum_math_kcse_f1_b1.sql",
     expectedLessonCount: 19,
   },
+  {
+    path: "supabase/migrations/20260625130000_kcse_math_f1_b2.sql",
+    expectedLessonCount: 45,
+  },
 ] as const;
 
 // extract every lesson content JSON: , '{...}'::jsonb  (SQL doubles '' for apostrophes)
