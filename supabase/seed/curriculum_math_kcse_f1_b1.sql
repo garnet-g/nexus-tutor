@@ -411,3 +411,162 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which inequality is correct?');
+
+-- ========== FACTORS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Prime Numbers and Factorisation', '{"blocks":[{"type":"heading","content":"Prime Factorisation"},{"type":"paragraph","content":"A **prime** number has exactly two factors: $1$ and itself. To factorise a composite number, split it into prime factors using a factor tree or repeated division."},{"type":"example","title":"Write $72$ as a product of primes","steps":["$72 = 2 \\times 36 = 2 \\times 2 \\times 18$.","$= 2 \\times 2 \\times 2 \\times 9 = 2^3 \\times 3^2$."],"answer":"$2^3 \\times 3^2$"},{"type":"callout","variant":"key_point","content":"Every whole number greater than $1$ is either prime or a unique product of primes."},{"type":"question","questionText":"Which is prime?","questionType":"multiple_choice","options":["$17$","$21$","$27$","$33$"],"correctAnswer":"$17$","explanation":"$17$ has only factors $1$ and $17$."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'factors' AND st.code = 'prime_factors'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Prime Numbers and Factorisation'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Greatest Common Divisor (GCD/HCF)', '{"blocks":[{"type":"heading","content":"GCD / HCF"},{"type":"paragraph","content":"The GCD (or HCF) of two numbers is the largest number that divides both exactly. Use prime factorisation or listing factors."},{"type":"example","title":"Find the HCF of $48$ and $72$","steps":["$48 = 2^4 \\times 3$; $72 = 2^3 \\times 3^2$.","Common primes with lowest powers: $2^3 \\times 3 = 24$."],"answer":"$24$"},{"type":"callout","variant":"warning","content":"HCF uses the **lowest** power of each common prime; LCM uses the **highest**."},{"type":"question","questionText":"Find the HCF of $18$ and $24$.","questionType":"multiple_choice","options":["$6$","$12$","$3$","$72$"],"correctAnswer":"$6$","explanation":"Common factors: $1,2,3,6$; greatest is $6$."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'factors' AND st.code = 'gcd_hcf'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Greatest Common Divisor (GCD/HCF)'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Lowest Common Multiple (LCM)', '{"blocks":[{"type":"heading","content":"LCM"},{"type":"paragraph","content":"The LCM is the smallest positive number that is a multiple of both numbers. Useful for adding fractions and scheduling events."},{"type":"example","title":"Find the LCM of $12$ and $18$","steps":["$12 = 2^2 \\times 3$; $18 = 2 \\times 3^2$.","LCM $= 2^2 \\times 3^2 = 36$."],"answer":"$36$"},{"type":"example","title":"Buses leave a stage every $12$ min and $18$ min. When do they next leave together?","steps":["Need LCM of $12$ and $18$.","LCM $= 36$ minutes."],"answer":"After $36$ minutes"},{"type":"question","questionText":"Find the LCM of $8$ and $12$.","questionType":"multiple_choice","options":["$24$","$96$","$4$","$48$"],"correctAnswer":"$24$","explanation":"$24$ is the smallest common multiple."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'factors' AND st.code = 'lcm'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Lowest Common Multiple (LCM)'
+);
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is a prime number?', 'multiple_choice', '["$29$","$39$","$49$","$51$"]'::jsonb, '"$29$"'::jsonb, 'easy', '$29$ has only two factors.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is a prime number?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'How many factors does $13$ have?', 'multiple_choice', '["$2$","$3$","$1$","$13$"]'::jsonb, '"$2$"'::jsonb, 'easy', 'Prime numbers have exactly two factors.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='How many factors does $13$ have?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Express $30$ as a product of primes.', 'multiple_choice', '["$2 \\times 3 \\times 5$","$5 \\times 6$","$2 \\times 15$","$3 \\times 10$"]'::jsonb, '"$2 \times 3 \times 5$"'::jsonb, 'easy', 'All factors are prime.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Express $30$ as a product of primes.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the HCF of $12$ and $16$.', 'multiple_choice', '["$4$","$8$","$2$","$48$"]'::jsonb, '"$4$"'::jsonb, 'easy', 'Common factors: $1,2,4$; HCF $=4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gcd_hcf'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the HCF of $12$ and $16$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the HCF of $9$ and $15$.', 'multiple_choice', '["$3$","$5$","$45$","$6$"]'::jsonb, '"$3$"'::jsonb, 'easy', 'Both divisible by $3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gcd_hcf'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the HCF of $9$ and $15$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the LCM of $4$ and $6$.', 'multiple_choice', '["$12$","$24$","$2$","$10$"]'::jsonb, '"$12$"'::jsonb, 'easy', 'Multiples: $4,8,12$ and $6,12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the LCM of $4$ and $6$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the LCM of $5$ and $7$.', 'multiple_choice', '["$35$","$12$","$1$","$70$"]'::jsonb, '"$35$"'::jsonb, 'easy', 'Coprime: product gives LCM.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the LCM of $5$ and $7$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Write $60$ in prime factor form.', 'multiple_choice', '["$2^2 \\times 3 \\times 5$","$2 \\times 30$","$4 \\times 15$","$6 \\times 10$"]'::jsonb, '"$2^2 \times 3 \times 5$"'::jsonb, 'medium', 'Factor tree gives $2,2,3,5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Write $60$ in prime factor form.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the HCF of $36$ and $54$.', 'multiple_choice', '["$18$","$9$","$6$","$108$"]'::jsonb, '"$18$"'::jsonb, 'medium', '$36=2^2\times3^2$; $54=2\times3^3$; HCF $=18$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gcd_hcf'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the HCF of $36$ and $54$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the LCM of $15$ and $20$.', 'multiple_choice', '["$60$","$300$","$5$","$35$"]'::jsonb, '"$60$"'::jsonb, 'medium', '$15=3\times5$; $20=2^2\times5$; LCM $=60$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the LCM of $15$ and $20$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tiles of size $12$ cm and $18$ cm — largest square tile dividing both?', 'multiple_choice', '["$6$ cm","$3$ cm","$12$ cm","$36$ cm"]'::jsonb, '"$6$ cm"'::jsonb, 'medium', 'HCF of $12$ and $18$ is $6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gcd_hcf'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tiles of size $12$ cm and $18$ cm — largest square tile dividing both?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two bells ring every $8$ s and $12$ s. Together again after?', 'multiple_choice', '["$24$ s","$20$ s","$4$ s","$96$ s"]'::jsonb, '"$24$ s"'::jsonb, 'medium', 'LCM of $8$ and $12$ is $24$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two bells ring every $8$ s and $12$ s. Together again after?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is the prime factorisation of $84$?', 'multiple_choice', '["$2^2 \\times 3 \\times 7$","$2 \\times 42$","$4 \\times 21$","$6 \\times 14$"]'::jsonb, '"$2^2 \times 3 \times 7$"'::jsonb, 'medium', 'Divide by primes: $84=2\times2\times3\times7$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is the prime factorisation of $84$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the HCF of $45$ and $75$.', 'multiple_choice', '["$15$","$5$","$3$","$225$"]'::jsonb, '"$15$"'::jsonb, 'medium', '$45=3^2\times5$; $75=3\times5^2$; HCF $=15$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gcd_hcf'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the HCF of $45$ and $75$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A number has prime factors $2^3 \times 5$. What is the number?', 'multiple_choice', '["$40$","$80$","$10$","$25$"]'::jsonb, '"$40$"'::jsonb, 'hard', '$8 \times 5 = 40$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A number has prime factors $2^3 \times 5$. What is the number?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the HCF of $84$ and $126$.', 'multiple_choice', '["$42$","$21$","$14$","$7$"]'::jsonb, '"$42$"'::jsonb, 'hard', 'Common: $2\times3\times7=42$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gcd_hcf'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the HCF of $84$ and $126$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find the LCM of $18$ and $24$.', 'multiple_choice', '["$72$","$432$","$6$","$48$"]'::jsonb, '"$72$"'::jsonb, 'hard', '$18=2\times3^2$; $24=2^3\times3$; LCM $=72$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the LCM of $18$ and $24$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Matatu A every $15$ min, B every $20$ min. Next together?', 'multiple_choice', '["$60$ min","$35$ min","$5$ min","$300$ min"]'::jsonb, '"$60$ min"'::jsonb, 'hard', 'LCM of $15$ and $20$ is $60$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Matatu A every $15$ min, B every $20$ min. Next together?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cut ropes of $48$ m and $72$ m into equal pieces — longest piece?', 'multiple_choice', '["$24$ m","$12$ m","$6$ m","$48$ m"]'::jsonb, '"$24$ m"'::jsonb, 'hard', 'HCF of $48$ and $72$ is $24$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gcd_hcf'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cut ropes of $48$ m and $72$ m into equal pieces — longest piece?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'How many prime factors (with repetition) in $100$?', 'multiple_choice', '["$4$","$2$","$3$","$5$"]'::jsonb, '"$4$"'::jsonb, 'hard', '$100=2\times2\times5\times5$: four primes.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='How many prime factors (with repetition) in $100$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'LCM of $14$, $21$ and $6$?', 'multiple_choice', '["$42$","$84$","$126$","$7$"]'::jsonb, '"$42$"'::jsonb, 'hard', '$42$ is divisible by $14$, $21$ and $6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='LCM of $14$, $21$ and $6$?');
