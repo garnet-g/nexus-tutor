@@ -242,3 +242,172 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_bodmas'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{1}{2}\left(\frac{3}{4}+\frac{1}{4}\right) \div \frac{1}{3}$.');
+
+-- ========== NATURAL NUMBERS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Place Value and Reading Numbers', '{"blocks":[{"type":"heading","content":"Place Value"},{"type":"paragraph","content":"Each digit in a number has a place value: ones, tens, hundreds, thousands, and so on. In $4\\,582$, the $4$ is in the thousands place ($4\\,000$)."},{"type":"callout","variant":"key_point","content":"Moving one place left multiplies value by $10$. Moving right divides by $10$."},{"type":"example","title":"Write the value of $7$ in $37\\,205$","steps":["$7$ is in the thousands place.","Value $= 7\\,000$."],"answer":"$7\\,000$"},{"type":"question","questionText":"What is the place value of $5$ in $2\\,531$?","questionType":"multiple_choice","options":["$500$","$50$","$5$","$5\\,000$"],"correctAnswer":"$500$","explanation":"$5$ is in the hundreds place."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'natural_numbers' AND st.code = 'place_values'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Place Value and Reading Numbers'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Rounding Off Numbers', '{"blocks":[{"type":"heading","content":"Rounding Off"},{"type":"paragraph","content":"To round to the nearest ten, hundred, or thousand, look at the digit to the right. If it is $5$ or more, round up; otherwise round down."},{"type":"example","title":"Round $4\\,678$ to the nearest hundred","steps":["Hundreds digit is $6$; tens digit is $7$ ($\\geq 5$).","Round up: $4\\,700$."],"answer":"$4\\,700$"},{"type":"callout","variant":"warning","content":"Rounding to nearest ten uses the ones digit; to nearest hundred uses the tens digit."},{"type":"question","questionText":"Round $12\\,350$ to the nearest thousand.","questionType":"multiple_choice","options":["$12\\,000$","$13\\,000$","$12\\,400$","$12\\,300$"],"correctAnswer":"$12\\,000$","explanation":"Hundreds digit $3 < 5$, round down."}]}'::jsonb, 10, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'natural_numbers' AND st.code = 'place_values'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Rounding Off Numbers'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Operations with Natural Numbers', '{"blocks":[{"type":"heading","content":"Operations with Natural Numbers"},{"type":"paragraph","content":"Natural numbers are counting numbers $1, 2, 3, \\ldots$ We add, subtract, multiply and divide them following place-value rules and BODMAS."},{"type":"example","title":"Evaluate $456 + 278$","steps":["Ones: $6+8=14$, carry $1$.","Tens: $5+7+1=13$, carry $1$.","Hundreds: $4+2+1=7$."],"answer":"$734$"},{"type":"example","title":"Evaluate $8\\,400 \\div 12$","steps":["$84 \\div 12 = 7$.","Bring down $0$: $70 \\times 12 = 840$."],"answer":"$700$"},{"type":"question","questionText":"Evaluate $25 \\times 16$.","questionType":"multiple_choice","options":["$400$","$350$","$410$","$390$"],"correctAnswer":"$400$","explanation":"$25 \\times 16 = 400$."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'natural_numbers' AND st.code = 'number_operations'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Operations with Natural Numbers'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'The Number Line', '{"blocks":[{"type":"heading","content":"Natural Numbers on the Number Line"},{"type":"paragraph","content":"A number line shows order. Numbers increase to the right. Natural numbers start at $1$."},{"type":"example","title":"Which is greater: $847$ or $874$?","steps":["Compare hundreds: both $8$.","Compare tens: $4 < 7$, so $847 < 874$."],"answer":"$874$ is greater"},{"type":"callout","variant":"warning","content":"When digits match from the left, the number with the larger next digit is greater."},{"type":"question","questionText":"On a number line, which is furthest right: $502$, $520$, or $250$?","questionType":"multiple_choice","options":["$520$","$502$","$250$","All equal"],"correctAnswer":"$520$","explanation":"$520$ is the greatest."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'natural_numbers' AND st.code = 'number_line'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'The Number Line'
+);
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'What is the value of $3$ in $13\,472$?', 'multiple_choice', '["$3\\,000$","$300$","$30$","$3$"]'::jsonb, '"$3\,000$"'::jsonb, 'easy', '$3$ is in the thousands place.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='What is the value of $3$ in $13\,472$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Round $567$ to the nearest ten.', 'multiple_choice', '["$570$","$560$","$600$","$500$"]'::jsonb, '"$570$"'::jsonb, 'easy', 'Ones digit $7 \geq 5$, round up.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Round $567$ to the nearest ten.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $125 + 75$.', 'multiple_choice', '["$200$","$190$","$210$","$195$"]'::jsonb, '"$200$"'::jsonb, 'easy', 'Direct addition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $125 + 75$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $144 \div 12$.', 'multiple_choice', '["$12$","$11$","$13$","$14$"]'::jsonb, '"$12$"'::jsonb, 'easy', '$12 \times 12 = 144$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $144 \div 12$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is smallest: $305$, $350$, $503$?', 'multiple_choice', '["$305$","$350$","$503$","$530$"]'::jsonb, '"$305$"'::jsonb, 'easy', '$305$ has the smallest hundreds digit.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is smallest: $305$, $350$, $503$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $15 \times 8$.', 'multiple_choice', '["$120$","$115$","$125$","$80$"]'::jsonb, '"$120$"'::jsonb, 'easy', '$15 \times 8 = 120$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $15 \times 8$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Write $9\,006$ in words.', 'multiple_choice', '["Nine thousand and six","Nine hundred and six","Ninety thousand six","Nine thousand sixty"]'::jsonb, '"Nine thousand and six"'::jsonb, 'easy', 'No hundreds or tens digits.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Write $9\,006$ in words.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Round $4\,950$ to the nearest hundred.', 'multiple_choice', '["$5\\,000$","$4\\,900$","$4\\,000$","$5\\,100$"]'::jsonb, '"$5\,000$"'::jsonb, 'medium', 'Tens digit $5$, round hundreds up.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Round $4\,950$ to the nearest hundred.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $1\,024 - 378$.', 'multiple_choice', '["$646$","$656$","$636$","$746$"]'::jsonb, '"$646$"'::jsonb, 'medium', 'Column subtraction with borrowing.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $1\,024 - 378$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $35 \times 24$.', 'multiple_choice', '["$840$","$800$","$850$","$740$"]'::jsonb, '"$840$"'::jsonb, 'medium', '$35 \times 24 = 840$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $35 \times 24$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Arrange $1\,204$, $1\,240$, $1\,042$ from smallest to largest.', 'multiple_choice', '["$1\\,042, 1\\,204, 1\\,240$","$1\\,240, 1\\,204, 1\\,042$","$1\\,204, 1\\,042, 1\\,240$","$1\\,042, 1\\,240, 1\\,204$"]'::jsonb, '"$1\,042, 1\,204, 1\,240$"'::jsonb, 'medium', 'Compare place values left to right.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Arrange $1\,204$, $1\,240$, $1\,042$ from smallest to largest.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A shop sells $18$ eggs per tray. How many eggs in $45$ trays?', 'multiple_choice', '["$810$","$800$","$720$","$900$"]'::jsonb, '"$810$"'::jsonb, 'medium', '$18 \times 45 = 810$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A shop sells $18$ eggs per tray. How many eggs in $45$ trays?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Round $99\,499$ to the nearest thousand.', 'multiple_choice', '["$99\\,000$","$100\\,000$","$99\\,500$","$99\\,400$"]'::jsonb, '"$99\,000$"'::jsonb, 'medium', 'Hundreds digit $4 < 5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Round $99\,499$ to the nearest thousand.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $2\,500 \div 25$.', 'multiple_choice', '["$100$","$125$","$90$","$250$"]'::jsonb, '"$100$"'::jsonb, 'medium', '$25 \times 100 = 2\,500$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $2\,500 \div 25$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A school has $1\,248$ pupils. Round to the nearest hundred for a report.', 'multiple_choice', '["$1\\,200$","$1\\,300$","$1\\,250$","$1\\,000$"]'::jsonb, '"$1\,200$"'::jsonb, 'hard', 'Tens digit $4 < 5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A school has $1\,248$ pupils. Round to the nearest hundred for a report.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A bus carries $62$ passengers per trip. How many passengers in $38$ full trips?', 'multiple_choice', '["$2\\,356$","$2\\,336$","$2\\,346$","$2\\,376$"]'::jsonb, '"$2\,356$"'::jsonb, 'hard', '$62 \times 38 = 2\,356$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A bus carries $62$ passengers per trip. How many passengers in $38$ full trips?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Estimate which number is halfway between $400$ and $600$ on the number line.', 'multiple_choice', '["$500$","$550$","$450$","$520$"]'::jsonb, '"$500$"'::jsonb, 'hard', 'Midpoint of $400$ and $600$ is $500$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Estimate which number is halfway between $400$ and $600$ on the number line.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $10\,000 - 3\,456$.', 'multiple_choice', '["$6\\,544$","$6\\,554$","$6\\,444$","$7\\,544$"]'::jsonb, '"$6\,544$"'::jsonb, 'hard', 'Borrow across zeros carefully.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $10\,000 - 3\,456$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'The digit $8$ appears twice in $18\,829$. What is the total value of both $8$s?', 'multiple_choice', '["$8\\,800$","$808$","$880$","$8\\,080$"]'::jsonb, '"$8\,800$"'::jsonb, 'hard', '$8\,000 + 800 = 8\,800$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='The digit $8$ appears twice in $18\,829$. What is the total value of both $8$s?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A farmer packs $125$ oranges per crate. How many oranges in $64$ crates?', 'multiple_choice', '["$8\\,000$","$7\\,500$","$8\\,125$","$7\\,875$"]'::jsonb, '"$8\,000$"'::jsonb, 'hard', '$125 \times 64 = 8\,000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A farmer packs $125$ oranges per crate. How many oranges in $64$ crates?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which inequality is correct?', 'multiple_choice', '["$2\\,305 < 2\\,350$","$2\\,305 > 2\\,350$","$2\\,305 = 2\\,350$","$2\\,350 < 2\\,305$"]'::jsonb, '"$2\,305 < 2\,350$"'::jsonb, 'hard', 'Compare tens: $0 < 5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which inequality is correct?');
