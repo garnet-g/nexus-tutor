@@ -38,7 +38,15 @@ export type AdminAuditAction =
   | "coupon.deactivate"
   | "support_case.create"
   | "support_case.update"
-  | "feature_rollout.upsert";
+  | "feature_rollout.upsert"
+  | "admin_alert.create"
+  | "admin_alert.update"
+  | "admin_role.assign"
+  | "admin_communication_template.create"
+  | "admin_experiment.create"
+  | "admin_saved_view.create"
+  | "admin_approval.create"
+  | "admin_approval.update";
 
 export type AdminAuditLogEntry = {
   id: string;

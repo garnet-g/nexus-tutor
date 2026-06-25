@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { CompSubscriptionForm } from "@/features/admin/components/CompSubscriptionForm";
-import { PageHeader, Panel, StatCard } from "@/features/admin/components/adminUi";
+import { PageHeader, Panel, StatCard, StatusBadge } from "@/features/admin/components/adminUi";
 import { StudentProfileCorrectionForm } from "@/features/admin/components/StudentProfileCorrectionForm";
 import { ViewAsStudentPanel } from "@/features/admin/components/ViewAsStudentPanel";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import {
   type UserDetail,
   getUserDetail,
 } from "@/server/services/adminUserReadService";
+import { getStudent360Data } from "@/server/services/adminPlatformService";
 import {
   ADMIN_ROLES,
   requireAdminRole,
@@ -60,10 +61,15 @@ export default async function UserDetailPage({
   const { id } = await params;
 
   let detail: UserDetail | null = null;
+  let student360 = null;
   try {
-    detail = await getUserDetail(id);
+    [detail, student360] = await Promise.all([
+      getUserDetail(id),
+      getStudent360Data(id).catch(() => null),
+    ]);
   } catch {
     detail = null;
+    student360 = null;
   }
 
   if (!detail) {
@@ -212,6 +218,65 @@ export default async function UserDetailPage({
           </ul>
         )}
       </Panel>
+
+      {student360 ? (
+        <section className="grid gap-6 lg:grid-cols-2">
+          <Panel
+            title="Entitlement debugger"
+            description="Why this student can or cannot use gated features today."
+          >
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-nexus-sunken p-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Decision</p>
+                <p className="font-heading text-2xl font-semibold text-foreground">
+                  {student360.entitlement.allowed ? "Allowed" : "Blocked"}
+                </p>
+              </div>
+              <StatusBadge tone={student360.entitlement.allowed ? "success" : "danger"}>
+                {student360.entitlement.remainingToday} left today
+              </StatusBadge>
+            </div>
+            <div className="space-y-3">
+              {student360.entitlement.reasons.map((reason) => (
+                <p key={reason} className="rounded-lg bg-primary/10 px-3 py-2 text-sm text-primary">
+                  {reason}
+                </p>
+              ))}
+              {student360.entitlement.blockers.map((blocker) => (
+                <p key={blocker} className="rounded-lg bg-nexus-danger/10 px-3 py-2 text-sm text-nexus-danger">
+                  {blocker}
+                </p>
+              ))}
+            </div>
+          </Panel>
+
+          <Panel
+            title="Student timeline"
+            description={`${student360.supportCaseCount} linked support case${student360.supportCaseCount === 1 ? "" : "s"}`}
+          >
+            <div className="space-y-3">
+              {student360.timeline.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No timeline events found.</p>
+              ) : student360.timeline.slice(0, 10).map((event) => (
+                <div key={`${event.kind}-${event.occurredAt}-${event.title}`} className="rounded-xl bg-nexus-sunken p-3">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{event.title}</p>
+                      {event.description ? (
+                        <p className="mt-1 text-xs text-muted-foreground">{event.description}</p>
+                      ) : null}
+                    </div>
+                    <StatusBadge tone="info">{event.kind}</StatusBadge>
+                  </div>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {formatDate(event.occurredAt)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Panel>
+        </section>
+      ) : null}
 
       {isSuperAdmin ? (
         <section className="space-y-4">
