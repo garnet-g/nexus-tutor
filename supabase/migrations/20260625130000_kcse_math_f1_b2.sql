@@ -406,3 +406,205 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='circumference'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bicycle wheel $r=35$ cm. Distance in $50$ revolutions ($\pi=\frac{22}{7}$)?');
+
+-- ========== AREA ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area of Rectangles and Triangles', '{"blocks":[{"type":"heading","content":"Area of Plane Figures"},{"type":"paragraph","content":"Area measures surface inside a shape. Rectangle: $A = l \\times w$. Triangle: $A = \\frac{1}{2}bh$."},{"type":"callout","variant":"key_point","content":"Area is in square units: cm$^2$, m$^2$."},{"type":"example","title":"Rectangle $12$ cm by $5$ cm","steps":["$A = 12 \\times 5 = 60$ cm$^2$."],"answer":"$60$ cm$^2$"},{"type":"question","questionText":"Triangle base $10$ cm, height $6$ cm. Find $A$.","questionType":"multiple_choice","options":["$30$ cm$^2$","$60$ cm$^2$","$16$ cm$^2$","$36$ cm$^2$"],"correctAnswer":"$30$ cm$^2$","explanation":"$\\frac{1}{2} \\times 10 \\times 6$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area of Rectangles and Triangles');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area of Parallelograms and Trapeziums', '{"blocks":[{"type":"heading","content":"More Plane Areas"},{"type":"math_block","latex":"A_{\\text{parallelogram}} = bh,\\quad A_{\\text{trapezium}} = \\frac{1}{2}(a+b)h","caption":"Formulas"},{"type":"example","title":"Parallelogram base $8$ m, height $5$ m","steps":["$A = 8 \\times 5 = 40$ m$^2$."],"answer":"$40$ m$^2$"},{"type":"example","title":"Trapezium parallel sides $6$ cm and $10$ cm, height $4$ cm","steps":["$A = \\frac{1}{2}(6+10) \\times 4 = 32$ cm$^2$."],"answer":"$32$ cm$^2$"},{"type":"question","questionText":"Square side $9$ cm. Find $A$.","questionType":"multiple_choice","options":["$81$ cm$^2$","$36$ cm$^2$","$18$ cm$^2$","$72$ cm$^2$"],"correctAnswer":"$81$ cm$^2$","explanation":"$9^2 = 81$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area of Parallelograms and Trapeziums');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Plane Figure Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"Rhombus diagonals $12$ cm and $16$ cm","steps":["$A = \\frac{1}{2} \\times 12 \\times 16 = 96$ cm$^2$."],"answer":"$96$ cm$^2$"},{"type":"callout","variant":"warning","content":"Use the perpendicular height, not the slant side, for parallelograms."},{"type":"question","questionText":"Rectangle area $84$ cm$^2$, width $7$ cm. Find length.","questionType":"multiple_choice","options":["$12$ cm","$7$ cm","$91$ cm","$77$ cm"],"correctAnswer":"$12$ cm","explanation":"$84 \\div 7$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Plane Figure Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area of a Circle', '{"blocks":[{"type":"heading","content":"Area of a Circle"},{"type":"math_block","latex":"A = \\pi r^2","caption":"Circle area"},{"type":"callout","variant":"key_point","content":"Use radius, not diameter, unless you substitute $r = \\frac{d}{2}$."},{"type":"example","title":"Radius $7$ cm ($\\pi=\\frac{22}{7}$)","steps":["$A = \\frac{22}{7} \\times 49 = 154$ cm$^2$."],"answer":"$154$ cm$^2$"},{"type":"question","questionText":"Radius $5$ cm. $A$ ($\\pi=3.14$)?","questionType":"multiple_choice","options":["$78.5$ cm$^2$","$31.4$ cm$^2$","$15.7$ cm$^2$","$157$ cm$^2$"],"correctAnswer":"$78.5$ cm$^2$","explanation":"$3.14 \\times 25$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_circle'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area of a Circle');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Circle Area Calculations', '{"blocks":[{"type":"heading","content":"Worked Circle Areas"},{"type":"example","title":"Diameter $14$ cm ($\\pi=\\frac{22}{7}$)","steps":["$r = 7$ cm.","$A = \\frac{22}{7} \\times 49 = 154$ cm$^2$."],"answer":"$154$ cm$^2$"},{"type":"callout","variant":"warning","content":"Common mistake: using $\\pi d^2$ instead of $\\pi r^2$."},{"type":"question","questionText":"Radius $10$ m. $A$ ($\\pi=3.14$)?","questionType":"multiple_choice","options":["$314$ m$^2$","$62.8$ m$^2$","$31.4$ m$^2$","$157$ m$^2$"],"correctAnswer":"$314$ m$^2$","explanation":"$3.14 \\times 100$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_circle'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Circle Area Calculations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Circle Area Exam Problems', '{"blocks":[{"type":"heading","content":"Exam Problems"},{"type":"example","title":"Circular table top diameter $1.4$ m. Area ($\\pi=\\frac{22}{7}$)?","steps":["$r = 0.7$ m.","$A = \\frac{22}{7} \\times 0.49 = 1.54$ m$^2$."],"answer":"$1.54$ m$^2$"},{"type":"question","questionText":"Semi-circle radius $7$ cm. Area ($\\pi=\\frac{22}{7}$)?","questionType":"multiple_choice","options":["$77$ cm$^2$","$154$ cm$^2$","$44$ cm$^2$","$38.5$ cm$^2$"],"correctAnswer":"$77$ cm$^2$","explanation":"Half of $\\pi r^2$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_circle'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Circle Area Exam Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Combined Shapes — Concepts', '{"blocks":[{"type":"heading","content":"Combined Shapes"},{"type":"paragraph","content":"Split complex shapes into rectangles, triangles, or circles. Add areas of parts, or subtract removed parts."},{"type":"callout","variant":"key_point","content":"Draw dotted lines to divide the shape before calculating."},{"type":"example","title":"L-shape: $10$ by $6$ with $4$ by $3$ removed","steps":["Whole: $60$.","Removed: $12$.","$A = 48$."],"answer":"$48$ square units"},{"type":"question","questionText":"Square $8$ cm with corner square $3$ cm cut off. Area left?","questionType":"multiple_choice","options":["$55$ cm$^2$","$64$ cm$^2$","$9$ cm$^2$","$61$ cm$^2$"],"correctAnswer":"$55$ cm$^2$","explanation":"$64 - 9$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_combined'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Combined Shapes — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Combined Shape Methods', '{"blocks":[{"type":"heading","content":"Methods"},{"type":"example","title":"Rectangle $12$ by $8$ with semicircle radius $4$ on one end","steps":["Rectangle: $96$.","Semicircle: $\\frac{1}{2}\\pi(4)^2 = 25.12$.","Total $\\approx 121.12$."],"answer":"$\\approx 121$ cm$^2$"},{"type":"question","questionText":"Annulus: outer $r=5$, inner $r=3$ ($\\pi=3.14$). Area?","questionType":"multiple_choice","options":["$50.24$","$78.5$","$28.26$","$25.12$"],"correctAnswer":"$50.24$","explanation":"$\\pi(25-9)$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_combined'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Combined Shape Methods');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Combined Shapes Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"Square field $40$ m with circular pond radius $7$ m ($\\pi=\\frac{22}{7}$)","steps":["Field: $1600$ m$^2$.","Pond: $154$ m$^2$.","Grass: $1446$ m$^2$."],"answer":"$1446$ m$^2$"},{"type":"callout","variant":"warning","content":"Subtract holes; add separate regions."},{"type":"question","questionText":"Path $2$ m wide around rectangle $10$ by $6$ m (outer edge). Outer rectangle area?","questionType":"multiple_choice","options":["$112$ m$^2$","$60$ m$^2$","$96$ m$^2$","$80$ m$^2$"],"correctAnswer":"$112$ m$^2$","explanation":"Outer $14$ by $8$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area' AND st.code = 'area_combined'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Combined Shapes Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle $8$ cm by $5$ cm. Find area.', 'multiple_choice', '["$40$ cm$^2$","$26$ cm$^2$","$13$ cm$^2$","$80$ cm$^2$"]'::jsonb, '"$40$ cm$^2$"'::jsonb, 'easy', '$8 \times 5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle $8$ cm by $5$ cm. Find area.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square side $6$ cm. Find area.', 'multiple_choice', '["$36$ cm$^2$","$24$ cm$^2$","$12$ cm$^2$","$18$ cm$^2$"]'::jsonb, '"$36$ cm$^2$"'::jsonb, 'easy', '$6^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square side $6$ cm. Find area.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle base $8$ cm, height $5$ cm. Area?', 'multiple_choice', '["$20$ cm$^2$","$40$ cm$^2$","$13$ cm$^2$","$10$ cm$^2$"]'::jsonb, '"$20$ cm$^2$"'::jsonb, 'easy', '$\frac{1}{2}bh$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle base $8$ cm, height $5$ cm. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $7$ cm. Area ($\pi=\frac{22}{7}$)?', 'multiple_choice', '["$154$ cm$^2$","$44$ cm$^2$","$49$ cm$^2$","$77$ cm$^2$"]'::jsonb, '"$154$ cm$^2$"'::jsonb, 'easy', '$\pi r^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_circle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $7$ cm. Area ($\pi=\frac{22}{7}$)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $3$ cm. Area ($\pi=3.14$)?', 'multiple_choice', '["$28.26$ cm$^2$","$9.42$ cm$^2$","$18.84$ cm$^2$","$6.28$ cm$^2$"]'::jsonb, '"$28.26$ cm$^2$"'::jsonb, 'easy', '$3.14 \times 9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_circle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $3$ cm. Area ($\pi=3.14$)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square $10$ cm minus corner $2$ cm square. Area?', 'multiple_choice', '["$96$ cm$^2$","$100$ cm$^2$","$4$ cm$^2$","$98$ cm$^2$"]'::jsonb, '"$96$ cm$^2$"'::jsonb, 'easy', '$100-4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square $10$ cm minus corner $2$ cm square. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Parallelogram base $9$ m, height $4$ m. Area?', 'multiple_choice', '["$36$ m$^2$","$13$ m$^2$","$18$ m$^2$","$72$ m$^2$"]'::jsonb, '"$36$ m$^2$"'::jsonb, 'easy', '$bh$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallelogram base $9$ m, height $4$ m. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Trapezium parallel sides $5$ cm and $9$ cm, height $6$ cm. Area?', 'multiple_choice', '["$42$ cm$^2$","$54$ cm$^2$","$30$ cm$^2$","$84$ cm$^2$"]'::jsonb, '"$42$ cm$^2$"'::jsonb, 'medium', '$\frac{1}{2}(5+9) \times 6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Trapezium parallel sides $5$ cm and $9$ cm, height $6$ cm. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Diameter $14$ cm. Area ($\pi=\frac{22}{7}$)?', 'multiple_choice', '["$154$ cm$^2$","$44$ cm$^2$","$77$ cm$^2$","$616$ cm$^2$"]'::jsonb, '"$154$ cm$^2$"'::jsonb, 'medium', '$r=7$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_circle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Diameter $14$ cm. Area ($\pi=\frac{22}{7}$)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rhombus diagonals $10$ cm and $24$ cm. Area?', 'multiple_choice', '["$120$ cm$^2$","$240$ cm$^2$","$60$ cm$^2$","$34$ cm$^2$"]'::jsonb, '"$120$ cm$^2$"'::jsonb, 'medium', '$\frac{1}{2}d_1 d_2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rhombus diagonals $10$ cm and $24$ cm. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle $15$ by $10$ with circle radius $5$ removed ($\pi=3.14$). Area?', 'multiple_choice', '["$71.5$","$150$","$78.5$","$221.5$"]'::jsonb, '"$71.5$"'::jsonb, 'medium', '$150 - 78.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle $15$ by $10$ with circle radius $5$ removed ($\pi=3.14$). Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Semi-circle diameter $10$ cm ($\pi=3.14$). Area?', 'multiple_choice', '["$39.25$ cm$^2$","$78.5$ cm$^2$","$31.4$ cm$^2$","$15.7$ cm$^2$"]'::jsonb, '"$39.25$ cm$^2$"'::jsonb, 'medium', 'Half $\pi r^2$, $r=5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_circle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Semi-circle diameter $10$ cm ($\pi=3.14$). Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle area $72$ cm$^2$, length $9$ cm. Width?', 'multiple_choice', '["$8$ cm","$9$ cm","$63$ cm","$81$ cm"]'::jsonb, '"$8$ cm"'::jsonb, 'medium', '$72 \div 9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle area $72$ cm$^2$, length $9$ cm. Width?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'L-shape: $12$ by $8$ with $5$ by $3$ cut. Area?', 'multiple_choice', '["$81$","$96$","$15$","$111$"]'::jsonb, '"$81$"'::jsonb, 'medium', '$96-15$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='L-shape: $12$ by $8$ with $5$ by $3$ cut. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square field $50$ m, circular flower bed $r=7$ m ($\pi=\frac{22}{7}$). Grass area?', 'multiple_choice', '["$2346$ m$^2$","$2500$ m$^2$","$154$ m$^2$","$2446$ m$^2$"]'::jsonb, '"$2346$ m$^2$"'::jsonb, 'hard', '$2500-154$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square field $50$ m, circular flower bed $r=7$ m ($\pi=\frac{22}{7}$). Grass area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle area $48$ cm$^2$, base $12$ cm. Height?', 'multiple_choice', '["$8$ cm","$4$ cm","$6$ cm","$24$ cm"]'::jsonb, '"$8$ cm"'::jsonb, 'hard', '$A=\frac{1}{2}bh$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle area $48$ cm$^2$, base $12$ cm. Height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Ring: outer $r=10$, inner $r=6$ ($\pi=3.14$). Area?', 'multiple_choice', '["$200.96$","$314$","$113.04$","$87.92$"]'::jsonb, '"$200.96$"'::jsonb, 'hard', '$\pi(100-36)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_circle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Ring: outer $r=10$, inner $r=6$ ($\pi=3.14$). Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle $20$ by $12$ with two quarter-circles $r=6$ at ends ($\pi=3.14$). Area?', 'multiple_choice', '["$103.44$","$240$","$56.52$","$183.48$"]'::jsonb, '"$103.44$"'::jsonb, 'hard', 'Subtract semicircle area.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle $20$ by $12$ with two quarter-circles $r=6$ at ends ($\pi=3.14$). Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Trapezium area $60$ cm$^2$, height $8$ cm, one parallel side $5$ cm. Other side?', 'multiple_choice', '["$10$ cm","$15$ cm","$7.5$ cm","$12$ cm"]'::jsonb, '"$10$ cm"'::jsonb, 'hard', '$60=\frac{1}{2}(5+b)8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_plane_figures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Trapezium area $60$ cm$^2$, height $8$ cm, one parallel side $5$ cm. Other side?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A circular mat radius $0.35$ m. Area ($\pi=\frac{22}{7}$)?', 'multiple_choice', '["$0.385$ m$^2$","$0.77$ m$^2$","$0.154$ m$^2$","$1.54$ m$^2$"]'::jsonb, '"$0.385$ m$^2$"'::jsonb, 'hard', 'Small radius squared.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_circle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A circular mat radius $0.35$ m. Area ($\pi=\frac{22}{7}$)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Path $1.5$ m wide around square garden side $20$ m. Path area?', 'multiple_choice', '["$129$ m$^2$","$400$ m$^2$","$126$ m$^2$","$23$ m$^2$"]'::jsonb, '"$129$ m$^2$"'::jsonb, 'hard', 'Outer $23$ square minus $400$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Path $1.5$ m wide around square garden side $20$ m. Path area?');
