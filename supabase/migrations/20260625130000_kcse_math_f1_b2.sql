@@ -608,3 +608,205 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_combined'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Path $1.5$ m wide around square garden side $20$ m. Path area?');
+
+-- ========== VOLUME AND CAPACITY ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume of Prisms', '{"blocks":[{"type":"heading","content":"Volume of Prisms"},{"type":"math_block","latex":"V = \\text{base area} \\times \\text{height}","caption":"Prism volume"},{"type":"paragraph","content":"A **prism** has the same cross-section along its length."},{"type":"example","title":"Cuboid $6$ cm by $4$ cm by $3$ cm","steps":["$V = 6 \\times 4 \\times 3 = 72$ cm$^3$."],"answer":"$72$ cm$^3$"},{"type":"question","questionText":"Cube side $5$ cm. Volume?","questionType":"multiple_choice","options":["$125$ cm$^3$","$25$ cm$^3$","$15$ cm$^3$","$75$ cm$^3$"],"correctAnswer":"$125$ cm$^3$","explanation":"$5^3$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'volume_prisms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume of Prisms');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Prism Volume Calculations', '{"blocks":[{"type":"heading","content":"Calculations"},{"type":"example","title":"Cylinder radius $7$ cm, height $10$ cm ($\\pi=\\frac{22}{7}$)","steps":["Base $= \\pi r^2 = 154$.","$V = 154 \\times 10 = 1540$ cm$^3$."],"answer":"$1540$ cm$^3$"},{"type":"callout","variant":"warning","content":"Volume uses square units times length $\\Rightarrow$ cubic units."},{"type":"question","questionText":"Cuboid $10$ by $5$ by $2$ cm. Volume?","questionType":"multiple_choice","options":["$100$ cm$^3$","$17$ cm$^3$","$50$ cm$^3$","$200$ cm$^3$"],"correctAnswer":"$100$ cm$^3$","explanation":"$10 \\times 5 \\times 2$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'volume_prisms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Prism Volume Calculations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Prism Volume Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"Triangular prism: triangle base $12$ cm$^2$, length $15$ cm","steps":["$V = 12 \\times 15 = 180$ cm$^3$."],"answer":"$180$ cm$^3$"},{"type":"question","questionText":"Cube volume $216$ cm$^3$. Side length?","questionType":"multiple_choice","options":["$6$ cm","$36$ cm","$8$ cm","$72$ cm"],"correctAnswer":"$6$ cm","explanation":"$6^3=216$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'volume_prisms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Prism Volume Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Capacity and Units', '{"blocks":[{"type":"heading","content":"Capacity Units"},{"type":"paragraph","content":"**Capacity** is the volume of liquid a container holds. $1$ litre (L) $= 1000$ cm$^3$ $= 1000$ mL."},{"type":"callout","variant":"key_point","content":"$1$ m$^3 = 1000$ L."},{"type":"example","title":"Convert $2.5$ L to mL","steps":["$2.5 \\times 1000 = 2500$ mL."],"answer":"$2500$ mL"},{"type":"question","questionText":"How many mL in $0.75$ L?","questionType":"multiple_choice","options":["$750$","$75$","$7500$","$7.5$"],"correctAnswer":"$750$","explanation":"$\\times 1000$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'capacity_units'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Capacity and Units');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Converting Capacity', '{"blocks":[{"type":"heading","content":"Capacity Conversions"},{"type":"example","title":"Tank holds $5000$ cm$^3$. Litres?","steps":["$5000 \\div 1000 = 5$ L."],"answer":"$5$ L"},{"type":"example","title":"Convert $3$ m$^3$ to litres","steps":["$3 \\times 1000 = 3000$ L."],"answer":"$3000$ L"},{"type":"question","questionText":"Convert $4.2$ L to cm$^3$.","questionType":"multiple_choice","options":["$4200$","$42$","$420$","$42000$"],"correctAnswer":"$4200$","explanation":"$1$ L $= 1000$ cm$^3$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'capacity_units'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Converting Capacity');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Capacity in Context', '{"blocks":[{"type":"heading","content":"Real Context"},{"type":"example","title":"A jerrycan holds $20$ L. How many mL?","steps":["$20 \\times 1000 = 20\\,000$ mL."],"answer":"$20\\,000$ mL"},{"type":"question","questionText":"Medicine bottle $250$ mL. How many full $50$ mL doses?","questionType":"multiple_choice","options":["$5$","$4$","$6$","$10$"],"correctAnswer":"$5$","explanation":"$250 \\div 50$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'capacity_units'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Capacity in Context');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume Applications — Concepts', '{"blocks":[{"type":"heading","content":"Applications"},{"type":"paragraph","content":"Volume problems include tanks, swimming pools, shipping containers, and soil excavation."},{"type":"example","title":"Water tank cuboid $2$ m by $1.5$ m by $1$ m. Capacity in litres?","steps":["$V = 3$ m$^3$.","$3 \\times 1000 = 3000$ L."],"answer":"$3000$ L"},{"type":"question","questionText":"Which unit suits water in a drum?","questionType":"multiple_choice","options":["Litres","cm$^2$","Metres","Grams"],"correctAnswer":"Litres","explanation":"Capacity measures liquid volume."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'applications_volume'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume Applications — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume Application Methods', '{"blocks":[{"type":"heading","content":"Methods"},{"type":"example","title":"Pool $25$ m by $10$ m by $2$ m. Volume in m$^3$?","steps":["$V = 500$ m$^3$."],"answer":"$500$ m$^3$"},{"type":"callout","variant":"warning","content":"Check whether the question wants cm$^3$, m$^3$, or litres."},{"type":"question","questionText":"Box $40$ cm by $30$ cm by $25$ cm. Volume in litres?","questionType":"multiple_choice","options":["$30$","$30000$","$3$","$300$"],"correctAnswer":"$30$","explanation":"$30000$ cm$^3 = 30$ L."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'applications_volume'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume Application Methods');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume Exam Word Problems', '{"blocks":[{"type":"heading","content":"Exam Word Problems"},{"type":"example","title":"Cylindrical tank $r=0.7$ m, $h=2$ m ($\\pi=\\frac{22}{7}$). Litres?","steps":["$V=\\pi r^2 h=3.08$ m$^3$.","$\\approx 3080$ L."],"answer":"$3080$ L"},{"type":"question","questionText":"Excavation trench $12$ m by $0.5$ m by $1.5$ m. Volume?","questionType":"multiple_choice","options":["$9$ m$^3$","$18$ m$^3$","$6$ m$^3$","$12$ m$^3$"],"correctAnswer":"$9$ m$^3$","explanation":"$12 \\times 0.5 \\times 1.5$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_capacity' AND st.code = 'applications_volume'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume Exam Word Problems');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid $4$ by $3$ by $2$ cm. Volume?', 'multiple_choice', '["$24$ cm$^3$","$9$ cm$^3$","$12$ cm$^3$","$48$ cm$^3$"]'::jsonb, '"$24$ cm$^3$"'::jsonb, 'easy', '$4 \times 3 \times 2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='volume_prisms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid $4$ by $3$ by $2$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube side $3$ cm. Volume?', 'multiple_choice', '["$27$ cm$^3$","$9$ cm$^3$","$6$ cm$^3$","$18$ cm$^3$"]'::jsonb, '"$27$ cm$^3$"'::jsonb, 'easy', '$3^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='volume_prisms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube side $3$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $2$ L to mL.', 'multiple_choice', '["$2000$","$200$","$20$","$20000$"]'::jsonb, '"$2000$"'::jsonb, 'easy', '$\times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='capacity_units'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $2$ L to mL.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'How many litres in $3000$ cm$^3$?', 'multiple_choice', '["$3$","$30$","$300$","$0.3$"]'::jsonb, '"$3$"'::jsonb, 'easy', '$\div 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='capacity_units'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='How many litres in $3000$ cm$^3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $1.5$ L to cm$^3$.', 'multiple_choice', '["$1500$","$150$","$15$","$15000$"]'::jsonb, '"$1500$"'::jsonb, 'easy', '$\times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='capacity_units'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $1.5$ L to cm$^3$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder $r=3$ cm, $h=10$ cm ($\pi=3.14$). Volume?', 'multiple_choice', '["$282.6$ cm$^3$","$94.2$ cm$^3$","$28.26$ cm$^3$","$314$ cm$^3$"]'::jsonb, '"$282.6$ cm$^3$"'::jsonb, 'easy', '$\pi r^2 h$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='volume_prisms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder $r=3$ cm, $h=10$ cm ($\pi=3.14$). Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tank $1$ m$^3$. Capacity in litres?', 'multiple_choice', '["$1000$","$100$","$10$","$10000$"]'::jsonb, '"$1000$"'::jsonb, 'easy', '$1$ m$^3=1000$ L.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_volume'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tank $1$ m$^3$. Capacity in litres?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid volume $120$ cm$^3$, base $10$ cm$^2$. Height?', 'multiple_choice', '["$12$ cm","$10$ cm","$120$ cm","$110$ cm"]'::jsonb, '"$12$ cm"'::jsonb, 'medium', '$V \div \text{base}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='volume_prisms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid volume $120$ cm$^3$, base $10$ cm$^2$. Height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $5.5$ L to mL.', 'multiple_choice', '["$5500$","$550$","$55$","$55000$"]'::jsonb, '"$5500$"'::jsonb, 'medium', '$\times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='capacity_units'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $5.5$ L to mL.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube volume $343$ cm$^3$. Side?', 'multiple_choice', '["$7$ cm","$49$ cm","$6$ cm","$9$ cm"]'::jsonb, '"$7$ cm"'::jsonb, 'medium', '$7^3=343$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='volume_prisms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube volume $343$ cm$^3$. Side?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Box $50$ cm by $40$ cm by $30$ cm. Volume in litres?', 'multiple_choice', '["$60$","$60000$","$6$","$600$"]'::jsonb, '"$60$"'::jsonb, 'medium', '$60000$ cm$^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_volume'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Box $50$ cm by $40$ cm by $30$ cm. Volume in litres?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder $r=7$ cm, $h=5$ cm ($\pi=\frac{22}{7}$). Volume?', 'multiple_choice', '["$770$ cm$^3$","$154$ cm$^3$","$385$ cm$^3$","$110$ cm$^3$"]'::jsonb, '"$770$ cm$^3$"'::jsonb, 'medium', '$154 \times 5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='volume_prisms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder $r=7$ cm, $h=5$ cm ($\pi=\frac{22}{7}$). Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'How many $250$ mL cups from $3$ L?', 'multiple_choice', '["$12$","$10$","$15$","$8$"]'::jsonb, '"$12$"'::jsonb, 'medium', '$3000 \div 250$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='capacity_units'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='How many $250$ mL cups from $3$ L?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Aquarium $80$ cm by $40$ cm by $50$ cm. Litres of water?', 'multiple_choice', '["$160$","$160000$","$16$","$1600$"]'::jsonb, '"$160$"'::jsonb, 'medium', '$160000$ cm$^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_volume'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Aquarium $80$ cm by $40$ cm by $50$ cm. Litres of water?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pool $20$ m by $8$ m by $1.5$ m. Volume in litres?', 'multiple_choice', '["$240\\,000$","$240$","$2400$","$24\\,000$"]'::jsonb, '"$240\\,000$"'::jsonb, 'hard', '$240$ m$^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_volume'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pool $20$ m by $8$ m by $1.5$ m. Volume in litres?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Prism base area $45$ cm$^2$, length $12$ cm. Volume?', 'multiple_choice', '["$540$ cm$^3$","$57$ cm$^3$","$90$ cm$^3$","$450$ cm$^3$"]'::jsonb, '"$540$ cm$^3$"'::jsonb, 'hard', '$45 \times 12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='volume_prisms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Prism base area $45$ cm$^2$, length $12$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tank cylindrical $r=1.4$ m, $h=2$ m ($\pi=\frac{22}{7}$). Litres?', 'multiple_choice', '["$1232$","$12.32$","$616$","$2464$"]'::jsonb, '"$1232$"'::jsonb, 'hard', 'Convert m$^3$ to L.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_volume'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tank cylindrical $r=1.4$ m, $h=2$ m ($\pi=\frac{22}{7}$). Litres?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A pipe flows $0.5$ L per second. Volume in $2$ hours?', 'multiple_choice', '["$3600$ L","$360$ L","$7200$ L","$1800$ L"]'::jsonb, '"$3600$ L"'::jsonb, 'hard', '$0.5 \times 7200$ s.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='capacity_units'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A pipe flows $0.5$ L per second. Volume in $2$ hours?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hollow cuboid outer $10$ by $8$ by $6$, inner $8$ by $6$ by $4$. Volume of material?', 'multiple_choice', '["$288$ cm$^3$","$480$ cm$^3$","$192$ cm$^3$","$672$ cm$^3$"]'::jsonb, '"$288$ cm$^3$"'::jsonb, 'hard', 'Outer minus inner.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='volume_prisms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hollow cuboid outer $10$ by $8$ by $6$, inner $8$ by $6$ by $4$. Volume of material?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Soil heap prism: triangle base $30$ m$^2$, length $12$ m. Volume?', 'multiple_choice', '["$360$ m$^3$","$180$ m$^3$","$42$ m$^3$","$720$ m$^3$"]'::jsonb, '"$360$ m$^3$"'::jsonb, 'hard', '$30 \times 12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_volume'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Soil heap prism: triangle base $30$ m$^2$, length $12$ m. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Medicine $0.8$ L prescribed as $40$ mL doses. How many doses?', 'multiple_choice', '["$20$","$32$","$25$","$16$"]'::jsonb, '"$20$"'::jsonb, 'hard', '$800 \div 40$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='capacity_units'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Medicine $0.8$ L prescribed as $40$ mL doses. How many doses?');
