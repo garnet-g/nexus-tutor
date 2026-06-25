@@ -204,3 +204,205 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='square_roots_tables'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='squares_square_roots'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is closest to $\sqrt{95}$?');
+
+-- ========== LENGTH ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Units of Length', '{"blocks":[{"type":"heading","content":"Units of Length"},{"type":"paragraph","content":"Common units: millimetre (mm), centimetre (cm), metre (m), kilometre (km). $1$ m $= 100$ cm $= 1000$ mm."},{"type":"callout","variant":"key_point","content":"$1$ km $= 1000$ m."},{"type":"example","title":"Convert $3.5$ km to metres","steps":["$3.5 \\times 1000 = 3500$ m."],"answer":"$3500$ m"},{"type":"question","questionText":"How many cm in $2$ m?","questionType":"multiple_choice","options":["$200$","$20$","$2000$","$2$"],"correctAnswer":"$200$","explanation":"$2 \\times 100 = 200$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'units_length'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Units of Length');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Converting Length Units', '{"blocks":[{"type":"heading","content":"Unit Conversion"},{"type":"example","title":"Convert $450$ cm to m","steps":["$450 \\div 100 = 4.5$ m."],"answer":"$4.5$ m"},{"type":"example","title":"Convert $2.4$ km to cm","steps":["$2.4$ km $= 2400$ m $= 240\\,000$ cm."],"answer":"$240\\,000$ cm"},{"type":"callout","variant":"warning","content":"Converting to a smaller unit: multiply. To a larger unit: divide."},{"type":"question","questionText":"Convert $75$ mm to cm.","questionType":"multiple_choice","options":["$7.5$","$750$","$0.75$","$75$"],"correctAnswer":"$7.5$","explanation":"$75 \\div 10 = 7.5$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'units_length'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Converting Length Units');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Length Conversions in Context', '{"blocks":[{"type":"heading","content":"Real-Life Conversions"},{"type":"example","title":"A road sign shows $2.3$ km to Nakuru. How many metres?","steps":["$2.3 \\times 1000 = 2300$ m."],"answer":"$2300$ m"},{"type":"question","questionText":"A rope is $4.2$ m. How many cm?","questionType":"multiple_choice","options":["$420$","$42$","$4200$","$4.2$"],"correctAnswer":"$420$","explanation":"$4.2 \\times 100$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'units_length'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Length Conversions in Context');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Perimeter of Polygons', '{"blocks":[{"type":"heading","content":"Perimeter"},{"type":"paragraph","content":"**Perimeter** is the total distance around a shape. Add all side lengths."},{"type":"callout","variant":"key_point","content":"Rectangle perimeter: $P = 2(l + w)$."},{"type":"example","title":"Find perimeter of a rectangle $8$ cm by $5$ cm","steps":["$P = 2(8+5) = 26$ cm."],"answer":"$26$ cm"},{"type":"question","questionText":"Perimeter of a square of side $6$ cm?","questionType":"multiple_choice","options":["$24$ cm","$36$ cm","$12$ cm","$18$ cm"],"correctAnswer":"$24$ cm","explanation":"$4 \\times 6 = 24$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'perimeter'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Perimeter of Polygons');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Perimeter Calculations', '{"blocks":[{"type":"heading","content":"Perimeter Methods"},{"type":"example","title":"A triangle has sides $7$ cm, $9$ cm, $11$ cm. Find $P$.","steps":["$P = 7+9+11 = 27$ cm."],"answer":"$27$ cm"},{"type":"example","title":"Rectangle length $12$ m, width $7$ m. Find $P$.","steps":["$P = 2(12+7) = 38$ m."],"answer":"$38$ m"},{"type":"question","questionText":"An equilateral triangle has side $10$ cm. Find $P$.","questionType":"multiple_choice","options":["$30$ cm","$20$ cm","$100$ cm","$15$ cm"],"correctAnswer":"$30$ cm","explanation":"$3 \\times 10$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'perimeter'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Perimeter Calculations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Perimeter Word Problems', '{"blocks":[{"type":"heading","content":"Perimeter Applications"},{"type":"example","title":"Grace fences a rectangular shamba $40$ m by $25$ m. How much fencing?","steps":["$P = 2(40+25) = 130$ m."],"answer":"$130$ m"},{"type":"callout","variant":"warning","content":"Fencing, borders, and frames usually mean perimeter, not area."},{"type":"question","questionText":"A square garden has side $15$ m. Fencing cost KES $200$ per m. Find total cost.","questionType":"multiple_choice","options":["KES $12\\,000$","KES $45\\,000$","KES $6\\,000$","KES $3\\,000$"],"correctAnswer":"KES $12\\,000$","explanation":"$P=60$ m; $60 \\times 200$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'perimeter'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Perimeter Word Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Circumference of a Circle', '{"blocks":[{"type":"heading","content":"Circumference"},{"type":"paragraph","content":"The **circumference** is the perimeter of a circle."},{"type":"math_block","latex":"C = 2\\pi r = \\pi d","caption":"Circumference formulas"},{"type":"callout","variant":"key_point","content":"Use $\\pi \\approx 3.14$ or $\\frac{22}{7}$ unless told otherwise."},{"type":"example","title":"Find $C$ when $r = 7$ cm ($\\pi=\\frac{22}{7}$)","steps":["$C = 2 \\times \\frac{22}{7} \\times 7 = 44$ cm."],"answer":"$44$ cm"},{"type":"question","questionText":"Diameter $10$ cm. Find $C$ ($\\pi=3.14$).","questionType":"multiple_choice","options":["$31.4$ cm","$62.8$ cm","$314$ cm","$15.7$ cm"],"correctAnswer":"$31.4$ cm","explanation":"$C = \\pi d = 31.4$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'circumference'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Circumference of a Circle');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Circumference Calculations', '{"blocks":[{"type":"heading","content":"Worked Circumference"},{"type":"example","title":"Wheel diameter $70$ cm. Distance in one revolution?","steps":["$C = \\pi d = 3.14 \\times 70 = 219.8$ cm."],"answer":"$219.8$ cm"},{"type":"callout","variant":"warning","content":"One revolution = one circumference. Do not use area formula."},{"type":"question","questionText":"Radius $14$ cm. Find $C$ ($\\pi=\\frac{22}{7}$).","questionType":"multiple_choice","options":["$88$ cm","$44$ cm","$616$ cm","$154$ cm"],"correctAnswer":"$88$ cm","explanation":"$2 \\times \\frac{22}{7} \\times 14$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'circumference'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Circumference Calculations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Circumference Exam Problems', '{"blocks":[{"type":"heading","content":"Exam Problems"},{"type":"example","title":"A circular track has radius $35$ m. How far in $3$ laps?","steps":["$C = 2 \\times \\frac{22}{7} \\times 35 = 220$ m.","Three laps: $660$ m."],"answer":"$660$ m"},{"type":"question","questionText":"Semi-circle diameter $14$ cm. Find curved length ($\\pi=\\frac{22}{7}$).","questionType":"multiple_choice","options":["$22$ cm","$44$ cm","$11$ cm","$33$ cm"],"correctAnswer":"$22$ cm","explanation":"Half of $C = \\frac{1}{2}\\pi d$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'length' AND st.code = 'circumference'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Circumference Exam Problems');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'How many millimetres in $5$ cm?', 'multiple_choice', '["$50$","$500$","$5$","$0.5$"]'::jsonb, '"$50$"'::jsonb, 'easy', '$5 \times 10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='units_length'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='How many millimetres in $5$ cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $2$ km to metres.', 'multiple_choice', '["$2000$","$200$","$20\\,000$","$20$"]'::jsonb, '"$2000$"'::jsonb, 'easy', '$2 \times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='units_length'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $2$ km to metres.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Perimeter of square side $9$ cm?', 'multiple_choice', '["$36$ cm","$81$ cm","$18$ cm","$27$ cm"]'::jsonb, '"$36$ cm"'::jsonb, 'easy', '$4 \times 9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='perimeter'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Perimeter of square side $9$ cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle $6$ cm by $4$ cm. Find $P$.', 'multiple_choice', '["$20$ cm","$24$ cm","$10$ cm","$48$ cm"]'::jsonb, '"$20$ cm"'::jsonb, 'easy', '$2(6+4)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='perimeter'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle $6$ cm by $4$ cm. Find $P$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $7$ cm. $C$ with $\pi=\frac{22}{7}$?', 'multiple_choice', '["$44$ cm","$22$ cm","$154$ cm","$88$ cm"]'::jsonb, '"$44$ cm"'::jsonb, 'easy', '$2\pi r$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $7$ cm. $C$ with $\pi=\frac{22}{7}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $250$ cm to m.', 'multiple_choice', '["$2.5$","$25$","$0.25$","$2500$"]'::jsonb, '"$2.5$"'::jsonb, 'easy', '$\div 100$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='units_length'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $250$ cm to m.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Diameter $14$ cm. $C$ ($\pi=\frac{22}{7}$)?', 'multiple_choice', '["$44$ cm","$22$ cm","$88$ cm","$154$ cm"]'::jsonb, '"$44$ cm"'::jsonb, 'easy', '$\pi d$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Diameter $14$ cm. $C$ ($\pi=\frac{22}{7}$)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $1.8$ km to metres.', 'multiple_choice', '["$1800$","$180$","$18\\,000$","$1.8$"]'::jsonb, '"$1800$"'::jsonb, 'medium', '$\times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='units_length'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $1.8$ km to metres.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle sides $5$, $12$, $13$ cm. Find $P$.', 'multiple_choice', '["$30$ cm","$26$ cm","$60$ cm","$65$ cm"]'::jsonb, '"$30$ cm"'::jsonb, 'medium', 'Add sides.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='perimeter'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle sides $5$, $12$, $13$ cm. Find $P$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle perimeter $48$ cm, length $14$ cm. Find width.', 'multiple_choice', '["$10$ cm","$12$ cm","$24$ cm","$34$ cm"]'::jsonb, '"$10$ cm"'::jsonb, 'medium', '$48=2(14+w)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='perimeter'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle perimeter $48$ cm, length $14$ cm. Find width.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $10$ cm. $C$ ($\pi=3.14$)?', 'multiple_choice', '["$62.8$ cm","$31.4$ cm","$314$ cm","$125.6$ cm"]'::jsonb, '"$62.8$ cm"'::jsonb, 'medium', '$2\pi r$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $10$ cm. $C$ ($\pi=3.14$)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $3.2$ m to mm.', 'multiple_choice', '["$3200$","$320$","$32\\,000$","$32$"]'::jsonb, '"$3200$"'::jsonb, 'medium', '$\times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='units_length'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $3.2$ m to mm.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Wheel diameter $56$ cm. One revolution distance ($\pi=\frac{22}{7}$)?', 'multiple_choice', '["$176$ cm","$88$ cm","$352$ cm","$44$ cm"]'::jsonb, '"$176$ cm"'::jsonb, 'medium', '$C=\pi d$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Wheel diameter $56$ cm. One revolution distance ($\pi=\frac{22}{7}$)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Regular pentagon side $8$ cm. Find $P$.', 'multiple_choice', '["$40$ cm","$32$ cm","$24$ cm","$64$ cm"]'::jsonb, '"$40$ cm"'::jsonb, 'medium', '$5 \times 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='perimeter'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Regular pentagon side $8$ cm. Find $P$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A athlete runs $5$ laps of $400$ m. Total distance in km?', 'multiple_choice', '["$2$","$20$","$0.2$","$2000$"]'::jsonb, '"$2$"'::jsonb, 'hard', '$2000$ m $= 2$ km.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='units_length'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A athlete runs $5$ laps of $400$ m. Total distance in km?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square and rectangle both have perimeter $36$ cm. Square side $9$ cm. Rectangle is $12$ cm by $w$. Find $w$.', 'multiple_choice', '["$6$ cm","$9$ cm","$3$ cm","$12$ cm"]'::jsonb, '"$6$ cm"'::jsonb, 'hard', '$2(12+w)=36$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='perimeter'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square and rectangle both have perimeter $36$ cm. Square side $9$ cm. Rectangle is $12$ cm by $w$. Find $w$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Circular pond radius $21$ m. Fence cost KES $150$/m ($\pi=\frac{22}{7}$). Total cost?', 'multiple_choice', '["KES $19\\,800$","KES $9\\,900$","KES $6\\,600$","KES $13\\,860$"]'::jsonb, '"KES $19\\,800$"'::jsonb, 'hard', '$C=132$ m.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Circular pond radius $21$ m. Fence cost KES $150$/m ($\pi=\frac{22}{7}$). Total cost?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Wire $4.5$ m cut into $15$ equal pieces. Each piece in cm?', 'multiple_choice', '["$30$","$300$","$3$","$45$"]'::jsonb, '"$30$"'::jsonb, 'hard', '$450 \div 15$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='units_length'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Wire $4.5$ m cut into $15$ equal pieces. Each piece in cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Semi-circle radius $7$ cm. Perimeter of shape ($\pi=\frac{22}{7}$)?', 'multiple_choice', '["$36$ cm","$22$ cm","$44$ cm","$29$ cm"]'::jsonb, '"$36$ cm"'::jsonb, 'hard', 'Curve $22$ + diameter $14$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Semi-circle radius $7$ cm. Perimeter of shape ($\pi=\frac{22}{7}$)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'L-shaped room: $8$ m by $6$ m with $3$ m by $2$ m corner cut. Outer perimeter?', 'multiple_choice', '["$28$ m","$26$ m","$24$ m","$30$ m"]'::jsonb, '"$28$ m"'::jsonb, 'hard', 'Trace outer edges.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='perimeter'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='L-shaped room: $8$ m by $6$ m with $3$ m by $2$ m corner cut. Outer perimeter?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bicycle wheel $r=35$ cm. Distance in $50$ revolutions ($\pi=\frac{22}{7}$)?', 'multiple_choice', '["$220$ m","$110$ m","$440$ m","$154$ m"]'::jsonb, '"$220$ m"'::jsonb, 'hard', '$C=220$ cm per rev.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='length'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bicycle wheel $r=35$ cm. Distance in $50$ revolutions ($\pi=\frac{22}{7}$)?');
