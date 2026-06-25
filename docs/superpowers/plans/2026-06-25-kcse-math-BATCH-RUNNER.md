@@ -17,8 +17,11 @@ exactly what's left.
 
 ## Batch Queue (13 batches; ~5 topics each)
 
-Each batch → one new seed file `supabase/seed/curriculum_math_kcse_<id>.sql`, registered in
-`config.toml` after the previous batch's file. Branch per batch: `feat/kcse-math-<id>`.
+Each batch → one new **migration** `supabase/migrations/<YYYYMMDDHHMMSS>_kcse_math_<id>.sql`
+(timestamp later than the last migration), deployed to the hosted DB with `supabase db push`
+(Docker-free). **We author batches as migrations, not seeds** — the owner runs the hosted DB only
+(no local `db reset`), so migrations are the single source of truth and `db push` is the deploy +
+load-verification in one. (Seed files are not used for new batches.) Branch per batch: `feat/kcse-math-<id>`.
 
 | Batch id | Topics |
 |---|---|
@@ -44,23 +47,30 @@ Each batch → one new seed file `supabase/seed/curriculum_math_kcse_<id>.sql`, 
 For the current batch id with its topic list:
 
 1. **Branch:** `git checkout main && git pull` (if remote) then `git checkout -b feat/kcse-math-<id>`.
-2. **Scaffold:** create `supabase/seed/curriculum_math_kcse_<id>.sql`; register it in `config.toml`
-   `sql_paths` immediately after the previous batch's seed file. Commit.
+2. **Scaffold:** create the migration `supabase/migrations/<YYYYMMDDHHMMSS>_kcse_math_<id>.sql`
+   (timestamp later than the latest existing migration). Header comment; idempotent. No `config.toml` edit.
 3. **Per topic** (repeat for each of the ~5):
    - Confirm subtopics vs the skeleton (`curriculum_math_kcse.sql`); add finer subtopics if it aids
      understanding (additive `ON CONFLICT (topic_id, code) DO NOTHING`).
    - Author lessons per subtopic (concept → worked-methods → exam-application) to the CONTENT-GUIDE bar.
    - Author practice: **≥7 easy / ≥7 medium / ≥7 hard**, mistake-based distractors, explanations.
+   - **Every `question_text` in the batch MUST be unique.** The idempotency guard skips duplicate
+     `question_text`, so dupes silently collapse on load (the slice's `integers` lost 25 questions this
+     way — 50 inserts, 25 unique). Distinct wording per question.
    - LaTeX escaping by field: `\\` in JSONB (`content`, `options`, `correct_answer`); single `\` in
-     plain SQL strings (`question_text`, `explanation`).
+     plain SQL strings (`question_text`, `explanation`). **JSONB LaTeX must use `\\`** (single-backslash
+     in JSONB is invalid JSON and fails the `::jsonb` load — Batch 1 hit this on 17 questions).
    - All inserts idempotent (lesson `NOT EXISTS` on `(subtopic_id, title)`; question `NOT EXISTS` on
      `(topic_id, question_text)`). Commit per topic.
 4. **Gate** (the batch is not done until ALL pass):
-   - Add the batch seed file to the validation list in `tests/content/kcseMathSeedContent.test.ts`;
-     `npx vitest run tests/content/kcseMathSeedContent.test.ts` → PASS (all lessons schema-valid).
-   - `npm run db:reset` twice → identical counts (idempotency); no SQL errors.
-   - Coverage SQL for each topic: ≥3 lessons, every subtopic covered, ≥7 questions/band → `PROD_READY`.
+   - Add the batch migration file to the validation list in `tests/content/kcseMathSeedContent.test.ts`
+     (validates lesson schema AND question options/answer JSON + answer-in-options);
+     `npx vitest run tests/content/kcseMathSeedContent.test.ts` → PASS.
    - `npm test` → full suite green.
+   - **Deploy + load-verify (replaces Docker):** `npx supabase db push` (applies the migration to the
+     hosted DB; a malformed `::jsonb` would fail here). Confirm it reports "Finished supabase db push."
+   - **Verify on hosted DB** (read-only REST, service-role key): each topic present and `is_active`;
+     active question count per topic matches the authored unique count; every subtopic has a lesson.
 5. **Mark progress:** flip the batch's topics to `✅` in MASTER-ROADMAP §4. Commit
    `docs(roadmap): mark <id> complete`.
 6. **Checkpoint:** write a short batch report (commit list, per-topic counts, deviations) for owner →
@@ -77,6 +87,7 @@ For the current batch id with its topic list:
 
 ## Definition of done (whole program)
 
-All 65 topics `✅` in the matrix; each `PROD_READY`; `npm test` green; all batch seeds idempotent and
-registered; legacy generic topics remain retired; `fractions` re-instated. Final: round-2 completeness
-audit against owner past papers, and live DB/visual verification (Docker) per the slice's Task 10/11.
+All 65 topics `✅` in the matrix; each `PROD_READY` **on the hosted DB** (verified via `db push` +
+REST query); `npm test` green; every batch migration idempotent; legacy generic topics remain retired;
+`fractions` re-instated. Final: round-2 completeness audit against owner past papers, and a render
+check by running the app (`npm run dev`) against the hosted DB. (No Docker / no `db reset` anywhere.)

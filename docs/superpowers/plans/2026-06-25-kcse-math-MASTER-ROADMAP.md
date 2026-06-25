@@ -51,9 +51,9 @@ Legend: ✅ done · ⟳ re-instate+rebuild · ▢ todo. (Subtopic codes live in 
 add finer subtopics per topic as needed — additive only.)
 
 ### Form 1 — 21 topics (incl. Fractions re-instated)
-✅ `integers` · ✅ `algebraic_expressions` · ✅ `rates_ratio_proportion` · ⟳ `fractions`
-▢ `natural_numbers` · ▢ `factors` (incl. gcd_hcf, lcm subtopics) · ▢ `divisibility_tests`
-▢ `decimals` · ▢ `squares_square_roots` · ▢ `length` · ▢ `area` · ▢ `volume_capacity`
+✅ `integers` · ✅ `algebraic_expressions` · ✅ `rates_ratio_proportion` · ✅ `fractions`
+✅ `natural_numbers` · ✅ `factors` (incl. gcd_hcf, lcm subtopics) · ✅ `divisibility_tests`
+✅ `decimals` · ▢ `squares_square_roots` · ▢ `length` · ▢ `area` · ▢ `volume_capacity`
 ▢ `mass_weight_density` · ▢ `time` · ▢ `linear_equations` · ▢ `commercial_arithmetic_i`
 ▢ `coordinates_graphs` · ▢ `angles_plane_figures` · ▢ `geometric_constructions`
 ▢ `scale_drawing` · ▢ `common_solids`
@@ -77,7 +77,7 @@ add finer subtopics per topic as needed — additive only.)
 ▢ `three_dimensional_geometry` · ▢ `longitudes_latitudes` · ▢ `linear_programming`
 ▢ `differentiation` · ▢ `area_approximation` · ▢ `integration`
 
-**Status: 3 done · 62 remaining (incl. 1 re-instate).**
+**Status: 8 done · 57 remaining.**
 
 ## 5. Per-topic workflow (the repeatable recipe)
 
@@ -87,24 +87,29 @@ Identical for every topic; reuses existing docs so each batch is mechanical:
 2. Author lessons per subtopic (concept → worked-methods → exam-application) to the CONTENT-GUIDE bar.
 3. Author practice: ≥7 easy / ≥7 medium / ≥7 hard, mistake-based distractors, explanations.
 4. Apply field-correct LaTeX escaping (GROUND-TRUTH §5: `\\` in JSONB, single `\` in plain SQL strings).
-5. Append to a per-wave seed file (see §6); keep idempotent.
-6. Verify: `db reset`, schema guard test, readiness → `PROD_READY`, render check.
+5. Add to a per-batch **migration** (see §6); keep idempotent; unique `question_text` per question.
+6. Verify: schema guard test (lessons + questions), `supabase db push` to hosted (load-verify),
+   `PROD_READY` confirmed via hosted REST query, render check via `npm run dev`. (No Docker.)
 
 ## 6. Sequencing & batching
 
 - **Form-by-form waves:** Wave 1 = Form 1 (finish 17 todo + re-instate `fractions`), Wave 2 = Form 2,
   Wave 3 = Form 3, Wave 4 = Form 4. Matches grade-gating and concept dependencies.
-- **Batch size:** ~5 topics per Cursor run (keeps each diff auditable). Each batch = one new seed file,
-  e.g. `supabase/seed/curriculum_math_kcse_f1_b1.sql`, registered in `config.toml` after the existing
-  content seed. (Splitting by batch file avoids one unwieldy 10k-line seed and keeps audits scoped.)
+- **Batch size:** ~5 topics per Cursor run (keeps each diff auditable). Each batch = one new
+  **migration** `supabase/migrations/<ts>_kcse_math_<id>.sql`, deployed with `supabase db push`
+  (Docker-free). Migrations are the source of truth for hosted deploy; seed files are not used for new
+  batches. (See BATCH-RUNNER for the deploy + verify loop. The slice + Batch 1 were deployed via
+  `20260625120000_kcse_math_content_deploy.sql`.)
 - **`fractions` re-instate** is its own small first task in Wave 1 (un-retire + rebuild).
 
 ## 7. Per-batch acceptance gate (Definition of Done)
 
 A batch is complete only when, for every topic in it:
 - ≥3 lessons, every subtopic has a lesson; ≥7 questions/band; `getTopicReadinessLabel` → `PROD_READY`.
-- All lesson JSON passes `lessonContentSchema` (guard test extended to the batch's seed file).
-- Seed idempotent (`db reset` ×2 identical); math renders as symbols; English regression unaffected.
+- All lesson JSON passes `lessonContentSchema` AND all question options/answer JSON valid with
+  answer-in-options (guard test extended to the batch's migration file).
+- Migration idempotent; unique `question_text` per question; `supabase db push` applies clean; hosted
+  query confirms expected counts; math renders as symbols when running the app against the hosted DB.
 - `npm test` green. Independent audit (Claude) signs off the batch diff.
 
 ## 8. Scale (so expectations are clear)
@@ -120,8 +125,8 @@ The additive, idempotent seed means batches never rework each other.
 - **Final KNEC confirmation:** the 65-topic list is transcribed from KNEC and reconciled with the
   owner's overview; a last cross-check against the official syllabus PDF closes the loop.
 - **Probability depth:** ensure the single `probability` topic's subtopics span Probability I + II.
-- **Live verification:** the slice's Task 10/11 (DB load + visual) still pending Docker; same gate
-  applies to every batch.
+- **Live verification:** done via `supabase db push` to the hosted DB (load) + REST query (counts) +
+  `npm run dev` (render). No Docker. The slice + Batch 1 are deployed and verified on hosted.
 
 ## 10. Immediate next action
 
