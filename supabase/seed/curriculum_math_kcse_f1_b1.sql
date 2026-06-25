@@ -729,3 +729,162 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A 4-digit number ends in $20$ and digit sum is $18$. It is divisible by:');
+
+-- ========== DECIMALS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Decimal Place Value', '{"blocks":[{"type":"heading","content":"Decimal Place Value"},{"type":"paragraph","content":"Decimals extend place value to tenths, hundredths, thousandths. The decimal point separates whole and fractional parts."},{"type":"callout","variant":"key_point","content":"In $3.45$, the $4$ is in the tenths place ($0.4$) and $5$ in hundredths ($0.05$)."},{"type":"example","title":"Write the value of $7$ in $12.73$","steps":["$7$ is in the tenths place.","Value $= 0.7$."],"answer":"$0.7$"},{"type":"question","questionText":"Which is greater: $0.8$ or $0.75$?","questionType":"multiple_choice","options":["$0.8$","$0.75$","Equal","Cannot tell"],"correctAnswer":"$0.8$","explanation":"$0.8 = 0.80 > 0.75$."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'decimals' AND st.code = 'place_value_decimals'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Decimal Place Value'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Operations with Decimals', '{"blocks":[{"type":"heading","content":"Operations with Decimals"},{"type":"paragraph","content":"Line up decimal points for addition and subtraction. For multiplication, count total decimal places. For division, shift decimals to make the divisor a whole number."},{"type":"example","title":"Evaluate $2.5 + 1.35$","steps":["Align decimals: $2.50 + 1.35$.","Sum $= 3.85$."],"answer":"$3.85$"},{"type":"example","title":"Evaluate $0.4 \\times 0.3$","steps":["$4 \\times 3 = 12$.","Two decimal places: $0.12$."],"answer":"$0.12$"},{"type":"callout","variant":"warning","content":"Do not line up digits without aligning the decimal point."},{"type":"question","questionText":"Evaluate $5.6 - 2.4$","questionType":"multiple_choice","options":["$3.2$","$3.0$","$2.2$","$4.0$"],"correctAnswer":"$3.2$","explanation":"Subtract tenths: $5.6 - 2.4 = 3.2$."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'decimals' AND st.code = 'operations_decimals'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Operations with Decimals'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Recurring Decimals and Conversions', '{"blocks":[{"type":"heading","content":"Recurring Decimals"},{"type":"paragraph","content":"Some fractions produce decimals that repeat forever, e.g. $\\frac{1}{3} = 0.333\\ldots$ written $0.\\dot{3}$. Convert fractions to decimals by division."},{"type":"example","title":"Convert $\\frac{3}{8}$ to a decimal","steps":["$3 \\div 8 = 0.375$.","Terminating decimal."],"answer":"$0.375$"},{"type":"example","title":"Convert $0.25$ to a fraction","steps":["$0.25 = \\frac{25}{100}$.","Simplify: $\\frac{1}{4}$."],"answer":"$\\frac{1}{4}$"},{"type":"question","questionText":"Which fraction equals $0.5$?","questionType":"multiple_choice","options":["$\\frac{1}{2}$","$\\frac{1}{5}$","$\\frac{2}{5}$","$\\frac{1}{4}$"],"correctAnswer":"$\\frac{1}{2}$","explanation":"$0.5 = \\frac{5}{10} = \\frac{1}{2}$."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'decimals' AND st.code = 'recurring_decimals'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Recurring Decimals and Conversions'
+);
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'What is the place value of $6$ in $4.62$?', 'multiple_choice', '["Tenths","Hundredths","Ones","Thousandths"]'::jsonb, '"Hundredths"'::jsonb, 'easy', '$6$ is in the hundredths place.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='What is the place value of $6$ in $4.62$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Write $0.7$ as a fraction.', 'multiple_choice', '["$\\frac{7}{10}$","$\\frac{7}{100}$","$\\frac{1}{7}$","$\\frac{70}{10}$"]'::jsonb, '"$\frac{7}{10}$"'::jsonb, 'easy', 'One decimal place → tenths.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Write $0.7$ as a fraction.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $1.2 + 0.5$.', 'multiple_choice', '["$1.7$","$1.5$","$0.7$","$2.0$"]'::jsonb, '"$1.7$"'::jsonb, 'easy', 'Add tenths.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $1.2 + 0.5$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $3.0 - 1.8$.', 'multiple_choice', '["$1.2$","$1.8$","$2.2$","$4.8$"]'::jsonb, '"$1.2$"'::jsonb, 'easy', 'Column subtraction.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $3.0 - 1.8$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $\frac{1}{2}$ to a decimal.', 'multiple_choice', '["$0.5$","$0.2$","$0.25$","$0.12$"]'::jsonb, '"$0.5$"'::jsonb, 'easy', '$1 \div 2 = 0.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='recurring_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $\frac{1}{2}$ to a decimal.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is smallest: $0.4$, $0.35$, $0.5$?', 'multiple_choice', '["$0.35$","$0.4$","$0.5$","All equal"]'::jsonb, '"$0.35$"'::jsonb, 'easy', 'Compare hundredths.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is smallest: $0.4$, $0.35$, $0.5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $0.2 \times 0.5$.', 'multiple_choice', '["$0.1$","$0.01$","$0.7$","$1.0$"]'::jsonb, '"$0.1$"'::jsonb, 'easy', '$2 \times 5 = 10$; two decimal places → $0.10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $0.2 \times 0.5$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Round $3.456$ to 1 decimal place.', 'multiple_choice', '["$3.5$","$3.4$","$3.46$","$3.0$"]'::jsonb, '"$3.5$"'::jsonb, 'medium', 'Hundredths digit $5$, round up.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Round $3.456$ to 1 decimal place.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $2.4 \times 1.5$.', 'multiple_choice', '["$3.6$","$3.0$","$2.9$","$4.0$"]'::jsonb, '"$3.6$"'::jsonb, 'medium', '$24 \times 15 = 360$; two decimal places.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $2.4 \times 1.5$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $7.2 \div 0.9$.', 'multiple_choice', '["$8$","$0.8$","$6.3$","$80$"]'::jsonb, '"$8$"'::jsonb, 'medium', 'Multiply both by $10$: $72 \div 9 = 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $7.2 \div 0.9$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $\frac{1}{4}$ to a decimal.', 'multiple_choice', '["$0.25$","$0.4$","$0.5$","$0.75$"]'::jsonb, '"$0.25$"'::jsonb, 'medium', '$1 \div 4 = 0.25$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='recurring_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $\frac{1}{4}$ to a decimal.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Express $0.75$ as a fraction in lowest terms.', 'multiple_choice', '["$\\frac{3}{4}$","$\\frac{75}{100}$","$\\frac{7}{5}$","$\\frac{1}{4}$"]'::jsonb, '"$\frac{3}{4}$"'::jsonb, 'medium', '$\frac{75}{100} = \frac{3}{4}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='recurring_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Express $0.75$ as a fraction in lowest terms.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Order $0.09$, $0.9$, $0.099$ from smallest.', 'multiple_choice', '["$0.09, 0.099, 0.9$","$0.9, 0.099, 0.09$","$0.099, 0.09, 0.9$","$0.09, 0.9, 0.099$"]'::jsonb, '"$0.09, 0.099, 0.9$"'::jsonb, 'medium', 'Compare place values carefully.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Order $0.09$, $0.9$, $0.099$ from smallest.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A book costs KES $45.50$. Pay with KES $50$. Change?', 'multiple_choice', '["KES $4.50$","KES $5.50$","KES $4.00$","KES $5.00$"]'::jsonb, '"KES $4.50$"'::jsonb, 'medium', '$50.00 - 45.50 = 4.50$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A book costs KES $45.50$. Pay with KES $50$. Change?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Write $2\,000 + 0.03$ as a decimal.', 'multiple_choice', '["$2\\,000.03$","$200.03$","$2\\,003$","$20.03$"]'::jsonb, '"$2\,000.03$"'::jsonb, 'hard', 'Whole plus hundredths.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Write $2\,000 + 0.03$ as a decimal.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $(1.5 + 0.5) \times 2.0$.', 'multiple_choice', '["$4.0$","$3.0$","$2.5$","$5.0$"]'::jsonb, '"$4.0$"'::jsonb, 'hard', 'Brackets: $2.0 \times 2.0 = 4.0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $(1.5 + 0.5) \times 2.0$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is a recurring decimal?', 'multiple_choice', '["$0.\\dot{3}$","$0.25$","$0.5$","$0.125$"]'::jsonb, '"$0.\dot{3}$"'::jsonb, 'hard', '$\frac{1}{3}$ repeats; others terminate.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='recurring_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is a recurring decimal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $0.48 \div 0.06$.', 'multiple_choice', '["$8$","$0.8$","$80$","$6$"]'::jsonb, '"$8$"'::jsonb, 'hard', 'Scale: $48 \div 6 = 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $0.48 \div 0.06$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $\frac{5}{8}$ to a decimal.', 'multiple_choice', '["$0.625$","$0.58$","$0.85$","$0.125$"]'::jsonb, '"$0.625$"'::jsonb, 'hard', '$5 \div 8 = 0.625$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='recurring_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $\frac{5}{8}$ to a decimal.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A length is $3.05$ m. Express in cm.', 'multiple_choice', '["$305$ cm","$30.5$ cm","$350$ cm","$3\\,050$ cm"]'::jsonb, '"$305$ cm"'::jsonb, 'hard', 'Multiply by $100$: $305$ cm.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A length is $3.05$ m. Express in cm.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $12.6 \div 0.3 + 1.2$.', 'multiple_choice', '["$43.2$","$42.0$","$4.2$","$13.8$"]'::jsonb, '"$43.2$"'::jsonb, 'hard', '$12.6 \div 0.3 = 42$; $42 + 1.2 = 43.2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $12.6 \div 0.3 + 1.2$.');
