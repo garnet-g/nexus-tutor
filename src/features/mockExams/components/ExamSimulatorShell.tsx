@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
+import { MathText } from "@/components/content/MathText";
 import { formatStudentQuestionText } from "@/lib/content/questionText";
 import { remainingSeconds } from "@/lib/mockExams/examSimulatorEngine";
 import type { MockExamReviewQuestion } from "@/lib/mockExams/mockExamEngine";
@@ -256,7 +257,9 @@ export function ExamSimulatorShell({
                   <div className="flex items-start justify-between gap-3">
                     <p className="text-sm leading-relaxed text-foreground sm:text-base">
                       <span className="font-semibold">{index + 1}.</span>{" "}
-                      {formatStudentQuestionText(question.question_text)}
+                      <MathText inline>
+                        {formatStudentQuestionText(question.question_text)}
+                      </MathText>
                     </p>
                     <span className="mt-0.5 shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
                       {question.difficulty}
@@ -296,7 +299,7 @@ export function ExamSimulatorShell({
                             >
                               {optionLetter(optionIndex)}
                             </span>
-                            {option}
+                            <MathText inline>{option}</MathText>
                           </button>
                         );
                       })}
@@ -510,7 +513,7 @@ function MarkedQuestion({ question }: { question: MockExamReviewQuestion }) {
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm leading-relaxed text-foreground">
           <span className="font-semibold">{question.sortOrder + 1}.</span>{" "}
-          {formatStudentQuestionText(question.questionText)}
+          <MathText inline>{formatStudentQuestionText(question.questionText)}</MathText>
         </p>
         <StatusBadge correct={question.isCorrect} />
       </div>
@@ -539,7 +542,9 @@ function MarkedQuestion({ question }: { question: MockExamReviewQuestion }) {
                 <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-current/30 text-xs font-semibold">
                   {optionLetter(optionIndex)}
                 </span>
-                <span className="flex-1">{option}</span>
+                <span className="flex-1">
+                  <MathText inline>{option}</MathText>
+                </span>
                 {isCorrectOption ? (
                   <span className="text-xs font-semibold">Correct answer</span>
                 ) : isYourAnswer ? (
