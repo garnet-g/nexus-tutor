@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
+import { MathText } from "@/components/content/MathText";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { PracticeCompleteResult } from "@/features/practice/components/PracticeResults";
@@ -355,7 +356,7 @@ export function PracticeRunner({
       {!feedback ? (
         <SectionCard>
           <h2 className="font-heading text-xl font-semibold text-foreground">
-            {currentQuestionText}
+            <MathText inline>{currentQuestionText}</MathText>
           </h2>
 
           <div className="mt-6 space-y-3">
@@ -378,7 +379,7 @@ export function PracticeRunner({
                     onChange={(event) => setAnswer(event.target.value)}
                     className="size-4"
                   />
-                  <span>{option}</span>
+                  <MathText inline>{option}</MathText>
                 </label>
               ))
             ) : (

@@ -41,11 +41,13 @@ exports[`LessonContentBlocks > renders legacy published lesson blocks identicall
   <div
     class="group space-y-2"
   >
-    <p
+    <div
       class="leading-8 text-foreground/90"
     >
-      A linear equation has one variable raised to the power of one. In Kenya, you might use them to work out matatu fares.
-    </p>
+      <p>
+        A linear equation has one variable raised to the power of one. In Kenya, you might use them to work out matatu fares.
+      </p>
+    </div>
     <a
       class="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-nexus-primary opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100"
       href="/nex?topicId=00000000-0000-4000-8000-000000000099&mode=explain"
@@ -138,11 +140,13 @@ exports[`LessonContentBlocks > renders legacy published lesson blocks identicall
     >
       Key idea
     </p>
-    <p
+    <div
       class="mt-2"
     >
-      Always perform the same operation on both sides of the equation.
-    </p>
+      <p>
+        Always perform the same operation on both sides of the equation.
+      </p>
+    </div>
   </div>
 </div>
 `;
