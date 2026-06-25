@@ -117,67 +117,67 @@ AND NOT EXISTS (
   SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Fractions in Kenyan Contexts'
 );
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which fraction is proper?', 'multiple_choice', '["$\\frac{7}{9}$","$\\frac{9}{7}$","$\\frac{9}{9}$","$2\\frac{1}{3}$"]'::jsonb, '"$\frac{7}{9}$"'::jsonb, 'easy', 'Numerator is less than denominator.'
+SELECT t.id, st.id, 'Which fraction is proper?', 'multiple_choice', '["$\\frac{7}{9}$","$\\frac{9}{7}$","$\\frac{9}{9}$","$2\\frac{1}{3}$"]'::jsonb, '"$\\frac{7}{9}$"'::jsonb, 'easy', 'Numerator is less than denominator.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_types'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which fraction is proper?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Simplify $\frac{8}{12}$.', 'multiple_choice', '["$\\frac{2}{3}$","$\\frac{4}{6}$","$\\frac{3}{2}$","$\\frac{1}{4}$"]'::jsonb, '"$\frac{2}{3}$"'::jsonb, 'easy', 'Divide top and bottom by $4$.'
+SELECT t.id, st.id, 'Simplify $\frac{8}{12}$.', 'multiple_choice', '["$\\frac{2}{3}$","$\\frac{4}{6}$","$\\frac{3}{2}$","$\\frac{1}{4}$"]'::jsonb, '"$\\frac{2}{3}$"'::jsonb, 'easy', 'Divide top and bottom by $4$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_types'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\frac{8}{12}$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Convert $\frac{9}{4}$ to a mixed number.', 'multiple_choice', '["$2\\frac{1}{4}$","$1\\frac{5}{4}$","$4\\frac{1}{9}$","$\\frac{13}{4}$"]'::jsonb, '"$2\frac{1}{4}$"'::jsonb, 'easy', '$9 \div 4 = 2$ remainder $1$.'
+SELECT t.id, st.id, 'Convert $\frac{9}{4}$ to a mixed number.', 'multiple_choice', '["$2\\frac{1}{4}$","$1\\frac{5}{4}$","$4\\frac{1}{9}$","$\\frac{13}{4}$"]'::jsonb, '"$2\\frac{1}{4}$"'::jsonb, 'easy', '$9 \div 4 = 2$ remainder $1$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_types'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $\frac{9}{4}$ to a mixed number.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $\frac{1}{5} + \frac{2}{5}$.', 'multiple_choice', '["$\\frac{3}{5}$","$\\frac{3}{10}$","$\\frac{2}{5}$","$\\frac{1}{5}$"]'::jsonb, '"$\frac{3}{5}$"'::jsonb, 'easy', 'Add numerators when denominators match.'
+SELECT t.id, st.id, 'Evaluate $\frac{1}{5} + \frac{2}{5}$.', 'multiple_choice', '["$\\frac{3}{5}$","$\\frac{3}{10}$","$\\frac{2}{5}$","$\\frac{1}{5}$"]'::jsonb, '"$\\frac{3}{5}$"'::jsonb, 'easy', 'Add numerators when denominators match.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{1}{5} + \frac{2}{5}$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $\frac{3}{4} - \frac{1}{4}$.', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{2}{4}$","$\\frac{4}{4}$","$\\frac{2}{8}$"]'::jsonb, '"$\frac{1}{2}$"'::jsonb, 'easy', '$\frac{3-1}{4} = \frac{2}{4} = \frac{1}{2}$.'
+SELECT t.id, st.id, 'Evaluate $\frac{3}{4} - \frac{1}{4}$.', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{2}{4}$","$\\frac{4}{4}$","$\\frac{2}{8}$"]'::jsonb, '"$\\frac{1}{2}$"'::jsonb, 'easy', '$\frac{3-1}{4} = \frac{2}{4} = \frac{1}{2}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{3}{4} - \frac{1}{4}$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $\frac{1}{2} \times \frac{2}{3}$.', 'multiple_choice', '["$\\frac{1}{3}$","$\\frac{2}{5}$","$\\frac{3}{4}$","$\\frac{2}{6}$"]'::jsonb, '"$\frac{1}{3}$"'::jsonb, 'easy', '$\frac{2}{6} = \frac{1}{3}$.'
+SELECT t.id, st.id, 'Evaluate $\frac{1}{2} \times \frac{2}{3}$.', 'multiple_choice', '["$\\frac{1}{3}$","$\\frac{2}{5}$","$\\frac{3}{4}$","$\\frac{2}{6}$"]'::jsonb, '"$\\frac{1}{3}$"'::jsonb, 'easy', '$\frac{2}{6} = \frac{1}{3}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{1}{2} \times \frac{2}{3}$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $\frac{1}{2} + \frac{1}{2} \times 2$.', 'multiple_choice', '["$1\\frac{1}{2}$","$2$","$1$","$\\frac{3}{2}$"]'::jsonb, '"$1\frac{1}{2}$"'::jsonb, 'easy', 'Multiply first: $1 + 1 = 1\frac{1}{2}$.'
+SELECT t.id, st.id, 'Evaluate $\frac{1}{2} + \frac{1}{2} \times 2$.', 'multiple_choice', '["$1\\frac{1}{2}$","$2$","$1$","$\\frac{3}{2}$"]'::jsonb, '"$1\\frac{1}{2}$"'::jsonb, 'easy', 'Multiply first: $1 + 1 = 1\frac{1}{2}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_bodmas'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{1}{2} + \frac{1}{2} \times 2$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which is equivalent to $\frac{3}{5}$?', 'multiple_choice', '["$\\frac{12}{20}$","$\\frac{5}{3}$","$\\frac{6}{15}$","$\\frac{9}{25}$"]'::jsonb, '"$\frac{12}{20}$"'::jsonb, 'medium', 'Multiply top and bottom by $4$.'
+SELECT t.id, st.id, 'Which is equivalent to $\frac{3}{5}$?', 'multiple_choice', '["$\\frac{12}{20}$","$\\frac{5}{3}$","$\\frac{6}{15}$","$\\frac{9}{25}$"]'::jsonb, '"$\\frac{12}{20}$"'::jsonb, 'medium', 'Multiply top and bottom by $4$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_types'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is equivalent to $\frac{3}{5}$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $\frac{2}{3} + \frac{1}{4}$.', 'multiple_choice', '["$\\frac{11}{12}$","$\\frac{3}{7}$","$\\frac{3}{12}$","$\\frac{8}{12}$"]'::jsonb, '"$\frac{11}{12}$"'::jsonb, 'medium', 'LCM $12$: $\frac{8}{12}+\frac{3}{12}$.'
+SELECT t.id, st.id, 'Evaluate $\frac{2}{3} + \frac{1}{4}$.', 'multiple_choice', '["$\\frac{11}{12}$","$\\frac{3}{7}$","$\\frac{3}{12}$","$\\frac{8}{12}$"]'::jsonb, '"$\\frac{11}{12}$"'::jsonb, 'medium', 'LCM $12$: $\frac{8}{12}+\frac{3}{12}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{2}{3} + \frac{1}{4}$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $\frac{5}{6} - \frac{1}{3}$.', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{4}{3}$","$\\frac{4}{6}$","$\\frac{1}{3}$"]'::jsonb, '"$\frac{1}{2}$"'::jsonb, 'medium', '$\frac{5}{6}-\frac{2}{6}=\frac{3}{6}=\frac{1}{2}$.'
+SELECT t.id, st.id, 'Evaluate $\frac{5}{6} - \frac{1}{3}$.', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{4}{3}$","$\\frac{4}{6}$","$\\frac{1}{3}$"]'::jsonb, '"$\\frac{1}{2}$"'::jsonb, 'medium', '$\frac{5}{6}-\frac{2}{6}=\frac{3}{6}=\frac{1}{2}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{5}{6} - \frac{1}{3}$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $\frac{4}{5} \div \frac{2}{3}$.', 'multiple_choice', '["$1\\frac{1}{5}$","$\\frac{6}{20}$","$\\frac{8}{15}$","$\\frac{2}{5}$"]'::jsonb, '"$1\frac{1}{5}$"'::jsonb, 'medium', '$\frac{4}{5}\times\frac{3}{2}=\frac{12}{10}=1\frac{1}{5}$.'
+SELECT t.id, st.id, 'Evaluate $\frac{4}{5} \div \frac{2}{3}$.', 'multiple_choice', '["$1\\frac{1}{5}$","$\\frac{6}{20}$","$\\frac{8}{15}$","$\\frac{2}{5}$"]'::jsonb, '"$1\\frac{1}{5}$"'::jsonb, 'medium', '$\frac{4}{5}\times\frac{3}{2}=\frac{12}{10}=1\frac{1}{5}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
@@ -195,7 +195,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_bodmas'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $3 - \frac{2}{5} \times \frac{5}{2}$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'A jug is $\frac{3}{4}$ full. $\frac{1}{4}$ is poured out. What fraction remains?', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{1}{4}$","$\\frac{2}{4}$","$\\frac{3}{4}$"]'::jsonb, '"$\frac{1}{2}$"'::jsonb, 'medium', '$\frac{3}{4}-\frac{1}{4}=\frac{1}{2}$.'
+SELECT t.id, st.id, 'A jug is $\frac{3}{4}$ full. $\frac{1}{4}$ is poured out. What fraction remains?', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{1}{4}$","$\\frac{2}{4}$","$\\frac{3}{4}$"]'::jsonb, '"$\\frac{1}{2}$"'::jsonb, 'medium', '$\frac{3}{4}-\frac{1}{4}=\frac{1}{2}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_word_problems'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
@@ -213,7 +213,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_bodmas'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{2}{3} \div \left(\frac{1}{2} + \frac{1}{6}\right)$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $1\frac{1}{3} - \frac{2}{5}$.', 'multiple_choice', '["$\\frac{14}{15}$","$\\frac{8}{15}$","$\\frac{11}{15}$","$\\frac{3}{8}$"]'::jsonb, '"$\frac{14}{15}$"'::jsonb, 'hard', '$\frac{4}{3}-\frac{2}{5}=\frac{20-6}{15}=\frac{14}{15}$.'
+SELECT t.id, st.id, 'Evaluate $1\frac{1}{3} - \frac{2}{5}$.', 'multiple_choice', '["$\\frac{14}{15}$","$\\frac{8}{15}$","$\\frac{11}{15}$","$\\frac{3}{8}$"]'::jsonb, '"$\\frac{14}{15}$"'::jsonb, 'hard', '$\frac{4}{3}-\frac{2}{5}=\frac{20-6}{15}=\frac{14}{15}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
@@ -231,13 +231,13 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_word_problems
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='In a class of $40$, $\frac{3}{8}$ are girls. How many boys are there?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Express $3\frac{2}{5}$ as an improper fraction.', 'multiple_choice', '["$\\frac{17}{5}$","$\\frac{15}{5}$","$\\frac{13}{5}$","$\\frac{32}{5}$"]'::jsonb, '"$\frac{17}{5}$"'::jsonb, 'hard', '$3\times 5 + 2 = 17$ over $5$.'
+SELECT t.id, st.id, 'Express $3\frac{2}{5}$ as an improper fraction.', 'multiple_choice', '["$\\frac{17}{5}$","$\\frac{15}{5}$","$\\frac{13}{5}$","$\\frac{32}{5}$"]'::jsonb, '"$\\frac{17}{5}$"'::jsonb, 'hard', '$3\times 5 + 2 = 17$ over $5$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_types'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Express $3\frac{2}{5}$ as an improper fraction.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $\frac{1}{2}\left(\frac{3}{4}+\frac{1}{4}\right) \div \frac{1}{3}$.', 'multiple_choice', '["$1\\frac{1}{2}$","$\\frac{3}{4}$","$2$","$1$"]'::jsonb, '"$1\frac{1}{2}$"'::jsonb, 'hard', 'Bracket $=1$; $\frac{1}{2}\div\frac{1}{3}=\frac{3}{2}$.'
+SELECT t.id, st.id, 'Evaluate $\frac{1}{2}\left(\frac{3}{4}+\frac{1}{4}\right) \div \frac{1}{3}$.', 'multiple_choice', '["$1\\frac{1}{2}$","$\\frac{3}{4}$","$2$","$1$"]'::jsonb, '"$1\\frac{1}{2}$"'::jsonb, 'hard', 'Bracket $=1$; $\frac{1}{2}\div\frac{1}{3}=\frac{3}{2}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='fraction_bodmas'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='fractions'
@@ -286,7 +286,7 @@ AND NOT EXISTS (
   SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'The Number Line'
 );
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'What is the value of $3$ in $13\,472$?', 'multiple_choice', '["$3\\,000$","$300$","$30$","$3$"]'::jsonb, '"$3\,000$"'::jsonb, 'easy', '$3$ is in the thousands place.'
+SELECT t.id, st.id, 'What is the value of $3$ in $13\,472$?', 'multiple_choice', '["$3\\,000$","$300$","$30$","$3$"]'::jsonb, '"$3\\,000$"'::jsonb, 'easy', '$3$ is in the thousands place.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
@@ -328,7 +328,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Write $9\,006$ in words.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Round $4\,950$ to the nearest hundred.', 'multiple_choice', '["$5\\,000$","$4\\,900$","$4\\,000$","$5\\,100$"]'::jsonb, '"$5\,000$"'::jsonb, 'medium', 'Tens digit $5$, round hundreds up.'
+SELECT t.id, st.id, 'Round $4\,950$ to the nearest hundred.', 'multiple_choice', '["$5\\,000$","$4\\,900$","$4\\,000$","$5\\,100$"]'::jsonb, '"$5\\,000$"'::jsonb, 'medium', 'Tens digit $5$, round hundreds up.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
@@ -346,7 +346,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $35 \times 24$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Arrange $1\,204$, $1\,240$, $1\,042$ from smallest to largest.', 'multiple_choice', '["$1\\,042, 1\\,204, 1\\,240$","$1\\,240, 1\\,204, 1\\,042$","$1\\,204, 1\\,042, 1\\,240$","$1\\,042, 1\\,240, 1\\,204$"]'::jsonb, '"$1\,042, 1\,204, 1\,240$"'::jsonb, 'medium', 'Compare place values left to right.'
+SELECT t.id, st.id, 'Arrange $1\,204$, $1\,240$, $1\,042$ from smallest to largest.', 'multiple_choice', '["$1\\,042, 1\\,204, 1\\,240$","$1\\,240, 1\\,204, 1\\,042$","$1\\,204, 1\\,042, 1\\,240$","$1\\,042, 1\\,240, 1\\,204$"]'::jsonb, '"$1\\,042, 1\\,204, 1\\,240$"'::jsonb, 'medium', 'Compare place values left to right.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
@@ -358,7 +358,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A shop sells $18$ eggs per tray. How many eggs in $45$ trays?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Round $99\,499$ to the nearest thousand.', 'multiple_choice', '["$99\\,000$","$100\\,000$","$99\\,500$","$99\\,400$"]'::jsonb, '"$99\,000$"'::jsonb, 'medium', 'Hundreds digit $4 < 5$.'
+SELECT t.id, st.id, 'Round $99\,499$ to the nearest thousand.', 'multiple_choice', '["$99\\,000$","$100\\,000$","$99\\,500$","$99\\,400$"]'::jsonb, '"$99\\,000$"'::jsonb, 'medium', 'Hundreds digit $4 < 5$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
@@ -370,13 +370,13 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $2\,500 \div 25$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'A school has $1\,248$ pupils. Round to the nearest hundred for a report.', 'multiple_choice', '["$1\\,200$","$1\\,300$","$1\\,250$","$1\\,000$"]'::jsonb, '"$1\,200$"'::jsonb, 'hard', 'Tens digit $4 < 5$.'
+SELECT t.id, st.id, 'A school has $1\,248$ pupils. Round to the nearest hundred for a report.', 'multiple_choice', '["$1\\,200$","$1\\,300$","$1\\,250$","$1\\,000$"]'::jsonb, '"$1\\,200$"'::jsonb, 'hard', 'Tens digit $4 < 5$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A school has $1\,248$ pupils. Round to the nearest hundred for a report.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'A bus carries $62$ passengers per trip. How many passengers in $38$ full trips?', 'multiple_choice', '["$2\\,356$","$2\\,336$","$2\\,346$","$2\\,376$"]'::jsonb, '"$2\,356$"'::jsonb, 'hard', '$62 \times 38 = 2\,356$.'
+SELECT t.id, st.id, 'A bus carries $62$ passengers per trip. How many passengers in $38$ full trips?', 'multiple_choice', '["$2\\,356$","$2\\,336$","$2\\,346$","$2\\,376$"]'::jsonb, '"$2\\,356$"'::jsonb, 'hard', '$62 \times 38 = 2\,356$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
@@ -388,25 +388,25 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Estimate which number is halfway between $400$ and $600$ on the number line.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Evaluate $10\,000 - 3\,456$.', 'multiple_choice', '["$6\\,544$","$6\\,554$","$6\\,444$","$7\\,544$"]'::jsonb, '"$6\,544$"'::jsonb, 'hard', 'Borrow across zeros carefully.'
+SELECT t.id, st.id, 'Evaluate $10\,000 - 3\,456$.', 'multiple_choice', '["$6\\,544$","$6\\,554$","$6\\,444$","$7\\,544$"]'::jsonb, '"$6\\,544$"'::jsonb, 'hard', 'Borrow across zeros carefully.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $10\,000 - 3\,456$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'The digit $8$ appears twice in $18\,829$. What is the total value of both $8$s?', 'multiple_choice', '["$8\\,800$","$808$","$880$","$8\\,080$"]'::jsonb, '"$8\,800$"'::jsonb, 'hard', '$8\,000 + 800 = 8\,800$.'
+SELECT t.id, st.id, 'The digit $8$ appears twice in $18\,829$. What is the total value of both $8$s?', 'multiple_choice', '["$8\\,800$","$808$","$880$","$8\\,080$"]'::jsonb, '"$8\\,800$"'::jsonb, 'hard', '$8\,000 + 800 = 8\,800$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_values'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='The digit $8$ appears twice in $18\,829$. What is the total value of both $8$s?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'A farmer packs $125$ oranges per crate. How many oranges in $64$ crates?', 'multiple_choice', '["$8\\,000$","$7\\,500$","$8\\,125$","$7\\,875$"]'::jsonb, '"$8\,000$"'::jsonb, 'hard', '$125 \times 64 = 8\,000$.'
+SELECT t.id, st.id, 'A farmer packs $125$ oranges per crate. How many oranges in $64$ crates?', 'multiple_choice', '["$8\\,000$","$7\\,500$","$8\\,125$","$7\\,875$"]'::jsonb, '"$8\\,000$"'::jsonb, 'hard', '$125 \times 64 = 8\,000$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_operations'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A farmer packs $125$ oranges per crate. How many oranges in $64$ crates?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which inequality is correct?', 'multiple_choice', '["$2\\,305 < 2\\,350$","$2\\,305 > 2\\,350$","$2\\,305 = 2\\,350$","$2\\,350 < 2\\,305$"]'::jsonb, '"$2\,305 < 2\,350$"'::jsonb, 'hard', 'Compare tens: $0 < 5$.'
+SELECT t.id, st.id, 'Which inequality is correct?', 'multiple_choice', '["$2\\,305 < 2\\,350$","$2\\,305 > 2\\,350$","$2\\,305 = 2\\,350$","$2\\,350 < 2\\,305$"]'::jsonb, '"$2\\,305 < 2\\,350$"'::jsonb, 'hard', 'Compare tens: $0 < 5$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='natural_numbers'
@@ -457,7 +457,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='How many factors does $13$ have?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Express $30$ as a product of primes.', 'multiple_choice', '["$2 \\times 3 \\times 5$","$5 \\times 6$","$2 \\times 15$","$3 \\times 10$"]'::jsonb, '"$2 \times 3 \times 5$"'::jsonb, 'easy', 'All factors are prime.'
+SELECT t.id, st.id, 'Express $30$ as a product of primes.', 'multiple_choice', '["$2 \\times 3 \\times 5$","$5 \\times 6$","$2 \\times 15$","$3 \\times 10$"]'::jsonb, '"$2 \\times 3 \\times 5$"'::jsonb, 'easy', 'All factors are prime.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
@@ -487,7 +487,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find the LCM of $5$ and $7$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Write $60$ in prime factor form.', 'multiple_choice', '["$2^2 \\times 3 \\times 5$","$2 \\times 30$","$4 \\times 15$","$6 \\times 10$"]'::jsonb, '"$2^2 \times 3 \times 5$"'::jsonb, 'medium', 'Factor tree gives $2,2,3,5$.'
+SELECT t.id, st.id, 'Write $60$ in prime factor form.', 'multiple_choice', '["$2^2 \\times 3 \\times 5$","$2 \\times 30$","$4 \\times 15$","$6 \\times 10$"]'::jsonb, '"$2^2 \\times 3 \\times 5$"'::jsonb, 'medium', 'Factor tree gives $2,2,3,5$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
@@ -517,7 +517,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two bells ring every $8$ s and $12$ s. Together again after?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which is the prime factorisation of $84$?', 'multiple_choice', '["$2^2 \\times 3 \\times 7$","$2 \\times 42$","$4 \\times 21$","$6 \\times 14$"]'::jsonb, '"$2^2 \times 3 \times 7$"'::jsonb, 'medium', 'Divide by primes: $84=2\times2\times3\times7$.'
+SELECT t.id, st.id, 'Which is the prime factorisation of $84$?', 'multiple_choice', '["$2^2 \\times 3 \\times 7$","$2 \\times 42$","$4 \\times 21$","$6 \\times 14$"]'::jsonb, '"$2^2 \\times 3 \\times 7$"'::jsonb, 'medium', 'Divide by primes: $84=2\times2\times3\times7$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prime_factors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
@@ -610,7 +610,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $2$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which is divisible by $5$?', 'multiple_choice', '["$2\\,450$","$2\\,451$","$2\\,452$","$2\\,453$"]'::jsonb, '"$2\,450$"'::jsonb, 'easy', 'Last digit $0$ or $5$.'
+SELECT t.id, st.id, 'Which is divisible by $5$?', 'multiple_choice', '["$2\\,450$","$2\\,451$","$2\\,452$","$2\\,453$"]'::jsonb, '"$2\\,450$"'::jsonb, 'easy', 'Last digit $0$ or $5$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
@@ -628,7 +628,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $4$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which is divisible by $10$?', 'multiple_choice', '["$1\\,230$","$1\\,235$","$1\\,236$","$1\\,239$"]'::jsonb, '"$1\,230$"'::jsonb, 'easy', 'Must end in $0$.'
+SELECT t.id, st.id, 'Which is divisible by $10$?', 'multiple_choice', '["$1\\,230$","$1\\,235$","$1\\,236$","$1\\,239$"]'::jsonb, '"$1\\,230$"'::jsonb, 'easy', 'Must end in $0$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
@@ -652,13 +652,13 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Smallest digit to make $45\_8$ divisible by $3$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which is divisible by $8$?', 'multiple_choice', '["$5\\,024$","$5\\,026$","$5\\,028$","$5\\,030$"]'::jsonb, '"$5\,024$"'::jsonb, 'medium', 'Last three digits $024=24$; $24\div8=3$.'
+SELECT t.id, st.id, 'Which is divisible by $8$?', 'multiple_choice', '["$5\\,024$","$5\\,026$","$5\\,028$","$5\\,030$"]'::jsonb, '"$5\\,024$"'::jsonb, 'medium', 'Last three digits $024=24$; $24\div8=3$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $8$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which is divisible by $11$?', 'multiple_choice', '["$1\\,221$","$1\\,222$","$1\\,223$","$1\\,224$"]'::jsonb, '"$1\,221$"'::jsonb, 'medium', 'Alt sum $1-2+2-1=0$, divisible by $11$.'
+SELECT t.id, st.id, 'Which is divisible by $11$?', 'multiple_choice', '["$1\\,221$","$1\\,222$","$1\\,223$","$1\\,224$"]'::jsonb, '"$1\\,221$"'::jsonb, 'medium', 'Alt sum $1-2+2-1=0$, divisible by $11$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
@@ -706,7 +706,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which digit makes $24\_6$ divisible by $3$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which is NOT divisible by $11$?', 'multiple_choice', '["$1\\,234$","$1\\,221$","$1\\,331$","$1\\,111$"]'::jsonb, '"$1\,234$"'::jsonb, 'hard', 'Alt sum $4-3+2-1=2$, not divisible by $11$.'
+SELECT t.id, st.id, 'Which is NOT divisible by $11$?', 'multiple_choice', '["$1\\,234$","$1\\,221$","$1\\,331$","$1\\,111$"]'::jsonb, '"$1\\,234$"'::jsonb, 'hard', 'Alt sum $4-3+2-1=2$, not divisible by $11$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
@@ -769,7 +769,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='What is the place value of $6$ in $4.62$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Write $0.7$ as a fraction.', 'multiple_choice', '["$\\frac{7}{10}$","$\\frac{7}{100}$","$\\frac{1}{7}$","$\\frac{70}{10}$"]'::jsonb, '"$\frac{7}{10}$"'::jsonb, 'easy', 'One decimal place → tenths.'
+SELECT t.id, st.id, 'Write $0.7$ as a fraction.', 'multiple_choice', '["$\\frac{7}{10}$","$\\frac{7}{100}$","$\\frac{1}{7}$","$\\frac{70}{10}$"]'::jsonb, '"$\\frac{7}{10}$"'::jsonb, 'easy', 'One decimal place → tenths.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
@@ -829,7 +829,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='recurring_decimals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $\frac{1}{4}$ to a decimal.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Express $0.75$ as a fraction in lowest terms.', 'multiple_choice', '["$\\frac{3}{4}$","$\\frac{75}{100}$","$\\frac{7}{5}$","$\\frac{1}{4}$"]'::jsonb, '"$\frac{3}{4}$"'::jsonb, 'medium', '$\frac{75}{100} = \frac{3}{4}$.'
+SELECT t.id, st.id, 'Express $0.75$ as a fraction in lowest terms.', 'multiple_choice', '["$\\frac{3}{4}$","$\\frac{75}{100}$","$\\frac{7}{5}$","$\\frac{1}{4}$"]'::jsonb, '"$\\frac{3}{4}$"'::jsonb, 'medium', '$\frac{75}{100} = \frac{3}{4}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='recurring_decimals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
@@ -847,7 +847,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A book costs KES $45.50$. Pay with KES $50$. Change?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Write $2\,000 + 0.03$ as a decimal.', 'multiple_choice', '["$2\\,000.03$","$200.03$","$2\\,003$","$20.03$"]'::jsonb, '"$2\,000.03$"'::jsonb, 'hard', 'Whole plus hundredths.'
+SELECT t.id, st.id, 'Write $2\,000 + 0.03$ as a decimal.', 'multiple_choice', '["$2\\,000.03$","$200.03$","$2\\,003$","$20.03$"]'::jsonb, '"$2\\,000.03$"'::jsonb, 'hard', 'Whole plus hundredths.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='place_value_decimals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
@@ -859,7 +859,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_decimals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $(1.5 + 0.5) \times 2.0$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Which is a recurring decimal?', 'multiple_choice', '["$0.\\dot{3}$","$0.25$","$0.5$","$0.125$"]'::jsonb, '"$0.\dot{3}$"'::jsonb, 'hard', '$\frac{1}{3}$ repeats; others terminate.'
+SELECT t.id, st.id, 'Which is a recurring decimal?', 'multiple_choice', '["$0.\\dot{3}$","$0.25$","$0.5$","$0.125$"]'::jsonb, '"$0.\\dot{3}$"'::jsonb, 'hard', '$\frac{1}{3}$ repeats; others terminate.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='recurring_decimals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='decimals'

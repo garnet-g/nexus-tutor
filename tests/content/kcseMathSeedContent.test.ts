@@ -25,6 +25,22 @@ function extractLessonJson(text: string): string[] {
   return out;
 }
 
+// extract every practice question's options + correct_answer JSONB pair
+function extractQuestions(
+  text: string,
+): Array<{ options: string; answer: string }> {
+  const out: Array<{ options: string; answer: string }> = [];
+  const re = /'(\[[^\]]*\])'::jsonb,\s*'("[^']*")'::jsonb/gs;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    out.push({
+      options: m[1].replace(/''/g, "'"),
+      answer: m[2].replace(/''/g, "'"),
+    });
+  }
+  return out;
+}
+
 describe("KCSE math seed — lesson content validates against schema", () => {
   for (const { path, expectedLessonCount } of SEED_FILES) {
     describe(path, () => {
@@ -43,6 +59,26 @@ describe("KCSE math seed — lesson content validates against schema", () => {
             failures.push(
               `${blob.slice(0, 60)} -> ${parsed.error.issues[0]?.message}`,
             );
+          }
+        }
+        expect(failures).toEqual([]);
+      });
+
+      it("every practice question has valid JSON options + answer, and the answer is one of the options", () => {
+        const questions = extractQuestions(sql);
+        expect(questions.length).toBeGreaterThan(0);
+
+        const failures: string[] = [];
+        for (const { options, answer } of questions) {
+          try {
+            const opts = JSON.parse(options) as unknown;
+            const ans = JSON.parse(answer) as unknown;
+            if (!Array.isArray(opts) || !opts.includes(ans)) {
+              failures.push(`answer ${answer} not in options ${options}`);
+            }
+          } catch (error) {
+            // invalid JSON (e.g. single-backslash LaTeX in a JSONB field) — would fail ::jsonb load
+            failures.push(`invalid JSON: ${options} / ${answer}`);
           }
         }
         expect(failures).toEqual([]);
