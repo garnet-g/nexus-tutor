@@ -570,3 +570,162 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='lcm'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='factors'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='LCM of $14$, $21$ and $6$?');
+
+-- ========== DIVISIBILITY TESTS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Divisibility by 2, 3, 4 and 5', '{"blocks":[{"type":"heading","content":"Tests for 2, 3, 4 and 5"},{"type":"callout","variant":"key_point","content":"Divisible by $2$ or $5$: check the **last digit**. Divisible by $3$: sum of digits divisible by $3$. Divisible by $4$: last **two** digits form a number divisible by $4$."},{"type":"example","title":"Is $3\\,456$ divisible by $3$?","steps":["Sum of digits: $3+4+5+6=18$.","$18$ is divisible by $3$, so $3\\,456$ is divisible by $3$."],"answer":"Yes"},{"type":"example","title":"Is $7\\,128$ divisible by $4$?","steps":["Last two digits: $28$.","$28 \\div 4 = 7$, so divisible by $4$."],"answer":"Yes"},{"type":"question","questionText":"Which number is divisible by $5$?","questionType":"multiple_choice","options":["$1\\,235$","$1\\,234$","$1\\,236$","$1\\,233$"],"correctAnswer":"$1\\,235$","explanation":"Last digit must be $0$ or $5$."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'divisibility_tests' AND st.code = 'tests_2_3_4_5'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Divisibility by 2, 3, 4 and 5'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Divisibility by 6, 8, 9, 10 and 11', '{"blocks":[{"type":"heading","content":"Tests for 6, 8, 9, 10 and 11"},{"type":"paragraph","content":"Divisible by $6$: divisible by both $2$ and $3$. Divisible by $8$: last three digits divisible by $8$. Divisible by $9$: digit sum divisible by $9$. Divisible by $10$: last digit $0$. Divisible by $11$: alternating sum of digits divisible by $11$."},{"type":"example","title":"Is $5\\,544$ divisible by $8$?","steps":["Last three digits: $544$.","$544 \\div 8 = 68$, so yes."],"answer":"Yes"},{"type":"callout","variant":"warning","content":"For $11$, subtract and add digits alternately from the right."},{"type":"question","questionText":"Which is divisible by $9$?","questionType":"multiple_choice","options":["$5\\,463$","$5\\,464$","$5\\,465$","$5\\,462$"],"correctAnswer":"$5\\,463$","explanation":"Digit sum $5+4+6+3=18$, divisible by $9$."}]}'::jsonb, 12, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'divisibility_tests' AND st.code = 'tests_6_8_9_10_11'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Divisibility by 6, 8, 9, 10 and 11'
+);
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Using Divisibility in Problems', '{"blocks":[{"type":"heading","content":"Applications of Divisibility"},{"type":"paragraph","content":"Divisibility tests speed up factorisation, simplifying fractions, and checking whether a number is prime or composite."},{"type":"example","title":"Is $2\\,731$ divisible by $11$?","steps":["Alternating sum: $1-3+7-2=3$.","$3$ is not divisible by $11$, so $2\\,731$ is not."],"answer":"No"},{"type":"example","title":"Find the missing digit so $4\\,5\\_2$ is divisible by $3$","steps":["Sum so far: $4+5+2=11$.","Try digit $1$: sum $12$, divisible by $3$."],"answer":"$1$"},{"type":"question","questionText":"A number ending in $0$ is always divisible by:","questionType":"multiple_choice","options":["$10$","$3$","$4$","$8$"],"correctAnswer":"$10$","explanation":"Last digit $0$ means divisible by $10$ (and $2$ and $5$)."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'divisibility_tests' AND st.code = 'applications'
+AND NOT EXISTS (
+  SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Using Divisibility in Problems'
+);
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is divisible by $2$?', 'multiple_choice', '["$346$","$351$","$355$","$357$"]'::jsonb, '"$346$"'::jsonb, 'easy', 'Last digit must be even.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is divisible by $5$?', 'multiple_choice', '["$2\\,450$","$2\\,451$","$2\\,452$","$2\\,453$"]'::jsonb, '"$2\,450$"'::jsonb, 'easy', 'Last digit $0$ or $5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Is $123$ divisible by $3$?', 'multiple_choice', '["Yes","No","Cannot tell","Only by $1$"]'::jsonb, '"Yes"'::jsonb, 'easy', 'Digit sum $1+2+3=6$, divisible by $3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Is $123$ divisible by $3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is divisible by $4$?', 'multiple_choice', '["$316$","$318$","$322$","$326$"]'::jsonb, '"$316$"'::jsonb, 'easy', 'Last two digits $16$; $16\div4=4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $4$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is divisible by $10$?', 'multiple_choice', '["$1\\,230$","$1\\,235$","$1\\,236$","$1\\,239$"]'::jsonb, '"$1\,230$"'::jsonb, 'easy', 'Must end in $0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $10$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is divisible by $9$?', 'multiple_choice', '["$729$","$728$","$730$","$731$"]'::jsonb, '"$729$"'::jsonb, 'easy', 'Digit sum $7+2+9=18$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $9$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is divisible by $6$?', 'multiple_choice', '["$234$","$235$","$237$","$239$"]'::jsonb, '"$234$"'::jsonb, 'easy', 'Even and digit sum $9$ (div by $3$).'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $6$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Smallest digit to make $45\_8$ divisible by $3$?', 'multiple_choice', '["$1$","$2$","$0$","$4$"]'::jsonb, '"$1$"'::jsonb, 'medium', 'Sum $4+5+8=17$; add $1$ gives $18$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Smallest digit to make $45\_8$ divisible by $3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is divisible by $8$?', 'multiple_choice', '["$5\\,024$","$5\\,026$","$5\\,028$","$5\\,030$"]'::jsonb, '"$5\,024$"'::jsonb, 'medium', 'Last three digits $024=24$; $24\div8=3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $8$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is divisible by $11$?', 'multiple_choice', '["$1\\,221$","$1\\,222$","$1\\,223$","$1\\,224$"]'::jsonb, '"$1\,221$"'::jsonb, 'medium', 'Alt sum $1-2+2-1=0$, divisible by $11$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is divisible by $11$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which number is divisible by both $2$ and $5$?', 'multiple_choice', '["$340$","$345$","$342$","$343$"]'::jsonb, '"$340$"'::jsonb, 'medium', 'Ends in $0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which number is divisible by both $2$ and $5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'To check if $7\,848$ is divisible by $4$, you examine:', 'multiple_choice', '["Last two digits","Last digit only","First digit","Digit sum"]'::jsonb, '"Last two digits"'::jsonb, 'medium', 'Divisibility by $4$ uses last two digits.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='To check if $7\,848$ is divisible by $4$, you examine:');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Is $5\,832$ divisible by $9$?', 'multiple_choice', '["Yes","No","Only by $3$","Cannot tell"]'::jsonb, '"Yes"'::jsonb, 'medium', 'Sum $5+8+3+2=18$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Is $5\,832$ divisible by $9$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A number divisible by $6$ must be:', 'multiple_choice', '["Even and sum of digits div by $3$","Odd only","Ending in $5$","Sum of digits div by $2$"]'::jsonb, '"Even and sum of digits div by $3$"'::jsonb, 'medium', 'Rule for $6$: both $2$ and $3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A number divisible by $6$ must be:');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Largest 3-digit number divisible by $5$?', 'multiple_choice', '["$995$","$990$","$999$","$985$"]'::jsonb, '"$995$"'::jsonb, 'hard', 'Must end in $0$ or $5$; $995$ is largest.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Largest 3-digit number divisible by $5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Is $9\,072$ divisible by $8$?', 'multiple_choice', '["Yes","No","Only by $4$","Only by $2$"]'::jsonb, '"Yes"'::jsonb, 'hard', 'Last three digits $072=72$; $72\div8=9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Is $9\,072$ divisible by $8$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which digit makes $24\_6$ divisible by $3$?', 'multiple_choice', '["$0$","$1$","$2$","$4$"]'::jsonb, '"$0$"'::jsonb, 'hard', 'Sum $2+4+0+6=12$, divisible by $3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which digit makes $24\_6$ divisible by $3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is NOT divisible by $11$?', 'multiple_choice', '["$1\\,234$","$1\\,221$","$1\\,331$","$1\\,111$"]'::jsonb, '"$1\,234$"'::jsonb, 'hard', 'Alt sum $4-3+2-1=2$, not divisible by $11$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_6_8_9_10_11'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is NOT divisible by $11$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Is $84/126$ in lowest terms?', 'multiple_choice', '["No — HCF is $42$","Yes","No — HCF is $6$","No — HCF is $21$"]'::jsonb, '"No — HCF is $42$"'::jsonb, 'hard', 'HCF $42$; reduces to $2/3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Is $84/126$ in lowest terms?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'How many integers from $100$ to $108$ inclusive are divisible by $3$?', 'multiple_choice', '["$3$","$4$","$2$","$5$"]'::jsonb, '"$3$"'::jsonb, 'hard', '$102$, $105$, $108$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tests_2_3_4_5'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='How many integers from $100$ to $108$ inclusive are divisible by $3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A 4-digit number ends in $20$ and digit sum is $18$. It is divisible by:', 'multiple_choice', '["$9$ and $10$","$8$ only","$11$ only","$4$ only"]'::jsonb, '"$9$ and $10$"'::jsonb, 'hard', 'Ends $20$ → div $10$; sum $18$ → div $9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='divisibility_tests'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A 4-digit number ends in $20$ and digit sum is $18$. It is divisible by:');
