@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { Download, ExternalLink, MessageCircle } from "lucide-react";
 
+import { MathText } from "@/components/content/MathText";
 import { Button } from "@/components/ui/Button";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { formatStudentQuestionText } from "@/lib/content/questionText";
@@ -173,7 +174,7 @@ function WorkedExampleBlock({
             <span className="mr-2 font-semibold text-nexus-primary">
               Step {stepIndex + 1}.
             </span>
-            {step}
+            <MathText inline>{step}</MathText>
           </li>
         ))}
       </ol>
@@ -188,7 +189,7 @@ function WorkedExampleBlock({
         </Button>
       ) : (
         <p className="mt-4 text-sm font-medium text-foreground">
-          Answer: {block.answer}
+          Answer: <MathText inline>{block.answer}</MathText>
         </p>
       )}
     </SectionCard>
@@ -220,7 +221,7 @@ function CalloutBlock({
       )}
     >
       <p className="font-semibold text-foreground">{labels[block.variant]}</p>
-      <p className="mt-2 whitespace-pre-wrap">{block.content}</p>
+      <MathText className="mt-2">{block.content}</MathText>
     </div>
   );
 }
@@ -388,7 +389,7 @@ function InlineQuestionBlock({ block }: { block: LessonInlineQuestionBlock }) {
   return (
     <SectionCard title="Self-check" description="Pause and test your understanding.">
       <p className="font-medium text-foreground">
-        {formatStudentQuestionText(block.questionText)}
+        <MathText inline>{formatStudentQuestionText(block.questionText)}</MathText>
       </p>
 
       {isMcq ? (
@@ -413,7 +414,7 @@ function InlineQuestionBlock({ block }: { block: LessonInlineQuestionBlock }) {
                   !selected && !submitted && "border-nexus-border hover:bg-nexus-sunken",
                 )}
               >
-                {option}
+                <MathText inline>{option}</MathText>
               </button>
             );
           })}
@@ -446,7 +447,13 @@ function InlineQuestionBlock({ block }: { block: LessonInlineQuestionBlock }) {
               isCorrect ? "text-nexus-success" : "text-nexus-danger",
             )}
           >
-            {isCorrect ? "Correct!" : `Not quite — the answer is ${block.correctAnswer}.`}
+            {isCorrect ? (
+              "Correct!"
+            ) : (
+              <>
+                Not quite — the answer is <MathText inline>{block.correctAnswer}</MathText>.
+              </>
+            )}
           </p>
           {block.explanation ? (
             <p className="text-sm leading-7 text-muted-foreground">{block.explanation}</p>
@@ -482,7 +489,7 @@ export function LessonContentBlocks({ blocks, topicId }: LessonContentBlocksProp
           case "paragraph":
             return (
               <div key={blockKey(block, index)} className="group space-y-2">
-                <p className="leading-8 text-foreground/90">{block.content}</p>
+                <MathText className="leading-8 text-foreground/90">{block.content}</MathText>
                 <AskNexLink topicId={topicId} label="Ask Nex about this" />
               </div>
             );
@@ -508,7 +515,7 @@ export function LessonContentBlocks({ blocks, topicId }: LessonContentBlocksProp
                 className="rounded-[18px] border border-nexus-accent/30 bg-nexus-accent-soft px-5 py-4 text-sm leading-7 text-foreground"
               >
                 <p className="font-semibold text-nexus-warning">Key idea</p>
-                <p className="mt-2">{block.content}</p>
+                <MathText className="mt-2">{block.content}</MathText>
               </div>
             );
           case "callout":
