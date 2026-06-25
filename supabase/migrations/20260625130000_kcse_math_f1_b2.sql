@@ -810,3 +810,205 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='capacity_units'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_capacity'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Medicine $0.8$ L prescribed as $40$ mL doses. How many doses?');
+
+-- ========== MASS, WEIGHT AND DENSITY ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mass and Weight', '{"blocks":[{"type":"heading","content":"Mass and Weight"},{"type":"paragraph","content":"**Mass** is the amount of matter (kg, g). **Weight** is the force of gravity on mass. At Form 1 we often use the terms interchangeably in everyday problems."},{"type":"callout","variant":"key_point","content":"$1$ kg $= 1000$ g."},{"type":"example","title":"Convert $2.5$ kg to grams","steps":["$2.5 \\times 1000 = 2500$ g."],"answer":"$2500$ g"},{"type":"question","questionText":"Convert $3500$ g to kg.","questionType":"multiple_choice","options":["$3.5$ kg","$35$ kg","$0.35$ kg","$350$ kg"],"correctAnswer":"$3.5$ kg","explanation":"$\\div 1000$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'mass_weight'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mass and Weight');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mass Conversions and Scales', '{"blocks":[{"type":"heading","content":"Conversions"},{"type":"example","title":"Convert $4500$ mg to g","steps":["$4500 \\div 1000 = 4.5$ g."],"answer":"$4.5$ g"},{"type":"callout","variant":"warning","content":"$1$ tonne $= 1000$ kg. Read scales carefully for kg and g."},{"type":"question","questionText":"Convert $0.75$ tonnes to kg.","questionType":"multiple_choice","options":["$750$","$75$","$7500$","$7.5$"],"correctAnswer":"$750$","explanation":"$\\times 1000$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'mass_weight'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mass Conversions and Scales');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mass in Exam Questions', '{"blocks":[{"type":"heading","content":"Exam Context"},{"type":"example","title":"A sack of maize weighs $90$ kg. Express in grams.","steps":["$90 \\times 1000 = 90\\,000$ g."],"answer":"$90\\,000$ g"},{"type":"question","questionText":"Three bags each $25$ kg. Total mass?","questionType":"multiple_choice","options":["$75$ kg","$50$ kg","$25$ kg","$100$ kg"],"correctAnswer":"$75$ kg","explanation":"$3 \\times 25$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'mass_weight'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mass in Exam Questions');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Understanding Density', '{"blocks":[{"type":"heading","content":"Density"},{"type":"math_block","latex":"\\text{density} = \\frac{\\text{mass}}{\\text{volume}}","caption":"Density formula"},{"type":"paragraph","content":"Density tells how much mass is packed into each unit of volume. Units: g/cm$^3$ or kg/m$^3$."},{"type":"example","title":"Mass $200$ g, volume $50$ cm$^3$","steps":["$d = \\frac{200}{50} = 4$ g/cm$^3$."],"answer":"$4$ g/cm$^3$"},{"type":"question","questionText":"Mass $60$ g, volume $20$ cm$^3$. Density?","questionType":"multiple_choice","options":["$3$ g/cm$^3$","$40$ g/cm$^3$","$0.33$ g/cm$^3$","$80$ g/cm$^3$"],"correctAnswer":"$3$ g/cm$^3$","explanation":"$60 \\div 20$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'density'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Understanding Density');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Density Calculations', '{"blocks":[{"type":"heading","content":"Rearranging"},{"type":"callout","variant":"key_point","content":"mass $= \\text{density} \\times \\text{volume}$; volume $= \\frac{\\text{mass}}{\\text{density}}$."},{"type":"example","title":"Density $8$ g/cm$^3$, volume $15$ cm$^3$. Mass?","steps":["$m = 8 \\times 15 = 120$ g."],"answer":"$120$ g"},{"type":"example","title":"Mass $250$ g, density $2.5$ g/cm$^3$. Volume?","steps":["$V = 250 \\div 2.5 = 100$ cm$^3$."],"answer":"$100$ cm$^3$"},{"type":"question","questionText":"Density $5$ g/cm$^3$, mass $45$ g. Volume?","questionType":"multiple_choice","options":["$9$ cm$^3$","$225$ cm$^3$","$40$ cm$^3$","$50$ cm$^3$"],"correctAnswer":"$9$ cm$^3$","explanation":"$45 \\div 5$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'density'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Density Calculations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Density Exam Problems', '{"blocks":[{"type":"heading","content":"Exam Problems"},{"type":"example","title":"Metal block $5$ cm by $4$ cm by $3$ cm, mass $480$ g. Density?","steps":["$V = 60$ cm$^3$.","$d = 480 \\div 60 = 8$ g/cm$^3$."],"answer":"$8$ g/cm$^3$"},{"type":"callout","variant":"warning","content":"Find volume first when only dimensions are given."},{"type":"question","questionText":"Which floats: object density $0.8$ g/cm$^3$ in water ($1$ g/cm$^3$)?","questionType":"multiple_choice","options":["Floats","Sinks","Neither","Dissolves"],"correctAnswer":"Floats","explanation":"Less dense than water floats."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'density'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Density Exam Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Density Applications', '{"blocks":[{"type":"heading","content":"Applications"},{"type":"paragraph","content":"Density is used to identify materials, check purity of milk, and compare whether objects float."},{"type":"example","title":"Gold-like bar: mass $390$ g, volume $20$ cm$^3$. Density?","steps":["$d = 19.5$ g/cm$^3$ (near gold)."],"answer":"$19.5$ g/cm$^3$"},{"type":"question","questionText":"Water density $1$ g/cm$^3$. Mass of $500$ cm$^3$ water?","questionType":"multiple_choice","options":["$500$ g","$50$ g","$5000$ g","$5$ g"],"correctAnswer":"$500$ g","explanation":"$m = dV$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'applications_density'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Density Applications');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mixed Density Problems', '{"blocks":[{"type":"heading","content":"Mixed Problems"},{"type":"example","title":"Cylindrical rod $r=2$ cm, $h=10$ cm, mass $251$ g ($\\pi=3.14$)","steps":["$V = 125.6$ cm$^3$.","$d \\approx 2$ g/cm$^3$."],"answer":"$\\approx 2$ g/cm$^3$"},{"type":"question","questionText":"Aluminium density $2.7$ g/cm$^3$, volume $50$ cm$^3$. Mass?","questionType":"multiple_choice","options":["$135$ g","$52.7$ g","$47.3$ g","$270$ g"],"correctAnswer":"$135$ g","explanation":"$2.7 \\times 50$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'applications_density'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mixed Density Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Density Exam Word Problems', '{"blocks":[{"type":"heading","content":"Exam Word Problems"},{"type":"example","title":"Tank $2$ m by $1$ m by $0.5$ m full of water. Mass of water?","steps":["$V = 1$ m$^3 = 1\\,000\\,000$ cm$^3$.","Mass $\\approx 1000$ kg."],"answer":"$1000$ kg"},{"type":"callout","variant":"warning","content":"Convert units consistently before using density formula."},{"type":"question","questionText":"Stone density $2.5$ g/cm$^3$, mass $1$ kg. Volume in cm$^3$?","questionType":"multiple_choice","options":["$400$","$2500$","$40$","$250$"],"correctAnswer":"$400$","explanation":"$1000 \\div 2.5$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'mass_weight_density' AND st.code = 'applications_density'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Density Exam Word Problems');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $2$ kg to grams.', 'multiple_choice', '["$2000$","$200$","$20$","$20000$"]'::jsonb, '"$2000$"'::jsonb, 'easy', '$\times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mass_weight'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $2$ kg to grams.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $5000$ g to kg.', 'multiple_choice', '["$5$","$50$","$0.5$","$500$"]'::jsonb, '"$5$"'::jsonb, 'easy', '$\div 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mass_weight'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $5000$ g to kg.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $1.2$ kg to g.', 'multiple_choice', '["$1200$","$120$","$12$","$12000$"]'::jsonb, '"$1200$"'::jsonb, 'easy', '$\times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mass_weight'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $1.2$ kg to g.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mass $40$ g, volume $10$ cm$^3$. Density?', 'multiple_choice', '["$4$ g/cm$^3$","$30$ g/cm$^3$","$400$ g/cm$^3$","$0.25$ g/cm$^3$"]'::jsonb, '"$4$ g/cm$^3$"'::jsonb, 'easy', '$40 \div 10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mass $40$ g, volume $10$ cm$^3$. Density?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mass $90$ g, volume $30$ cm$^3$. Density?', 'multiple_choice', '["$3$ g/cm$^3$","$60$ g/cm$^3$","$2700$ g/cm$^3$","$0.33$ g/cm$^3$"]'::jsonb, '"$3$ g/cm$^3$"'::jsonb, 'easy', '$90 \div 30$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mass $90$ g, volume $30$ cm$^3$. Density?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $0.5$ tonnes to kg.', 'multiple_choice', '["$500$","$50$","$5000$","$5$"]'::jsonb, '"$500$"'::jsonb, 'easy', '$\times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mass_weight'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $0.5$ tonnes to kg.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Water density $1$ g/cm$^3$. Mass of $200$ cm$^3$?', 'multiple_choice', '["$200$ g","$20$ g","$2000$ g","$2$ g"]'::jsonb, '"$200$ g"'::jsonb, 'easy', '$m=dV$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Water density $1$ g/cm$^3$. Mass of $200$ cm$^3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Convert $750$ g to kg.', 'multiple_choice', '["$0.75$","$7.5$","$75$","$0.075$"]'::jsonb, '"$0.75$"'::jsonb, 'medium', '$\div 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mass_weight'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Convert $750$ g to kg.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Density $6$ g/cm$^3$, volume $12$ cm$^3$. Mass?', 'multiple_choice', '["$72$ g","$18$ g","$2$ g","$78$ g"]'::jsonb, '"$72$ g"'::jsonb, 'medium', '$6 \times 12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Density $6$ g/cm$^3$, volume $12$ cm$^3$. Mass?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mass $150$ g, density $3$ g/cm$^3$. Volume?', 'multiple_choice', '["$50$ cm$^3$","$450$ cm$^3$","$5$ cm$^3$","$147$ cm$^3$"]'::jsonb, '"$50$ cm$^3$"'::jsonb, 'medium', '$150 \div 3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mass $150$ g, density $3$ g/cm$^3$. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Four bags each $12.5$ kg. Total mass?', 'multiple_choice', '["$50$ kg","$48$ kg","$40$ kg","$52$ kg"]'::jsonb, '"$50$ kg"'::jsonb, 'medium', '$4 \times 12.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mass_weight'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Four bags each $12.5$ kg. Total mass?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Density $8$ g/cm$^3$, mass $200$ g. Volume?', 'multiple_choice', '["$25$ cm$^3$","$1600$ cm$^3$","$192$ cm$^3$","$40$ cm$^3$"]'::jsonb, '"$25$ cm$^3$"'::jsonb, 'medium', '$200 \div 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Density $8$ g/cm$^3$, mass $200$ g. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Block $6$ by $5$ by $2$ cm, mass $240$ g. Density?', 'multiple_choice', '["$4$ g/cm$^3$","$8$ g/cm$^3$","$40$ g/cm$^3$","$2$ g/cm$^3$"]'::jsonb, '"$4$ g/cm$^3$"'::jsonb, 'medium', '$V=60$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Block $6$ by $5$ by $2$ cm, mass $240$ g. Density?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Object density $0.6$ g/cm$^3$ in water. Float or sink?', 'multiple_choice', '["Float","Sink","Neither","Cannot tell"]'::jsonb, '"Float"'::jsonb, 'medium', 'Less than $1$ g/cm$^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Object density $0.6$ g/cm$^3$ in water. Float or sink?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Stone density $2.5$ g/cm$^3$, mass $2$ kg. Volume cm$^3$?', 'multiple_choice', '["$800$","$5000$","$80$","$200$"]'::jsonb, '"$800$"'::jsonb, 'hard', '$2000 \div 2.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Stone density $2.5$ g/cm$^3$, mass $2$ kg. Volume cm$^3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder $r=3$ cm, $h=7$ cm, mass $593$ g ($\pi=\frac{22}{7}$). Density?', 'multiple_choice', '["$3$ g/cm$^3$","$2$ g/cm$^3$","$4$ g/cm$^3$","$5$ g/cm$^3$"]'::jsonb, '"$3$ g/cm$^3$"'::jsonb, 'hard', '$V=198$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder $r=3$ cm, $h=7$ cm, mass $593$ g ($\pi=\frac{22}{7}$). Density?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Truck carries $15$ bags of $40$ kg and $8$ bags of $25$ kg. Total?', 'multiple_choice', '["$800$ kg","$600$ kg","$750$ kg","$920$ kg"]'::jsonb, '"$800$ kg"'::jsonb, 'hard', '$600+200$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mass_weight'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Truck carries $15$ bags of $40$ kg and $8$ bags of $25$ kg. Total?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tank $50$ cm by $40$ cm by $30$ cm filled with water. Mass of water?', 'multiple_choice', '["$60$ kg","$6$ kg","$600$ g","$60$ g"]'::jsonb, '"$60$ kg"'::jsonb, 'hard', '$60000$ cm$^3=60$ L$\approx 60$ kg.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tank $50$ cm by $40$ cm by $30$ cm filled with water. Mass of water?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Alloy: density $10$ g/cm$^3$, volume $45$ cm$^3$. Mass in kg?', 'multiple_choice', '["$0.45$","$4.5$","$450$","$45$"]'::jsonb, '"$0.45$"'::jsonb, 'hard', '$450$ g $= 0.45$ kg.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Alloy: density $10$ g/cm$^3$, volume $45$ cm$^3$. Mass in kg?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two liquids: oil $0.9$ g/cm$^3$, water $1$ g/cm$^3$. Which is on top when mixed?', 'multiple_choice', '["Oil","Water","Same level","Neither"]'::jsonb, '"Oil"'::jsonb, 'hard', 'Less dense floats on top.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_density'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two liquids: oil $0.9$ g/cm$^3$, water $1$ g/cm$^3$. Which is on top when mixed?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Baby mass $3200$ g plus clothes $250$ g. Total kg?', 'multiple_choice', '["$3.45$","$34.5$","$3.2$","$0.345$"]'::jsonb, '"$3.45$"'::jsonb, 'hard', '$3450$ g.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mass_weight'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='mass_weight_density'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Baby mass $3200$ g plus clothes $250$ g. Total kg?');
