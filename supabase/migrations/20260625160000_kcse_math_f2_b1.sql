@@ -434,3 +434,218 @@ WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reciprocal of $0.125$?');
 
 
+-- ========== INDICES AND LOGARITHMS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Index Notation', '{"blocks":[{"type":"heading","content":"Index Notation"},{"type":"paragraph","content":"**Indices** (powers) show repeated multiplication: $a^n = a \\times a \\times \\cdots \\times a$ ($n$ times)."},{"type":"math_block","latex":"a^m \\times a^n = a^{m+n}","caption":"Product law"},{"type":"callout","variant":"key_point","content":"Any non-zero number to power $0$ equals $1$: $5^0 = 1$."},{"type":"example","title":"Simplify $2^3 \\times 2^4$","steps":["Add indices: $2^{3+4} = 2^7 = 128$."],"answer":"$2^7$"},{"type":"question","questionText":"$3^2 \\times 3^3$?","questionType":"multiple_choice","options":["$3^5$","$3^6$","$9^5$","$3^1$"],"correctAnswer":"$3^5$","explanation":"Add powers."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'laws_of_indices'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Index Notation');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Laws of Indices — Methods', '{"blocks":[{"type":"heading","content":"Index Laws"},{"type":"math_block","latex":"\\frac{a^m}{a^n} = a^{m-n}, \\quad (a^m)^n = a^{mn}","caption":"Quotient and power laws"},{"type":"example","title":"Simplify $\\frac{5^7}{5^4}$","steps":["$5^{7-4} = 5^3 = 125$."],"answer":"$5^3$"},{"type":"example","title":"Evaluate $(2^3)^2$","steps":["$2^{3 \\times 2} = 2^6 = 64$."],"answer":"$2^6$"},{"type":"callout","variant":"warning","content":"$(a+b)^2 \\neq a^2 + b^2$ — indices do not distribute over addition."},{"type":"question","questionText":"$\\frac{10^5}{10^2}$?","questionType":"multiple_choice","options":["$10^3$","$10^7$","$10^{2.5}$","$5^3$"],"correctAnswer":"$10^3$","explanation":"Subtract indices."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'laws_of_indices'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Laws of Indices — Methods');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Indices — Exam Application', '{"blocks":[{"type":"heading","content":"KCSE Index Problems"},{"type":"example","title":"Simplify $\\frac{2^4 \\times 2^{-1}}{2^2}$","steps":["Numerator: $2^3$.","$\\frac{2^3}{2^2} = 2^1 = 2$."],"answer":"$2$"},{"type":"question","questionText":"Evaluate $4^{-1}$.","questionType":"multiple_choice","options":["$\\frac{1}{4}$","$-4$","$4$","$0$"],"correctAnswer":"$\\frac{1}{4}$","explanation":"Negative index = reciprocal."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'laws_of_indices'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Indices — Exam Application');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Standard Form Concept', '{"blocks":[{"type":"heading","content":"Standard Form"},{"type":"paragraph","content":"**Standard form** writes numbers as $a \\times 10^n$ where $1 \\le a < 10$ and $n$ is an integer."},{"type":"math_block","latex":"N = a \\times 10^n, \\quad 1 \\le a < 10","caption":"Standard form"},{"type":"example","title":"Write $4500$ in standard form","steps":["$4500 = 4.5 \\times 10^3$."],"answer":"$4.5 \\times 10^3$"},{"type":"question","questionText":"Write $0.006$ in standard form.","questionType":"multiple_choice","options":["$6 \\times 10^{-3}$","$6 \\times 10^3$","$0.6 \\times 10^{-2}$","$60 \\times 10^{-4}$"],"correctAnswer":"$6 \\times 10^{-3}$","explanation":"$a$ must be between $1$ and $10$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'standard_form'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Standard Form Concept');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Operations in Standard Form', '{"blocks":[{"type":"heading","content":"Calculations"},{"type":"example","title":"Multiply $(3 \\times 10^4) \\times (2 \\times 10^3)$","steps":["$(3 \\times 2) \\times 10^{4+3} = 6 \\times 10^7$."],"answer":"$6 \\times 10^7$"},{"type":"example","title":"Divide $(8 \\times 10^6) \\div (2 \\times 10^2)$","steps":["$4 \\times 10^{6-2} = 4 \\times 10^4$."],"answer":"$4 \\times 10^4$"},{"type":"question","questionText":"$(5 \\times 10^2) \\times (4 \\times 10^1)$?","questionType":"multiple_choice","options":["$2 \\times 10^3$","$20 \\times 10^3$","$9 \\times 10^3$","$2 \\times 10^2$"],"correctAnswer":"$2 \\times 10^3$","explanation":"Multiply coefficients and add powers."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'standard_form'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Operations in Standard Form');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Standard Form — Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"Light travels $3 \\times 10^8$ m/s. Distance in $2 \\times 10^{-3}$ s?","steps":["$(3 \\times 2) \\times 10^{8-3} = 6 \\times 10^5$ m."],"answer":"$6 \\times 10^5$ m"},{"type":"callout","variant":"warning","content":"Adjust $a$ if product coefficient $\\ge 10$."},{"type":"question","questionText":"Population $2.5 \\times 10^7$. Write ordinary form.","questionType":"multiple_choice","options":["$25000000$","$2500000$","$250000$","$250000000$"],"correctAnswer":"$25000000$","explanation":"Move decimal 7 places."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'standard_form'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Standard Form — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Introduction to Logarithms', '{"blocks":[{"type":"heading","content":"Logarithms"},{"type":"paragraph","content":"If $b^x = N$, then $\\log_b N = x$. Logs are the **inverse** of indices."},{"type":"math_block","latex":"\\log_b N = x \\Leftrightarrow b^x = N","caption":"Definition"},{"type":"callout","variant":"key_point","content":"Common logs use base $10$: $\\log_{10} 100 = 2$ because $10^2 = 100$."},{"type":"example","title":"Evaluate $\\log_{10} 1000$","steps":["$10^3 = 1000$, so $\\log_{10} 1000 = 3$."],"answer":"$3$"},{"type":"question","questionText":"$\\log_{10} 1$?","questionType":"multiple_choice","options":["$0$","$1$","$10$","Undefined"],"correctAnswer":"$0$","explanation":"$10^0 = 1$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Introduction to Logarithms');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Logarithm Laws', '{"blocks":[{"type":"heading","content":"Laws of Logarithms"},{"type":"math_block","latex":"\\log(AB) = \\log A + \\log B, \\quad \\log\\left(\\frac{A}{B}\\right) = \\log A - \\log B","caption":"Product and quotient laws"},{"type":"example","title":"Simplify $\\log 50 + \\log 2$","steps":["$\\log(50 \\times 2) = \\log 100 = 2$."],"answer":"$2$"},{"type":"example","title":"Evaluate $\\log 1000 - \\log 10$","steps":["$\\log\\left(\\frac{1000}{10}\\right) = \\log 100 = 2$."],"answer":"$2$"},{"type":"question","questionText":"$\\log 8 + \\log 5$?","questionType":"multiple_choice","options":["$\\log 40$","$\\log 13$","$\\log 3$","$40$"],"correctAnswer":"$\\log 40$","explanation":"Product law."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Logarithm Laws');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Logarithms — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE Log Problems"},{"type":"example","title":"Solve $10^x = 500$ using logs","steps":["$x = \\log_{10} 500 \\approx 2.70$."],"answer":"$x \\approx 2.70$"},{"type":"example","title":"Find $\\log_{10} 0.01$","steps":["$10^{-2} = 0.01$, so $\\log = -2$."],"answer":"$-2$"},{"type":"callout","variant":"warning","content":"$\\log(a+b) \\neq \\log a + \\log b$ — product law only for multiplication."},{"type":"question","questionText":"$\\log_{10} 0.001$?","questionType":"multiple_choice","options":["$-3$","$3$","$-0.001$","$0.001$"],"correctAnswer":"$-3$","explanation":"$10^{-3} = 0.001$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'indices_logarithms' AND st.code = 'logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Logarithms — Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $2^5 \times 2^2$.', 'multiple_choice', '["$2^7$","$2^3$","$4^7$","$2^{10}$"]'::jsonb, '"$2^7$"'::jsonb, 'easy', 'Add indices.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $2^5 \times 2^2$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $5^0$.', 'multiple_choice', '["$1$","$0$","$5$","Undefined"]'::jsonb, '"$1$"'::jsonb, 'easy', 'Any non-zero to power 0 is 1.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $5^0$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $3^{-2}$.', 'multiple_choice', '["$\\frac{1}{9}$","$-9$","$9$","$\\frac{1}{6}$"]'::jsonb, '"$\\frac{1}{9}$"'::jsonb, 'easy', 'Negative index = reciprocal.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $3^{-2}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Write $7000$ in standard form.', 'multiple_choice', '["$7 \\times 10^3$","$7 \\times 10^4$","$70 \\times 10^2$","$0.7 \\times 10^4$"]'::jsonb, '"$7 \\times 10^3$"'::jsonb, 'easy', '$1 \le a < 10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='standard_form'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Write $7000$ in standard form.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Write $3.2 \times 10^2$ in ordinary form.', 'multiple_choice', '["$320$","$32$","$3200$","$0.32$"]'::jsonb, '"$320$"'::jsonb, 'easy', 'Move decimal 2 places.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='standard_form'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Write $3.2 \times 10^2$ in ordinary form.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $\log_{10} 100$.', 'multiple_choice', '["$2$","$10$","$100$","$1$"]'::jsonb, '"$2$"'::jsonb, 'easy', '$10^2 = 100$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\log_{10} 100$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $10^4 = 10000$, then $\log_{10} 10000 = ?$', 'multiple_choice', '["$4$","$10000$","$10$","$40$"]'::jsonb, '"$4$"'::jsonb, 'easy', 'Log is the index.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $10^4 = 10000$, then $\log_{10} 10000 = ?$');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $(2^2)^3$.', 'multiple_choice', '["$2^6$","$2^5$","$2^8$","$64^2$"]'::jsonb, '"$2^6$"'::jsonb, 'easy', 'Multiply indices.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $(2^2)^3$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\frac{x^8}{x^3}$.', 'multiple_choice', '["$x^5$","$x^{11}$","$x^{24}$","$x^3$"]'::jsonb, '"$x^5$"'::jsonb, 'medium', 'Subtract indices.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\frac{x^8}{x^3}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $\frac{3^4 \times 3^{-2}}{3}$.', 'multiple_choice', '["$3^1$","$3^6$","$3^7$","$9$"]'::jsonb, '"$3^1$"'::jsonb, 'medium', '$3^{4-2-1} = 3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\frac{3^4 \times 3^{-2}}{3}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Write $0.00045$ in standard form.', 'multiple_choice', '["$4.5 \\times 10^{-4}$","$4.5 \\times 10^4$","$45 \\times 10^{-5}$","$0.45 \\times 10^{-3}$"]'::jsonb, '"$4.5 \\times 10^{-4}$"'::jsonb, 'medium', 'Four places left.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='standard_form'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Write $0.00045$ in standard form.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(2 \times 10^3) \times (3 \times 10^4) = ?$', 'multiple_choice', '["$6 \\times 10^7$","$5 \\times 10^7$","$6 \\times 10^{12}$","$6 \\times 10^1$"]'::jsonb, '"$6 \\times 10^7$"'::jsonb, 'medium', 'Add powers of 10.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='standard_form'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(2 \times 10^3) \times (3 \times 10^4) = ?$');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\log 20 + \log 5$.', 'multiple_choice', '["$2$","$\\log 25$","$\\log 100$","$3$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$\log 100 = 2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\log 20 + \log 5$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $\log_{10} 50 - \log_{10} 5$.', 'multiple_choice', '["$1$","$2$","$\\log 45$","$10$"]'::jsonb, '"$1$"'::jsonb, 'medium', '$\log 10 = 1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $\log_{10} 50 - \log_{10} 5$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Express $\sqrt{16}$ as a power of $2$.', 'multiple_choice', '["$2^2$","$2^4$","$4^2$","$2^8$"]'::jsonb, '"$2^2$"'::jsonb, 'medium', '$16 = 2^4$; $\sqrt{16}=4=2^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Express $\sqrt{16}$ as a power of $2$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Divide $(8.4 \times 10^7) \div (2.1 \times 10^3)$.', 'multiple_choice', '["$4 \\times 10^4$","$4 \\times 10^{10}$","$6.3 \\times 10^4$","$4 \\times 10^3$"]'::jsonb, '"$4 \\times 10^4$"'::jsonb, 'medium', 'Subtract powers.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='standard_form'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Divide $(8.4 \times 10^7) \div (2.1 \times 10^3)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\frac{(2x^3)^2}{4x^2}$.', 'multiple_choice', '["$x^4$","$x^6$","$4x^4$","$x^2$"]'::jsonb, '"$x^4$"'::jsonb, 'hard', '$\frac{4x^6}{4x^2} = x^4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\frac{(2x^3)^2}{4x^2}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $2^x = 32$, find $x$.', 'multiple_choice', '["$5$","$4$","$6$","$16$"]'::jsonb, '"$5$"'::jsonb, 'hard', '$32 = 2^5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $2^x = 32$, find $x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mass of Earth $\approx 6 \times 10^{24}$ kg. Write $3 \times 10^{21}$ kg as fraction of Earth mass.', 'multiple_choice', '["$\\frac{1}{2000}$","$\\frac{1}{200}$","$\\frac{1}{20}$","$2000$"]'::jsonb, '"$\\frac{1}{2000}$"'::jsonb, 'hard', 'Divide powers: $10^{21-24}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='standard_form'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mass of Earth $\approx 6 \times 10^{24}$ kg. Write $3 \times 10^{21}$ kg as fraction of Earth mass.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(1.2 \times 10^{-4}) \times (5 \times 10^6) = ?$', 'multiple_choice', '["$6 \\times 10^2$","$6 \\times 10^{-2}$","$6 \\times 10^{10}$","$6 \\times 10^{-10}$"]'::jsonb, '"$6 \\times 10^2$"'::jsonb, 'hard', '$1.2 \times 5 = 6$; add indices.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='standard_form'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(1.2 \times 10^{-4}) \times (5 \times 10^6) = ?$');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $\log_{10} x = 2.5$ approximately. Which is closest?', 'multiple_choice', '["$316$","$25$","$250$","$1000$"]'::jsonb, '"$316$"'::jsonb, 'hard', '$x = 10^{2.5} \approx 316$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $\log_{10} x = 2.5$ approximately. Which is closest?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $\log a = 2$ and $\log b = 3$, find $\log(ab)$.', 'multiple_choice', '["$5$","$6$","$1$","$8$"]'::jsonb, '"$5$"'::jsonb, 'hard', '$\log a + \log b$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $\log a = 2$ and $\log b = 3$, find $\log(ab)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $(3^2)^3 \div 3^4$.', 'multiple_choice', '["$3^2$","$3^6$","$3^{10}$","$9$"]'::jsonb, '"$3^2$"'::jsonb, 'hard', '$3^6 \div 3^4 = 3^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_of_indices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $(3^2)^3 \div 3^4$.');
+
+
