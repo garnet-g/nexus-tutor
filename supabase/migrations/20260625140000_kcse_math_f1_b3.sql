@@ -204,3 +204,204 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='units_time'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='time'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Clock loses $3$ min per day. Loss after $10$ days?');
 
+-- ========== LINEAR EQUATIONS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'What Is a Linear Equation?', '{"blocks":[{"type":"heading","content":"Linear Equations"},{"type":"paragraph","content":"A **linear equation** has the variable to power $1$ only, e.g. $2x + 5 = 13$."},{"type":"paragraph","content":"The **solution** is the value of $x$ that makes both sides equal."},{"type":"callout","variant":"key_point","content":"Whatever you do to one side, do to the other."},{"type":"example","title":"Solve $x + 7 = 15$","steps":["Subtract $7$ from both sides: $x = 8$."],"answer":"$x = 8$"},{"type":"callout","variant":"warning","content":"Check your answer by substituting back."},{"type":"question","questionText":"Solve $x - 4 = 9$.","questionType":"multiple_choice","options":["$x = 13$","$x = 5$","$x = 36$","$x = -5$"],"correctAnswer":"$x = 13$","explanation":"Add $4$ to both sides."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'solving_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'What Is a Linear Equation?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Linear Equations — Methods', '{"blocks":[{"type":"heading","content":"Methods for Solving"},{"type":"example","title":"Solve $3x = 21$","steps":["Divide both sides by $3$: $x = 7$."],"answer":"$x = 7$"},{"type":"example","title":"Solve $2x + 5 = 17$","steps":["Subtract $5$: $2x = 12$.","Divide by $2$: $x = 6$."],"answer":"$x = 6$"},{"type":"example","title":"Solve $4x - 3 = 2x + 9$","steps":["Subtract $2x$: $2x - 3 = 9$.","Add $3$: $2x = 12$.","$x = 6$."],"answer":"$x = 6$"},{"type":"callout","variant":"warning","content":"Collect $x$-terms on one side, numbers on the other."},{"type":"question","questionText":"Solve $5x - 2 = 18$.","questionType":"multiple_choice","options":["$x = 4$","$x = 20$","$x = 3.2$","$x = 16$"],"correctAnswer":"$x = 4$","explanation":"$5x = 20$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'solving_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Linear Equations — Methods');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Linear Equations in Exams', '{"blocks":[{"type":"heading","content":"Exam-Style Solving"},{"type":"example","title":"Solve $\\frac{x}{3} + 2 = 7$","steps":["Subtract $2$: $\\frac{x}{3} = 5$.","Multiply by $3$: $x = 15$."],"answer":"$x = 15$"},{"type":"callout","variant":"warning","content":"Clear fractions early by multiplying through."},{"type":"question","questionText":"Solve $3(x - 2) = 12$.","questionType":"multiple_choice","options":["$x = 6$","$x = 4$","$x = 2$","$x = 10$"],"correctAnswer":"$x = 6$","explanation":"$x - 2 = 4$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'solving_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Linear Equations in Exams');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Forming Equations from Words', '{"blocks":[{"type":"heading","content":"Forming Equations"},{"type":"paragraph","content":"Translate a word problem into algebra. Choose a letter for the unknown."},{"type":"paragraph","content":"\"Five more than a number\" $\\rightarrow x + 5$. \"Twice a number\" $\\rightarrow 2x$."},{"type":"callout","variant":"key_point","content":"Read carefully: \"is\" often means $=$."},{"type":"example","title":"Write an equation: a number plus $8$ is $20$","steps":["Let the number be $x$.","$x + 8 = 20$."],"answer":"$x + 8 = 20$"},{"type":"callout","variant":"warning","content":"\"Less than\" reverses order: $5$ less than $x$ is $x - 5$, not $5 - x$."},{"type":"question","questionText":"\"Three times a number equals $15$.\" Which equation?","questionType":"multiple_choice","options":["$3x = 15$","$x + 3 = 15$","$3 + x = 15$","$x - 3 = 15$"],"correctAnswer":"$3x = 15$","explanation":"Three times means multiply."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'forming_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Forming Equations from Words');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Forming Equations — Practice', '{"blocks":[{"type":"heading","content":"More Formation Examples"},{"type":"example","title":"The sum of two consecutive integers is $47$. Form an equation.","steps":["Let first be $n$, second $n+1$.","$n + (n+1) = 47$."],"answer":"$2n + 1 = 47$"},{"type":"example","title":"Kamau has $x$ shillings. Grace has $50$ more. Together KES $350$.","steps":["Grace: $x + 50$.","$x + (x+50) = 350$."],"answer":"$2x + 50 = 350$"},{"type":"callout","variant":"warning","content":"Define the unknown before writing the equation."},{"type":"question","questionText":"Perimeter of rectangle: length $2$ more than width $w$. Perimeter $28$. Equation?","questionType":"multiple_choice","options":["$2(w + w+2) = 28$","$w + 2 = 28$","$2w + 2 = 28$","$w(w+2) = 28$"],"correctAnswer":"$2(w + w+2) = 28$","explanation":"Perimeter uses both dimensions."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'forming_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Forming Equations — Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Forming Equations — Exam', '{"blocks":[{"type":"heading","content":"KCSE Formation Problems"},{"type":"example","title":"A shop sells pens at KES $15$ and books at KES $40$. Ali buys $3$ pens and $2$ books for KES $125$. Form an equation.","steps":["Let $p$ be pens only if needed; here counts fixed.","$3(15) + 2(40) = 125$ — check: $45 + 80 = 125$. ✓"],"answer":"$3(15) + 2(40) = 125$"},{"type":"callout","variant":"warning","content":"Distinguish forming from solving — KCSE may ask for the equation only."},{"type":"question","questionText":"Age: father $40$, son $x$, father is triple son''''s age. Equation?","questionType":"multiple_choice","options":["$40 = 3x$","$40 + x = 3$","$x = 40 - 3$","$3 + x = 40$"],"correctAnswer":"$40 = 3x$","explanation":"Triple means $3x$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'forming_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Forming Equations — Exam');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Word Problems — Linear Equations', '{"blocks":[{"type":"heading","content":"Applications of Linear Equations"},{"type":"paragraph","content":"Real problems become equations, then solve."},{"type":"paragraph","content":"Money, age, consecutive numbers and geometry are common KCSE types."},{"type":"callout","variant":"key_point","content":"Always state what $x$ represents."},{"type":"example","title":"Three consecutive integers sum to $54$. Find them.","steps":["Let integers be $n, n+1, n+2$.","$3n + 3 = 54$, so $n = 17$.","Numbers: $17, 18, 19$."],"answer":"$17, 18, 19$"},{"type":"callout","variant":"warning","content":"Consecutive even integers step by $2$."},{"type":"question","questionText":"Number plus its double is $27$. Find the number.","questionType":"multiple_choice","options":["$9$","$13.5$","$18$","$3$"],"correctAnswer":"$9$","explanation":"$x + 2x = 27$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'applications_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Word Problems — Linear Equations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applied Linear Equations', '{"blocks":[{"type":"heading","content":"Worked Applications"},{"type":"example","title":"Mwangi bought $x$ oranges at KES $8$ each and paid KES $120$. Find $x$.","steps":["$8x = 120$.","$x = 15$."],"answer":"$15$ oranges"},{"type":"example","title":"Rectangle: length $5$ cm more than width. Perimeter $38$ cm. Find width.","steps":["$2(w + w+5) = 38$.","$4w + 10 = 38$, $w = 7$ cm."],"answer":"$7$ cm"},{"type":"callout","variant":"warning","content":"Include units in the final answer."},{"type":"question","questionText":"Share KES $500$ in ratio $2:3$. Smaller share?","questionType":"multiple_choice","options":["KES $200$","KES $300$","KES $250$","KES $100$"],"correctAnswer":"KES $200$","explanation":"Total parts $5$; $\\frac{2}{5} \\times 500$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'applications_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applied Linear Equations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'KCSE Word Problems', '{"blocks":[{"type":"heading","content":"Exam Word Problems"},{"type":"example","title":"Amina is $4$ years older than Beth. In $6$ years their ages sum to $40$. Find Beth''''s age now.","steps":["Beth now $b$; Amina $b+4$.","In $6$ years: $(b+6) + (b+10) = 40$.","$2b = 24$, $b = 12$."],"answer":"Beth is $12$"},{"type":"callout","variant":"warning","content":"\"In $n$ years\" means add $n$ to each present age."},{"type":"question","questionText":"Tank holds $x$ litres. After using $35$ L, $\\frac{1}{4}$ full remains. Equation?","questionType":"multiple_choice","options":["$x - 35 = \\frac{x}{4}$","$x - 35 = 4x$","$35 = \\frac{x}{4}$","$x + 35 = \\frac{x}{4}$"],"correctAnswer":"$x - 35 = \\frac{x}{4}$","explanation":"Remaining is quarter of full."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_equations' AND st.code = 'applications_linear'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'KCSE Word Problems');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $x + 5 = 12$.', 'multiple_choice', '["$x = 7$","$x = 17$","$x = -7$","$x = 60$"]'::jsonb, '"$x = 7$"'::jsonb, 'easy', 'Subtract $5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $x + 5 = 12$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $2x = 14$.', 'multiple_choice', '["$x = 7$","$x = 28$","$x = 12$","$x = 16$"]'::jsonb, '"$x = 7$"'::jsonb, 'easy', 'Divide by $2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $2x = 14$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $x - 9 = 0$.', 'multiple_choice', '["$x = 9$","$x = -9$","$x = 0$","$x = 81$"]'::jsonb, '"$x = 9$"'::jsonb, 'easy', 'Add $9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $x - 9 = 0$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Translate: $x$ decreased by $3$ equals $10$.', 'multiple_choice', '["$x - 3 = 10$","$3 - x = 10$","$x + 3 = 10$","$3x = 10$"]'::jsonb, '"$x - 3 = 10$"'::jsonb, 'easy', 'Decreased by means subtract.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Translate: $x$ decreased by $3$ equals $10$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sum of a number and $12$ is $30$. Equation?', 'multiple_choice', '["$x + 12 = 30$","$12x = 30$","$x - 12 = 30$","$x = 12 + 30$"]'::jsonb, '"$x + 12 = 30$"'::jsonb, 'easy', 'Sum means add.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sum of a number and $12$ is $30$. Equation?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cost $8x = 64$. Find $x$.', 'multiple_choice', '["$8$","$56$","$512$","$4$"]'::jsonb, '"$8$"'::jsonb, 'easy', '$64 \div 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cost $8x = 64$. Find $x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Half of $x$ is $15$. Find $x$.', 'multiple_choice', '["$30$","$7.5$","$15$","$45$"]'::jsonb, '"$30$"'::jsonb, 'easy', '$x = 30$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Half of $x$ is $15$. Find $x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $x + 3 = 3x - 5$.', 'multiple_choice', '["$x = 4$","$x = 8$","$x = -4$","$x = 1$"]'::jsonb, '"$x = 4$"'::jsonb, 'medium', '$2x = 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $x + 3 = 3x - 5$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $5x + 1 = 3x + 13$.', 'multiple_choice', '["$x = 6$","$x = 12$","$x = 7$","$x = 4$"]'::jsonb, '"$x = 6$"'::jsonb, 'medium', '$2x = 12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $5x + 1 = 3x + 13$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $\frac{2x}{5} = 8$.', 'multiple_choice', '["$x = 20$","$x = 16$","$x = 4$","$x = 40$"]'::jsonb, '"$x = 20$"'::jsonb, 'medium', 'Multiply by $5$, divide by $2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $\frac{2x}{5} = 8$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Perimeter $26$: square side $s$. Equation?', 'multiple_choice', '["$4s = 26$","$s^2 = 26$","$2s = 26$","$s + 4 = 26$"]'::jsonb, '"$4s = 26$"'::jsonb, 'medium', 'Four equal sides.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Perimeter $26$: square side $s$. Equation?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Consecutive integers sum $35$. Equation?', 'multiple_choice', '["$n + (n+1) = 35$","$2n = 35$","$n + 1 = 35$","$n^2 = 35$"]'::jsonb, '"$n + (n+1) = 35$"'::jsonb, 'medium', 'Two consecutive.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Consecutive integers sum $35$. Equation?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'KES $x$ salary plus KES $2000$ bonus $= 15000$. Find $x$.', 'multiple_choice', '["KES $13000$","KES $17000$","KES $7500$","KES $15000$"]'::jsonb, '"KES $13000$"'::jsonb, 'medium', '$x = 13000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='KES $x$ salary plus KES $2000$ bonus $= 15000$. Find $x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Father $45$, son $x$, father is $5$ more than twice son. Find $x$.', 'multiple_choice', '["$20$","$25$","$22.5$","$40$"]'::jsonb, '"$20$"'::jsonb, 'medium', '$45 = 2x + 5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Father $45$, son $x$, father is $5$ more than twice son. Find $x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $3(x + 4) = 2(x - 1) + 20$.', 'multiple_choice', '["$x = 8$","$x = 4$","$x = 0$","$x = 12$"]'::jsonb, '"$x = 8$"'::jsonb, 'hard', 'Expand and collect.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $3(x + 4) = 2(x - 1) + 20$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $\frac{x+1}{2} = 5$.', 'multiple_choice', '["$x = 9$","$x = 4$","$x = 11$","$x = 2.5$"]'::jsonb, '"$x = 9$"'::jsonb, 'hard', '$x + 1 = 10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $\frac{x+1}{2} = 5$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Three consecutive even integers sum $54$. Smallest?', 'multiple_choice', '["$16$","$18$","$17$","$14$"]'::jsonb, '"$16$"'::jsonb, 'hard', '$n + (n+2) + (n+4) = 54$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Three consecutive even integers sum $54$. Smallest?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Shop: $2$ shirts and $3$ ties cost KES $410$. Shirt KES $100$. Tie price?', 'multiple_choice', '["KES $70$","KES $110$","KES $50$","KES $210$"]'::jsonb, '"KES $70$"'::jsonb, 'hard', '$200 + 3t = 410$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Shop: $2$ shirts and $3$ ties cost KES $410$. Shirt KES $100$. Tie price?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Width $w$, length $3w$, perimeter $48$. Find $w$.', 'multiple_choice', '["$6$","$8$","$12$","$4$"]'::jsonb, '"$6$"'::jsonb, 'hard', '$2(w + 3w) = 48$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Width $w$, length $3w$, perimeter $48$. Find $w$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Number: add $7$, double result, get $30$. Original number?', 'multiple_choice', '["$8$","$11$","$15$","$23$"]'::jsonb, '"$8$"'::jsonb, 'hard', '$2(x+7) = 30$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Number: add $7$, double result, get $30$. Original number?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $0.5x - 1.5 = 4$.', 'multiple_choice', '["$x = 11$","$x = 5$","$x = 7$","$x = 2.5$"]'::jsonb, '"$x = 11$"'::jsonb, 'hard', '$0.5x = 5.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $0.5x - 1.5 = 4$.');
+
