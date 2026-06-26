@@ -637,3 +637,216 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square pyramid base $12$ cm, slant height $10$ cm. Total SA?');
 
+-- ========== VOLUME OF SOLIDS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume of Prisms', '{"blocks": [{"type": "heading", "content": "Prism Volume"}, {"type": "math_block", "latex": "V_{\\text{prism}} = A_{\\text{cross-section}} \\times h", "caption": "Uniform cross-section times length/height"}, {"type": "callout", "variant": "key_point", "content": "Cuboid: $V = lwh$. Cylinder is a prism with circular cross-section."}, {"type": "example", "title": "Cuboid $6$ cm $\\times$ $4$ cm $\\times$ $5$ cm.", "steps": ["$V = 120$ cm$^3$."], "answer": "$120$ cm$^3$"}, {"type": "question", "questionText": "Prism volume equals?", "questionType": "multiple_choice", "options": ["Cross-section area $\\times$ length", "Surface area $\\times$ 2", "$\\pi r^2 h$ only", "Sum of edges"], "correctAnswer": "Cross-section area $\\times$ length", "explanation": "Uniform cross-section."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'prisms_cylinders_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume of Prisms');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume of Cylinders', '{"blocks": [{"type": "heading", "content": "Cylinder Volume"}, {"type": "math_block", "latex": "V_{\\text{cylinder}} = \\pi r^2 h"}, {"type": "example", "title": "Cylinder $r=4$ cm, $h=10$ cm.", "steps": ["$V = \\pi(16)(10) = 160\\pi$ cm$^3$."], "answer": "$160\\pi$ cm$^3$"}, {"type": "callout", "variant": "warning", "content": "Use radius, not diameter, in $\\pi r^2 h$."}, {"type": "question", "questionText": "Cylinder diameter $6$ cm, height $5$ cm. Volume?", "questionType": "multiple_choice", "options": ["$45\\pi$ cm$^3$", "$90\\pi$ cm$^3$", "$30\\pi$ cm$^3$", "$180\\pi$ cm$^3$"], "correctAnswer": "$45\\pi$ cm$^3$", "explanation": "$r=3$; $\\pi(9)(5)$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'prisms_cylinders_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume of Cylinders');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Prisms and Cylinders Volume — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Prism and Cylinder Volume"}, {"type": "example", "title": "Water tank cylinder $r=1.4$ m, $h=3$ m. Capacity in m$^3$?", "steps": ["$V = \\pi(1.96)(3) = 5.88\\pi \\approx 18.5$ m$^3$."], "answer": "$5.88\\pi$ m$^3$"}, {"type": "callout", "variant": "warning", "content": "Capacity questions may ask for litres: $1$ m$^3 = 1000$ L."}, {"type": "question", "questionText": "Triangular prism: triangle base area $12$ cm$^2$, length $15$ cm. Volume?", "questionType": "multiple_choice", "options": ["$180$ cm$^3$", "$27$ cm$^3$", "$90$ cm$^3$", "$360$ cm$^3$"], "correctAnswer": "$180$ cm$^3$", "explanation": "$12 \\times 15$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'prisms_cylinders_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Prisms and Cylinders Volume — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume of Pyramids', '{"blocks": [{"type": "heading", "content": "Pyramid Volume"}, {"type": "math_block", "latex": "V_{\\text{pyramid}} = \\frac{1}{3} \\times A_{\\text{base}} \\times h", "caption": "One-third of prism with same base and height"}, {"type": "example", "title": "Square pyramid: base side $6$ cm, height $9$ cm.", "steps": ["Base area $36$.", "$V = \\frac{1}{3}(36)(9) = 108$ cm$^3$."], "answer": "$108$ cm$^3$"}, {"type": "callout", "variant": "key_point", "content": "Pyramid volume is exactly $\\frac{1}{3}$ of the enclosing prism."}, {"type": "question", "questionText": "Pyramid volume factor vs prism?", "questionType": "multiple_choice", "options": ["$\\frac{1}{3}$", "$\\frac{1}{2}$", "$2$", "$3$"], "correctAnswer": "$\\frac{1}{3}$", "explanation": "Standard relationship."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'pyramids_cones_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume of Pyramids');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume of Cones', '{"blocks": [{"type": "heading", "content": "Cone Volume"}, {"type": "math_block", "latex": "V_{\\text{cone}} = \\frac{1}{3}\\pi r^2 h"}, {"type": "example", "title": "Cone $r=3$ cm, $h=12$ cm.", "steps": ["$V = \\frac{1}{3}\\pi(9)(12) = 36\\pi$ cm$^3$."], "answer": "$36\\pi$ cm$^3$"}, {"type": "callout", "variant": "warning", "content": "$h$ is the perpendicular height from apex to base, not slant height $l$."}, {"type": "question", "questionText": "Cone $r=6$, $h=4$. Volume?", "questionType": "multiple_choice", "options": ["$48\\pi$ cm$^3$", "$144\\pi$ cm$^3$", "$24\\pi$ cm$^3$", "$96\\pi$ cm$^3$"], "correctAnswer": "$48\\pi$ cm$^3$", "explanation": "$\\frac{1}{3}\\pi(36)(4)$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'pyramids_cones_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume of Cones');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Pyramids and Cones Volume — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Pyramid and Cone Volume"}, {"type": "example", "title": "Conical heap of grain: diameter $4$ m, height $3$ m.", "steps": ["$r=2$.", "$V = \\frac{1}{3}\\pi(4)(3) = 4\\pi$ m$^3$."], "answer": "$4\\pi$ m$^3$"}, {"type": "callout", "variant": "warning", "content": "Frustum volume = large cone minus small cone removed."}, {"type": "question", "questionText": "Pyramid base $10$ cm $\\times$ $10$ cm, height $15$ cm. Volume?", "questionType": "multiple_choice", "options": ["$500$ cm$^3$", "$1500$ cm$^3$", "$250$ cm$^3$", "$750$ cm$^3$"], "correctAnswer": "$500$ cm$^3$", "explanation": "$\\frac{1}{3}(100)(15)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'pyramids_cones_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Pyramids and Cones Volume — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume of Spheres', '{"blocks": [{"type": "heading", "content": "Sphere Volume"}, {"type": "math_block", "latex": "V_{\\text{sphere}} = \\frac{4}{3}\\pi r^3"}, {"type": "callout", "variant": "key_point", "content": "Hemisphere volume (solid): $V = \\frac{2}{3}\\pi r^3$."}, {"type": "example", "title": "Sphere radius $3$ cm.", "steps": ["$V = \\frac{4}{3}\\pi(27) = 36\\pi$ cm$^3$."], "answer": "$36\\pi$ cm$^3$"}, {"type": "question", "questionText": "Sphere volume formula?", "questionType": "multiple_choice", "options": ["$\\frac{4}{3}\\pi r^3$", "$4\\pi r^2$", "$\\pi r^2 h$", "$\\frac{1}{3}\\pi r^2 h$"], "correctAnswer": "$\\frac{4}{3}\\pi r^3$", "explanation": "Standard formula."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'spheres_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume of Spheres');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Hemispheres and Composite Volume', '{"blocks": [{"type": "heading", "content": "Composite Volumes"}, {"type": "example", "title": "Solid hemisphere radius $6$ cm on cylinder $r=6$, $h=10$ cm.", "steps": ["Hemisphere: $\\frac{2}{3}\\pi(216) = 144\\pi$.", "Cylinder: $\\pi(36)(10) = 360\\pi$.", "Total $504\\pi$ cm$^3$."], "answer": "$504\\pi$ cm$^3$"}, {"type": "callout", "variant": "warning", "content": "Add volumes of parts; for hollow solids subtract inner volume."}, {"type": "question", "questionText": "Hemisphere radius $3$ cm. Volume?", "questionType": "multiple_choice", "options": ["$18\\pi$ cm$^3$", "$36\\pi$ cm$^3$", "$9\\pi$ cm$^3$", "$27\\pi$ cm$^3$"], "correctAnswer": "$18\\pi$ cm$^3$", "explanation": "$\\frac{2}{3}\\pi(27)$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'spheres_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Hemispheres and Composite Volume');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Volume — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Volume of Solids"}, {"type": "example", "title": "Frustum: cone height $12$ cm, top radius $2$ cm, bottom $5$ cm. Method?", "steps": ["Volume large cone minus small cone cut off.", "Use similar triangles to find removed cone height."], "answer": "Subtract cone volumes"}, {"type": "callout", "variant": "warning", "content": "Always sketch and label $r$, $R$, $h$ on frustums."}, {"type": "question", "questionText": "Sphere diameter $10$ cm. Volume?", "questionType": "multiple_choice", "options": ["$\\frac{500\\pi}{3}$ cm$^3$", "$\\frac{250\\pi}{3}$ cm$^3$", "$500\\pi$ cm$^3$", "$100\\pi$ cm$^3$"], "correctAnswer": "$\\frac{500\\pi}{3}$ cm$^3$", "explanation": "$r=5$; $\\frac{4}{3}\\pi(125)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'volume_solids' AND st.code = 'spheres_vol'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Volume — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid volume formula?', 'multiple_choice', '["$lwh$", "$2(l+w)$", "$lw+h$", "$\\pi r^2 h$"]'::jsonb, '"$lwh$"'::jsonb, 'easy', 'Product of three dimensions.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid volume formula?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder volume?', 'multiple_choice', '["$\\pi r^2 h$", "$2\\pi rh$", "$\\frac{4}{3}\\pi r^3$", "$\\pi r l$"]'::jsonb, '"$\\pi r^2 h$"'::jsonb, 'easy', 'Base area times height.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube edge $3$ cm. Volume?', 'multiple_choice', '["$27$ cm$^3$", "$9$ cm$^3$", "$18$ cm$^3$", "$54$ cm$^3$"]'::jsonb, '"$27$ cm$^3$"'::jsonb, 'easy', '$3^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube edge $3$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder $r=2$, $h=10$. Volume?', 'multiple_choice', '["$40\\pi$ cm$^3$", "$20\\pi$ cm$^3$", "$4\\pi$ cm$^3$", "$80\\pi$ cm$^3$"]'::jsonb, '"$40\\pi$ cm$^3$"'::jsonb, 'easy', '$\pi(4)(10)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder $r=2$, $h=10$. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Prism volume uses?', 'multiple_choice', '["Constant cross-section", "Slant height only", "Surface area", "Perimeter"]'::jsonb, '"Constant cross-section"'::jsonb, 'easy', 'Area of end times length.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Prism volume uses?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid $5 \times 4 \times 2$ cm. Volume?', 'multiple_choice', '["$40$ cm$^3$", "$20$ cm$^3$", "$80$ cm$^3$", "$11$ cm$^3$"]'::jsonb, '"$40$ cm$^3$"'::jsonb, 'easy', '$5 \times 4 \times 2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid $5 \times 4 \times 2$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder volume $100\pi$ cm$^3$, $r=5$ cm. Height?', 'multiple_choice', '["$4$ cm", "$5$ cm", "$10$ cm", "$20$ cm"]'::jsonb, '"$4$ cm"'::jsonb, 'easy', '$h = V/(\pi r^2)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder volume $100\pi$ cm$^3$, $r=5$ cm. Height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pyramid volume formula?', 'multiple_choice', '["$\\frac{1}{3}Ah$", "$Ah$", "$\\frac{1}{2}Ah$", "$\\frac{1}{3}\\pi r^2 h$"]'::jsonb, '"$\\frac{1}{3}Ah$"'::jsonb, 'easy', 'One-third of prism.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pyramid volume formula?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cone volume?', 'multiple_choice', '["$\\frac{1}{3}\\pi r^2 h$", "$\\pi r^2 h$", "$\\frac{1}{3}\\pi r l$", "$2\\pi r^2 h$"]'::jsonb, '"$\\frac{1}{3}\\pi r^2 h$"'::jsonb, 'medium', 'One-third of cylinder.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cone volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cone $r=3$, $h=9$. Volume?', 'multiple_choice', '["$27\\pi$ cm$^3$", "$81\\pi$ cm$^3$", "$9\\pi$ cm$^3$", "$54\\pi$ cm$^3$"]'::jsonb, '"$27\\pi$ cm$^3$"'::jsonb, 'medium', '$\frac{1}{3}\pi(9)(9)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cone $r=3$, $h=9$. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square pyramid base area $25$ cm$^2$, $h=6$ cm. Volume?', 'multiple_choice', '["$50$ cm$^3$", "$150$ cm$^3$", "$75$ cm$^3$", "$25$ cm$^3$"]'::jsonb, '"$50$ cm$^3$"'::jsonb, 'medium', '$\frac{1}{3}(25)(6)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square pyramid base area $25$ cm$^2$, $h=6$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid volume $120$ cm$^3$, base $10$ cm$^2$. Length?', 'multiple_choice', '["$12$ cm", "$10$ cm", "$110$ cm", "$20$ cm"]'::jsonb, '"$12$ cm"'::jsonb, 'medium', '$V = Ah$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid volume $120$ cm$^3$, base $10$ cm$^2$. Length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sphere volume $r=3$ cm?', 'multiple_choice', '["$36\\pi$ cm$^3$", "$27\\pi$ cm$^3$", "$12\\pi$ cm$^3$", "$9\\pi$ cm$^3$"]'::jsonb, '"$36\\pi$ cm$^3$"'::jsonb, 'medium', '$\frac{4}{3}\pi(27)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sphere volume $r=3$ cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hemisphere $r=6$ cm. Volume?', 'multiple_choice', '["$144\\pi$ cm$^3$", "$288\\pi$ cm$^3$", "$72\\pi$ cm$^3$", "$216\\pi$ cm$^3$"]'::jsonb, '"$144\\pi$ cm$^3$"'::jsonb, 'medium', '$\frac{2}{3}\pi(216)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hemisphere $r=6$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tank cylinder $r=0.7$ m, $h=2$ m. Volume in litres?', 'multiple_choice', '["$3079$ L approx", "$1000$ L", "$1400$ L", "$6158$ L"]'::jsonb, '"$3079$ L approx"'::jsonb, 'medium', '$\pi(0.49)(2) \times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tank cylinder $r=0.7$ m, $h=2$ m. Volume in litres?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cone diameter $8$ cm, $h=6$ cm. Volume?', 'multiple_choice', '["$32\\pi$ cm$^3$", "$96\\pi$ cm$^3$", "$16\\pi$ cm$^3$", "$64\\pi$ cm$^3$"]'::jsonb, '"$32\\pi$ cm$^3$"'::jsonb, 'hard', '$r=4$; $\frac{1}{3}\pi(16)(6)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cone diameter $8$ cm, $h=6$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Metal ball radius $9$ cm melted into cone $r=6$, $h=18$ cm. Same volume?', 'multiple_choice', '["Yes", "No", "Cone larger", "Cannot tell"]'::jsonb, '"Yes"'::jsonb, 'hard', 'Both $= 216\pi$ cm$^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Metal ball radius $9$ cm melted into cone $r=6$, $h=18$ cm. Same volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hollow cylinder $R=5$, $r=3$, $h=10$. Volume of material?', 'multiple_choice', '["$160\\pi$ cm$^3$", "$250\\pi$ cm$^3$", "$90\\pi$ cm$^3$", "$100\\pi$ cm$^3$"]'::jsonb, '"$160\\pi$ cm$^3$"'::jsonb, 'hard', '$\pi(25-9)(10)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hollow cylinder $R=5$, $r=3$, $h=10$. Volume of material?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Frustum: full cone $h=12$, $R=6$; top cut $h=4$. Volume frustum?', 'multiple_choice', '["$128\\pi$ cm$^3$", "$144\\pi$ cm$^3$", "$96\\pi$ cm$^3$", "$192\\pi$ cm$^3$"]'::jsonb, '"$128\\pi$ cm$^3$"'::jsonb, 'hard', 'Large minus small similar cone.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Frustum: full cone $h=12$, $R=6$; top cut $h=4$. Volume frustum?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sphere volume $288\pi$ cm$^3$. Radius?', 'multiple_choice', '["$6$ cm", "$4$ cm", "$8$ cm", "$12$ cm"]'::jsonb, '"$6$ cm"'::jsonb, 'hard', '$r^3 = 216$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sphere volume $288\pi$ cm$^3$. Radius?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Water fills cuboid $2$ m $\times$ $1.5$ m $\times$ $0.4$ m. Litres?', 'multiple_choice', '["$1200$ L", "$12$ L", "$120$ L", "$12000$ L"]'::jsonb, '"$1200$ L"'::jsonb, 'hard', '$1.2$ m$^3 \times 1000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Water fills cuboid $2$ m $\times$ $1.5$ m $\times$ $0.4$ m. Litres?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solid: cylinder $r=4$, $h=6$ plus hemisphere $r=4$. Volume?', 'multiple_choice', '["$224\\pi$ cm$^3$", "$160\\pi$ cm$^3$", "$96\\pi$ cm$^3$", "$256\\pi$ cm$^3$"]'::jsonb, '"$224\\pi$ cm$^3$"'::jsonb, 'hard', '$96\pi + \frac{128\pi}{3}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solid: cylinder $r=4$, $h=6$ plus hemisphere $r=4$. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pyramid same base and height as cylinder $r=3$, $h=8$. Pyramid volume?', 'multiple_choice', '["$24\\pi$ cm$^3$", "$72\\pi$ cm$^3$", "$8\\pi$ cm$^3$", "$216\\pi$ cm$^3$"]'::jsonb, '"$24\\pi$ cm$^3$"'::jsonb, 'hard', '$\frac{1}{3}$ of $72\pi$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones_vol'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pyramid same base and height as cylinder $r=3$, $h=8$. Pyramid volume?');
+
