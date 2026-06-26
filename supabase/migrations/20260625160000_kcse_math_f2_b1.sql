@@ -864,3 +864,218 @@ WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Line parallel to $y = 2x + 1$ through $(3, 1)$. Equation?');
 
 
+-- ========== REFLECTION AND CONGRUENCE ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reflection in a Mirror Line', '{"blocks":[{"type":"heading","content":"Reflection"},{"type":"paragraph","content":"A **reflection** flips a shape over a mirror line. Each point and its image are equidistant from the mirror, on a perpendicular."},{"type":"callout","variant":"key_point","content":"The mirror line is the perpendicular bisector of the segment joining a point to its image."},{"type":"example","title":"Reflect point $A(2, 3)$ in the $x$-axis","steps":["Image $A''(2, -3)$ — $y$ changes sign."],"answer":"$A''(2, -3)$"},{"type":"question","questionText":"Reflect $(4, -1)$ in $x$-axis?","questionType":"multiple_choice","options":["$(4, 1)$","$(-4, -1)$","$(-4, 1)$","$(4, -1)$"],"correctAnswer":"$(4, 1)$","explanation":"Negate $y$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'reflection'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reflection in a Mirror Line');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reflecting Shapes', '{"blocks":[{"type":"heading","content":"Reflecting Shapes"},{"type":"example","title":"Reflect $\\triangle ABC$ with $A(1,1)$, $B(3,1)$, $C(2,3)$ in $y$-axis","steps":["$A''(-1,1)$, $B''(-3,1)$, $C''(-2,3)$ — negate $x$."],"answer":"Triangle with negated $x$-coordinates"},{"type":"callout","variant":"warning","content":"Reflect every vertex; order of vertices is reversed in the image."},{"type":"question","questionText":"Reflect $(-2, 5)$ in $y$-axis?","questionType":"multiple_choice","options":["$(2, 5)$","$(-2, -5)$","$(2, -5)$","$(-2, 5)$"],"correctAnswer":"$(2, 5)$","explanation":"Negate $x$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'reflection'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reflecting Shapes');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reflection — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE Reflection"},{"type":"example","title":"Reflect point $P(3, -4)$ in the line $y = x$","steps":["Swap coordinates: $P''(-4, 3)$ — actually for $y=x$: $(y,x)$ so $(-4, 3)$ wait: $(3,-4) \\to (-4, 3)$."],"answer":"$P''(-4, 3)$"},{"type":"question","questionText":"Reflect $(1, 2)$ in $y = x$?","questionType":"multiple_choice","options":["$(2, 1)$","$(-1, -2)$","$(-2, -1)$","$(1, -2)$"],"correctAnswer":"$(2, 1)$","explanation":"Swap $x$ and $y$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'reflection'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reflection — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Congruent Figures', '{"blocks":[{"type":"heading","content":"Congruence"},{"type":"paragraph","content":"Two figures are **congruent** if they are identical in shape and size — one can be mapped onto the other by rotation, reflection, or translation."},{"type":"callout","variant":"key_point","content":"Congruent triangles have equal corresponding sides and angles."},{"type":"example","title":"Are two equilateral triangles of side $5$ cm congruent?","steps":["Same shape and size — yes, congruent."],"answer":"Yes"},{"type":"question","questionText":"Congruent shapes have equal?","questionType":"multiple_choice","options":["Corresponding sides and angles","Area only","Perimeter only","Orientation only"],"correctAnswer":"Corresponding sides and angles","explanation":"Same size and shape."},{"type":"question","questionText":"Congruent shapes have equal?","questionType":"multiple_choice","options":["Corresponding sides and angles","Area only","Perimeter only","Orientation only"],"correctAnswer":"Corresponding sides and angles","explanation":"Same size and shape."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'congruence'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Congruent Figures');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tests for Triangle Congruence', '{"blocks":[{"type":"heading","content":"Congruence Tests"},{"type":"paragraph","content":"**SSS**, **SAS**, **ASA**, **RHS** are standard congruence tests."},{"type":"example","title":"Two triangles: $AB=PQ$, $BC=QR$, $CA=RP$. Congruent?","steps":["All three sides equal — SSS, congruent."],"answer":"Congruent by SSS"},{"type":"callout","variant":"warning","content":"SSA is NOT a valid congruence test in general."},{"type":"question","questionText":"Which proves congruence?","questionType":"multiple_choice","options":["SAS","SSA","AAA","SSS and SAS"],"correctAnswer":"SSS and SAS","explanation":"AAA gives similar, not congruent."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'congruence'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tests for Triangle Congruence');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Congruence — Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"Rectangle $ABCD$ and rectangle $PQRS$ have $AB=PQ=6$ cm, $BC=QR=4$ cm. Congruent?","steps":["All sides match — congruent rectangles."],"answer":"Yes"},{"type":"question","questionText":"Two circles radius $7$ cm. Congruent?","questionType":"multiple_choice","options":["Yes","No","Only if same centre","Cannot tell"],"correctAnswer":"Yes","explanation":"Same radius."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'congruence'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Congruence — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Line Symmetry', '{"blocks":[{"type":"heading","content":"Line Symmetry"},{"type":"paragraph","content":"A shape has **line symmetry** if it can be folded onto itself along a mirror line."},{"type":"example","title":"How many lines of symmetry does a square have?","steps":["Vertical, horizontal, and two diagonals — $4$ lines."],"answer":"$4$"},{"type":"question","questionText":"Lines of symmetry of an equilateral triangle?","questionType":"multiple_choice","options":["$3$","$1$","$6$","$0$"],"correctAnswer":"$3$","explanation":"One through each vertex."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'symmetry'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Line Symmetry');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Rotational Symmetry', '{"blocks":[{"type":"heading","content":"Rotational Symmetry"},{"type":"paragraph","content":"**Order of rotational symmetry** is how many times the shape looks the same in a full $360^\\circ$ turn."},{"type":"example","title":"Order of rotational symmetry of a square?","steps":["$90^\\circ$ rotations: order $4$."],"answer":"Order $4$"},{"type":"callout","variant":"warning","content":"Do not confuse reflection symmetry with rotational symmetry."},{"type":"question","questionText":"A circle has rotational symmetry order?","questionType":"multiple_choice","options":["Infinite","$1$","$2$","$0$"],"correctAnswer":"Infinite","explanation":"Looks same at every angle."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'symmetry'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Rotational Symmetry');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Symmetry — Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"Letter H — how many lines of symmetry?","steps":["Horizontal and vertical through centre — $2$."],"answer":"$2$"},{"type":"question","questionText":"Regular pentagon: lines of symmetry?","questionType":"multiple_choice","options":["$5$","$10$","$1$","$3$"],"correctAnswer":"$5$","explanation":"One per vertex."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reflection_congruence' AND st.code = 'symmetry'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Symmetry — Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflect $(3, 2)$ in $x$-axis.', 'multiple_choice', '["$(3, -2)$","$(-3, 2)$","$(-3, -2)$","$(2, 3)$"]'::jsonb, '"$(3, -2)$"'::jsonb, 'easy', 'Negate $y$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflect $(3, 2)$ in $x$-axis.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflect $(5, -1)$ in $y$-axis.', 'multiple_choice', '["$(-5, -1)$","$(5, 1)$","$(-5, 1)$","$(1, -5)$"]'::jsonb, '"$(-5, -1)$"'::jsonb, 'easy', 'Negate $x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflect $(5, -1)$ in $y$-axis.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Congruent triangles are?', 'multiple_choice', '["Same shape and size","Same shape only","Same area only","Similar only"]'::jsonb, '"Same shape and size"'::jsonb, 'easy', 'Definition of congruence.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='congruence'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Congruent triangles are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'SSS means?', 'multiple_choice', '["Three sides equal","Three angles equal","Two sides and angle","Right angle and hypotenuse"]'::jsonb, '"Three sides equal"'::jsonb, 'easy', 'Side-Side-Side.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='congruence'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='SSS means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A square has how many lines of symmetry?', 'multiple_choice', '["$4$","$2$","$8$","$1$"]'::jsonb, '"$4$"'::jsonb, 'easy', 'Two diagonals plus two medians.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='symmetry'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A square has how many lines of symmetry?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Isosceles triangle lines of symmetry?', 'multiple_choice', '["$1$","$3$","$2$","$0$"]'::jsonb, '"$1$"'::jsonb, 'easy', 'Through apex to base midpoint.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='symmetry'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Isosceles triangle lines of symmetry?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflect $(0, 4)$ in $x$-axis.', 'multiple_choice', '["$(0, -4)$","$(4, 0)$","$(-4, 0)$","$(0, 4)$"]'::jsonb, '"$(0, -4)$"'::jsonb, 'easy', 'Negate $y$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflect $(0, 4)$ in $x$-axis.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle (not square) lines of symmetry?', 'multiple_choice', '["$2$","$4$","$1$","$0$"]'::jsonb, '"$2$"'::jsonb, 'easy', 'Horizontal and vertical.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='symmetry'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle (not square) lines of symmetry?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflect $(2, -3)$ in line $y = x$.', 'multiple_choice', '["$(-3, 2)$","$(-2, 3)$","$(3, -2)$","$(2, 3)$"]'::jsonb, '"$(-3, 2)$"'::jsonb, 'medium', 'Swap and negate? For $y=x$: swap to $(-3,2)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflect $(2, -3)$ in line $y = x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflect $(1, 4)$ in $x$-axis then $y$-axis. Final point?', 'multiple_choice', '["$(-1, -4)$","$(1, -4)$","$(-1, 4)$","$(1, 4)$"]'::jsonb, '"$(-1, -4)$"'::jsonb, 'medium', '$(1,-4)$ then $(-1,-4)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflect $(1, 4)$ in $x$-axis then $y$-axis. Final point?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two triangles: two sides and included angle equal. Test?', 'multiple_choice', '["SAS","SSS","ASA","RHS"]'::jsonb, '"SAS"'::jsonb, 'medium', 'Side-Angle-Side.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='congruence'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two triangles: two sides and included angle equal. Test?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'RHS applies to?', 'multiple_choice', '["Right-angled triangles","All triangles","Circles","Rectangles only"]'::jsonb, '"Right-angled triangles"'::jsonb, 'medium', 'Right angle-Hypotenuse-Side.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='congruence'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='RHS applies to?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Regular hexagon lines of symmetry?', 'multiple_choice', '["$6$","$3$","$12$","$2$"]'::jsonb, '"$6$"'::jsonb, 'medium', 'One per vertex.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='symmetry'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Regular hexagon lines of symmetry?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Order of rotational symmetry of equilateral triangle?', 'multiple_choice', '["$3$","$1$","$6$","$2$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$120^\circ$ rotations.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='symmetry'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Order of rotational symmetry of equilateral triangle?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Point on $x$-axis reflected in $x$-axis?', 'multiple_choice', '["Unchanged","Moves to $y$-axis","Origin","Negates $x$"]'::jsonb, '"Unchanged"'::jsonb, 'medium', 'On the mirror line.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Point on $x$-axis reflected in $x$-axis?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two rectangles $3 \times 5$ and $5 \times 3$. Congruent?', 'multiple_choice', '["Yes","No","Similar only","Cannot tell"]'::jsonb, '"Yes"'::jsonb, 'medium', 'Same dimensions.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='congruence'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two rectangles $3 \times 5$ and $5 \times 3$. Congruent?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Vertices $A(1,2)$, $B(4,2)$ reflected in $x=1$. Image of $B$?', 'multiple_choice', '["$(-2, 2)$","$(0, 2)$","$(2, 2)$","$(-4, 2)$"]'::jsonb, '"$(-2, 2)$"'::jsonb, 'hard', 'Distance 3 left of mirror.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Vertices $A(1,2)$, $B(4,2)$ reflected in $x=1$. Image of $B$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflect $(3, 5)$ in $y = -x$.', 'multiple_choice', '["$(-5, -3)$","$(5, 3)$","$(-3, -5)$","$(3, -5)$"]'::jsonb, '"$(-5, -3)$"'::jsonb, 'hard', 'Swap and negate both.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflect $(3, 5)$ in $y = -x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\triangle ABC \cong \triangle DEF$. $AB=7$, $BC=5$, $EF=5$. Find $DE$.', 'multiple_choice', '["$7$","$5$","$12$","$2$"]'::jsonb, '"$7$"'::jsonb, 'hard', '$DE$ corresponds to $AB$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='congruence'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\triangle ABC \cong \triangle DEF$. $AB=7$, $BC=5$, $EF=5$. Find $DE$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is NOT a congruence test?', 'multiple_choice', '["SSA","SSS","SAS","ASA"]'::jsonb, '"SSA"'::jsonb, 'hard', 'Ambiguous case.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='congruence'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is NOT a congruence test?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Letter N — rotational symmetry order?', 'multiple_choice', '["$2$","$1$","$4$","Infinite"]'::jsonb, '"$2$"'::jsonb, 'hard', '$180^\circ$ rotation.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='symmetry'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Letter N — rotational symmetry order?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Regular octagon: order of rotational symmetry?', 'multiple_choice', '["$8$","$4$","$16$","$2$"]'::jsonb, '"$8$"'::jsonb, 'hard', '$360^\circ \div 45^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='symmetry'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Regular octagon: order of rotational symmetry?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflect $(-3, -2)$ in the origin (both axes).', 'multiple_choice', '["$(3, 2)$","$(-3, 2)$","$(3, -2)$","$(2, 3)$"]'::jsonb, '"$(3, 2)$"'::jsonb, 'hard', 'Negate both coordinates.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reflection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reflection_congruence'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflect $(-3, -2)$ in the origin (both axes).');
+
+
