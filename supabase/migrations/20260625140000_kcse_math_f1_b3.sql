@@ -606,3 +606,204 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equal interest: P KES $4000$ at $5\%$ vs P KES $x$ at $8\%$ for $1$ yr. Find $x$.');
 
+-- ========== COORDINATES AND GRAPHS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'The Cartesian Plane', '{"blocks":[{"type":"heading","content":"The Cartesian Plane"},{"type":"paragraph","content":"The **Cartesian plane** has horizontal $x$-axis and vertical $y$-axis meeting at the **origin** $(0,0)$."},{"type":"paragraph","content":"A point is written $(x, y)$: $x$ first (across), then $y$ (up)."},{"type":"callout","variant":"key_point","content":"Quadrants: I $(+,+)$, II $(-,+)$, III $(-,-)$, IV $(+,-)$."},{"type":"example","title":"State the quadrant of $(-3, 4)$","steps":["$x$ negative, $y$ positive $\\rightarrow$ Quadrant II."],"answer":"Quadrant II"},{"type":"callout","variant":"warning","content":"Do not swap $x$ and $y$."},{"type":"question","questionText":"Coordinates of the origin?","questionType":"multiple_choice","options":["$(0,0)$","$(1,1)$","$(0,1)$","$(1,0)$"],"correctAnswer":"$(0,0)$","explanation":"Axes cross at zero."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'cartesian_plane'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'The Cartesian Plane');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Working with the Cartesian Plane', '{"blocks":[{"type":"heading","content":"Plane Skills"},{"type":"example","title":"Plot $(2, -3)$","steps":["From origin, $2$ right, $3$ down."],"answer":"Quadrant IV"},{"type":"example","title":"Distance from $(0,0)$ to $(3,4)$ on grid","steps":["Forms $3$-$4$-$5$ triangle.","Distance $= 5$ units."],"answer":"$5$ units"},{"type":"callout","variant":"warning","content":"Negative $y$ means below the $x$-axis."},{"type":"question","questionText":"Point with $x=0$, $y=-5$ lies on which axis?","questionType":"multiple_choice","options":["$y$-axis","$x$-axis","Origin only","Neither"],"correctAnswer":"$y$-axis","explanation":"$x=0$ on $y$-axis."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'cartesian_plane'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Working with the Cartesian Plane');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Cartesian Plane — Exam', '{"blocks":[{"type":"heading","content":"KCSE Coordinate Geometry"},{"type":"example","title":"Vertices of square $O(0,0)$, $A(4,0)$, $B(4,4)$, $C(0,4)$. Side length?","steps":["From $(0,0)$ to $(4,0)$: $4$ units."],"answer":"$4$ units"},{"type":"callout","variant":"warning","content":"On axis-aligned squares, side length is the difference in coordinates."},{"type":"question","questionText":"Midpoint of $(2,6)$ and $(8,6)$?","questionType":"multiple_choice","options":["$(5,6)$","$(6,5)$","$(10,12)$","$(3,0)$"],"correctAnswer":"$(5,6)$","explanation":"Average $x$: $(2+8)/2$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'cartesian_plane'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Cartesian Plane — Exam');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Plotting Points', '{"blocks":[{"type":"heading","content":"Plotting Points"},{"type":"paragraph","content":"To plot $(a,b)$: start at origin, move $a$ along $x$, then $b$ parallel to $y$."},{"type":"paragraph","content":"Use sharp pencil marks and label points."},{"type":"callout","variant":"key_point","content":"Scale on axes must be equal for true shape unless told otherwise."},{"type":"example","title":"Plot $(-2, 3)$ and $(1, -1)$","steps":["$(-2,3)$: left $2$, up $3$.","$(1,-1)$: right $1$, down $1$."],"answer":"Quadrants II and IV"},{"type":"callout","variant":"warning","content":"Check the sign of each coordinate before moving."},{"type":"question","questionText":"Which point is $3$ units right and $2$ up from origin?","questionType":"multiple_choice","options":["$(3,2)$","$(2,3)$","$(-3,2)$","$(3,-2)$"],"correctAnswer":"$(3,2)$","explanation":"$x$ first."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'plotting_points'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Plotting Points');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Plotting and Reading Graphs', '{"blocks":[{"type":"heading","content":"Plotting Methods"},{"type":"example","title":"Table for $y = x + 2$: plot when $x = -1, 0, 1$","steps":["Points: $(-1,1)$, $(0,2)$, $(1,3)$.","Join with straight line."],"answer":"Straight line"},{"type":"example","title":"Read $y$ when $x = 2$ from graph of $y = 2x$","steps":["Substitute: $y = 4$.","Graph should pass through $(2,4)$."],"answer":"$y = 4$"},{"type":"callout","variant":"warning","content":"Plot at least three points for a straight-line graph."},{"type":"question","questionText":"For $y = 5 - x$, find $y$ when $x = 5$.","questionType":"multiple_choice","options":["$0$","$10$","$5$","$-5$"],"correctAnswer":"$0$","explanation":"$5 - 5 = 0$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'plotting_points'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Plotting and Reading Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Plotting — Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Plotting"},{"type":"example","title":"Draw $y = 3$ (horizontal line). Describe it.","steps":["All points have $y = 3$.","Parallel to $x$-axis through $(0,3)$."],"answer":"Horizontal line"},{"type":"callout","variant":"warning","content":"$y = k$ is horizontal; $x = k$ is vertical."},{"type":"question","questionText":"Equation of vertical line through $(4,0)$?","questionType":"multiple_choice","options":["$x = 4$","$y = 4$","$y = 0$","$x = 0$"],"correctAnswer":"$x = 4$","explanation":"Constant $x$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'plotting_points'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Plotting — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Linear Graphs', '{"blocks":[{"type":"heading","content":"Linear Graphs"},{"type":"paragraph","content":"A **linear graph** is a straight line. Equation form $y = mx + c$."},{"type":"paragraph","content":"$m$ is **gradient** (slope); $c$ is **$y$-intercept** (where $x=0$)."},{"type":"callout","variant":"key_point","content":"Gradient $= \\frac{\\text{change in } y}{\\text{change in } x}$."},{"type":"example","title":"Find gradient between $(1,2)$ and $(3,8)$","steps":["$m = \\frac{8-2}{3-1} = \\frac{6}{2} = 3$."],"answer":"$m = 3$"},{"type":"callout","variant":"warning","content":"Rise over run — keep point order consistent."},{"type":"question","questionText":"$y$-intercept of $y = 2x + 5$?","questionType":"multiple_choice","options":["$5$","$2$","$7$","$-5$"],"correctAnswer":"$5$","explanation":"Constant term when $x=0$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'linear_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Linear Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Drawing Linear Graphs', '{"blocks":[{"type":"heading","content":"Graph Drawing"},{"type":"example","title":"Draw $y = -x + 4$","steps":["$y$-intercept $(0,4)$.","Gradient $-1$: down $1$, right $1$ to $(1,3)$."],"answer":"Line through $(0,4)$ and $(1,3)$"},{"type":"example","title":"Find equation: gradient $2$, passes $(0,-1)$","steps":["$c = -1$.","$y = 2x - 1$."],"answer":"$y = 2x - 1$"},{"type":"callout","variant":"warning","content":"Negative gradient: line slopes downward left to right."},{"type":"question","questionText":"Gradient of $y = 5 - 2x$?","questionType":"multiple_choice","options":["$-2$","$2$","$5$","$-5$"],"correctAnswer":"$-2$","explanation":"Coefficient of $x$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'linear_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Drawing Linear Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Linear Graphs — Exam', '{"blocks":[{"type":"heading","content":"KCSE Linear Graphs"},{"type":"example","title":"Line passes $(2,5)$ and $(4,11)$. Find equation.","steps":["$m = \\frac{11-5}{4-2} = 3$.","$5 = 3(2) + c \\Rightarrow c = -1$.","$y = 3x - 1$."],"answer":"$y = 3x - 1$"},{"type":"callout","variant":"warning","content":"Find $m$ first, then substitute a point for $c$."},{"type":"question","questionText":"Where does $y = 4x - 8$ cross $x$-axis?","questionType":"multiple_choice","options":["$(2,0)$","$(0,-8)$","$(8,0)$","$(-2,0)$"],"correctAnswer":"$(2,0)$","explanation":"Set $y=0$: $x=2$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'coordinates_graphs' AND st.code = 'linear_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Linear Graphs — Exam');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Quadrant of $(5, -2)$?', 'multiple_choice', '["IV","I","II","III"]'::jsonb, '"IV"'::jsonb, 'easy', '$x>0$, $y<0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Quadrant of $(5, -2)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Quadrant of $(-1, -6)$?', 'multiple_choice', '["III","II","IV","I"]'::jsonb, '"III"'::jsonb, 'easy', 'Both negative.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Quadrant of $(-1, -6)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Plot description: $(0, 7)$ lies on?', 'multiple_choice', '["$y$-axis","$x$-axis","Quadrant I","Origin"]'::jsonb, '"$y$-axis"'::jsonb, 'easy', '$x=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='plotting_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Plot description: $(0, 7)$ lies on?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Coordinates $4$ left, $3$ up from origin?', 'multiple_choice', '["$(-4, 3)$","$(4, -3)$","$(-4, -3)$","$(4, 3)$"]'::jsonb, '"$(-4, 3)$"'::jsonb, 'easy', 'Left is negative $x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='plotting_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Coordinates $4$ left, $3$ up from origin?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Gradient of line $y = 3x + 1$?', 'multiple_choice', '["$3$","$1$","$4$","$\\frac{1}{3}$"]'::jsonb, '"$3$"'::jsonb, 'easy', 'Coefficient of $x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Gradient of line $y = 3x + 1$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y$-intercept of $y = x - 7$?', 'multiple_choice', '["$-7$","$7$","$1$","$0$"]'::jsonb, '"$-7$"'::jsonb, 'easy', 'Constant term.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y$-intercept of $y = x - 7$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which point lies in Quadrant I?', 'multiple_choice', '["$(2, 3)$","$(-1, 4)$","$(-2, -5)$","$(3, -1)$"]'::jsonb, '"$(2, 3)$"'::jsonb, 'easy', 'Both coordinates positive.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which point lies in Quadrant I?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Signs in Quadrant II?', 'multiple_choice', '["$-, +$","$+, +$","$-, -$","$+, -$"]'::jsonb, '"$-, +$"'::jsonb, 'medium', 'Left and up.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Signs in Quadrant II?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'For $y = 2x - 3$, find $y$ when $x = 4$.', 'multiple_choice', '["$5$","$11$","$8$","$1$"]'::jsonb, '"$5$"'::jsonb, 'medium', '$8 - 3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='plotting_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='For $y = 2x - 3$, find $y$ when $x = 4$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Point on $y = 6$?', 'multiple_choice', '["$(2,6)$","$(6,2)$","$(0,6)$ only","$(6,6)$ only"]'::jsonb, '"$(2,6)$"'::jsonb, 'medium', 'Any $x$ with $y=6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='plotting_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Point on $y = 6$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Gradient between $(0,1)$ and $(2,5)$?', 'multiple_choice', '["$2$","$4$","$3$","$\\frac{1}{2}$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$\frac{4}{2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Gradient between $(0,1)$ and $(2,5)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Line through origin with gradient $4$. Equation?', 'multiple_choice', '["$y = 4x$","$y = x + 4$","$y = \\frac{x}{4}$","$y = 4$"]'::jsonb, '"$y = 4x$"'::jsonb, 'medium', '$c=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Line through origin with gradient $4$. Equation?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflect $(3, -2)$ in $x$-axis. New point?', 'multiple_choice', '["$(3, 2)$","$(-3, -2)$","$(-3, 2)$","$(3, -2)$"]'::jsonb, '"$(3, 2)$"'::jsonb, 'medium', 'Negate $y$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflect $(3, -2)$ in $x$-axis. New point?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Equation: gradient $-2$, $y$-intercept $5$?', 'multiple_choice', '["$y = -2x + 5$","$y = 2x + 5$","$y = -2x - 5$","$y = 5x - 2$"]'::jsonb, '"$y = -2x + 5$"'::jsonb, 'hard', 'Substitute $m$ and $c$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equation: gradient $-2$, $y$-intercept $5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find $x$ when $y = 0$ for $y = 3x - 12$.', 'multiple_choice', '["$4$","$-4$","$12$","$3$"]'::jsonb, '"$4$"'::jsonb, 'hard', '$3x = 12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find $x$ when $y = 0$ for $y = 3x - 12$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Table: $y = 5 - 2x$. Missing: $x=3$, $y=?$', 'multiple_choice', '["$-1$","$11$","$1$","$-11$"]'::jsonb, '"$-1$"'::jsonb, 'hard', '$5 - 6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='plotting_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Table: $y = 5 - 2x$. Missing: $x=3$, $y=?$');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Distance between $(1,2)$ and $(1,7)$ on grid?', 'multiple_choice', '["$5$","$7$","$6$","$\\sqrt{5}$"]'::jsonb, '"$5$"'::jsonb, 'hard', 'Vertical segment.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Distance between $(1,2)$ and $(1,7)$ on grid?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Lines $y = 2x + 1$ and $y = 2x - 3$ are?', 'multiple_choice', '["Parallel","Perpendicular","Same line","Intersect at origin"]'::jsonb, '"Parallel"'::jsonb, 'hard', 'Same gradient.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Lines $y = 2x + 1$ and $y = 2x - 3$ are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Line through $(1,4)$ and $(3,10)$. Equation?', 'multiple_choice', '["$y = 3x + 1$","$y = 2x + 2$","$y = 6x - 2$","$y = 3x - 1$"]'::jsonb, '"$y = 3x + 1$"'::jsonb, 'hard', '$m=3$, solve $c$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Line through $(1,4)$ and $(3,10)$. Equation?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which point lies on the line $y = 2x$?', 'multiple_choice', '["$(3, 6)$","$(3, 5)$","$(6, 3)$","$(2, 5)$"]'::jsonb, '"$(3, 6)$"'::jsonb, 'hard', 'Check $y = 2x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='plotting_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which point lies on the line $y = 2x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Point equidistant from axes in QI with $x+y=10$ and $x=y$?', 'multiple_choice', '["$(5,5)$","$(10,0)$","$(0,10)$","$(7,3)$"]'::jsonb, '"$(5,5)$"'::jsonb, 'hard', 'Solve $2x=10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Point equidistant from axes in QI with $x+y=10$ and $x=y$?');
+
