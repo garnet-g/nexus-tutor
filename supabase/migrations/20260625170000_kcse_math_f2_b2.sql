@@ -356,3 +356,142 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two similar rectangles: widths $6$ and $15$ cm. Smaller area $24$ cm$^2$. Larger area?');
 
+-- ========== PYTHAGORAS THEOREM ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Pythagoras'' Theorem', '{"blocks":[{"type":"heading","content":"Pythagoras'' Theorem"},{"type":"paragraph","content":"In a **right-angled triangle**, the square on the hypotenuse equals the sum of squares on the other two sides."},{"type":"math_block","latex":"a^2 + b^2 = c^2","caption":"$c$ is the hypotenuse (longest side, opposite the right angle)"},{"type":"callout","variant":"key_point","content":"The theorem applies only to right-angled triangles."},{"type":"example","title":"Right triangle: legs $3$ cm and $4$ cm. Hypotenuse?","steps":["$c^2 = 3^2 + 4^2 = 9 + 16 = 25$.","$c = 5$ cm."],"answer":"$5$ cm"},{"type":"question","questionText":"Legs $5$ and $12$. Hypotenuse?","questionType":"multiple_choice","options":["$13$","$17$","$7$","$169$"],"correctAnswer":"$13$","explanation":"$25 + 144 = 169$; $\\sqrt{169}=13$."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = 'theorem'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Pythagoras'' Theorem');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding a Shorter Side', '{"blocks":[{"type":"heading","content":"Finding a Shorter Side"},{"type":"example","title":"Hypotenuse $13$ cm, one leg $5$ cm. Other leg?","steps":["$b^2 = 13^2 - 5^2 = 169 - 25 = 144$.","$b = 12$ cm."],"answer":"$12$ cm"},{"type":"callout","variant":"warning","content":"Subtract the smaller squares from the square on the hypotenuse."},{"type":"question","questionText":"Hypotenuse $10$, leg $6$. Other leg?","questionType":"multiple_choice","options":["$8$","$4$","$16$","$2$"],"correctAnswer":"$8$","explanation":"$100 - 36 = 64$."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = 'theorem'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding a Shorter Side');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Theorem — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Theorem"},{"type":"example","title":"Is a triangle with sides $7$, $24$, $25$ right-angled?","steps":["$7^2 + 24^2 = 49 + 576 = 625$.","$25^2 = 625$ — yes, right-angled."],"answer":"Yes"},{"type":"callout","variant":"warning","content":"Identify the hypotenuse as the longest side before substituting."},{"type":"question","questionText":"Sides $8$, $15$, $16$ — right triangle?","questionType":"multiple_choice","options":["No","Yes","Cannot tell","Only if isosceles"],"correctAnswer":"No","explanation":"$64+225=289 \\neq 256$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = 'theorem'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Theorem — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applications of Pythagoras', '{"blocks":[{"type":"heading","content":"Applications"},{"type":"paragraph","content":"Use Pythagoras for distances on grids, ladders against walls, and diagonals of rectangles."},{"type":"example","title":"Rectangle $6$ m $\\times$ $8$ m. Diagonal length?","steps":["$d^2 = 6^2 + 8^2 = 36 + 64 = 100$.","$d = 10$ m."],"answer":"$10$ m"},{"type":"question","questionText":"Ladder $5$ m reaches $3$ m up a wall. Base distance from wall?","questionType":"multiple_choice","options":["$4$ m","$2$ m","$8$ m","$15$ m"],"correctAnswer":"$4$ m","explanation":"$25 - 9 = 16$."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = 'applications_pythagoras'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applications of Pythagoras');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Distance Between Two Points', '{"blocks":[{"type":"heading","content":"Distance Formula"},{"type":"paragraph","content":"Distance between $(x_1,y_1)$ and $(x_2,y_2)$: $d = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}$."},{"type":"example","title":"Distance from $(1,2)$ to $(4,6)$","steps":["$d = \\sqrt{3^2 + 4^2} = 5$."],"answer":"$5$ units"},{"type":"callout","variant":"warning","content":"Draw a right triangle with horizontal and vertical legs."},{"type":"question","questionText":"Distance $(0,0)$ to $(5,12)$?","questionType":"multiple_choice","options":["$13$","$17$","$7$","$25$"],"correctAnswer":"$13$","explanation":"$5$-$12$-$13$ triangle."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = 'applications_pythagoras'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Distance Between Two Points');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applications — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE Applications"},{"type":"example","title":"Town A is $9$ km east and $12$ km north of B. Direct distance?","steps":["$d = \\sqrt{81 + 144} = 15$ km."],"answer":"$15$ km"},{"type":"callout","variant":"warning","content":"Sketch the right triangle before calculating."},{"type":"question","questionText":"Square side $10$ cm. Diagonal?","questionType":"multiple_choice","options":["$10\\sqrt{2}$ cm","$20$ cm","$100$ cm","$5\\sqrt{2}$ cm"],"correctAnswer":"$10\\sqrt{2}$ cm","explanation":"$d = s\\sqrt{2}$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = 'applications_pythagoras'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applications — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Pythagoras in 3-D', '{"blocks":[{"type":"heading","content":"3-D Problems"},{"type":"paragraph","content":"In 3-D, find a right triangle in the solid — often the space diagonal uses two applications of $a^2+b^2=c^2$."},{"type":"example","title":"Cuboid $3$ cm $\\times$ $4$ cm $\\times$ $12$ cm. Space diagonal?","steps":["Base diagonal $d_1 = \\sqrt{3^2+4^2} = 5$.","Space diagonal $= \\sqrt{5^2+12^2} = 13$ cm."],"answer":"$13$ cm"},{"type":"callout","variant":"key_point","content":"Space diagonal of cuboid $l,w,h$: $\\sqrt{l^2+w^2+h^2}$."},{"type":"question","questionText":"Cube side $4$ cm. Space diagonal?","questionType":"multiple_choice","options":["$4\\sqrt{3}$ cm","$12$ cm","$8$ cm","$16$ cm"],"correctAnswer":"$4\\sqrt{3}$ cm","explanation":"$\\sqrt{3} \\times$ side."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = '3d_problems'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Pythagoras in 3-D');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, '3-D Diagonals — Worked Methods', '{"blocks":[{"type":"heading","content":"3-D Methods"},{"type":"example","title":"Square-based pyramid: base $6$ cm, height $4$ cm. Slant edge from apex to base corner?","steps":["Half diagonal of base $= \\frac{6\\sqrt{2}}{2} = 3\\sqrt{2}$.","Slant $= \\sqrt{(3\\sqrt{2})^2 + 4^2} = \\sqrt{18+16} = \\sqrt{34}$ cm."],"answer":"$\\sqrt{34}$ cm"},{"type":"callout","variant":"warning","content":"Find the right triangle that contains the length you need."},{"type":"question","questionText":"Cuboid $6$, $8$, $10$ cm. Space diagonal?","questionType":"multiple_choice","options":["$10\\sqrt{2}$ cm","$24$ cm","$14$ cm","$100$ cm"],"correctAnswer":"$10\\sqrt{2}$ cm","explanation":"$\\sqrt{36+64+100}=\\sqrt{200}$."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = '3d_problems'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = '3-D Diagonals — Worked Methods');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, '3-D — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE 3-D"},{"type":"example","title":"Room $4$ m $\\times$ $3$ m $\\times$ $2.5$ m. Longest stick that fits?","steps":["$L = \\sqrt{16+9+6.25} = \\sqrt{31.25} \\approx 5.59$ m."],"answer":"$\\sqrt{31.25}$ m $\\approx 5.6$ m"},{"type":"callout","variant":"warning","content":"The longest segment in a cuboid is the space diagonal."},{"type":"question","questionText":"Cube diagonal $6\\sqrt{3}$ cm. Side length?","questionType":"multiple_choice","options":["$6$ cm","$3$ cm","$12$ cm","$18$ cm"],"correctAnswer":"$6$ cm","explanation":"$s\\sqrt{3}=6\\sqrt{3}$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'pythagoras_theorem' AND st.code = '3d_problems'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = '3-D — Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pythagoras applies to?', 'multiple_choice', '["Right-angled triangles","All triangles","Circles","Parallelograms"]'::jsonb, '"Right-angled triangles"'::jsonb, 'easy', 'Needs a right angle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='theorem'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pythagoras applies to?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Legs $6$ and $8$. Hypotenuse?', 'multiple_choice', '["$10$","$14$","$2$","$48$"]'::jsonb, '"$10$"'::jsonb, 'easy', '$36+64=100$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='theorem'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Legs $6$ and $8$. Hypotenuse?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hypotenuse $25$, leg $7$. Other leg?', 'multiple_choice', '["$24$","$18$","$32$","$576$"]'::jsonb, '"$24$"'::jsonb, 'easy', '$625-49=576$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='theorem'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hypotenuse $25$, leg $7$. Other leg?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is a Pythagorean triple?', 'multiple_choice', '["$5,12,13$","$4,5,6$","$3,4,6$","$8,9,10$"]'::jsonb, '"$5,12,13$"'::jsonb, 'easy', '$25+144=169$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='theorem'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is a Pythagorean triple?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle $5$ cm $\times$ $12$ cm. Diagonal?', 'multiple_choice', '["$13$ cm","$17$ cm","$60$ cm","$7$ cm"]'::jsonb, '"$13$ cm"'::jsonb, 'easy', 'Standard triple.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle $5$ cm $\times$ $12$ cm. Diagonal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Distance $(2,1)$ to $(6,4)$?', 'multiple_choice', '["$5$","$7$","$25$","$3$"]'::jsonb, '"$5$"'::jsonb, 'easy', '$3$-$4$-$5$ triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Distance $(2,1)$ to $(6,4)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube side $5$ cm. Face diagonal?', 'multiple_choice', '["$5\\sqrt{2}$ cm","$5\\sqrt{3}$ cm","$10$ cm","$25$ cm"]'::jsonb, '"$5\\sqrt{2}$ cm"'::jsonb, 'easy', 'Diagonal of square face.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='3d_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube side $5$ cm. Face diagonal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Ladder $10$ m, foot $6$ m from wall. How high?', 'multiple_choice', '["$8$ m","$4$ m","$16$ m","$2$ m"]'::jsonb, '"$8$ m"'::jsonb, 'medium', '$100-36=64$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Ladder $10$ m, foot $6$ m from wall. How high?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Is triangle with sides $9$, $40$, $41$ right-angled?', 'multiple_choice', '["Yes","No","Only equilateral","Cannot tell"]'::jsonb, '"Yes"'::jsonb, 'medium', '$81+1600=1681=41^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='theorem'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Is triangle with sides $9$, $40$, $41$ right-angled?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid $5$, $12$, $13$ cm. Space diagonal?', 'multiple_choice', '["$13\\sqrt{2}$ cm","$30$ cm","$26$ cm","$169$ cm"]'::jsonb, '"$13\\sqrt{2}$ cm"'::jsonb, 'medium', '$\sqrt{25+144+169}=\sqrt{338}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='3d_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid $5$, $12$, $13$ cm. Space diagonal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square side $5$ cm. Diagonal length?', 'multiple_choice', '["$5\\sqrt{2}$ cm","$10$ cm","$25$ cm","$7$ cm"]'::jsonb, '"$5\\sqrt{2}$ cm"'::jsonb, 'medium', '$d = s\sqrt{2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square side $5$ cm. Diagonal length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Point $(7,24)$ from origin. Distance?', 'multiple_choice', '["$25$","$31$","$17$","$576$"]'::jsonb, '"$25$"'::jsonb, 'medium', '$7$-$24$-$25$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Point $(7,24)$ from origin. Distance?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hypotenuse $2\sqrt{5}$, leg $4$. Other leg?', 'multiple_choice', '["$2$","$6$","$\\sqrt{20}$","$8$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$20-16=4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='theorem'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hypotenuse $2\sqrt{5}$, leg $4$. Other leg?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid base $3$ cm $\times$ $4$ cm, space diagonal $13$ cm. Height?', 'multiple_choice', '["$12$ cm","$5$ cm","$10$ cm","$6$ cm"]'::jsonb, '"$12$ cm"'::jsonb, 'hard', 'Base diagonal $5$; $h=\sqrt{169-25}=12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='3d_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid base $3$ cm $\times$ $4$ cm, space diagonal $13$ cm. Height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Ship sails $15$ km east then $20$ km north. Direct distance from start?', 'multiple_choice', '["$25$ km","$35$ km","$5$ km","$300$ km"]'::jsonb, '"$25$ km"'::jsonb, 'hard', '$15$-$20$-$25$ triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Ship sails $15$ km east then $20$ km north. Direct distance from start?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Isosceles right triangle: legs $7$ cm. Hypotenuse?', 'multiple_choice', '["$7\\sqrt{2}$ cm","$14$ cm","$49$ cm","$7$ cm"]'::jsonb, '"$7\\sqrt{2}$ cm"'::jsonb, 'hard', '$c = l\sqrt{2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='theorem'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Isosceles right triangle: legs $7$ cm. Hypotenuse?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube space diagonal $6\sqrt{3}$ cm. Volume?', 'multiple_choice', '["$216$ cm$^3$","$36$ cm$^3$","$108$ cm$^3$","$729$ cm$^3$"]'::jsonb, '"$216$ cm$^3$"'::jsonb, 'hard', 'Side $6$ cm; $6^3=216$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='3d_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube space diagonal $6\sqrt{3}$ cm. Volume?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rhombus diagonals $10$ cm and $24$ cm. Side length?', 'multiple_choice', '["$13$ cm","$17$ cm","$14$ cm","$26$ cm"]'::jsonb, '"$13$ cm"'::jsonb, 'hard', 'Half-diagonals $5$ and $12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rhombus diagonals $10$ cm and $24$ cm. Side length?');
+
