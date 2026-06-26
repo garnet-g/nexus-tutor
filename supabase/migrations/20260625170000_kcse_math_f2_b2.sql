@@ -639,3 +639,141 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Building height $h$: from $40$ m away elevation $60^\circ$. Find $h$.');
 
+-- ========== AREA OF A TRIANGLE ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area: Half Base Times Height', '{"blocks":[{"type":"heading","content":"Half Base Times Height"},{"type":"paragraph","content":"The area of a triangle equals half the base times the perpendicular height."},{"type":"math_block","latex":"A = \\frac{1}{2} \\times \\text{base} \\times \\text{height}","caption":"Height must be perpendicular to the base"},{"type":"callout","variant":"key_point","content":"Any side can be the base — use the height drawn to that side."},{"type":"example","title":"Triangle: base $12$ cm, height $5$ cm. Area?","steps":["$A = \\frac{1}{2} \\times 12 \\times 5 = 30$ cm$^2$."],"answer":"$30$ cm$^2$"},{"type":"question","questionText":"Base $8$ cm, height $6$ cm. Area?","questionType":"multiple_choice","options":["$24$ cm$^2$","$48$ cm$^2$","$14$ cm$^2$","$28$ cm$^2$"],"correctAnswer":"$24$ cm$^2$","explanation":"$\\frac{1}{2} \\times 8 \\times 6$."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'half_base_height'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area: Half Base Times Height');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding Base or Height', '{"blocks":[{"type":"heading","content":"Finding Base or Height"},{"type":"example","title":"Area $48$ cm$^2$, base $12$ cm. Height?","steps":["$48 = \\frac{1}{2} \\times 12 \\times h$.","$h = \\frac{48 \\times 2}{12} = 8$ cm."],"answer":"$8$ cm"},{"type":"callout","variant":"warning","content":"Do not use a slant side as height unless it is perpendicular to the base."},{"type":"question","questionText":"Area $45$ cm$^2$, height $9$ cm. Base?","questionType":"multiple_choice","options":["$10$ cm","$5$ cm","$20$ cm","$90$ cm"],"correctAnswer":"$10$ cm","explanation":"$b = \\frac{2A}{h}$."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'half_base_height'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding Base or Height');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Half Base Height — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Base and Height"},{"type":"example","title":"Right triangle: legs $9$ cm and $12$ cm. Area?","steps":["Use one leg as base, the other as height.","$A = \\frac{1}{2} \\times 9 \\times 12 = 54$ cm$^2$."],"answer":"$54$ cm$^2$"},{"type":"callout","variant":"warning","content":"In a right triangle, the two legs are perpendicular — either can be base or height."},{"type":"question","questionText":"Triangle area $60$ cm$^2$, base $15$ cm. Height?","questionType":"multiple_choice","options":["$8$ cm","$4$ cm","$16$ cm","$30$ cm"],"correctAnswer":"$8$ cm","explanation":"$h = 120/15$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'half_base_height'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Half Base Height — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area: Half ab sin C', '{"blocks":[{"type":"heading","content":"Half ab sin C"},{"type":"paragraph","content":"When you know two sides and the **included angle** $C$, use:"},{"type":"math_block","latex":"A = \\frac{1}{2}ab\\sin C","caption":"$a$ and $b$ are two sides; $C$ is the angle between them"},{"type":"callout","variant":"key_point","content":"Use this when you do not have the perpendicular height."},{"type":"example","title":"Sides $8$ cm and $10$ cm, included angle $30^\\circ$. Area?","steps":["$A = \\frac{1}{2} \\times 8 \\times 10 \\times \\sin 30^\\circ$.","$= 40 \\times 0.5 = 20$ cm$^2$."],"answer":"$20$ cm$^2$"},{"type":"question","questionText":"$\\sin 90^\\circ$ in area formula equals?","questionType":"multiple_choice","options":["$1$","$0$","$0.5$","$2$"],"correctAnswer":"$1$","explanation":"Maximum sine value."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'half_ab_sinc'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area: Half ab sin C');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Using the Sine Area Formula', '{"blocks":[{"type":"heading","content":"Using $\\frac{1}{2}ab\\sin C$"},{"type":"example","title":"Triangle: $AB = 6$ cm, $AC = 9$ cm, $\\angle A = 120^\\circ$. Area?","steps":["$A = \\frac{1}{2} \\times 6 \\times 9 \\times \\sin 120^\\circ$.","$\\sin 120^\\circ = \\sin 60^\\circ = \\frac{\\sqrt{3}}{2}$.","$A = 27 \\times \\frac{\\sqrt{3}}{2} \\approx 23.4$ cm$^2$."],"answer":"$\\frac{27\\sqrt{3}}{2}$ cm$^2$"},{"type":"callout","variant":"warning","content":"$C$ must be the angle **between** sides $a$ and $b$."},{"type":"question","questionText":"Sides $5$, $8$, included angle $90^\\circ$. Area?","questionType":"multiple_choice","options":["$20$ cm$^2$","$40$ cm$^2$","$10$ cm$^2$","$13$ cm$^2$"],"correctAnswer":"$20$ cm$^2$","explanation":"$\\frac{1}{2} \\times 5 \\times 8 \\times 1$."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'half_ab_sinc'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Using the Sine Area Formula');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Sine Formula — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Sine Area"},{"type":"example","title":"Parallelogram sides $7$ cm and $11$ cm, included angle $45^\\circ$. Triangle half?","steps":["Parallelogram area $= ab\\sin\\theta = 77 \\sin 45^\\circ$.","Triangle from diagonal: half of that."],"answer":"Use $\\frac{1}{2}ab\\sin C$ directly for the triangle"},{"type":"callout","variant":"warning","content":"Parallelogram area is $ab\\sin\\theta$ — triangle is half if cut by a diagonal."},{"type":"question","questionText":"Sides $10$ cm, $12$ cm, included $150^\\circ$. Area?","questionType":"multiple_choice","options":["$30$ cm$^2$","$60$ cm$^2$","$15$ cm$^2$","$120$ cm$^2$"],"correctAnswer":"$30$ cm$^2$","explanation":"$\\sin 150^\\circ = 0.5$; $\\frac{1}{2}(120)(0.5)=30$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'half_ab_sinc'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Sine Formula — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Hero''s Formula', '{"blocks":[{"type":"heading","content":"Hero''s Formula"},{"type":"paragraph","content":"When all three sides $a$, $b$, $c$ are known, first find the semi-perimeter $s = \\frac{a+b+c}{2}$, then:"},{"type":"math_block","latex":"A = \\sqrt{s(s-a)(s-b)(s-c)}","caption":"Hero''s (Heron''s) formula"},{"type":"callout","variant":"key_point","content":"Use when no height or angle is given — only three sides."},{"type":"example","title":"Sides $5$, $12$, $13$ cm. Area?","steps":["$s = \\frac{30}{2} = 15$.","$A = \\sqrt{15(10)(3)(2)} = \\sqrt{900} = 30$ cm$^2$."],"answer":"$30$ cm$^2$"},{"type":"question","questionText":"Hero''s formula needs?","questionType":"multiple_choice","options":["Three sides","Two sides only","Height and base","One angle only"],"correctAnswer":"Three sides","explanation":"All three side lengths."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'heros_formula'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Hero''s Formula');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applying Hero''s Formula', '{"blocks":[{"type":"heading","content":"Applying Hero''s Formula"},{"type":"example","title":"Triangle sides $7$, $8$, $9$ cm. Area?","steps":["$s = 12$.","$A = \\sqrt{12(5)(4)(3)} = \\sqrt{720} = 12\\sqrt{5}$ cm$^2$."],"answer":"$12\\sqrt{5}$ cm$^2$ $\\approx 26.8$ cm$^2$"},{"type":"callout","variant":"warning","content":"Check that the three sides can form a triangle: largest $<$ sum of other two."},{"type":"question","questionText":"Sides $3$, $4$, $5$. Semi-perimeter $s$?","questionType":"multiple_choice","options":["$6$","$12$","$5$","$7$"],"correctAnswer":"$6$","explanation":"$(3+4+5)/2$."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'heros_formula'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applying Hero''s Formula');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Hero''s Formula — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Hero''s Formula"},{"type":"example","title":"Equilateral triangle side $6$ cm. Area by Hero?","steps":["$s = 9$.","$A = \\sqrt{9(3)^3} = \\sqrt{243} = 9\\sqrt{3}$ cm$^2$."],"answer":"$9\\sqrt{3}$ cm$^2$"},{"type":"callout","variant":"warning","content":"Choose the right formula: height, $\\frac{1}{2}ab\\sin C$, or Hero — depending on what is given."},{"type":"question","questionText":"Scalene triangle: sides $10$, $10$, $12$. Best formula?","questionType":"multiple_choice","options":["Hero''s","Half base height only","None work","Circle area"],"correctAnswer":"Hero''s","explanation":"Three sides known, no height."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_triangle' AND st.code = 'heros_formula'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Hero''s Formula — Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle area formula with base $b$ and height $h$?', 'multiple_choice', '["$\\frac{1}{2}bh$","$bh$","$2bh$","$\\frac{1}{3}bh$"]'::jsonb, '"$\\frac{1}{2}bh$"'::jsonb, 'easy', 'Standard area formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_base_height'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle area formula with base $b$ and height $h$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Base $14$ cm, height $5$ cm. Area?', 'multiple_choice', '["$35$ cm$^2$","$70$ cm$^2$","$19$ cm$^2$","$28$ cm$^2$"]'::jsonb, '"$35$ cm$^2$"'::jsonb, 'easy', '$\frac{1}{2}(14)(5)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_base_height'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Base $14$ cm, height $5$ cm. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area $36$ cm$^2$, height $6$ cm. Base?', 'multiple_choice', '["$12$ cm","$6$ cm","$18$ cm","$24$ cm"]'::jsonb, '"$12$ cm"'::jsonb, 'easy', '$b=2A/h$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_base_height'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area $36$ cm$^2$, height $6$ cm. Base?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Right triangle legs $5$ cm and $12$ cm. Area?', 'multiple_choice', '["$30$ cm$^2$","$60$ cm$^2$","$17$ cm$^2$","$15$ cm$^2$"]'::jsonb, '"$30$ cm$^2$"'::jsonb, 'easy', 'Use legs as base and height.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_base_height'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Right triangle legs $5$ cm and $12$ cm. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Formula $\frac{1}{2}ab\sin C$ uses?', 'multiple_choice', '["Two sides and included angle","Three sides only","Base and height only","Radius"]'::jsonb, '"Two sides and included angle"'::jsonb, 'easy', 'Sine area rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_ab_sinc'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Formula $\frac{1}{2}ab\sin C$ uses?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sides $6$ cm, $10$ cm, included angle $30^\circ$. Area?', 'multiple_choice', '["$15$ cm$^2$","$30$ cm$^2$","$60$ cm$^2$","$7.5$ cm$^2$"]'::jsonb, '"$15$ cm$^2$"'::jsonb, 'easy', '$\frac{1}{2}(60)(0.5)=15$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_ab_sinc'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sides $6$ cm, $10$ cm, included angle $30^\circ$. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hero''s formula: $s$ stands for?', 'multiple_choice', '["Semi-perimeter","Side","Sine","Slope"]'::jsonb, '"Semi-perimeter"'::jsonb, 'easy', '$s=(a+b+c)/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='heros_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hero''s formula: $s$ stands for?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area $50$ cm$^2$, base $20$ cm. Height?', 'multiple_choice', '["$5$ cm","$10$ cm","$2.5$ cm","$25$ cm"]'::jsonb, '"$5$ cm"'::jsonb, 'medium', '$h=100/20$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_base_height'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area $50$ cm$^2$, base $20$ cm. Height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sides $7$ cm, $9$ cm, included $120^\circ$. Area?', 'multiple_choice', '["$\\frac{27\\sqrt{3}}{4}$ cm$^2$","$31.5$ cm$^2$","$63$ cm$^2$","$15.75$ cm$^2$"]'::jsonb, '"$\\frac{27\\sqrt{3}}{4}$ cm$^2$"'::jsonb, 'medium', '$\sin 120^\circ = \sqrt{3}/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_ab_sinc'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sides $7$ cm, $9$ cm, included $120^\circ$. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle sides $5$, $12$, $13$. Area by Hero?', 'multiple_choice', '["$30$ cm$^2$","$60$ cm$^2$","$15$ cm$^2$","$78$ cm$^2$"]'::jsonb, '"$30$ cm$^2$"'::jsonb, 'medium', 'Right triangle; $s=15$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='heros_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle sides $5$, $12$, $13$. Area by Hero?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sides $8$, $15$, $17$. Semi-perimeter?', 'multiple_choice', '["$20$","$40$","$17$","$15$"]'::jsonb, '"$20$"'::jsonb, 'medium', '$(8+15+17)/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='heros_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sides $8$, $15$, $17$. Semi-perimeter?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Parallelogram sides $6$ cm, $8$ cm, angle $30^\circ$. Area?', 'multiple_choice', '["$24$ cm$^2$","$48$ cm$^2$","$12$ cm$^2$","$14$ cm$^2$"]'::jsonb, '"$24$ cm$^2$"'::jsonb, 'medium', '$ab\sin\theta = 48 \times 0.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_ab_sinc'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallelogram sides $6$ cm, $8$ cm, angle $30^\circ$. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Equilateral triangle side $10$ cm. Area?', 'multiple_choice', '["$25\\sqrt{3}$ cm$^2$","$50$ cm$^2$","$100$ cm$^2$","$\\frac{25}{2}$ cm$^2$"]'::jsonb, '"$25\\sqrt{3}$ cm$^2$"'::jsonb, 'hard', '$\frac{\sqrt{3}}{4}s^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_base_height'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equilateral triangle side $10$ cm. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle sides $7$, $8$, $9$. Area (Hero)?', 'multiple_choice', '["$12\\sqrt{5}$ cm$^2$","$36$ cm$^2$","$24$ cm$^2$","$60$ cm$^2$"]'::jsonb, '"$12\\sqrt{5}$ cm$^2$"'::jsonb, 'hard', '$s=12$; $\sqrt{720}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='heros_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle sides $7$, $8$, $9$. Area (Hero)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sides $10$, $10$, included $60^\circ$. Area of isosceles triangle?', 'multiple_choice', '["$\\frac{25\\sqrt{3}}{2}$ cm$^2$","$50$ cm$^2$","$25$ cm$^2$","$100$ cm$^2$"]'::jsonb, '"$\\frac{25\\sqrt{3}}{2}$ cm$^2$"'::jsonb, 'hard', '$\frac{1}{2}(100)\sin 60^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_ab_sinc'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sides $10$, $10$, included $60^\circ$. Area of isosceles triangle?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Field triangular: sides $120$ m, $150$ m, $90$ m. Area?', 'multiple_choice', '["$5400$ m$^2$","$10800$ m$^2$","$2700$ m$^2$","$3600$ m$^2$"]'::jsonb, '"$5400$ m$^2$"'::jsonb, 'hard', '$s=180$; Hero gives $5400$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='heros_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Field triangular: sides $120$ m, $150$ m, $90$ m. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rhombus diagonals $16$ cm and $30$ cm. Area?', 'multiple_choice', '["$240$ cm$^2$","$480$ cm$^2$","$120$ cm$^2$","$46$ cm$^2$"]'::jsonb, '"$240$ cm$^2$"'::jsonb, 'hard', 'Rhombus $= \frac{1}{2}d_1 d_2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_base_height'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rhombus diagonals $16$ cm and $30$ cm. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle: $a=13$, $b=14$, $c=15$. Area by Hero?', 'multiple_choice', '["$84$ cm$^2$","$42$ cm$^2$","$168$ cm$^2$","$91$ cm$^2$"]'::jsonb, '"$84$ cm$^2$"'::jsonb, 'hard', 'Classic $13$-$14$-$15$ triangle; $s=21$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='heros_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle: $a=13$, $b=14$, $c=15$. Area by Hero?');
