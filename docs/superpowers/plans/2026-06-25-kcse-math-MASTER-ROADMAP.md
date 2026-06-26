@@ -61,8 +61,8 @@ add finer subtopics per topic as needed — additive only.)
 ### Form 2 — 20 topics
 ✅ `cubes_cube_roots` · ✅ `reciprocals` · ✅ `indices_logarithms` · ✅ `gradient_straight_lines`
 ✅ `reflection_congruence` · ✅ `rotation` · ✅ `similarity_enlargement` · ✅ `pythagoras_theorem`
-✅ `trigonometry_i` · ✅ `area_triangle` · ▢ `area_quadrilaterals_polygons` · ▢ `area_part_circle`
-▢ `surface_area_solids` · ▢ `volume_solids` · ▢ `quadratic_expressions_equations`
+✅ `trigonometry_i` · ✅ `area_triangle` · ✅ `area_quadrilaterals_polygons` · ✅ `area_part_circle`
+✅ `surface_area_solids` · ✅ `volume_solids` · ✅ `quadratic_expressions_equations`
 ▢ `linear_inequalities` · ▢ `linear_motion` · ▢ `statistics_i` · ▢ `angle_properties_circle`
 ▢ `vectors_i`
 
@@ -77,7 +77,7 @@ add finer subtopics per topic as needed — additive only.)
 ▢ `three_dimensional_geometry` · ▢ `longitudes_latitudes` · ▢ `linear_programming`
 ▢ `differentiation` · ▢ `area_approximation` · ▢ `integration`
 
-**Status: 31 done · 34 remaining.**
+**Status: 36 done · 29 remaining.**
 
 ## 5. Per-topic workflow (the repeatable recipe)
 
