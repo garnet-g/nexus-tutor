@@ -77,7 +77,7 @@ add finer subtopics per topic as needed — additive only.)
 ▢ `three_dimensional_geometry` · ▢ `longitudes_latitudes` · ▢ `linear_programming`
 ▢ `differentiation` · ▢ `area_approximation` · ▢ `integration`
 
-**Status: 18 done · 47 remaining.**
+**Status: 21 done · 44 remaining.**
 
 ## 5. Per-topic workflow (the repeatable recipe)
 
