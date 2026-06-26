@@ -424,3 +424,216 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Badge: equilateral triangle side $6$ cm on each side of semicircle diameter $6$ cm. Total?');
 
+-- ========== SURFACE AREA OF SOLIDS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Surface Area of Prisms', '{"blocks": [{"type": "heading", "content": "Prisms"}, {"type": "paragraph", "content": "A **prism** has uniform cross-section. Surface area = sum of areas of all faces (two identical ends plus rectangles around the sides)."}, {"type": "math_block", "latex": "A_{\\text{cuboid}} = 2(lw + lh + wh)", "caption": "Cuboid with length $l$, width $w$, height $h$"}, {"type": "callout", "variant": "key_point", "content": "Draw a net: count each face once."}, {"type": "example", "title": "Cuboid $5$ cm $\\times$ $4$ cm $\\times$ $3$ cm.", "steps": ["Ends: $2(20) = 40$.", "Sides: $2(15) + 2(12) = 54$.", "Total $94$ cm$^2$."], "answer": "$94$ cm$^2$"}, {"type": "question", "questionText": "Prism surface area means?", "questionType": "multiple_choice", "options": ["Total area of all faces", "Volume only", "Perimeter of base", "Diagonal length"], "correctAnswer": "Total area of all faces", "explanation": "Sum of face areas."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'prisms_cylinders'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Surface Area of Prisms');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Surface Area of Cylinders', '{"blocks": [{"type": "heading", "content": "Cylinders"}, {"type": "math_block", "latex": "A_{\\text{cylinder}} = 2\\pi r^2 + 2\\pi rh = 2\\pi r(r + h)", "caption": "Two circular ends plus curved surface"}, {"type": "example", "title": "Cylinder: radius $3$ cm, height $10$ cm.", "steps": ["Ends: $2\\pi(9) = 18\\pi$.", "Curved: $2\\pi(3)(10) = 60\\pi$.", "Total $78\\pi$ cm$^2$."], "answer": "$78\\pi$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Curved surface unwraps to a rectangle: width $= 2\\pi r$, height $= h$."}, {"type": "question", "questionText": "Cylinder curved surface area?", "questionType": "multiple_choice", "options": ["$2\\pi rh$", "$\\pi r^2$", "$\\pi rh$", "$2\\pi r$"], "correctAnswer": "$2\\pi rh$", "explanation": "Rectangle $2\\pi r \\times h$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'prisms_cylinders'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Surface Area of Cylinders');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Prisms and Cylinders — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Prisms and Cylinders"}, {"type": "example", "title": "Open-top box $8$ cm $\\times$ $6$ cm $\\times$ $5$ cm. Outer surface area?", "steps": ["Base + four sides: $48 + 2(40) + 2(30) = 188$ cm$^2$."], "answer": "$188$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Open container: do not include the missing face."}, {"type": "question", "questionText": "Closed cylinder $r=4$ cm, $h=9$ cm. Total SA?", "questionType": "multiple_choice", "options": ["$104\\pi$ cm$^2$", "$72\\pi$ cm$^2$", "$32\\pi$ cm$^2$", "$36\\pi$ cm$^2$"], "correctAnswer": "$104\\pi$ cm$^2$", "explanation": "$2\\pi(16) + 2\\pi(36)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'prisms_cylinders'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Prisms and Cylinders — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Surface Area of Pyramids', '{"blocks": [{"type": "heading", "content": "Pyramids"}, {"type": "paragraph", "content": "A **pyramid** has a polygon base and triangular faces meeting at the apex."}, {"type": "math_block", "latex": "A_{\\text{square pyramid}} = s^2 + 2s\\sqrt{\\left(\\frac{s}{2}\\right)^2 + h^2}", "caption": "Square base side $s$, slant height from apex to base edge"}, {"type": "callout", "variant": "key_point", "content": "Use **slant height** on triangular faces, not vertical height, unless the face is a right triangle."}, {"type": "example", "title": "Square pyramid: base $6$ cm, slant height $5$ cm.", "steps": ["Base: $36$.", "Four triangles: $4 \\times \\frac{1}{2}(6)(5) = 60$.", "Total $96$ cm$^2$."], "answer": "$96$ cm$^2$"}, {"type": "question", "questionText": "Pyramid lateral faces are?", "questionType": "multiple_choice", "options": ["Triangles", "Rectangles", "Circles", "Trapeziums only"], "correctAnswer": "Triangles", "explanation": "Triangular faces to apex."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'pyramids_cones'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Surface Area of Pyramids');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Surface Area of Cones', '{"blocks": [{"type": "heading", "content": "Cones"}, {"type": "math_block", "latex": "A_{\\text{cone}} = \\pi r^2 + \\pi r l", "caption": "$l$ = slant height; $\\pi r l$ is curved surface"}, {"type": "example", "title": "Cone: radius $3$ cm, slant height $5$ cm.", "steps": ["Base: $9\\pi$.", "Curved: $15\\pi$.", "Total $24\\pi$ cm$^2$."], "answer": "$24\\pi$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Find slant height with $l = \\sqrt{r^2 + h^2}$ when given $r$ and vertical $h$."}, {"type": "question", "questionText": "Cone curved surface area?", "questionType": "multiple_choice", "options": ["$\\pi r l$", "$2\\pi r l$", "$\\pi r^2$", "$\\pi r h$"], "correctAnswer": "$\\pi r l$", "explanation": "Half the cone net sector."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'pyramids_cones'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Surface Area of Cones');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Pyramids and Cones — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Pyramids and Cones"}, {"type": "example", "title": "Cone $r=6$ cm, $h=8$ cm. Find $l$ then SA.", "steps": ["$l = \\sqrt{36+64} = 10$ cm.", "$SA = 36\\pi + 60\\pi = 96\\pi$ cm$^2$."], "answer": "$96\\pi$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Show Pythagoras step for $l$ — method marks."}, {"type": "question", "questionText": "Square pyramid base $10$ cm, slant edge $13$ cm to midpoint of side. Triangle area each?", "questionType": "multiple_choice", "options": ["$65$ cm$^2$", "$130$ cm$^2$", "$50$ cm$^2$", "$120$ cm$^2$"], "correctAnswer": "$65$ cm$^2$", "explanation": "$\\frac{1}{2}(10)(13)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'pyramids_cones'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Pyramids and Cones — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Surface Area of Spheres', '{"blocks": [{"type": "heading", "content": "Spheres"}, {"type": "math_block", "latex": "A_{\\text{sphere}} = 4\\pi r^2", "caption": "Same as area of four great circles"}, {"type": "callout", "variant": "key_point", "content": "A hemisphere includes the flat circular face: $SA = 2\\pi r^2 + \\pi r^2 = 3\\pi r^2$."}, {"type": "example", "title": "Sphere radius $5$ cm.", "steps": ["$A = 4\\pi(25) = 100\\pi$ cm$^2$."], "answer": "$100\\pi$ cm$^2$"}, {"type": "question", "questionText": "Sphere SA formula?", "questionType": "multiple_choice", "options": ["$4\\pi r^2$", "$\\frac{4}{3}\\pi r^3$", "$2\\pi r$", "$\\pi r^2$"], "correctAnswer": "$4\\pi r^2$", "explanation": "Standard formula."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'spheres'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Surface Area of Spheres');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Hemispheres and Composite SA', '{"blocks": [{"type": "heading", "content": "Hemispheres"}, {"type": "example", "title": "Hemisphere radius $7$ cm (closed, including base).", "steps": ["Curved: $2\\pi(49) = 98\\pi$.", "Base: $49\\pi$.", "Total $147\\pi$ cm$^2$."], "answer": "$147\\pi$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Open hemisphere (no base) uses only $2\\pi r^2$."}, {"type": "question", "questionText": "Hemisphere curved area only?", "questionType": "multiple_choice", "options": ["$2\\pi r^2$", "$4\\pi r^2$", "$3\\pi r^2$", "$\\pi r^2$"], "correctAnswer": "$2\\pi r^2$", "explanation": "Half the sphere."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'spheres'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Hemispheres and Composite SA');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Spheres — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Spheres"}, {"type": "example", "title": "Solid: cylinder radius $4$ cm, height $10$ cm, topped by hemisphere radius $4$ cm.", "steps": ["Cylinder SA (no top): $2\\pi(16) + 2\\pi(40) = 112\\pi$.", "Add hemisphere curved $32\\pi$.", "Total $144\\pi$ cm$^2$."], "answer": "$144\\pi$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Composite solids: only count exposed surfaces."}, {"type": "question", "questionText": "Sphere diameter $12$ cm. Surface area?", "questionType": "multiple_choice", "options": ["$144\\pi$ cm$^2$", "$36\\pi$ cm$^2$", "$288\\pi$ cm$^2$", "$72\\pi$ cm$^2$"], "correctAnswer": "$144\\pi$ cm$^2$", "explanation": "$r=6$; $4\\pi(36)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surface_area_solids' AND st.code = 'spheres'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Spheres — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid SA: $2(lw+lh+wh)$ counts?', 'multiple_choice', '["All six faces", "Four faces only", "Two faces", "Volume"]'::jsonb, '"All six faces"'::jsonb, 'easy', 'Closed cuboid.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid SA: $2(lw+lh+wh)$ counts?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder radius $5$ cm, height $8$ cm. Curved SA?', 'multiple_choice', '["$80\\pi$ cm$^2$", "$40\\pi$ cm$^2$", "$25\\pi$ cm$^2$", "$50\\pi$ cm$^2$"]'::jsonb, '"$80\\pi$ cm$^2$"'::jsonb, 'easy', '$2\pi(5)(8)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder radius $5$ cm, height $8$ cm. Curved SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube edge $4$ cm. Total SA?', 'multiple_choice', '["$96$ cm$^2$", "$64$ cm$^2$", "$48$ cm$^2$", "$16$ cm$^2$"]'::jsonb, '"$96$ cm$^2$"'::jsonb, 'easy', '$6 \times 16$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube edge $4$ cm. Total SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder base area?', 'multiple_choice', '["$\\pi r^2$", "$2\\pi r$", "$2\\pi rh$", "$\\pi r l$"]'::jsonb, '"$\\pi r^2$"'::jsonb, 'easy', 'One circular end.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder base area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Open cylinder (no top): SA includes?', 'multiple_choice', '["Base + curved only", "Two bases + curved", "Curved only", "Two bases only"]'::jsonb, '"Base + curved only"'::jsonb, 'easy', 'Missing top face.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Open cylinder (no top): SA includes?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangular prism: faces include?', 'multiple_choice', '["Two triangles + three rectangles", "Six squares", "One circle", "Four triangles"]'::jsonb, '"Two triangles + three rectangles"'::jsonb, 'easy', 'Standard triangular prism.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangular prism: faces include?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder $r=3$, $h=7$. Total closed SA?', 'multiple_choice', '["$60\\pi$ cm$^2$", "$42\\pi$ cm$^2$", "$18\\pi$ cm$^2$", "$21\\pi$ cm$^2$"]'::jsonb, '"$60\\pi$ cm$^2$"'::jsonb, 'easy', '$18\pi + 42\pi$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder $r=3$, $h=7$. Total closed SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cone SA formula?', 'multiple_choice', '["$\\pi r^2 + \\pi r l$", "$\\pi r l$ only", "$2\\pi r^2$", "$\\frac{1}{3}\\pi r^2 h$"]'::jsonb, '"$\\pi r^2 + \\pi r l$"'::jsonb, 'easy', 'Base plus curved.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cone SA formula?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cone $r=3$, $l=5$. Total SA?', 'multiple_choice', '["$24\\pi$ cm$^2$", "$15\\pi$ cm$^2$", "$9\\pi$ cm$^2$", "$30\\pi$ cm$^2$"]'::jsonb, '"$24\\pi$ cm$^2$"'::jsonb, 'medium', '$9\pi + 15\pi$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cone $r=3$, $l=5$. Total SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cone $r=6$, $h=8$. Slant height?', 'multiple_choice', '["$10$ cm", "$14$ cm", "$48$ cm", "$2$ cm"]'::jsonb, '"$10$ cm"'::jsonb, 'medium', '$\sqrt{36+64}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cone $r=6$, $h=8$. Slant height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square pyramid base $8$ cm, slant height $6$ cm. Lateral SA?', 'multiple_choice', '["$96$ cm$^2$", "$64$ cm$^2$", "$48$ cm$^2$", "$192$ cm$^2$"]'::jsonb, '"$96$ cm$^2$"'::jsonb, 'medium', 'Four triangles: $4 \times \frac{1}{2}(8)(6)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square pyramid base $8$ cm, slant height $6$ cm. Lateral SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder radius $7$ cm, height $5$ cm. Total closed SA?', 'multiple_choice', '["$168\\pi$ cm$^2$", "$70\\pi$ cm$^2$", "$98\\pi$ cm$^2$", "$35\\pi$ cm$^2$"]'::jsonb, '"$168\\pi$ cm$^2$"'::jsonb, 'medium', '$2\pi(49) + 2\pi(35)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder radius $7$ cm, height $5$ cm. Total closed SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sphere radius $4$ cm. SA?', 'multiple_choice', '["$64\\pi$ cm$^2$", "$16\\pi$ cm$^2$", "$\\frac{256\\pi}{3}$ cm$^2$", "$32\\pi$ cm$^2$"]'::jsonb, '"$64\\pi$ cm$^2$"'::jsonb, 'medium', '$4\pi(16)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sphere radius $4$ cm. SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hemisphere radius $5$ cm including base. SA?', 'multiple_choice', '["$75\\pi$ cm$^2$", "$50\\pi$ cm$^2$", "$100\\pi$ cm$^2$", "$25\\pi$ cm$^2$"]'::jsonb, '"$75\\pi$ cm$^2$"'::jsonb, 'medium', '$50\pi + 25\pi$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hemisphere radius $5$ cm including base. SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid $10$ cm $\times$ $6$ cm $\times$ $4$ cm. SA?', 'multiple_choice', '["$248$ cm$^2$", "$240$ cm$^2$", "$124$ cm$^2$", "$200$ cm$^2$"]'::jsonb, '"$248$ cm$^2$"'::jsonb, 'medium', '$2(60+40+24)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid $10$ cm $\times$ $6$ cm $\times$ $4$ cm. SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cone $r=5$, $h=12$. Total SA?', 'multiple_choice', '["$90\\pi$ cm$^2$", "$65\\pi$ cm$^2$", "$25\\pi$ cm$^2$", "$60\\pi$ cm$^2$"]'::jsonb, '"$90\\pi$ cm$^2$"'::jsonb, 'hard', '$l=13$; $25\pi + 65\pi$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cone $r=5$, $h=12$. Total SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pipe internal $r=2$ cm, external $R=3$ cm, length $50$ cm. Curved SA (both surfaces)?', 'multiple_choice', '["$500\\pi$ cm$^2$", "$300\\pi$ cm$^2$", "$200\\pi$ cm$^2$", "$100\\pi$ cm$^2$"]'::jsonb, '"$500\\pi$ cm$^2$"'::jsonb, 'hard', '$2\pi(3)(50) + 2\pi(2)(50)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pipe internal $r=2$ cm, external $R=3$ cm, length $50$ cm. Curved SA (both surfaces)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hemisphere open at top (no base). SA?', 'multiple_choice', '["$50\\pi$ cm$^2$ for $r=5$", "$75\\pi$ cm$^2$", "$25\\pi$ cm$^2$", "$100\\pi$ cm$^2$"]'::jsonb, '"$50\\pi$ cm$^2$ for $r=5$"'::jsonb, 'hard', 'Curved only: $2\pi(25)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hemisphere open at top (no base). SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Frustum of cone: strategy for SA?', 'multiple_choice', '["Add/subtract exposed faces of parts", "Use volume formula", "Multiply radius by height only", "Ignore slant height"]'::jsonb, '"Add/subtract exposed faces of parts"'::jsonb, 'hard', 'Composite or net method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Frustum of cone: strategy for SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder with hemisphere on one end $r=4$, $h=10$. Exposed SA?', 'multiple_choice', '["$112\\pi$ cm$^2$", "$144\\pi$ cm$^2$", "$80\\pi$ cm$^2$", "$96\\pi$ cm$^2$"]'::jsonb, '"$112\\pi$ cm$^2$"'::jsonb, 'hard', 'Cylinder minus one base plus hemisphere curved.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder with hemisphere on one end $r=4$, $h=10$. Exposed SA?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube SA $150$ cm$^2$. Edge length?', 'multiple_choice', '["$5$ cm", "$25$ cm", "$6$ cm", "$10$ cm"]'::jsonb, '"$5$ cm"'::jsonb, 'hard', '$6e^2 = 150$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='prisms_cylinders'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube SA $150$ cm$^2$. Edge length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sphere SA $196\pi$ cm$^2$. Radius?', 'multiple_choice', '["$7$ cm", "$14$ cm", "$49$ cm", "$3.5$ cm"]'::jsonb, '"$7$ cm"'::jsonb, 'hard', '$4\pi r^2 = 196\pi$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='spheres'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sphere SA $196\pi$ cm$^2$. Radius?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square pyramid base $12$ cm, slant height $10$ cm. Total SA?', 'multiple_choice', '["$384$ cm$^2$", "$240$ cm$^2$", "$144$ cm$^2$", "$480$ cm$^2$"]'::jsonb, '"$384$ cm$^2$"'::jsonb, 'hard', '$144 + 4(60)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surface_area_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square pyramid base $12$ cm, slant height $10$ cm. Total SA?');
+
