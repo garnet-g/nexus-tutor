@@ -406,3 +406,204 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='representation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Similar triangles have sides $3,4,5$ cm and $9,12,15$ cm. Scale factor from small to large?');
+
+-- ========== COMMON SOLIDS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Nets of 3D Solids', '{"blocks":[{"type":"heading","content":"Nets of 3D Solids"},{"type":"paragraph","content":"A **net** is a flat shape that folds up to make a 3D solid. Each face of the solid appears once in the net."},{"type":"callout","variant":"key_point","content":"A cube has $6$ square faces. Its net has $6$ connected squares."},{"type":"paragraph","content":"Common Form 1 solids: cube, cuboid, cylinder, cone, square-based pyramid, triangular prism."},{"type":"example","title":"Name the solid from a net of $6$ identical squares in a cross shape","steps":["Count faces: $6$ squares of equal size.","Fold mentally: opposite faces pair up.","The solid is a **cube**."],"answer":"Cube"},{"type":"callout","variant":"warning","content":"Squares must join along full edges — partial overlaps are not valid nets."},{"type":"question","questionText":"How many faces does a cube net have?","questionType":"multiple_choice","options":["$6$","$4$","$8$","$12$"],"correctAnswer":"$6$","explanation":"A cube has $6$ faces."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'nets'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Nets of 3D Solids');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Drawing and Folding Nets', '{"blocks":[{"type":"heading","content":"Drawing and Folding Nets"},{"type":"example","title":"Draw a net for a cuboid $4$ cm $\\times$ $3$ cm $\\times$ $2$ cm","steps":["Draw three pairs of rectangles: $4 \\times 3$, $4 \\times 2$, $3 \\times 2$.","Arrange them in a cross so shared edges match.","Label dimensions on each face."],"answer":"Net with $6$ rectangles of the three sizes"},{"type":"example","title":"Which net folds to a square pyramid?","steps":["Look for $1$ square base and $4$ identical triangles attached to its sides.","Triangles meet at the apex when folded."],"answer":"One square + four triangles"},{"type":"callout","variant":"warning","content":"A cylinder net has $2$ circles and $1$ rectangle (curved surface)."},{"type":"question","questionText":"A triangular prism net has how many rectangular faces?","questionType":"multiple_choice","options":["$3$","$2$","$5$","$6$"],"correctAnswer":"$3$","explanation":"Three lateral rectangles between two triangles."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'nets'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Drawing and Folding Nets');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Nets — KCSE Practice', '{"blocks":[{"type":"heading","content":"KCSE Net Problems"},{"type":"example","title":"A cube has edge $5$ cm. Find the area of its net.","steps":["Each face is a $5 \\times 5$ square: area $= 25$ cm$^2$.","$6$ faces: total $= 6 \\times 25 = 150$ cm$^2$."],"answer":"$150$ cm$^2$"},{"type":"callout","variant":"warning","content":"Net area equals total surface area of the solid."},{"type":"question","questionText":"Cube edge $3$ cm. Area of one face?","questionType":"multiple_choice","options":["$9$ cm$^2$","$6$ cm$^2$","$27$ cm$^2$","$18$ cm$^2$"],"correctAnswer":"$9$ cm$^2$","explanation":"$3 \\times 3 = 9$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'nets'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Nets — KCSE Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Properties of Common Solids', '{"blocks":[{"type":"heading","content":"Properties of Common Solids"},{"type":"paragraph","content":"Solids have **faces** (flat surfaces), **edges** (where faces meet) and **vertices** (corner points)."},{"type":"callout","variant":"key_point","content":"Euler''s rule: $F + V - E = 2$ for many convex polyhedra."},{"type":"paragraph","content":"A **cube** has $6$ faces, $12$ edges, $8$ vertices. A **cuboid** has the same counts."},{"type":"example","title":"List faces, edges and vertices of a square pyramid","steps":["Faces: $1$ square + $4$ triangles $= 5$.","Vertices: $4$ on base + $1$ apex $= 5$.","Edges: $4$ on base + $4$ sloping $= 8$."],"answer":"$F=5$, $V=5$, $E=8$"},{"type":"callout","variant":"warning","content":"Curved solids (sphere, cylinder) are not polyhedra — Euler''s rule applies to flat-faced solids."},{"type":"question","questionText":"A cube has how many edges?","questionType":"multiple_choice","options":["$12$","$6$","$8$","$4$"],"correctAnswer":"$12$","explanation":"$4$ on top, $4$ on bottom, $4$ vertical."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'properties_solids'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Properties of Common Solids');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Edges, Faces and Vertices', '{"blocks":[{"type":"heading","content":"Edges, Faces and Vertices"},{"type":"example","title":"Verify Euler''s formula for a cuboid","steps":["$F = 6$, $V = 8$, $E = 12$.","$F + V - E = 6 + 8 - 12 = 2$."],"answer":"$F + V - E = 2$"},{"type":"example","title":"A triangular prism: count $F$, $V$, $E$","steps":["Faces: $2$ triangles + $3$ rectangles $= 5$.","Vertices: $3 + 3 = 6$.","Edges: $3 + 3 + 3 = 9$."],"answer":"$F=5$, $V=6$, $E=9$"},{"type":"callout","variant":"warning","content":"Count systematically — do not double-count edges."},{"type":"question","questionText":"Triangular prism: how many vertices?","questionType":"multiple_choice","options":["$6$","$5$","$9$","$3$"],"correctAnswer":"$6$","explanation":"$3$ on each triangular end."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'properties_solids'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Edges, Faces and Vertices');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solid Properties — KCSE Practice', '{"blocks":[{"type":"heading","content":"KCSE Solid Property Problems"},{"type":"example","title":"A polyhedron has $7$ faces and $10$ vertices. How many edges?","steps":["Use $F + V - E = 2$.","$7 + 10 - E = 2$ so $E = 15$."],"answer":"$15$ edges"},{"type":"callout","variant":"warning","content":"Euler''s formula is a quick check when one count is missing."},{"type":"question","questionText":"Square pyramid: total number of faces?","questionType":"multiple_choice","options":["$5$","$4$","$6$","$8$"],"correctAnswer":"$5$","explanation":"$1$ square + $4$ triangles."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'properties_solids'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solid Properties — KCSE Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Surface Area Models', '{"blocks":[{"type":"heading","content":"Surface Area Models"},{"type":"paragraph","content":"**Surface area** is the total area of all outer faces of a solid."},{"type":"callout","variant":"key_point","content":"Cube: $SA = 6s^2$. Cuboid: $SA = 2(lw + lh + wh)$."},{"type":"math_block","latex":"SA_{\\text{cuboid}} = 2(lw + lh + wh)","caption":"$l$ = length, $w$ = width, $h$ = height."},{"type":"example","title":"Find surface area of a cube of edge $4$ cm","steps":["One face $= 4 \\times 4 = 16$ cm$^2$.","$SA = 6 \\times 16 = 96$ cm$^2$."],"answer":"$96$ cm$^2$"},{"type":"callout","variant":"warning","content":"Units are squared: cm$^2$, m$^2$."},{"type":"question","questionText":"Cube edge $2$ cm. Surface area?","questionType":"multiple_choice","options":["$24$ cm$^2$","$8$ cm$^2$","$12$ cm$^2$","$6$ cm$^2$"],"correctAnswer":"$24$ cm$^2$","explanation":"$6 \\times 4 = 24$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'surface_models'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Surface Area Models');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Calculating Surface Areas', '{"blocks":[{"type":"heading","content":"Calculating Surface Areas"},{"type":"example","title":"Cuboid $6$ cm $\\times$ $4$ cm $\\times$ $3$ cm — find $SA$","steps":["$lw = 24$, $lh = 18$, $wh = 12$.","$SA = 2(24 + 18 + 12) = 2 \\times 54 = 108$ cm$^2$."],"answer":"$108$ cm$^2$"},{"type":"example","title":"Open-top box (no lid): $5$ cm $\\times$ $5$ cm $\\times$ $4$ cm","steps":["Base: $25$ cm$^2$.","Four sides: $2 \\times (5 \\times 4) + 2 \\times (5 \\times 4) = 80$ cm$^2$.","Total $= 105$ cm$^2$."],"answer":"$105$ cm$^2$"},{"type":"callout","variant":"warning","content":"Open boxes exclude the missing face from the total."},{"type":"question","questionText":"Cube edge $5$ cm. One face area?","questionType":"multiple_choice","options":["$25$ cm$^2$","$30$ cm$^2$","$125$ cm$^2$","$150$ cm$^2$"],"correctAnswer":"$25$ cm$^2$","explanation":"$5 \\times 5$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'surface_models'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating Surface Areas');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Surface Models — KCSE Practice', '{"blocks":[{"type":"heading","content":"KCSE Surface Area Problems"},{"type":"example","title":"Gift box cuboid $20$ cm $\\times$ $15$ cm $\\times$ $10$ cm. Wrapping paper needed (full cover)?","steps":["$SA = 2(20 \\times 15 + 20 \\times 10 + 15 \\times 10)$.","$= 2(300 + 200 + 150) = 1300$ cm$^2$."],"answer":"$1300$ cm$^2$"},{"type":"callout","variant":"warning","content":"Real wrapping may add overlap — read the question."},{"type":"question","questionText":"Cuboid $10$ cm $\\times$ $2$ cm $\\times$ $2$ cm. Surface area?","questionType":"multiple_choice","options":["$88$ cm$^2$","$40$ cm$^2$","$44$ cm$^2$","$104$ cm$^2$"],"correctAnswer":"$88$ cm$^2$","explanation":"$2(20+20+4)=88$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'common_solids' AND st.code = 'surface_models'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Surface Models — KCSE Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A cube has how many faces?', 'multiple_choice', '["$6$","$4$","$8$","$12$"]'::jsonb, '"$6$"'::jsonb, 'easy', 'Six square faces.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='nets'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A cube has how many faces?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which solid has a net of two circles and one rectangle?', 'multiple_choice', '["Cylinder","Cube","Cone","Pyramid"]'::jsonb, '"Cylinder"'::jsonb, 'easy', 'Circular bases and curved side.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='nets'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which solid has a net of two circles and one rectangle?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A square pyramid net has one square and how many triangles?', 'multiple_choice', '["$4$","$3$","$5$","$6$"]'::jsonb, '"$4$"'::jsonb, 'easy', 'Four triangular faces.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='nets'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A square pyramid net has one square and how many triangles?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'How many vertices does a cube have?', 'multiple_choice', '["$8$","$6$","$12$","$4$"]'::jsonb, '"$8$"'::jsonb, 'easy', 'Four on top, four on bottom.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='properties_solids'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='How many vertices does a cube have?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Euler''s formula states $F + V - E$ equals?', 'multiple_choice', '["$2$","$0$","$1$","$4$"]'::jsonb, '"$2$"'::jsonb, 'easy', 'For convex polyhedra.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='properties_solids'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Euler''s formula states $F + V - E$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Surface area of a cube of edge $3$ cm?', 'multiple_choice', '["$54$ cm$^2$","$27$ cm$^2$","$18$ cm$^2$","$9$ cm$^2$"]'::jsonb, '"$54$ cm$^2$"'::jsonb, 'easy', '$6 \times 9 = 54$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='surface_models'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Surface area of a cube of edge $3$ cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'One face of a cube is $16$ cm$^2$. Total surface area?', 'multiple_choice', '["$96$ cm$^2$","$64$ cm$^2$","$48$ cm$^2$","$32$ cm$^2$"]'::jsonb, '"$96$ cm$^2$"'::jsonb, 'easy', '$6 \times 16 = 96$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='surface_models'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='One face of a cube is $16$ cm$^2$. Total surface area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid $5$ cm $\times$ $4$ cm $\times$ $3$ cm. Surface area?', 'multiple_choice', '["$94$ cm$^2$","$60$ cm$^2$","$47$ cm$^2$","$120$ cm$^2$"]'::jsonb, '"$94$ cm$^2$"'::jsonb, 'medium', '$2(20+15+12)=94$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='surface_models'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid $5$ cm $\times$ $4$ cm $\times$ $3$ cm. Surface area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangular prism has how many edges?', 'multiple_choice', '["$9$","$6$","$5$","$12$"]'::jsonb, '"$9$"'::jsonb, 'medium', '$3+3+3$ edges.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='properties_solids'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangular prism has how many edges?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Net of a cube: total squares if each edge is $2$ cm?', 'multiple_choice', '["$6$ squares","$4$ squares","$8$ squares","$12$ squares"]'::jsonb, '"$6$ squares"'::jsonb, 'medium', 'Six faces on any cube net.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='nets'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Net of a cube: total squares if each edge is $2$ cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square pyramid: how many edges?', 'multiple_choice', '["$8$","$5$","$6$","$10$"]'::jsonb, '"$8$"'::jsonb, 'medium', '$4$ base + $4$ sloping.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='properties_solids'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square pyramid: how many edges?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Open cubical box (no top), edge $4$ cm. Outer surface area?', 'multiple_choice', '["$80$ cm$^2$","$96$ cm$^2$","$64$ cm$^2$","$48$ cm$^2$"]'::jsonb, '"$80$ cm$^2$"'::jsonb, 'medium', 'Five faces: $5 \times 16$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='surface_models'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Open cubical box (no top), edge $4$ cm. Outer surface area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cone net consists of one circle and what else?', 'multiple_choice', '["A sector of a circle","A rectangle","A triangle","A square"]'::jsonb, '"A sector of a circle"'::jsonb, 'medium', 'Curved surface unfolds to a sector.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='nets'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cone net consists of one circle and what else?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Polyhedron: $F=6$, $E=12$. Number of vertices?', 'multiple_choice', '["$8$","$6$","$10$","$4$"]'::jsonb, '"$8$"'::jsonb, 'hard', '$6+V-12=2$ so $V=8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='properties_solids'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Polyhedron: $F=6$, $E=12$. Number of vertices?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube edge $5$ cm. Total area of its net?', 'multiple_choice', '["$150$ cm$^2$","$125$ cm$^2$","$30$ cm$^2$","$75$ cm$^2$"]'::jsonb, '"$150$ cm$^2$"'::jsonb, 'hard', '$6 \times 25 = 150$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='nets'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube edge $5$ cm. Total area of its net?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Storage crate $2$ m $\times$ $1.5$ m $\times$ $1$ m (no base on ground). Paint all other outer faces. Area in m$^2$?', 'multiple_choice', '["$10$ m$^2$","$13$ m$^2$","$11$ m$^2$","$7$ m$^2$"]'::jsonb, '"$10$ m$^2$"'::jsonb, 'hard', 'Top $3$ m$^2$ plus four walls $7$ m$^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='surface_models'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Storage crate $2$ m $\times$ $1.5$ m $\times$ $1$ m (no base on ground). Paint all other outer faces. Area in m$^2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid net missing one $3$ cm $\times$ $4$ cm face. Solid edge lengths include $3$, $4$ and?', 'multiple_choice', '["$5$ cm","$7$ cm","$12$ cm","$6$ cm"]'::jsonb, '"$5$ cm"'::jsonb, 'hard', 'Third dimension from remaining faces.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='nets'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid net missing one $3$ cm $\times$ $4$ cm face. Solid edge lengths include $3$, $4$ and?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangular prism: $F=5$, $V=6$. Edges $E$?', 'multiple_choice', '["$9$","$11$","$7$","$10$"]'::jsonb, '"$9$"'::jsonb, 'hard', '$5+6-E=2$ gives $E=9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='properties_solids'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangular prism: $F=5$, $V=6$. Edges $E$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Room $4$ m $\times$ $3$ m $\times$ $2.5$ m. Walls and ceiling only (no floor). Area to paint?', 'multiple_choice', '["$47$ m$^2$","$59$ m$^2$","$35$ m$^2$","$41$ m$^2$"]'::jsonb, '"$47$ m$^2$"'::jsonb, 'hard', 'Ceiling $12$ m$^2$ plus walls $35$ m$^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='surface_models'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Room $4$ m $\times$ $3$ m $\times$ $2.5$ m. Walls and ceiling only (no floor). Area to paint?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A cuboid has $6$ faces. How many edges?', 'multiple_choice', '["$12$","$8$","$6$","$10$"]'::jsonb, '"$12$"'::jsonb, 'medium', 'Same edge count as a cube.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='properties_solids'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A cuboid has $6$ faces. How many edges?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cube total surface area $150$ cm$^2$. Edge length?', 'multiple_choice', '["$5$ cm","$25$ cm","$6$ cm","$10$ cm"]'::jsonb, '"$5$ cm"'::jsonb, 'hard', 'One face $25$ cm$^2$; edge $5$ cm.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='surface_models'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='common_solids'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cube total surface area $150$ cm$^2$. Edge length?');
