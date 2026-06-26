@@ -649,3 +649,218 @@ WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='indices_logarithms'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $(3^2)^3 \div 3^4$.');
 
 
+-- ========== GRADIENT AND STRAIGHT LINES ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Understanding Gradient', '{"blocks":[{"type":"heading","content":"Gradient of a Line"},{"type":"paragraph","content":"The **gradient** (slope) measures steepness: change in $y$ divided by change in $x$."},{"type":"math_block","latex":"m = \\frac{\\Delta y}{\\Delta x} = \\frac{y_2 - y_1}{x_2 - x_1}","caption":"Gradient formula"},{"type":"callout","variant":"key_point","content":"Positive gradient rises left to right; negative gradient falls."},{"type":"example","title":"Find gradient through $(2, 3)$ and $(6, 11)$","steps":["$m = \\frac{11-3}{6-2} = \\frac{8}{4} = 2$."],"answer":"$2$"},{"type":"question","questionText":"Gradient through $(0, 1)$ and $(4, 9)$?","questionType":"multiple_choice","options":["$2$","$8$","$\\frac{1}{2}$","$-2$"],"correctAnswer":"$2$","explanation":"$\\frac{8}{4} = 2$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'gradient'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Understanding Gradient');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Calculating Gradient — Methods', '{"blocks":[{"type":"heading","content":"Gradient Methods"},{"type":"example","title":"Find gradient of line through $(-1, 5)$ and $(3, -3)$","steps":["$m = \\frac{-3-5}{3-(-1)} = \\frac{-8}{4} = -2$."],"answer":"$-2$"},{"type":"callout","variant":"warning","content":"Subtract coordinates consistently: $\\frac{y_2-y_1}{x_2-x_1}$."},{"type":"question","questionText":"Horizontal line gradient?","questionType":"multiple_choice","options":["$0$","$1$","Undefined","$-1$"],"correctAnswer":"$0$","explanation":"No change in $y$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'gradient'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating Gradient — Methods');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Gradient — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE Gradient Problems"},{"type":"example","title":"A road rises $50$ m over $200$ m horizontal. Gradient?","steps":["$m = \\frac{50}{200} = 0.25$."],"answer":"$0.25$"},{"type":"question","questionText":"Vertical line gradient?","questionType":"multiple_choice","options":["Undefined","$0$","$1$","Infinite value $0$"],"correctAnswer":"Undefined","explanation":"$\\Delta x = 0$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'gradient'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Gradient — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Equation $y = mx + c$', '{"blocks":[{"type":"heading","content":"Equation of a Straight Line"},{"type":"paragraph","content":"A straight line can be written $y = mx + c$ where $m$ is gradient and $c$ is the $y$-intercept."},{"type":"math_block","latex":"y = mx + c","caption":"Slope-intercept form"},{"type":"example","title":"Write equation of line with $m = 3$, $c = -2$","steps":["$y = 3x - 2$."],"answer":"$y = 3x - 2$"},{"type":"question","questionText":"$y$-intercept of $y = -4x + 7$?","questionType":"multiple_choice","options":["$7$","$-4$","$4$","$-7$"],"correctAnswer":"$7$","explanation":"Constant term is $c$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'equation_of_line'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Equation $y = mx + c$');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding the Equation', '{"blocks":[{"type":"heading","content":"Finding Equations"},{"type":"example","title":"Find equation through $(2, 5)$ with gradient $3$","steps":["$y - 5 = 3(x - 2)$.","$y = 3x - 1$."],"answer":"$y = 3x - 1$"},{"type":"example","title":"Find equation through $(1, 2)$ and $(4, 8)$","steps":["$m = \\frac{8-2}{4-1} = 2$.","Using $(1,2)$: $y = 2x$."],"answer":"$y = 2x$"},{"type":"question","questionText":"Line through $(0, -3)$ with $m = 2$?","questionType":"multiple_choice","options":["$y = 2x - 3$","$y = 2x + 3$","$y = -3x + 2$","$y = x - 3$"],"correctAnswer":"$y = 2x - 3$","explanation":"$c = -3$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'equation_of_line'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding the Equation');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Line Equations — Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"A taxi charges KES $100$ flag fall plus KES $50$ per km. Write $C$ in terms of $d$.","steps":["$C = 50d + 100$."],"answer":"$C = 50d + 100$"},{"type":"callout","variant":"warning","content":"$c$ is the value when $x = 0$ — fixed charge here."},{"type":"question","questionText":"$x$-intercept of $y = 2x - 6$?","questionType":"multiple_choice","options":["$3$","$-6$","$6$","$-3$"],"correctAnswer":"$3$","explanation":"Set $y=0$: $x=3$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'equation_of_line'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Line Equations — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Parallel Lines', '{"blocks":[{"type":"heading","content":"Parallel Lines"},{"type":"paragraph","content":"Parallel lines have **equal gradients**: if $m_1 = m_2$, the lines are parallel."},{"type":"math_block","latex":"m_1 = m_2 \\Rightarrow \\text{parallel}","caption":"Parallel condition"},{"type":"example","title":"Are $y = 2x + 1$ and $y = 2x - 5$ parallel?","steps":["Both have $m = 2$ — yes, parallel."],"answer":"Yes"},{"type":"question","questionText":"Parallel to $y = -3x + 4$ has gradient?","questionType":"multiple_choice","options":["$-3$","$3$","$\\frac{1}{3}$","$-4$"],"correctAnswer":"$-3$","explanation":"Same gradient."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'parallel_perpendicular'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Parallel Lines');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Perpendicular Lines', '{"blocks":[{"type":"heading","content":"Perpendicular Lines"},{"type":"math_block","latex":"m_1 \\times m_2 = -1","caption":"Perpendicular gradients"},{"type":"example","title":"Find gradient perpendicular to $m = 2$","steps":["$m_2 = -\\frac{1}{2}$."],"answer":"$-\\frac{1}{2}$"},{"type":"callout","variant":"warning","content":"Negative reciprocal — flip and change sign."},{"type":"question","questionText":"Perpendicular to $y = \\frac{1}{3}x$?","questionType":"multiple_choice","options":["$-3$","$3$","$\\frac{1}{3}$","$-\\frac{1}{3}$"],"correctAnswer":"$-3$","explanation":"Product must be $-1$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'parallel_perpendicular'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Perpendicular Lines');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Parallel & Perpendicular — Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"Find equation through $(0, 1)$ perpendicular to $y = 4x + 2$","steps":["Perpendicular gradient $= -\\frac{1}{4}$.","$y = -\\frac{1}{4}x + 1$."],"answer":"$y = -\\frac{1}{4}x + 1$"},{"type":"question","questionText":"Lines $y = 5x$ and $y = 5x - 2$ are?","questionType":"multiple_choice","options":["Parallel","Perpendicular","Intersecting only","Same line"],"correctAnswer":"Parallel","explanation":"Equal gradients."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'gradient_straight_lines' AND st.code = 'parallel_perpendicular'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Parallel & Perpendicular — Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Gradient through $(0, 0)$ and $(2, 6)$?', 'multiple_choice', '["$3$","$2$","$6$","$\\frac{1}{3}$"]'::jsonb, '"$3$"'::jsonb, 'easy', '$\frac{6}{2} = 3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Gradient through $(0, 0)$ and $(2, 6)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Gradient of $y = 4x + 1$?', 'multiple_choice', '["$4$","$1$","$5$","$-4$"]'::jsonb, '"$4$"'::jsonb, 'easy', 'Coefficient of $x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Gradient of $y = 4x + 1$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y$-intercept of $y = 2x - 5$?', 'multiple_choice', '["$-5$","$2$","$5$","$-2$"]'::jsonb, '"$-5$"'::jsonb, 'easy', '$c = -5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y$-intercept of $y = 2x - 5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Equation with $m=1$, $c=0$?', 'multiple_choice', '["$y = x$","$y = 1$","$y = 0$","$x = 1$"]'::jsonb, '"$y = x$"'::jsonb, 'easy', '$y = 1x + 0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equation with $m=1$, $c=0$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Parallel lines have gradients that are?', 'multiple_choice', '["Equal","Negative reciprocals","Opposite","Zero"]'::jsonb, '"Equal"'::jsonb, 'easy', 'Same slope.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='parallel_perpendicular'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallel lines have gradients that are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Perpendicular to $m=2$ has $m=$?', 'multiple_choice', '["$-\\frac{1}{2}$","$2$","$-2$","$\\frac{1}{2}$"]'::jsonb, '"$-\\frac{1}{2}$"'::jsonb, 'easy', 'Product $= -1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='parallel_perpendicular'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Perpendicular to $m=2$ has $m=$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Gradient of horizontal line?', 'multiple_choice', '["$0$","$1$","Undefined","$-1$"]'::jsonb, '"$0$"'::jsonb, 'easy', 'Flat line.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Gradient of horizontal line?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'In $y = mx + c$, what is $m$?', 'multiple_choice', '["Gradient","$y$-intercept","$x$-intercept","Origin"]'::jsonb, '"Gradient"'::jsonb, 'easy', 'Slope.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='In $y = mx + c$, what is $m$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Gradient through $(-2, 7)$ and $(4, -5)$?', 'multiple_choice', '["$-2$","$2$","$-\\frac{1}{2}$","$-1$"]'::jsonb, '"$-2$"'::jsonb, 'medium', '$\frac{-12}{6} = -2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Gradient through $(-2, 7)$ and $(4, -5)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Line through $(3, 1)$ with $m=-2$?', 'multiple_choice', '["$y = -2x + 7$","$y = -2x - 5$","$y = 2x - 5$","$y = -2x + 1$"]'::jsonb, '"$y = -2x + 7$"'::jsonb, 'medium', '$1 = -6 + c$; $c=7$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Line through $(3, 1)$ with $m=-2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find $m$ for points $(1,4)$ and $(5,12)$.', 'multiple_choice', '["$2$","$4$","$8$","$\\frac{1}{2}$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$\frac{8}{4}=2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find $m$ for points $(1,4)$ and $(5,12)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Perpendicular to $y = -\frac{2}{3}x + 1$?', 'multiple_choice', '["$m = \\frac{3}{2}$","$m = -\\frac{2}{3}$","$m = \\frac{2}{3}$","$m = -\\frac{3}{2}$"]'::jsonb, '"$m = \\frac{3}{2}$"'::jsonb, 'medium', 'Negative reciprocal.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='parallel_perpendicular'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Perpendicular to $y = -\frac{2}{3}x + 1$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is parallel to $y = x + 5$?', 'multiple_choice', '["$y = x - 2$","$y = -x + 5$","$y = 2x + 5$","$x = y$"]'::jsonb, '"$y = x - 2$"'::jsonb, 'medium', 'Gradient $1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='parallel_perpendicular'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is parallel to $y = x + 5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rise $15$ m, run $60$ m. Gradient?', 'multiple_choice', '["$0.25$","$4$","$45$","$75$"]'::jsonb, '"$0.25$"'::jsonb, 'medium', '$\frac{15}{60}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rise $15$ m, run $60$ m. Gradient?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Where does $y = 3x - 9$ cross $x$-axis?', 'multiple_choice', '["$(3, 0)$","$(0, -9)$","$(-3, 0)$","$(9, 0)$"]'::jsonb, '"$(3, 0)$"'::jsonb, 'medium', 'Set $y=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Where does $y = 3x - 9$ cross $x$-axis?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle vertices $(0,0)$, $(4,0)$, $(4,3)$. Gradient of hypotenuse?', 'multiple_choice', '["$\\frac{3}{4}$","$\\frac{4}{3}$","$3$","$4$"]'::jsonb, '"$\\frac{3}{4}$"'::jsonb, 'hard', 'From $(0,0)$ to $(4,3)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle vertices $(0,0)$, $(4,0)$, $(4,3)$. Gradient of hypotenuse?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Perpendicular bisector of $(0,0)$ and $(4,0)$ is?', 'multiple_choice', '["$x = 2$","$y = 2$","$y = x$","$x = 0$"]'::jsonb, '"$x = 2$"'::jsonb, 'hard', 'Midpoint $x=2$, vertical line.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Perpendicular bisector of $(0,0)$ and $(4,0)$ is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Line through $(2,3)$ and $(6,11)$. Equation?', 'multiple_choice', '["$y = 2x - 1$","$y = 2x + 1$","$y = 4x - 5$","$y = x + 1$"]'::jsonb, '"$y = 2x - 1$"'::jsonb, 'hard', '$m=2$; $c=-1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Line through $(2,3)$ and $(6,11)$. Equation?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Through $(0,0)$, perpendicular to $y = \frac{1}{2}x + 3$?', 'multiple_choice', '["$y = -2x$","$y = 2x$","$y = -\\frac{1}{2}x$","$y = \\frac{1}{2}x$"]'::jsonb, '"$y = -2x$"'::jsonb, 'hard', '$m=-2$ through origin.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='parallel_perpendicular'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Through $(0,0)$, perpendicular to $y = \frac{1}{2}x + 3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle has side on $y=3x$. Adjacent side gradient?', 'multiple_choice', '["$-\\frac{1}{3}$","$3$","$-3$","$\\frac{1}{3}$"]'::jsonb, '"$-\\frac{1}{3}$"'::jsonb, 'hard', 'Perpendicular sides.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='parallel_perpendicular'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle has side on $y=3x$. Adjacent side gradient?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Points $(a, 2a)$ and $(3a, 8a)$. Gradient?', 'multiple_choice', '["$3$","$2$","$a$","$4$"]'::jsonb, '"$3$"'::jsonb, 'hard', '$\frac{6a}{2a} = 3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Points $(a, 2a)$ and $(3a, 8a)$. Gradient?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find $c$ if $y = 5x + c$ passes through $(2, 13)$.', 'multiple_choice', '["$3$","$5$","$23$","$-3$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$13 = 10 + c$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='equation_of_line'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find $c$ if $y = 5x + c$ passes through $(2, 13)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Line parallel to $y = 2x + 1$ through $(3, 1)$. Equation?', 'multiple_choice', '["$y = 2x - 5$","$y = 2x + 1$","$y = -2x + 7$","$y = 2x + 7$"]'::jsonb, '"$y = 2x - 5$"'::jsonb, 'hard', '$m = 2$; $1 = 6 + c$ so $c = -5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='gradient_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Line parallel to $y = 2x + 1$ through $(3, 1)$. Equation?');
+
+
