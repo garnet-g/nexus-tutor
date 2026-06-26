@@ -219,3 +219,218 @@ WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='cubes_cube_roots'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $2^3 \times 3^3$.');
 
 
+-- ========== RECIPROCALS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'What Is a Reciprocal?', '{"blocks":[{"type":"heading","content":"What Is a Reciprocal?"},{"type":"paragraph","content":"The **reciprocal** of a non-zero number $a$ is $\\frac{1}{a}$. Multiplying a number by its reciprocal gives $1$: $a \\times \\frac{1}{a} = 1$."},{"type":"math_block","latex":"\\text{reciprocal of } a = \\frac{1}{a}","caption":"Definition"},{"type":"callout","variant":"key_point","content":"Zero has no reciprocal."},{"type":"example","title":"Find the reciprocal of $5$","steps":["Reciprocal $= \\frac{1}{5}$."],"answer":"$\\frac{1}{5}$"},{"type":"question","questionText":"Reciprocal of $8$?","questionType":"multiple_choice","options":["$\\frac{1}{8}$","$8$","$-8$","$0$"],"correctAnswer":"$\\frac{1}{8}$","explanation":"$8 \\times \\frac{1}{8} = 1$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'reciprocals_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'What Is a Reciprocal?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reciprocals Using Tables', '{"blocks":[{"type":"heading","content":"Reciprocal Tables"},{"type":"paragraph","content":"Tables list reciprocals of integers. Locate the number and read $\\frac{1}{n}$."},{"type":"example","title":"Use a table: reciprocal of $25$","steps":["$\\frac{1}{25} = 0.04$."],"answer":"$0.04$"},{"type":"callout","variant":"warning","content":"Do not confuse reciprocal with opposite (negative)."},{"type":"question","questionText":"Reciprocal of $4$?","questionType":"multiple_choice","options":["$0.25$","$4$","$-4$","$2$"],"correctAnswer":"$0.25$","explanation":"$\\frac{1}{4} = 0.25$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'reciprocals_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reciprocals Using Tables');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reciprocal Tables — Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Practice"},{"type":"example","title":"A recipe for $8$ people uses $2$ kg flour. Flour per person?","steps":["$\\frac{2}{8} = 0.25$ kg — reciprocal thinking: $\\frac{1}{8}$ of total per person scaled."],"answer":"$0.25$ kg per person"},{"type":"question","questionText":"Reciprocal of $\\frac{1}{3}$?","questionType":"multiple_choice","options":["$3$","$\\frac{1}{3}$","$-3$","$0$"],"correctAnswer":"$3$","explanation":"Reciprocal of a fraction swaps numerator and denominator."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'reciprocals_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reciprocal Tables — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Dividing Using Reciprocals', '{"blocks":[{"type":"heading","content":"Division via Reciprocals"},{"type":"paragraph","content":"Dividing by a number equals multiplying by its reciprocal: $a \\div b = a \\times \\frac{1}{b}$."},{"type":"math_block","latex":"a \\div b = a \\times \\frac{1}{b}","caption":"Division rule"},{"type":"example","title":"Evaluate $12 \\div \\frac{3}{4}$","steps":["Reciprocal of $\\frac{3}{4}$ is $\\frac{4}{3}$.","$12 \\times \\frac{4}{3} = 16$."],"answer":"$16$"},{"type":"question","questionText":"$6 \\div 2$ using reciprocals?","questionType":"multiple_choice","options":["$6 \\times \\frac{1}{2} = 3$","$12$","$3$","$4$"],"correctAnswer":"$6 \\times \\frac{1}{2} = 3$","explanation":"Multiply by reciprocal."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'operations_reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Dividing Using Reciprocals');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Operations with Reciprocals', '{"blocks":[{"type":"heading","content":"Worked Operations"},{"type":"example","title":"Evaluate $\\frac{2}{5} \\div \\frac{4}{7}$","steps":["$\\frac{2}{5} \\times \\frac{7}{4} = \\frac{14}{20} = \\frac{7}{10}$."],"answer":"$\\frac{7}{10}$"},{"type":"example","title":"Simplify $3 \\div \\frac{1}{6}$","steps":["$3 \\times 6 = 18$."],"answer":"$18$"},{"type":"callout","variant":"warning","content":"Invert the second fraction only when dividing fractions."},{"type":"question","questionText":"$\\frac{1}{2} \\div \\frac{1}{4}$?","questionType":"multiple_choice","options":["$2$","$\\frac{1}{8}$","$4$","$\\frac{1}{2}$"],"correctAnswer":"$2$","explanation":"$\\frac{1}{2} \\times 4 = 2$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'operations_reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Operations with Reciprocals');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reciprocal Operations — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE Operations"},{"type":"example","title":"Share KES $240$ among workers at rate $\\frac{2}{3}$ of a unit each. How many units?","steps":["$240 \\div \\frac{2}{3} = 240 \\times \\frac{3}{2} = 360$."],"answer":"$360$ units"},{"type":"question","questionText":"$\\frac{3}{8} \\div \\frac{9}{16}$?","questionType":"multiple_choice","options":["$\\frac{2}{3}$","$\\frac{27}{128}$","$\\frac{3}{2}$","$\\frac{4}{3}$"],"correctAnswer":"$\\frac{2}{3}$","explanation":"Multiply by reciprocal $\\frac{16}{9}$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'operations_reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reciprocal Operations — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reciprocals in Rates', '{"blocks":[{"type":"heading","content":"Rates and Reciprocals"},{"type":"paragraph","content":"Speed $= \\frac{\\text{distance}}{\\text{time}}$. Time $= \\frac{\\text{distance}}{\\text{speed}}$ — the reciprocal relationship."},{"type":"example","title":"A car travels $120$ km in $2$ h. Speed?","steps":["$\\frac{120}{2} = 60$ km/h."],"answer":"$60$ km/h"},{"type":"question","questionText":"Time to cover $90$ km at $30$ km/h?","questionType":"multiple_choice","options":["$3$ h","$2700$ h","$0.33$ h","$60$ h"],"correctAnswer":"$3$ h","explanation":"$90 \\div 30 = 3$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'applications'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reciprocals in Rates');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reciprocals in Proportion', '{"blocks":[{"type":"heading","content":"Inverse Proportion"},{"type":"paragraph","content":"If $y$ is inversely proportional to $x$, then $y = \\frac{k}{x}$ — reciprocal relationship."},{"type":"example","title":"$y$ varies inversely with $x$. When $x = 4$, $y = 6$. Find $y$ when $x = 8$.","steps":["$k = 24$.","$y = \\frac{24}{8} = 3$."],"answer":"$3$"},{"type":"question","questionText":"If $6$ workers take $10$ days, how long for $12$ workers (inverse)?","questionType":"multiple_choice","options":["$5$ days","$20$ days","$60$ days","$2$ days"],"correctAnswer":"$5$ days","explanation":"Double workers, half time."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'applications'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reciprocals in Proportion');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reciprocal Applications — Exam Practice', '{"blocks":[{"type":"heading","content":"Exam Applications"},{"type":"example","title":"A pump fills a tank in $4$ h. What fraction of the tank per hour?","steps":["$\\frac{1}{4}$ of the tank per hour."],"answer":"$\\frac{1}{4}$"},{"type":"callout","variant":"warning","content":"Rate per hour is the reciprocal of total hours for one whole job."},{"type":"question","questionText":"Pipe A fills tank in $6$ h, Pipe B in $3$ h. Together, hours to fill?","questionType":"multiple_choice","options":["$2$ h","$9$ h","$4.5$ h","$1$ h"],"correctAnswer":"$2$ h","explanation":"Rates $\\frac{1}{6} + \\frac{1}{3} = \\frac{1}{2}$ per hour."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'reciprocals' AND st.code = 'applications'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reciprocal Applications — Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reciprocal of $10$?', 'multiple_choice', '["$0.1$","$10$","$-10$","$1$"]'::jsonb, '"$0.1$"'::jsonb, 'easy', '$\frac{1}{10} = 0.1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reciprocals_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reciprocal of $10$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reciprocal of $\frac{1}{5}$?', 'multiple_choice', '["$5$","$\\frac{1}{5}$","$0.5$","$-5$"]'::jsonb, '"$5$"'::jsonb, 'easy', 'Flip the fraction.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reciprocals_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reciprocal of $\frac{1}{5}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reciprocal of $2$?', 'multiple_choice', '["$0.5$","$2$","$-2$","$1$"]'::jsonb, '"$0.5$"'::jsonb, 'easy', '$\frac{1}{2} = 0.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reciprocals_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reciprocal of $2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$8 \div 4$ via reciprocal?', 'multiple_choice', '["$8 \\times \\frac{1}{4} = 2$","$32$","$4$","$2$"]'::jsonb, '"$8 \\times \\frac{1}{4} = 2$"'::jsonb, 'easy', 'Multiply by $\frac{1}{4}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_reciprocals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$8 \div 4$ via reciprocal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{1}{3} \div \frac{1}{3}$?', 'multiple_choice', '["$1$","$\\frac{1}{9}$","$9$","$0$"]'::jsonb, '"$1$"'::jsonb, 'easy', 'Same number divided by itself.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_reciprocals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{1}{3} \div \frac{1}{3}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $5$ machines take $1$ day, one machine takes?', 'multiple_choice', '["$5$ days","$\\frac{1}{5}$ day","$1$ day","$0$ days"]'::jsonb, '"$5$ days"'::jsonb, 'easy', 'Inverse proportion.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $5$ machines take $1$ day, one machine takes?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Speed $40$ km/h for $2$ h. Distance?', 'multiple_choice', '["$80$ km","$20$ km","$42$ km","$0.05$ km"]'::jsonb, '"$80$ km"'::jsonb, 'easy', '$40 \times 2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Speed $40$ km/h for $2$ h. Distance?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Product of $7$ and its reciprocal?', 'multiple_choice', '["$1$","$7$","$49$","$0$"]'::jsonb, '"$1$"'::jsonb, 'easy', '$a \times \frac{1}{a} = 1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reciprocals_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Product of $7$ and its reciprocal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reciprocal of $-0.25$?', 'multiple_choice', '["$-4$","$4$","$-0.25$","$0.25$"]'::jsonb, '"$-4$"'::jsonb, 'medium', '$\frac{1}{-0.25} = -4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reciprocals_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reciprocal of $-0.25$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{5}{6} \div \frac{10}{9}$?', 'multiple_choice', '["$\\frac{3}{4}$","$\\frac{50}{54}$","$\\frac{4}{3}$","$\\frac{15}{19}$"]'::jsonb, '"$\\frac{3}{4}$"'::jsonb, 'medium', '$\frac{5}{6} \times \frac{9}{10}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_reciprocals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{5}{6} \div \frac{10}{9}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2\frac{1}{2} \div \frac{1}{4}$?', 'multiple_choice', '["$10$","$\\frac{5}{8}$","$2$","$6$"]'::jsonb, '"$10$"'::jsonb, 'medium', '$\frac{5}{2} \times 4 = 10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_reciprocals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2\frac{1}{2} \div \frac{1}{4}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto \frac{1}{x}$. $x=5$, $y=12$. Find $y$ when $x=10$.', 'multiple_choice', '["$6$","$24$","$60$","$2.4$"]'::jsonb, '"$6$"'::jsonb, 'medium', '$k=60$; $y=6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto \frac{1}{x}$. $x=5$, $y=12$. Find $y$ when $x=10$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tank filled in $8$ h. Fraction per hour?', 'multiple_choice', '["$\\frac{1}{8}$","$8$","$\\frac{1}{4}$","$0.8$"]'::jsonb, '"$\\frac{1}{8}$"'::jsonb, 'medium', 'One whole in 8 hours.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tank filled in $8$ h. Fraction per hour?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reciprocal of $0.02$?', 'multiple_choice', '["$50$","$20$","$0.5$","$5$"]'::jsonb, '"$50$"'::jsonb, 'medium', '$\frac{1}{0.02} = 50$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reciprocals_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reciprocal of $0.02$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{3}{4} \div 6$?', 'multiple_choice', '["$\\frac{1}{8}$","$\\frac{18}{4}$","$8$","$\\frac{3}{24}$"]'::jsonb, '"$\\frac{1}{8}$"'::jsonb, 'medium', '$\frac{3}{4} \times \frac{1}{6}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_reciprocals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{3}{4} \div 6$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$12 \div \frac{3}{5}$?', 'multiple_choice', '["$20$","$\\frac{36}{5}$","$7.2$","$4$"]'::jsonb, '"$20$"'::jsonb, 'medium', '$12 \times \frac{5}{3}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_reciprocals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$12 \div \frac{3}{5}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pipes: $A$ fills in $12$ h, $B$ in $4$ h. Together?', 'multiple_choice', '["$3$ h","$8$ h","$16$ h","$2$ h"]'::jsonb, '"$3$ h"'::jsonb, 'hard', '$\frac{1}{12}+\frac{1}{4}=\frac{1}{3}$ per h.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pipes: $A$ fills in $12$ h, $B$ in $4$ h. Together?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$8$ men build a wall in $15$ days. How many men for $10$ days?', 'multiple_choice', '["$12$","$6$","$20$","$80$"]'::jsonb, '"$12$"'::jsonb, 'hard', '$8 \times 15 = 120$ man-days.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$8$ men build a wall in $15$ days. How many men for $10$ days?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sum of reciprocals of $2$ and $5$?', 'multiple_choice', '["$\\frac{7}{10}$","$\\frac{1}{7}$","$7$","$\\frac{3}{10}$"]'::jsonb, '"$\\frac{7}{10}$"'::jsonb, 'hard', '$\frac{1}{2}+\frac{1}{5}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reciprocals_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sum of reciprocals of $2$ and $5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{2}{3} \div \frac{4}{9} \times \frac{1}{2}$?', 'multiple_choice', '["$\\frac{3}{4}$","$\\frac{4}{3}$","$\\frac{1}{3}$","$1$"]'::jsonb, '"$\\frac{3}{4}$"'::jsonb, 'hard', 'Left to right with reciprocals.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_reciprocals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{2}{3} \div \frac{4}{9} \times \frac{1}{2}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Car uses $1$ litre per $12$ km. Litres for $150$ km?', 'multiple_choice', '["$12.5$","$18$","$150$","$0.08$"]'::jsonb, '"$12.5$"'::jsonb, 'hard', '$150 \div 12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Car uses $1$ litre per $12$ km. Litres for $150$ km?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Evaluate $1 \div (\frac{1}{2} + \frac{1}{3})$.', 'multiple_choice', '["$\\frac{6}{5}$","$\\frac{5}{6}$","$5$","$6$"]'::jsonb, '"$\\frac{6}{5}$"'::jsonb, 'hard', '$1 \div \frac{5}{6}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_reciprocals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Evaluate $1 \div (\frac{1}{2} + \frac{1}{3})$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reciprocal of $0.125$?', 'multiple_choice', '["$8$","$0.8$","$80$","$1.25$"]'::jsonb, '"$8$"'::jsonb, 'hard', '$\frac{1}{0.125} = 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='reciprocals_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='reciprocals'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reciprocal of $0.125$?');
+
+
