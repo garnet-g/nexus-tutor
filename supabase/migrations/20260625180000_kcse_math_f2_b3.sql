@@ -217,3 +217,210 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='composite'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_quadrilaterals_polygons'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Plot: square $12$ m with right triangle $6$ m $\times$ $8$ m attached. Total area?');
 
+-- ========== AREA OF PART OF A CIRCLE ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Sector Area Concept', '{"blocks": [{"type": "heading", "content": "Sector of a Circle"}, {"type": "paragraph", "content": "A **sector** is a pizza-slice portion of a circle bounded by two radii and an arc."}, {"type": "math_block", "latex": "A_{\\text{sector}} = \\frac{\\theta}{360^\\circ} \\times \\pi r^2", "caption": "$\\theta$ is the angle at the centre in degrees"}, {"type": "callout", "variant": "key_point", "content": "Arc length $= \\frac{\\theta}{360} \\times 2\\pi r$."}, {"type": "example", "title": "Radius $6$ cm, angle $60^\\circ$. Sector area?", "steps": ["$A = \\frac{60}{360} \\times \\pi (36) = 6\\pi$ cm$^2$."], "answer": "$6\\pi$ cm$^2$"}, {"type": "question", "questionText": "Sector needs which measurements?", "questionType": "multiple_choice", "options": ["Radius and angle", "Diameter only", "Chord only", "Tangent"], "correctAnswer": "Radius and angle", "explanation": "Centre angle and radius."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'sector'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Sector Area Concept');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Calculating Sector Areas', '{"blocks": [{"type": "heading", "content": "Sector Calculations"}, {"type": "example", "title": "Radius $10$ cm, angle $90^\\circ$.", "steps": ["$A = \\frac{90}{360} \\times \\pi(100) = 25\\pi$ cm$^2$."], "answer": "$25\\pi$ cm$^2$"}, {"type": "example", "title": "Radius $7$ cm, angle $120^\\circ$.", "steps": ["$A = \\frac{120}{360} \\times 49\\pi = \\frac{49\\pi}{3}$ cm$^2$."], "answer": "$\\frac{49\\pi}{3}$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Use the angle at the **centre**, not at the circumference."}, {"type": "question", "questionText": "Radius $4$ cm, angle $180^\\circ$. Sector area?", "questionType": "multiple_choice", "options": ["$8\\pi$ cm$^2$", "$16\\pi$ cm$^2$", "$4\\pi$ cm$^2$", "$2\\pi$ cm$^2$"], "correctAnswer": "$8\\pi$ cm$^2$", "explanation": "Semicircle: half of $\\pi r^2$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'sector'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating Sector Areas');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Sector — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Sectors"}, {"type": "example", "title": "Clock face radius $14$ cm. Area swept from 12 to 3 o''clock?", "steps": ["Angle $90^\\circ$.", "$A = \\frac{1}{4}\\pi(196) = 49\\pi$ cm$^2$."], "answer": "$49\\pi$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Word problems: convert the situation to a centre angle first."}, {"type": "question", "questionText": "Full circle sector angle $360^\\circ$ gives area?", "questionType": "multiple_choice", "options": ["$\\pi r^2$", "$2\\pi r$", "$\\frac{\\pi r^2}{2}$", "$4\\pi r^2$"], "correctAnswer": "$\\pi r^2$", "explanation": "Whole circle."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'sector'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Sector — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Segment Area Concept', '{"blocks": [{"type": "heading", "content": "Segment of a Circle"}, {"type": "paragraph", "content": "A **segment** is the region between a chord and its arc."}, {"type": "math_block", "latex": "A_{\\text{segment}} = A_{\\text{sector}} - A_{\\text{triangle}}", "caption": "Subtract the triangular part from the sector"}, {"type": "callout", "variant": "key_point", "content": "For a segment, find sector area first, then subtract the isosceles triangle formed by the two radii and the chord."}, {"type": "example", "title": "Radius $6$ cm, angle $90^\\circ$. Segment area?", "steps": ["Sector: $\\frac{1}{4}\\pi(36) = 9\\pi$.", "Triangle: $\\frac{1}{2}(6)(6) = 18$.", "Segment: $9\\pi - 18$ cm$^2$."], "answer": "$9\\pi - 18$ cm$^2$"}, {"type": "question", "questionText": "Segment area equals sector minus?", "questionType": "multiple_choice", "options": ["Triangle", "Rectangle", "Square", "Semicircle"], "correctAnswer": "Triangle", "explanation": "Chord-radii triangle."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'segment'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Segment Area Concept');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Working with Segments', '{"blocks": [{"type": "heading", "content": "Segment Calculations"}, {"type": "example", "title": "Radius $10$ cm, angle $60^\\circ$.", "steps": ["Sector: $\\frac{60}{360}\\pi(100) = \\frac{50\\pi}{3}$.", "Equilateral triangle area $\\frac{\\sqrt{3}}{4}(100)$.", "Subtract."], "answer": "Sector minus equilateral triangle"}, {"type": "callout", "variant": "warning", "content": "When angle is $60^\\circ$ and radii equal, the triangle is equilateral."}, {"type": "question", "questionText": "Minor segment always has angle less than?", "questionType": "multiple_choice", "options": ["$180^\\circ$", "$90^\\circ$", "$360^\\circ$", "$270^\\circ$"], "correctAnswer": "$180^\\circ$", "explanation": "Minor arc corresponds to angle $< 180^\\circ$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'segment'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Working with Segments');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Segment — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Segments"}, {"type": "example", "title": "Radius $8$ cm, angle $120^\\circ$. Segment area outline?", "steps": ["Sector $\\frac{120}{360}\\pi(64)$.", "Triangle $\\frac{1}{2}(8)(8)\\sin 120^\\circ$.", "Subtract triangle from sector."], "answer": "Use $\\frac{1}{2}ab\\sin C$ for triangle"}, {"type": "callout", "variant": "warning", "content": "Show sector and triangle areas separately for method marks."}, {"type": "question", "questionText": "Segment with angle $180^\\circ$ is a?", "questionType": "multiple_choice", "options": ["Semicircle", "Quadrant", "Full circle", "Ring"], "correctAnswer": "Semicircle", "explanation": "Diameter chord."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'segment'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Segment — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Combining Circular and Rectilinear Areas', '{"blocks": [{"type": "heading", "content": "Combined Areas"}, {"type": "paragraph", "content": "Many KCSE figures combine rectangles, triangles, semicircles, sectors, and segments."}, {"type": "callout", "variant": "key_point", "content": "Label each part A, B, C… write an area equation, then substitute."}, {"type": "example", "title": "Window: rectangle $1$ m $\\times$ $0.5$ m topped by semicircle diameter $1$ m.", "steps": ["Rectangle: $0.5$ m$^2$.", "Semicircle: $\\frac{1}{2}\\pi(0.25) = \\frac{\\pi}{8}$ m$^2$.", "Total $= 0.5 + \\frac{\\pi}{8}$ m$^2$."], "answer": "$0.5 + \\frac{\\pi}{8}$ m$^2$"}, {"type": "question", "questionText": "Combined area problems: final step?", "questionType": "multiple_choice", "options": ["Add/subtract part areas", "Multiply all radii", "Average the parts", "Use perimeter only"], "correctAnswer": "Add/subtract part areas", "explanation": "Sum of simple areas."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'combined'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Combining Circular and Rectilinear Areas');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Shaded Regions with Circles', '{"blocks": [{"type": "heading", "content": "Shaded Circular Regions"}, {"type": "example", "title": "Square side $10$ cm with quarter-circle cut from one corner, radius $10$ cm.", "steps": ["Square: $100$ cm$^2$.", "Quarter circle: $\\frac{1}{4}\\pi(100) = 25\\pi$ cm$^2$.", "Remaining: $100 - 25\\pi$ cm$^2$."], "answer": "$100 - 25\\pi$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Check whether the figure uses a semicircle, quadrant, or general sector."}, {"type": "question", "questionText": "Running track: two semicircles radius $35$ m plus rectangle $100$ m $\\times$ $70$ m. Straight part area?", "questionType": "multiple_choice", "options": ["$7000$ m$^2$", "$3500$ m$^2$", "$14000$ m$^2$", "$2450\\pi$ m$^2$"], "correctAnswer": "$7000$ m$^2$", "explanation": "Rectangle only: $100 \\times 70$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'combined'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Shaded Regions with Circles');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Combined Areas — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Combined Circle Areas"}, {"type": "example", "title": "Logo: circle radius $5$ cm with inner sector angle $90^\\circ$ removed.", "steps": ["Circle: $25\\pi$.", "Removed sector: $\\frac{1}{4}(25\\pi)$.", "Shaded $= \\frac{3}{4}(25\\pi) = \\frac{75\\pi}{4}$ cm$^2$."], "answer": "$\\frac{75\\pi}{4}$ cm$^2$"}, {"type": "callout", "variant": "warning", "content": "Leave answers in terms of $\\pi$ unless the question asks for a decimal."}, {"type": "question", "questionText": "Annulus: outer $R=6$ cm, inner $r=4$ cm. Area?", "questionType": "multiple_choice", "options": ["$20\\pi$ cm$^2$", "$36\\pi$ cm$^2$", "$16\\pi$ cm$^2$", "$10\\pi$ cm$^2$"], "correctAnswer": "$20\\pi$ cm$^2$", "explanation": "$\\pi(36-16)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_part_circle' AND st.code = 'combined'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Combined Areas — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sector area formula (degrees)?', 'multiple_choice', '["$\\frac{\\theta}{360}\\pi r^2$", "$\\pi r^2$", "$2\\pi r$", "$\\frac{1}{2}\\pi r$"]'::jsonb, '"$\\frac{\\theta}{360}\\pi r^2$"'::jsonb, 'easy', 'Proportion of full circle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sector area formula (degrees)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $6$ cm, angle $90^\circ$. Sector area?', 'multiple_choice', '["$9\\pi$ cm$^2$", "$36\\pi$ cm$^2$", "$18\\pi$ cm$^2$", "$6\\pi$ cm$^2$"]'::jsonb, '"$9\\pi$ cm$^2$"'::jsonb, 'easy', '$\frac{1}{4}\pi(36)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $6$ cm, angle $90^\circ$. Sector area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angle $60^\circ$ is what fraction of a full turn?', 'multiple_choice', '["$\\frac{1}{6}$", "$\\frac{1}{3}$", "$\\frac{1}{4}$", "$\\frac{1}{2}$"]'::jsonb, '"$\\frac{1}{6}$"'::jsonb, 'easy', '$60/360$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle $60^\circ$ is what fraction of a full turn?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $5$ cm, angle $180^\circ$. Area?', 'multiple_choice', '["$\\frac{25\\pi}{2}$ cm$^2$", "$25\\pi$ cm$^2$", "$5\\pi$ cm$^2$", "$50\\pi$ cm$^2$"]'::jsonb, '"$\\frac{25\\pi}{2}$ cm$^2$"'::jsonb, 'easy', 'Semicircle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $5$ cm, angle $180^\circ$. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Arc length formula?', 'multiple_choice', '["$\\frac{\\theta}{360} \\times 2\\pi r$", "$\\pi r^2$", "$2\\pi r$", "$\\frac{1}{2}bh$"]'::jsonb, '"$\\frac{\\theta}{360} \\times 2\\pi r$"'::jsonb, 'easy', 'Fraction of circumference.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Arc length formula?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $8$ cm, angle $45^\circ$. Sector area?', 'multiple_choice', '["$2\\pi$ cm$^2$", "$8\\pi$ cm$^2$", "$16\\pi$ cm$^2$", "$4\\pi$ cm$^2$"]'::jsonb, '"$2\\pi$ cm$^2$"'::jsonb, 'easy', '$\frac{45}{360} = \frac{1}{8}$ of $\pi(64)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $8$ cm, angle $45^\circ$. Sector area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $3$ cm, angle $120^\circ$. Sector area?', 'multiple_choice', '["$3\\pi$ cm$^2$", "$9\\pi$ cm$^2$", "$6\\pi$ cm$^2$", "$\\frac{3\\pi}{2}$ cm$^2$"]'::jsonb, '"$3\\pi$ cm$^2$"'::jsonb, 'easy', '$\frac{1}{3}\pi(9)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $3$ cm, angle $120^\circ$. Sector area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Segment area = sector minus?', 'multiple_choice', '["Triangle", "Square", "Rectangle", "Trapezium"]'::jsonb, '"Triangle"'::jsonb, 'easy', 'Standard method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='segment'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Segment area = sector minus?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $10$ cm, angle $90^\circ$. Sector area?', 'multiple_choice', '["$25\\pi$ cm$^2$", "$50\\pi$ cm$^2$", "$100\\pi$ cm$^2$", "$5\\pi$ cm$^2$"]'::jsonb, '"$25\\pi$ cm$^2$"'::jsonb, 'medium', 'Quarter circle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='segment'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $10$ cm, angle $90^\circ$. Sector area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $6$ cm, angle $90^\circ$. Triangle area (two radii)?', 'multiple_choice', '["$18$ cm$^2$", "$36$ cm$^2$", "$9$ cm$^2$", "$12$ cm$^2$"]'::jsonb, '"$18$ cm$^2$"'::jsonb, 'medium', '$\frac{1}{2}(6)(6)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='segment'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $6$ cm, angle $90^\circ$. Triangle area (two radii)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $6$ cm, angle $90^\circ$. Segment area?', 'multiple_choice', '["$9\\pi - 18$ cm$^2$", "$9\\pi$ cm$^2$", "$18$ cm$^2$", "$6\\pi$ cm$^2$"]'::jsonb, '"$9\\pi - 18$ cm$^2$"'::jsonb, 'medium', 'Sector minus triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='segment'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $6$ cm, angle $90^\circ$. Segment area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $4$ cm, angle $60^\circ$. Sector area?', 'multiple_choice', '["$\\frac{8\\pi}{3}$ cm$^2$", "$16\\pi$ cm$^2$", "$8\\pi$ cm$^2$", "$\\frac{16\\pi}{3}$ cm$^2$"]'::jsonb, '"$\\frac{8\\pi}{3}$ cm$^2$"'::jsonb, 'medium', '$\frac{1}{6}\pi(16)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='segment'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $4$ cm, angle $60^\circ$. Sector area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rectangle $6$ cm $\times$ $4$ cm plus semicircle diameter $6$ cm. Total area?', 'multiple_choice', '["$24 + \\frac{9\\pi}{2}$ cm$^2$", "$24$ cm$^2$", "$9\\pi$ cm$^2$", "$30$ cm$^2$"]'::jsonb, '"$24 + \\frac{9\\pi}{2}$ cm$^2$"'::jsonb, 'medium', 'Add semicircle on $6$ cm side.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rectangle $6$ cm $\times$ $4$ cm plus semicircle diameter $6$ cm. Total area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square side $8$ cm, quarter circle radius $8$ cm removed from corner. Area?', 'multiple_choice', '["$64 - 16\\pi$ cm$^2$", "$64$ cm$^2$", "$16\\pi$ cm$^2$", "$48$ cm$^2$"]'::jsonb, '"$64 - 16\\pi$ cm$^2$"'::jsonb, 'medium', 'Subtract quadrant.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square side $8$ cm, quarter circle radius $8$ cm removed from corner. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Circle radius $7$ cm, square side $14$ cm inscribed. Shaded outside square?', 'multiple_choice', '["$49\\pi - 196$ cm$^2$", "$49\\pi$ cm$^2$", "$196$ cm$^2$", "$245$ cm$^2$"]'::jsonb, '"$49\\pi - 196$ cm$^2$"'::jsonb, 'medium', 'Circle minus square.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Circle radius $7$ cm, square side $14$ cm inscribed. Shaded outside square?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $12$ cm, angle $150^\circ$. Sector area?', 'multiple_choice', '["$60\\pi$ cm$^2$", "$144\\pi$ cm$^2$", "$30\\pi$ cm$^2$", "$72\\pi$ cm$^2$"]'::jsonb, '"$60\\pi$ cm$^2$"'::jsonb, 'hard', '$\frac{150}{360}\pi(144)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $12$ cm, angle $150^\circ$. Sector area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $10$ cm, angle $120^\circ$. Sector area?', 'multiple_choice', '["$\\frac{100\\pi}{3}$ cm$^2$", "$100\\pi$ cm$^2$", "$50\\pi$ cm$^2$", "$\\frac{50\\pi}{3}$ cm$^2$"]'::jsonb, '"$\\frac{100\\pi}{3}$ cm$^2$"'::jsonb, 'hard', '$\frac{1}{3}\pi(100)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='segment'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $10$ cm, angle $120^\circ$. Sector area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Field: rectangle $40$ m $\times$ $25$ m with semicircular ends radius $12.5$ m (on $25$ m side). Total area?', 'multiple_choice', '["$1000 + \\frac{625\\pi}{8}$ m$^2$", "$1000$ m$^2$", "$625\\pi$ m$^2$", "$1250$ m$^2$"]'::jsonb, '"$1000 + \\frac{625\\pi}{8}$ m$^2$"'::jsonb, 'hard', 'Rectangle plus semicircle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Field: rectangle $40$ m $\times$ $25$ m with semicircular ends radius $12.5$ m (on $25$ m side). Total area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two equal circles radius $5$ cm overlap. Lens: two segments angle $60^\circ$ each. Strategy?', 'multiple_choice', '["Find segment area twice", "Use rectangle only", "Multiply radii", "Ignore overlap"]'::jsonb, '"Find segment area twice"'::jsonb, 'hard', 'Each segment from $60^\circ$ sector.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two equal circles radius $5$ cm overlap. Lens: two segments angle $60^\circ$ each. Strategy?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pizza slice: radius $18$ cm, angle $40^\circ$. Area?', 'multiple_choice', '["$36\\pi$ cm$^2$", "$324\\pi$ cm$^2$", "$18\\pi$ cm$^2$", "$72\\pi$ cm$^2$"]'::jsonb, '"$36\\pi$ cm$^2$"'::jsonb, 'hard', '$\frac{40}{360}\pi(324)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sector'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pizza slice: radius $18$ cm, angle $40^\circ$. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $14$ cm, angle $90^\circ$. Segment area?', 'multiple_choice', '["$49\\pi - 98$ cm$^2$", "$49\\pi$ cm$^2$", "$98$ cm$^2$", "$24.5\\pi$ cm$^2$"]'::jsonb, '"$49\\pi - 98$ cm$^2$"'::jsonb, 'hard', 'Quarter circle minus triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='segment'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $14$ cm, angle $90^\circ$. Segment area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Badge: equilateral triangle side $6$ cm on each side of semicircle diameter $6$ cm. Total?', 'multiple_choice', '["$9\\sqrt{3} + \\frac{9\\pi}{2}$ cm$^2$", "$36$ cm$^2$", "$9\\pi$ cm$^2$", "$18$ cm$^2$"]'::jsonb, '"$9\\sqrt{3} + \\frac{9\\pi}{2}$ cm$^2$"'::jsonb, 'hard', 'Triangle plus semicircle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_part_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Badge: equilateral triangle side $6$ cm on each side of semicircle diameter $6$ cm. Total?');
+
