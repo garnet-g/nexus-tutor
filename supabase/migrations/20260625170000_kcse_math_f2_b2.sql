@@ -206,6 +206,16 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rotational_symmetry'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='rotation'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallelogram: centre of $180^\circ$ rotational symmetry?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Point $P(1,0)$ rotated $90^\circ$ anticlockwise about $C(2,0)$. Image?', 'multiple_choice', '["$(2,1)$","$(3,0)$","$(2,-1)$","$(1,1)$"]'::jsonb, '"$(2,1)$"'::jsonb, 'hard', 'Translate, rotate, translate back.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='centre_angle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='rotation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Point $P(1,0)$ rotated $90^\circ$ anticlockwise about $C(2,0)$. Image?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Regular decagon: rotational symmetry order?', 'multiple_choice', '["$10$","$5$","$20$","$2$"]'::jsonb, '"$10$"'::jsonb, 'hard', '$360^\circ \div 36^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rotational_symmetry'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='rotation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Regular decagon: rotational symmetry order?');
 
 -- ========== SIMILARITY AND ENLARGEMENT ==========
 
@@ -355,6 +365,11 @@ SELECT t.id, st.id, 'Two similar rectangles: widths $6$ and $15$ cm. Smaller are
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='similarity'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two similar rectangles: widths $6$ and $15$ cm. Smaller area $24$ cm$^2$. Larger area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Similar cones: heights $12$ cm and $18$ cm. Linear scale (larger:smaller)?', 'multiple_choice', '["$3:2$","$2:3$","$18:12$","$9:6$"]'::jsonb, '"$3:2$"'::jsonb, 'hard', '$\frac{18}{12}=\frac{3}{2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Similar cones: heights $12$ cm and $18$ cm. Linear scale (larger:smaller)?');
 
 -- ========== PYTHAGORAS THEOREM ==========
 
@@ -494,6 +509,21 @@ SELECT t.id, st.id, 'Rhombus diagonals $10$ cm and $24$ cm. Side length?', 'mult
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rhombus diagonals $10$ cm and $24$ cm. Side length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Diagonal of rectangle $9$ m by $40$ m?', 'multiple_choice', '["$41$ m","$49$ m","$31$ m","$360$ m"]'::jsonb, '"$41$ m"'::jsonb, 'medium', '$9$-$40$-$41$ triple.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Diagonal of rectangle $9$ m by $40$ m?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Conical tent: slant $13$ m, radius $5$ m. Vertical height?', 'multiple_choice', '["$12$ m","$8$ m","$18$ m","$10$ m"]'::jsonb, '"$12$ m"'::jsonb, 'hard', '$13^2-5^2=144$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='3d_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Conical tent: slant $13$ m, radius $5$ m. Vertical height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Wire from $(1,2)$ to $(7,10)$. Length?', 'multiple_choice', '["$10$","$8$","$12$","$14$"]'::jsonb, '"$10$"'::jsonb, 'hard', 'Difference $(6,8)$; length $10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_pythagoras'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Wire from $(1,2)$ to $(7,10)$. Length?');
 
 -- ========== TRIGONOMETRY I ==========
 
@@ -638,6 +668,16 @@ SELECT t.id, st.id, 'Building height $h$: from $40$ m away elevation $60^\circ$.
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='right_angled_problems'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Building height $h$: from $40$ m away elevation $60^\circ$. Find $h$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Ship observes lighthouse at $35^\circ$ elevation from $200$ m. Lighthouse height?', 'multiple_choice', '["$200\\tan 35^\\circ$ m","$200\\sin 35^\\circ$ m","$200\\cos 35^\\circ$ m","$70$ m"]'::jsonb, '"$200\\tan 35^\\circ$ m"'::jsonb, 'medium', 'Height $=$ horizontal $\times \tan\theta$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='right_angled_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Ship observes lighthouse at $35^\circ$ elevation from $200$ m. Lighthouse height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angle $\theta$: $\cos\theta=0.28$, hyp $50$ cm. Adjacent?', 'multiple_choice', '["$14$ cm","$48$ cm","$7$ cm","$25$ cm"]'::jsonb, '"$14$ cm"'::jsonb, 'hard', '$50 \times 0.28$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle $\theta$: $\cos\theta=0.28$, hyp $50$ cm. Adjacent?');
 
 -- ========== AREA OF A TRIANGLE ==========
 
@@ -777,3 +817,18 @@ SELECT t.id, st.id, 'Triangle: $a=13$, $b=14$, $c=15$. Area by Hero?', 'multiple
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='heros_formula'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle: $a=13$, $b=14$, $c=15$. Area by Hero?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle base $18$ cm, area $72$ cm$^2$. Height?', 'multiple_choice', '["$8$ cm","$4$ cm","$9$ cm","$6$ cm"]'::jsonb, '"$8$ cm"'::jsonb, 'medium', '$h=2A/b$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_base_height'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle base $18$ cm, area $72$ cm$^2$. Height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sides $11$ cm, $14$ cm, included $45^\circ$. Area?', 'multiple_choice', '["$\\frac{77\\sqrt{2}}{2}$ cm$^2$","$77$ cm$^2$","$38.5$ cm$^2$","$154$ cm$^2$"]'::jsonb, '"$\\frac{77\\sqrt{2}}{2}$ cm$^2$"'::jsonb, 'medium', '$\frac{1}{2}(154)\sin 45^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='half_ab_sinc'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sides $11$ cm, $14$ cm, included $45^\circ$. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle sides $9$ cm, $10$ cm, $17$ cm. Area by Hero?', 'multiple_choice', '["$36$ cm$^2$","$18$ cm$^2$","$45$ cm$^2$","$72$ cm$^2$"]'::jsonb, '"$36$ cm$^2$"'::jsonb, 'hard', '$s=18$; $\sqrt{18 \times 9 \times 8 \times 1}=36$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='heros_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle sides $9$ cm, $10$ cm, $17$ cm. Area by Hero?');
