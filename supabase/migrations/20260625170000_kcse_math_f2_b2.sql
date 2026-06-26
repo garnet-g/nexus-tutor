@@ -495,3 +495,147 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='pythagoras_theorem'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rhombus diagonals $10$ cm and $24$ cm. Side length?');
 
+-- ========== TRIGONOMETRY I ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Sine, Cosine and Tangent', '{"blocks":[{"type":"heading","content":"Sine, Cosine and Tangent"},{"type":"paragraph","content":"In a right-angled triangle, for angle $\\theta$: **opposite**, **adjacent**, and **hypotenuse** are used in the ratios."},{"type":"math_block","latex":"\\sin\\theta = \\frac{\\text{opp}}{\\text{hyp}}, \\quad \\cos\\theta = \\frac{\\text{adj}}{\\text{hyp}}, \\quad \\tan\\theta = \\frac{\\text{opp}}{\\text{adj}}","caption":"SOH CAH TOA"},{"type":"callout","variant":"key_point","content":"Label sides relative to the angle you are using — opposite and adjacent swap when the angle changes."},{"type":"example","title":"Right triangle: opp $3$, hyp $5$. Find $\\sin\\theta$.","steps":["$\\sin\\theta = \\frac{3}{5}$."],"answer":"$\\frac{3}{5}$"},{"type":"question","questionText":"SOH CAH TOA: $\\tan\\theta$ uses?","questionType":"multiple_choice","options":["Opposite $\\div$ adjacent","Opposite $\\div$ hypotenuse","Adjacent $\\div$ hypotenuse","Hypotenuse $\\div$ opposite"],"correctAnswer":"Opposite $\\div$ adjacent","explanation":"TOA."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'sine_cosine_tangent'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Sine, Cosine and Tangent');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Calculating Trig Ratios', '{"blocks":[{"type":"heading","content":"Calculating Ratios"},{"type":"example","title":"Triangle: adj $4$, hyp $5$. Find $\\cos\\theta$.","steps":["$\\cos\\theta = \\frac{4}{5}$."],"answer":"$0.8$"},{"type":"example","title":"opp $7$, adj $24$. Find $\\tan\\theta$.","steps":["$\\tan\\theta = \\frac{7}{24}$."],"answer":"$\\frac{7}{24}$"},{"type":"callout","variant":"warning","content":"Always check which angle is $\\theta$ before labelling opposite and adjacent."},{"type":"question","questionText":"opp $8$, hyp $17$. $\\sin\\theta$?","questionType":"multiple_choice","options":["$\\frac{8}{17}$","$\\frac{15}{17}$","$\\frac{8}{15}$","$\\frac{17}{8}$"],"correctAnswer":"$\\frac{8}{17}$","explanation":"SOH."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'sine_cosine_tangent'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating Trig Ratios');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Trig Ratios — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Ratios"},{"type":"example","title":"Right triangle with $\\theta = 30^\\circ$, hyp $10$ cm. Find opposite.","steps":["$\\sin 30^\\circ = \\frac{1}{2}$.","opp $= 10 \\times \\frac{1}{2} = 5$ cm."],"answer":"$5$ cm"},{"type":"callout","variant":"warning","content":"Know exact values: $\\sin 30^\\circ = \\frac{1}{2}$, $\\cos 60^\\circ = \\frac{1}{2}$, $\\tan 45^\\circ = 1$."},{"type":"question","questionText":"$\\cos 60^\\circ$ equals?","questionType":"multiple_choice","options":["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$1$","$0$"],"correctAnswer":"$\\frac{1}{2}$","explanation":"Standard exact value."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'sine_cosine_tangent'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Trig Ratios — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Using Trigonometric Tables', '{"blocks":[{"type":"heading","content":"Trig Tables"},{"type":"paragraph","content":"Trig tables give $\\sin$, $\\cos$, $\\tan$ for angles in degrees. Read the angle in the row/column, find the value at the intersection."},{"type":"example","title":"Use tables: $\\sin 35^\\circ$","steps":["Locate $35^\\circ$ in the table.","$\\sin 35^\\circ \\approx 0.5736$."],"answer":"$0.5736$"},{"type":"question","questionText":"Tables give values for angles in?","questionType":"multiple_choice","options":["Degrees","Radians only","Gradians only","Minutes only"],"correctAnswer":"Degrees","explanation":"KCSE tables use degrees."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'trig_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Using Trigonometric Tables');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reading Tables and Interpolation', '{"blocks":[{"type":"heading","content":"Reading Tables"},{"type":"example","title":"From tables, $\\tan 42^\\circ \\approx 0.9004$. Estimate $\\tan 42^\\circ 30''$.","steps":["Halfway between $42^\\circ$ and $43^\\circ$ values — slight increase.","Approximate by linear interpolation if needed."],"answer":"Slightly above $0.9004$"},{"type":"callout","variant":"warning","content":"For KCSE, round as instructed — usually 4 decimal places or 1 decimal for lengths."},{"type":"question","questionText":"$\\sin 90^\\circ$ from tables equals?","questionType":"multiple_choice","options":["$1$","$0$","Undefined","$0.5$"],"correctAnswer":"$1$","explanation":"Top of sine range."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'trig_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reading Tables and Interpolation');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Trig Tables — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Tables"},{"type":"example","title":"If $\\cos 53^\\circ = 0.6018$, find adj when hyp $= 20$ cm.","steps":["adj $= 20 \\times 0.6018 = 12.036$ cm.","$\\approx 12.0$ cm to 1 d.p."],"answer":"$12.0$ cm"},{"type":"callout","variant":"warning","content":"Multiply hypotenuse by cosine to find adjacent."},{"type":"question","questionText":"$\\sin 0^\\circ$ equals?","questionType":"multiple_choice","options":["$0$","$1$","Undefined","$-1$"],"correctAnswer":"$0$","explanation":"No opposite side at $0^\\circ$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'trig_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Trig Tables — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Right-Angled Triangle Problems', '{"blocks":[{"type":"heading","content":"Right-Angled Problems"},{"type":"paragraph","content":"Draw a diagram, mark the known angle and sides, choose the correct ratio (sin, cos, or tan), then solve."},{"type":"example","title":"Ladder $6$ m long makes $60^\\circ$ with ground. Height on wall?","steps":["Height is opposite, ladder is hypotenuse.","$h = 6 \\sin 60^\\circ = 6 \\times 0.8660 \\approx 5.2$ m."],"answer":"$5.2$ m"},{"type":"question","questionText":"To find height with angle and hypotenuse, use?","questionType":"multiple_choice","options":["Sine","Cosine","Tangent","Pythagoras only"],"correctAnswer":"Sine","explanation":"opp/hyp."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'right_angled_problems'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Right-Angled Triangle Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angles of Elevation and Depression', '{"blocks":[{"type":"heading","content":"Elevation and Depression"},{"type":"paragraph","content":"**Angle of elevation** is measured upward from horizontal; **angle of depression** is measured downward."},{"type":"example","title":"From a point $40$ m from a building base, the top is at $35^\\circ$ elevation. Height?","steps":["$h = 40 \\tan 35^\\circ \\approx 40 \\times 0.7002 = 28.0$ m."],"answer":"$28$ m"},{"type":"callout","variant":"warning","content":"Angle of depression from the top equals angle of elevation from the bottom (alternate angles)."},{"type":"question","questionText":"Angle of depression from a cliff top to a boat equals angle of elevation from boat to cliff top?","questionType":"multiple_choice","options":["Yes","No","Only at noon","Only if equal height"],"correctAnswer":"Yes","explanation":"Alternate angles with horizontal."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'right_angled_problems'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angles of Elevation and Depression');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Right-Angled — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Right Triangles"},{"type":"example","title":"Kite string $50$ m at $40^\\circ$ to horizontal. Vertical height of kite?","steps":["$h = 50 \\sin 40^\\circ \\approx 32.1$ m."],"answer":"$32.1$ m"},{"type":"callout","variant":"warning","content":"Identify whether the unknown is opposite, adjacent, or hypotenuse before choosing a ratio."},{"type":"question","questionText":"From top of $30$ m tower, depression to car is $25^\\circ$. Horizontal distance?","questionType":"multiple_choice","options":["$30 \\cot 25^\\circ$ m","$30 \\tan 25^\\circ$ m","$30 \\sin 25^\\circ$ m","$30$ m"],"correctAnswer":"$30 \\cot 25^\\circ$ m","explanation":"adj $= 30 / \\tan 25^\\circ$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_i' AND st.code = 'right_angled_problems'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Right-Angled — Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin\theta =$ opposite divided by?', 'multiple_choice', '["Hypotenuse","Adjacent","Opposite","$180^\\circ$"]'::jsonb, '"Hypotenuse"'::jsonb, 'easy', 'SOH.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin\theta =$ opposite divided by?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\tan 45^\circ$ equals?', 'multiple_choice', '["$1$","$0$","$\\frac{1}{2}$","$\\sqrt{3}$"]'::jsonb, '"$1$"'::jsonb, 'easy', 'Equal legs.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\tan 45^\circ$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin 30^\circ$ equals?', 'multiple_choice', '["$0.5$","$0.866$","$1$","$0$"]'::jsonb, '"$0.5$"'::jsonb, 'easy', 'Exact value.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin 30^\circ$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'opp $5$, hyp $13$. $\sin\theta$?', 'multiple_choice', '["$\\frac{5}{13}$","$\\frac{12}{13}$","$\\frac{5}{12}$","$\\frac{13}{5}$"]'::jsonb, '"$\\frac{5}{13}$"'::jsonb, 'easy', 'SOH.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='opp $5$, hyp $13$. $\sin\theta$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\cos\theta =$ adjacent divided by?', 'multiple_choice', '["Hypotenuse","Opposite","Adjacent","$90^\\circ$"]'::jsonb, '"Hypotenuse"'::jsonb, 'easy', 'CAH.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\cos\theta =$ adjacent divided by?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin 90^\circ$ equals?', 'multiple_choice', '["$1$","$0$","$0.5$","Undefined in tables"]'::jsonb, '"$1$"'::jsonb, 'easy', 'Maximum sine.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin 90^\circ$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Trig tables at KCSE typically use?', 'multiple_choice', '["Degrees","Radians","Gradians","Seconds only"]'::jsonb, '"Degrees"'::jsonb, 'easy', 'Standard school tables.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Trig tables at KCSE typically use?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Hyp $20$ cm, $\cos\theta = 0.6$. Adjacent length?', 'multiple_choice', '["$12$ cm","$16$ cm","$10$ cm","$8$ cm"]'::jsonb, '"$12$ cm"'::jsonb, 'medium', '$20 \times 0.6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Hyp $20$ cm, $\cos\theta = 0.6$. Adjacent length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Ladder $8$ m at $50^\circ$ to ground. Height on wall?', 'multiple_choice', '["$8\\sin 50^\\circ$ m","$8\\cos 50^\\circ$ m","$8\\tan 50^\\circ$ m","$4$ m"]'::jsonb, '"$8\\sin 50^\\circ$ m"'::jsonb, 'medium', 'opp $=$ hyp $\sin\theta$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='right_angled_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Ladder $8$ m at $50^\circ$ to ground. Height on wall?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\cos 60^\circ$ equals?', 'multiple_choice', '["$0.5$","$0.866$","$1$","$0$"]'::jsonb, '"$0.5$"'::jsonb, 'medium', 'Exact value.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\cos 60^\circ$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angle of elevation is measured from?', 'multiple_choice', '["Horizontal upward","Vertical","Horizontal downward","North"]'::jsonb, '"Horizontal upward"'::jsonb, 'medium', 'Up from horizontal.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='right_angled_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle of elevation is measured from?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'From point $50$ m from building, elevation $40^\circ$. Height?', 'multiple_choice', '["$50\\tan 40^\\circ$ m","$50\\sin 40^\\circ$ m","$50\\cos 40^\\circ$ m","$40$ m"]'::jsonb, '"$50\\tan 40^\\circ$ m"'::jsonb, 'medium', 'opp $=$ adj $\tan\theta$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='right_angled_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='From point $50$ m from building, elevation $40^\circ$. Height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'adj $9$, opp $12$. $\tan\theta$?', 'multiple_choice', '["$\\frac{4}{3}$","$\\frac{3}{4}$","$\\frac{12}{9}$","$\\frac{9}{12}$"]'::jsonb, '"$\\frac{4}{3}$"'::jsonb, 'medium', '$12/9 = 4/3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='adj $9$, opp $12$. $\tan\theta$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tower $40$ m high. Angle of depression to car $30^\circ$. Distance from base?', 'multiple_choice', '["$40\\cot 30^\\circ$ m","$40\\tan 30^\\circ$ m","$20$ m","$40\\sin 30^\\circ$ m"]'::jsonb, '"$40\\cot 30^\\circ$ m"'::jsonb, 'hard', 'adj $= 40/\tan 30^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='right_angled_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tower $40$ m high. Angle of depression to car $30^\circ$. Distance from base?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Right triangle: $\sin\theta=0.8$, hyp $25$ cm. Opposite?', 'multiple_choice', '["$20$ cm","$15$ cm","$7$ cm","$32$ cm"]'::jsonb, '"$20$ cm"'::jsonb, 'hard', '$25 \times 0.8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Right triangle: $\sin\theta=0.8$, hyp $25$ cm. Opposite?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find angle if opp $7$, adj $7$.', 'multiple_choice', '["$45^\\circ$","$30^\\circ$","$60^\\circ$","$90^\\circ$"]'::jsonb, '"$45^\\circ$"'::jsonb, 'hard', '$\tan\theta = 1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find angle if opp $7$, adj $7$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Kite string $60$ m, angle $55^\circ$. Ground distance from holder?', 'multiple_choice', '["$60\\cos 55^\\circ$ m","$60\\sin 55^\\circ$ m","$60\\tan 55^\\circ$ m","$30$ m"]'::jsonb, '"$60\\cos 55^\\circ$ m"'::jsonb, 'hard', 'adj $=$ hyp $\cos\theta$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='right_angled_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Kite string $60$ m, angle $55^\circ$. Ground distance from holder?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $\tan\theta = \frac{3}{4}$ and hyp $10$, find opposite.', 'multiple_choice', '["$6$","$8$","$5$","$7.5$"]'::jsonb, '"$6$"'::jsonb, 'hard', 'Triangle $6$-$8$-$10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_tangent'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $\tan\theta = \frac{3}{4}$ and hyp $10$, find opposite.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Building height $h$: from $40$ m away elevation $60^\circ$. Find $h$.', 'multiple_choice', '["$40\\sqrt{3}$ m","$40$ m","$20\\sqrt{3}$ m","$80$ m"]'::jsonb, '"$40\\sqrt{3}$ m"'::jsonb, 'hard', '$h = 40 \tan 60^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='right_angled_problems'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Building height $h$: from $40$ m away elevation $60^\circ$. Find $h$.');
+
