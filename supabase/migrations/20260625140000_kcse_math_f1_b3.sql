@@ -807,3 +807,203 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Point equidistant from axes in QI with $x+y=10$ and $x=y$?');
 
+-- ========== ANGLES AND PLANE FIGURES ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Types of Angles', '{"blocks":[{"type":"heading","content":"Types of Angles"},{"type":"paragraph","content":"An **angle** measures rotation between two rays from a vertex."},{"type":"paragraph","content":"**Acute** $< 90^\\circ$, **right** $= 90^\\circ$, **obtuse** $90^\\circ$–$180^\\circ$, **reflex** $> 180^\\circ$."},{"type":"callout","variant":"key_point","content":"Angles on a straight line sum to $180^\\circ$; around a point sum to $360^\\circ$."},{"type":"example","title":"Classify $125^\\circ$","steps":["Between $90^\\circ$ and $180^\\circ$ $\\rightarrow$ obtuse."],"answer":"Obtuse"},{"type":"callout","variant":"warning","content":"Right angle is exactly $90^\\circ$, not \"about\" $90^\\circ$."},{"type":"question","questionText":"An angle of $38^\\circ$ is?","questionType":"multiple_choice","options":["Acute","Obtuse","Reflex","Right"],"correctAnswer":"Acute","explanation":"Less than $90^\\circ$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'types_of_angles'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Types of Angles');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Measuring and Classifying Angles', '{"blocks":[{"type":"heading","content":"Angle Skills"},{"type":"example","title":"Find complement of $35^\\circ$","steps":["Complement $= 90^\\circ - 35^\\circ = 55^\\circ$."],"answer":"$55^\\circ$"},{"type":"example","title":"Find supplement of $110^\\circ$","steps":["Supplement $= 180^\\circ - 110^\\circ = 70^\\circ$."],"answer":"$70^\\circ$"},{"type":"callout","variant":"warning","content":"Complementary angles sum to $90^\\circ$; supplementary sum to $180^\\circ$."},{"type":"question","questionText":"Supplement of $72^\\circ$?","questionType":"multiple_choice","options":["$108^\\circ$","$18^\\circ$","$92^\\circ$","$288^\\circ$"],"correctAnswer":"$108^\\circ$","explanation":"$180 - 72$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'types_of_angles'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Measuring and Classifying Angles');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angles — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE Angle Types"},{"type":"example","title":"Three angles on a straight line are $2x^\\circ$, $3x^\\circ$, $40^\\circ$. Find $x$.","steps":["$5x + 40 = 180$.","$x = 28$."],"answer":"$x = 28$"},{"type":"callout","variant":"warning","content":"Always use the straight-line or point sum rule stated."},{"type":"question","questionText":"Reflex angle for $65^\\circ$ acute angle at a point?","questionType":"multiple_choice","options":["$295^\\circ$","$115^\\circ$","$245^\\circ$","$305^\\circ$"],"correctAnswer":"$295^\\circ$","explanation":"$360 - 65$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'types_of_angles'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angles — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angles on Straight Lines', '{"blocks":[{"type":"heading","content":"Angles on Straight Lines"},{"type":"paragraph","content":"When two lines cross, **vertically opposite** angles are equal."},{"type":"paragraph","content":"**Adjacent** angles on a straight line sum to $180^\\circ$."},{"type":"callout","variant":"key_point","content":"Look for the $X$-shape: opposite angles match."},{"type":"example","title":"Two angles on a line are $(3x+10)^\\circ$ and $(2x+30)^\\circ$. Find $x$.","steps":["$5x + 40 = 180$.","$x = 28$."],"answer":"$x = 28$"},{"type":"callout","variant":"warning","content":"Adjacent angles on a line — not vertically opposite."},{"type":"question","questionText":"Vertically opposite to $47^\\circ$?","questionType":"multiple_choice","options":["$47^\\circ$","$133^\\circ$","$43^\\circ$","$90^\\circ$"],"correctAnswer":"$47^\\circ$","explanation":"Equal angles."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'angles_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angles on Straight Lines');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angle Calculations on Lines', '{"blocks":[{"type":"heading","content":"Line Angle Methods"},{"type":"example","title":"Lines cross: one angle $65^\\circ$. Find all angles.","steps":["Opposite $= 65^\\circ$.","Adjacent $= 180 - 65 = 115^\\circ$."],"answer":"$65^\\circ$ and $115^\\circ$ pairs"},{"type":"example","title":"Find $x$ if angles are $(2x)^\\circ$ and $(x+30)^\\circ$ on a line","steps":["$3x + 30 = 180$.","$x = 50$."],"answer":"$x = 50$"},{"type":"callout","variant":"warning","content":"Set up equation from $180^\\circ$ on a straight line."},{"type":"question","questionText":"Angle adjacent to $120^\\circ$ on a straight line?","questionType":"multiple_choice","options":["$60^\\circ$","$120^\\circ$","$240^\\circ$","$30^\\circ$"],"correctAnswer":"$60^\\circ$","explanation":"$180 - 120$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'angles_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angle Calculations on Lines');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Line Angles — Exam', '{"blocks":[{"type":"heading","content":"KCSE Line Angle Problems"},{"type":"example","title":"Four angles at a point: $3x$, $2x$, $x$, $90^\\circ$. Find smallest angle.","steps":["$6x + 90 = 360$.","$x = 45$; smallest $= 45^\\circ$."],"answer":"$45^\\circ$"},{"type":"callout","variant":"warning","content":"Angles at a point sum to $360^\\circ$."},{"type":"question","questionText":"Two lines cross. One angle is $38^\\circ$. Obtuse angle?","questionType":"multiple_choice","options":["$142^\\circ$","$52^\\circ$","$148^\\circ$","$128^\\circ$"],"correctAnswer":"$142^\\circ$","explanation":"Supplement of $38^\\circ$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'angles_straight_lines'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Line Angles — Exam');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Polygons and Angle Sums', '{"blocks":[{"type":"heading","content":"Polygons"},{"type":"paragraph","content":"A **polygon** is a closed plane figure with straight sides."},{"type":"paragraph","content":"Triangle: $3$ sides, sum of interior angles $= 180^\\circ$. Quadrilateral: $360^\\circ$."},{"type":"callout","variant":"key_point","content":"Sum of interior angles of $n$-gon: $(n-2) \\times 180^\\circ$."},{"type":"example","title":"Find missing angle in triangle $50^\\circ$, $60^\\circ$, $x^\\circ$","steps":["$50 + 60 + x = 180$.","$x = 70^\\circ$."],"answer":"$70^\\circ$"},{"type":"callout","variant":"warning","content":"Exterior angles of any convex polygon sum to $360^\\circ$."},{"type":"question","questionText":"Sum of interior angles of a pentagon?","questionType":"multiple_choice","options":["$540^\\circ$","$360^\\circ$","$720^\\circ$","$450^\\circ$"],"correctAnswer":"$540^\\circ$","explanation":"$(5-2) \\times 180$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'polygons'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Polygons and Angle Sums');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Polygon Angle Problems', '{"blocks":[{"type":"heading","content":"Polygon Methods"},{"type":"example","title":"Regular hexagon: one interior angle?","steps":["Sum $= (6-2) \\times 180 = 720^\\circ$.","Each angle $= 720 \\div 6 = 120^\\circ$."],"answer":"$120^\\circ$"},{"type":"example","title":"Quadrilateral angles $85^\\circ$, $95^\\circ$, $110^\\circ$, $x^\\circ$. Find $x$.","steps":["$290 + x = 360$.","$x = 70^\\circ$."],"answer":"$70^\\circ$"},{"type":"callout","variant":"warning","content":"In a regular polygon all interior angles are equal."},{"type":"question","questionText":"Each exterior angle of regular pentagon?","questionType":"multiple_choice","options":["$72^\\circ$","$108^\\circ$","$60^\\circ$","$90^\\circ$"],"correctAnswer":"$72^\\circ$","explanation":"$360 \\div 5$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'polygons'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Polygon Angle Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Polygons — Exam Applications', '{"blocks":[{"type":"heading","content":"KCSE Polygon Problems"},{"type":"example","title":"Regular polygon has exterior angle $30^\\circ$. How many sides?","steps":["$n = \\frac{360}{30} = 12$."],"answer":"$12$ sides"},{"type":"callout","variant":"warning","content":"Number of sides $= 360^\\circ \\div$ each exterior angle (regular)."},{"type":"question","questionText":"Isosceles triangle apex $40^\\circ$. Base angle?","questionType":"multiple_choice","options":["$70^\\circ$","$80^\\circ$","$140^\\circ$","$60^\\circ$"],"correctAnswer":"$70^\\circ$","explanation":"Remaining $140^\\circ$ split equally."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angles_plane_figures' AND st.code = 'polygons'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Polygons — Exam Applications');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Classify $89^\circ$.', 'multiple_choice', '["Acute","Right","Obtuse","Straight"]'::jsonb, '"Acute"'::jsonb, 'easy', 'Just under $90^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='types_of_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Classify $89^\circ$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A right angle equals?', 'multiple_choice', '["$90^\\circ$","$180^\\circ$","$45^\\circ$","$360^\\circ$"]'::jsonb, '"$90^\\circ$"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='types_of_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A right angle equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angles on a straight line sum to?', 'multiple_choice', '["$180^\\circ$","$360^\\circ$","$90^\\circ$","$270^\\circ$"]'::jsonb, '"$180^\\circ$"'::jsonb, 'easy', 'Straight line rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_straight_lines'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angles on a straight line sum to?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Vertically opposite angles are?', 'multiple_choice', '["Equal","Supplementary","Complementary","Unequal"]'::jsonb, '"Equal"'::jsonb, 'easy', 'Crossing lines.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_straight_lines'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Vertically opposite angles are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sum of angles in a triangle?', 'multiple_choice', '["$180^\\circ$","$360^\\circ$","$90^\\circ$","$540^\\circ$"]'::jsonb, '"$180^\\circ$"'::jsonb, 'easy', 'Triangle sum.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='polygons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sum of angles in a triangle?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Number of sides of a quadrilateral?', 'multiple_choice', '["$4$","$3$","$5$","$6$"]'::jsonb, '"$4$"'::jsonb, 'easy', 'Quad means four.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='polygons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Number of sides of a quadrilateral?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'An angle of $180^\circ$ is called?', 'multiple_choice', '["Straight","Reflex","Obtuse","Acute"]'::jsonb, '"Straight"'::jsonb, 'easy', 'Forms a straight line.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='types_of_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='An angle of $180^\circ$ is called?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Complement of $25^\circ$?', 'multiple_choice', '["$65^\\circ$","$155^\\circ$","$75^\\circ$","$115^\\circ$"]'::jsonb, '"$65^\\circ$"'::jsonb, 'medium', '$90 - 25$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='types_of_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Complement of $25^\circ$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Obtuse angle could be?', 'multiple_choice', '["$110^\\circ$","$45^\\circ$","$90^\\circ$","$30^\\circ$"]'::jsonb, '"$110^\\circ$"'::jsonb, 'medium', 'Between $90$ and $180$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='types_of_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Obtuse angle could be?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Adjacent to $75^\circ$ on straight line?', 'multiple_choice', '["$105^\\circ$","$75^\\circ$","$15^\\circ$","$285^\\circ$"]'::jsonb, '"$105^\\circ$"'::jsonb, 'medium', '$180 - 75$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_straight_lines'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Adjacent to $75^\circ$ on straight line?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Find $x$: $(x+20)^\circ$ and $(2x+10)^\circ$ on a line.', 'multiple_choice', '["$50$","$40$","$60$","$70$"]'::jsonb, '"$50$"'::jsonb, 'medium', '$3x+30=180$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_straight_lines'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Find $x$: $(x+20)^\circ$ and $(2x+10)^\circ$ on a line.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Missing angle: triangle $45^\circ$, $55^\circ$, $x^\circ$.', 'multiple_choice', '["$80^\\circ$","$90^\\circ$","$100^\\circ$","$70^\\circ$"]'::jsonb, '"$80^\\circ$"'::jsonb, 'medium', '$180 - 100$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='polygons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Missing angle: triangle $45^\circ$, $55^\circ$, $x^\circ$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Interior angle sum of octagon?', 'multiple_choice', '["$1080^\\circ$","$720^\\circ$","$900^\\circ$","$1260^\\circ$"]'::jsonb, '"$1080^\\circ$"'::jsonb, 'medium', '$(8-2) \times 180$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='polygons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Interior angle sum of octagon?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reflex angle for $110^\circ$?', 'multiple_choice', '["$250^\\circ$","$70^\\circ$","$290^\\circ$","$190^\\circ$"]'::jsonb, '"$250^\\circ$"'::jsonb, 'hard', '$360 - 110$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='types_of_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reflex angle for $110^\circ$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Crossing lines: one angle $3x^\circ$, opposite $5x-40^\circ$. Find $x$.', 'multiple_choice', '["$20$","$10$","$40$","$25$"]'::jsonb, '"$20$"'::jsonb, 'hard', '$3x = 5x - 40$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_straight_lines'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Crossing lines: one angle $3x^\circ$, opposite $5x-40^\circ$. Find $x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Four angles at point: $2x$, $3x$, $4x$, $60^\circ$. Find $x$.', 'multiple_choice', '["$40$","$30$","$50$","$45$"]'::jsonb, '"$40$"'::jsonb, 'hard', '$9x + 60 = 360$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_straight_lines'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Four angles at point: $2x$, $3x$, $4x$, $60^\circ$. Find $x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Regular polygon interior angle $150^\circ$. Sides?', 'multiple_choice', '["$12$","$10$","$8$","$15$"]'::jsonb, '"$12$"'::jsonb, 'hard', 'Exterior $30^\circ$; $360/30$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='polygons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Regular polygon interior angle $150^\circ$. Sides?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pentagon angles four given sum $400^\circ$. Fifth angle?', 'multiple_choice', '["$140^\\circ$","$160^\\circ$","$120^\\circ$","$80^\\circ$"]'::jsonb, '"$140^\\circ$"'::jsonb, 'hard', 'Pentagon sum $540^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='polygons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pentagon angles four given sum $400^\circ$. Fifth angle?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angle is twice its complement. Find the angle.', 'multiple_choice', '["$60^\\circ$","$30^\\circ$","$45^\\circ$","$120^\\circ$"]'::jsonb, '"$60^\\circ$"'::jsonb, 'hard', '$x = 2(90-x)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='types_of_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle is twice its complement. Find the angle.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Exterior angles of regular hexagon each?', 'multiple_choice', '["$60^\\circ$","$120^\\circ$","$72^\\circ$","$90^\\circ$"]'::jsonb, '"$60^\\circ$"'::jsonb, 'hard', '$360/6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='polygons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Exterior angles of regular hexagon each?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Parallel lines cut by transversal: co-interior angles $2x$ and $3x+20$. Find $x$.', 'multiple_choice', '["$32$","$40$","$36$","$28$"]'::jsonb, '"$32$"'::jsonb, 'hard', 'Co-interior sum $180^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_straight_lines'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallel lines cut by transversal: co-interior angles $2x$ and $3x+20$. Find $x$.');
