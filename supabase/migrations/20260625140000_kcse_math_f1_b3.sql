@@ -405,3 +405,204 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_linear'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_equations'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $0.5x - 1.5 = 4$.');
 
+-- ========== COMMERCIAL ARITHMETIC I ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Profit and Loss Basics', '{"blocks":[{"type":"heading","content":"Profit and Loss"},{"type":"paragraph","content":"**Cost price (CP)** is what a trader pays; **selling price (SP)** is what a customer pays."},{"type":"paragraph","content":"**Profit** $=$ SP $-$ CP (when SP $>$ CP). **Loss** $=$ CP $-$ SP (when SP $<$ CP)."},{"type":"callout","variant":"key_point","content":"Profit $\\% = \\frac{\\text{Profit}}{\\text{CP}} \\times 100\\%$."},{"type":"example","title":"Bought maize at KES $80$, sold at KES $100$. Find profit.","steps":["Profit $= 100 - 80 = 20$."],"answer":"KES $20$ profit"},{"type":"callout","variant":"warning","content":"Percentage profit is on CP, not SP."},{"type":"question","questionText":"CP KES $50$, SP KES $65$. Profit?","questionType":"multiple_choice","options":["KES $15$","KES $115$","KES $-15$","KES $32.5$"],"correctAnswer":"KES $15$","explanation":"SP minus CP."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'profit_loss'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Profit and Loss Basics');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Profit and Loss Calculations', '{"blocks":[{"type":"heading","content":"Worked Profit & Loss"},{"type":"example","title":"CP KES $400$, profit $15\\%$. Find SP.","steps":["Profit $= 0.15 \\times 400 = 60$.","SP $= 400 + 60 = 460$."],"answer":"KES $460$"},{"type":"example","title":"SP KES $540$, loss $10\\%$. Find CP.","steps":["SP $= 90\\%$ of CP.","CP $= 540 \\div 0.9 = 600$."],"answer":"KES $600$"},{"type":"callout","variant":"warning","content":"Loss $10\\%$ means SP $= 90\\%$ of CP."},{"type":"question","questionText":"CP KES $200$, sold at $25\\%$ profit. SP?","questionType":"multiple_choice","options":["KES $250$","KES $225$","KES $175$","KES $50$"],"correctAnswer":"KES $250$","explanation":"$200 \\times 1.25$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'profit_loss'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Profit and Loss Calculations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Profit & Loss Exam Problems', '{"blocks":[{"type":"heading","content":"KCSE Profit & Loss"},{"type":"example","title":"A trader buys $20$ bags at KES $1200$ each, sells at KES $1450$ each. Total profit?","steps":["Profit per bag $= 250$.","Total $= 20 \\times 250 = 5000$."],"answer":"KES $5000$"},{"type":"callout","variant":"warning","content":"For many items, find per-item profit first."},{"type":"question","questionText":"Article CP KES $800$, loss $5\\%$. SP?","questionType":"multiple_choice","options":["KES $760$","KES $840$","KES $795$","KES $750$"],"correctAnswer":"KES $760$","explanation":"$800 \\times 0.95$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'profit_loss'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Profit & Loss Exam Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Discount and Commission', '{"blocks":[{"type":"heading","content":"Discount and Commission"},{"type":"paragraph","content":"A **discount** reduces the marked price: SP $=$ MP $-$ discount."},{"type":"paragraph","content":"**Commission** is a percentage of sales paid to an agent."},{"type":"callout","variant":"key_point","content":"Discount can be a fixed amount or a percentage of MP."},{"type":"example","title":"MP KES $2000$, discount $10\\%$. Find SP.","steps":["Discount $= 200$.","SP $= 1800$."],"answer":"KES $1800$"},{"type":"callout","variant":"warning","content":"Commission is calculated on the sale amount, before or after discount as stated."},{"type":"question","questionText":"MP KES $500$, discount KES $50$. SP?","questionType":"multiple_choice","options":["KES $450$","KES $550$","KES $50$","KES $475$"],"correctAnswer":"KES $450$","explanation":"$500 - 50$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'discount_commission'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Discount and Commission');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Discount & Commission Methods', '{"blocks":[{"type":"heading","content":"Worked Examples"},{"type":"example","title":"Agent sells goods worth KES $40\\,000$ at $5\\%$ commission.","steps":["Commission $= 0.05 \\times 40000 = 2000$."],"answer":"KES $2000$"},{"type":"example","title":"MP KES $1200$, successive discounts $10\\%$ then $5\\%$ on new price.","steps":["After $10\\%$: $1080$.","After $5\\%$: $1080 \\times 0.95 = 1026$."],"answer":"KES $1026$"},{"type":"callout","variant":"warning","content":"Successive discounts multiply: not $15\\%$ total."},{"type":"question","questionText":"$8\\%$ commission on KES $2500$ sales?","questionType":"multiple_choice","options":["KES $200$","KES $208$","KES $300$","KES $180$"],"correctAnswer":"KES $200$","explanation":"$0.08 \\times 2500$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'discount_commission'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Discount & Commission Methods');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Discount Exam Applications', '{"blocks":[{"type":"heading","content":"KCSE Discount & Commission"},{"type":"example","title":"Supermarket: jeans MP KES $3500$, $20\\%$ off. Customer pays with KES $4000$. Change?","steps":["SP $= 3500 \\times 0.8 = 2800$.","Change $= 1200$."],"answer":"KES $1200$"},{"type":"callout","variant":"warning","content":"Read whether discount is on MP or SP."},{"type":"question","questionText":"Salesman KES $18\\,000$ sales, $3\\%$ commission. Earnings?","questionType":"multiple_choice","options":["KES $540$","KES $600$","KES $17460$","KES $900$"],"correctAnswer":"KES $540$","explanation":"$0.03 \\times 18000$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'discount_commission'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Discount Exam Applications');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Simple Interest', '{"blocks":[{"type":"heading","content":"Simple Interest"},{"type":"paragraph","content":"**Principal (P)** is the amount borrowed or invested."},{"type":"paragraph","content":"**Simple interest (I)** is paid on the original principal only each period."},{"type":"callout","variant":"key_point","content":"$I = \\frac{PRT}{100}$ where $R$ is annual rate $\\%$ and $T$ is time in years."},{"type":"example","title":"P KES $5000$, $R = 8\\%$, $T = 2$ years. Find $I$.","steps":["$I = \\frac{5000 \\times 8 \\times 2}{100} = 800$."],"answer":"KES $800$"},{"type":"callout","variant":"warning","content":"Time must be in years unless you adjust the formula."},{"type":"question","questionText":"P $1000$, $R=5\\%$, $T=1$ year. Interest?","questionType":"multiple_choice","options":["KES $50$","KES $500$","KES $1050$","KES $5$"],"correctAnswer":"KES $50$","explanation":"$\\frac{1000 \\times 5 \\times 1}{100}$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'simple_interest'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simple Interest');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Simple Interest Calculations', '{"blocks":[{"type":"heading","content":"Interest Methods"},{"type":"example","title":"Find $T$ if P KES $8000$, $I = 960$, $R = 6\\%$","steps":["$960 = \\frac{8000 \\times 6 \\times T}{100}$.","$T = 2$ years."],"answer":"$2$ years"},{"type":"example","title":"Amount after $3$ years: P KES $2000$, $R=10\\%$","steps":["$I = 600$.","Amount $= 2600$."],"answer":"KES $2600$"},{"type":"callout","variant":"warning","content":"Amount $=$ P $+$ I."},{"type":"question","questionText":"P KES $4000$, $R=12\\%$, $T=\\frac{1}{2}$ year. $I$?","questionType":"multiple_choice","options":["KES $240$","KES $480$","KES $120$","KES $2000$"],"correctAnswer":"KES $240$","explanation":"Half year in formula."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'simple_interest'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simple Interest Calculations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Simple Interest Exam Problems', '{"blocks":[{"type":"heading","content":"KCSE Interest Problems"},{"type":"example","title":"Student saves KES $1500$ at $4\\%$ p.a. for $2$ years $6$ months. Interest?","steps":["$T = 2.5$ years.","$I = \\frac{1500 \\times 4 \\times 2.5}{100} = 150$."],"answer":"KES $150$"},{"type":"callout","variant":"warning","content":"Convert months to years: $6$ months $= 0.5$ year."},{"type":"question","questionText":"After $1$ year at $10\\%$, amount on KES $5000$?","questionType":"multiple_choice","options":["KES $5500$","KES $500$","KES $6000$","KES $5100$"],"correctAnswer":"KES $5500$","explanation":"$500$ interest added."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_i' AND st.code = 'simple_interest'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simple Interest Exam Problems');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'CP KES $120$, SP KES $150$. Profit?', 'multiple_choice', '["KES $30$","KES $270$","KES $-30$","KES $25$"]'::jsonb, '"KES $30$"'::jsonb, 'easy', 'SP $-$ CP.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='CP KES $120$, SP KES $150$. Profit?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'CP KES $90$, SP KES $72$. Loss?', 'multiple_choice', '["KES $18$","KES $162$","KES $-18$","KES $20$"]'::jsonb, '"KES $18$"'::jsonb, 'easy', 'CP $-$ SP.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='CP KES $90$, SP KES $72$. Loss?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'MP KES $1000$, discount $15\%$. SP?', 'multiple_choice', '["KES $850$","KES $1150$","KES $150$","KES $985$"]'::jsonb, '"KES $850$"'::jsonb, 'easy', '$1000 \times 0.85$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='discount_commission'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='MP KES $1000$, discount $15\%$. SP?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Commission $6\%$ on KES $500$. Amount?', 'multiple_choice', '["KES $30$","KES $470$","KES $60$","KES $300$"]'::jsonb, '"KES $30$"'::jsonb, 'easy', '$0.06 \times 500$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='discount_commission'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Commission $6\%$ on KES $500$. Amount?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'P KES $2000$, $R=5\%$, $T=2$ yr. $I$?', 'multiple_choice', '["KES $200$","KES $100$","KES $400$","KES $2200$"]'::jsonb, '"KES $200$"'::jsonb, 'easy', 'Formula gives $200$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='P KES $2000$, $R=5\%$, $T=2$ yr. $I$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'P KES $1000$, $R=10\%$, $T=1$ yr. Amount?', 'multiple_choice', '["KES $1100$","KES $100$","KES $1010$","KES $1200$"]'::jsonb, '"KES $1100$"'::jsonb, 'easy', 'Add interest.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='P KES $1000$, $R=10\%$, $T=1$ yr. Amount?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'SP KES $200$, CP KES $160$. Profit percentage on CP?', 'multiple_choice', '["$25\\%$","$20\\%$","$40\\%$","$80\\%$"]'::jsonb, '"$25\\%$"'::jsonb, 'easy', 'Profit KES $40$; $40/160 \times 100$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='SP KES $200$, CP KES $160$. Profit percentage on CP?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'CP KES $250$, $20\%$ profit. SP?', 'multiple_choice', '["KES $300$","KES $270$","KES $200$","KES $312.5$"]'::jsonb, '"KES $300$"'::jsonb, 'medium', '$250 \times 1.2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='CP KES $250$, $20\%$ profit. SP?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'SP KES $459$, $10\%$ profit. CP?', 'multiple_choice', '["KES $417.27$","KES $413.1$","KES $450$","KES $505$"]'::jsonb, '"KES $417.27$"'::jsonb, 'medium', 'SP $= 1.1 \times$ CP.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='SP KES $459$, $10\%$ profit. CP?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'MP KES $2400$, discount KES $360$. SP?', 'multiple_choice', '["KES $2040$","KES $2760$","KES $2160$","KES $2280$"]'::jsonb, '"KES $2040$"'::jsonb, 'medium', 'Subtract fixed discount.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='discount_commission'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='MP KES $2400$, discount KES $360$. SP?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$12\%$ commission on KES $7500$?', 'multiple_choice', '["KES $900$","KES $6600$","KES $8400$","KES $750$"]'::jsonb, '"KES $900$"'::jsonb, 'medium', '$0.12 \times 7500$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='discount_commission'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$12\%$ commission on KES $7500$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'P KES $6000$, $R=8\%$, $T=3$ yr. $I$?', 'multiple_choice', '["KES $1440$","KES $480$","KES $720$","KES $7440$"]'::jsonb, '"KES $1440$"'::jsonb, 'medium', 'Full formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='P KES $6000$, $R=8\%$, $T=3$ yr. $I$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$I = 300$, P $5000$, $R=6\%$. Time in years?', 'multiple_choice', '["$1$","$0.5$","$2$","$1.5$"]'::jsonb, '"$1$"'::jsonb, 'medium', 'Solve for $T$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$I = 300$, P $5000$, $R=6\%$. Time in years?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bought $15$ items at KES $80$, sold at KES $95$ each. Total profit?', 'multiple_choice', '["KES $225$","KES $1425$","KES $15$","KES $1200$"]'::jsonb, '"KES $225$"'::jsonb, 'hard', '$15 \times 15$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bought $15$ items at KES $80$, sold at KES $95$ each. Total profit?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'CP KES $x$, $25\%$ loss, SP KES $600$. Find CP.', 'multiple_choice', '["KES $800$","KES $750$","KES $480$","KES $625$"]'::jsonb, '"KES $800$"'::jsonb, 'hard', 'SP $= 0.75 \times$ CP.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='CP KES $x$, $25\%$ loss, SP KES $600$. Find CP.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'MP KES $5000$, $15\%$ then $10\%$ successive discounts. Final SP?', 'multiple_choice', '["KES $3825$","KES $3750$","KES $4250$","KES $3500$"]'::jsonb, '"KES $3825$"'::jsonb, 'hard', 'Multiply factors $0.85 \times 0.9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='discount_commission'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='MP KES $5000$, $15\%$ then $10\%$ successive discounts. Final SP?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Agent: KES $12000$ sales, $4\%$ commission plus KES $500$ salary. Total pay?', 'multiple_choice', '["KES $980$","KES $480$","KES $12500$","KES $9800$"]'::jsonb, '"KES $980$"'::jsonb, 'hard', '$480 + 500$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='discount_commission'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Agent: KES $12000$ sales, $4\%$ commission plus KES $500$ salary. Total pay?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'P KES $2500$, $R=12\%$, $T=8$ months. $I$?', 'multiple_choice', '["KES $200$","KES $300$","KES $240$","KES $150$"]'::jsonb, '"KES $200$"'::jsonb, 'hard', '$T = \frac{2}{3}$ year.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='P KES $2500$, $R=12\%$, $T=8$ months. $I$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Amount KES $4620$ after $2$ yr at $10\%$. Principal?', 'multiple_choice', '["KES $3850$","KES $4200$","KES $3500$","KES $4000$"]'::jsonb, '"KES $3850$"'::jsonb, 'hard', 'Amount $= P(1 + 0.2)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Amount KES $4620$ after $2$ yr at $10\%$. Principal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Trader marks $30\%$ above CP, then allows $10\%$ discount on MP. Net profit $\%$ on CP?', 'multiple_choice', '["$17\\%$","$20\\%$","$27\\%$","$23\\%$"]'::jsonb, '"$17\\%$"'::jsonb, 'hard', 'MP $= 1.3$CP; SP $= 1.17$CP.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Trader marks $30\%$ above CP, then allows $10\%$ discount on MP. Net profit $\%$ on CP?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Equal interest: P KES $4000$ at $5\%$ vs P KES $x$ at $8\%$ for $1$ yr. Find $x$.', 'multiple_choice', '["KES $2500$","KES $3200$","KES $2000$","KES $3000$"]'::jsonb, '"KES $2500$"'::jsonb, 'hard', '$200 = 0.08x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equal interest: P KES $4000$ at $5\%$ vs P KES $x$ at $8\%$ for $1$ yr. Find $x$.');
+
