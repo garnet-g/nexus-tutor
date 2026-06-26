@@ -606,7 +606,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simple_interest'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equal interest: P KES $4000$ at $5\%$ vs P KES $x$ at $8\%$ for $1$ yr. Find $x$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'CP KES $960$, profit KES $240$. Profit percentage on CP?', 'multiple_choice', '["$25\\%$","$20\\%$","$24\\%$","$40\\%$"]'::jsonb, '"$25\\%$"'::jsonb, 'medium', '$\\frac{240}{960} \\times 100 = 25\\%$.'
+SELECT t.id, st.id, 'CP KES $960$, profit KES $240$. Profit percentage on CP?', 'multiple_choice', '["$25\\%$","$20\\%$","$24\\%$","$40\\%$"]'::jsonb, '"$25\\%$"'::jsonb, 'medium', '$\frac{240}{960} \times 100 = 25\%$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='profit_loss'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_i'
@@ -813,7 +813,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cartesian_plane'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Point equidistant from axes in QI with $x+y=10$ and $x=y$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Gradient of line through $(1, 2)$ and $(5, 10)$?', 'multiple_choice', '["$2$","$4$","$8$","$\\frac{1}{2}$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$\\frac{10-2}{5-1} = 2$.'
+SELECT t.id, st.id, 'Gradient of line through $(1, 2)$ and $(5, 10)$?', 'multiple_choice', '["$2$","$4$","$8$","$\\frac{1}{2}$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$\frac{10-2}{5-1} = 2$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_graphs'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='coordinates_graphs'
@@ -1020,7 +1020,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_straight_lines'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallel lines cut by transversal: co-interior angles $2x$ and $3x+20$. Find $x$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Each exterior angle of a regular octagon?', 'multiple_choice', '["$45^\\circ$","$135^\\circ$","$60^\\circ$","$30^\\circ$"]'::jsonb, '"$45^\\circ$"'::jsonb, 'medium', '$360 \\div 8 = 45^\\circ$.'
+SELECT t.id, st.id, 'Each exterior angle of a regular octagon?', 'multiple_choice', '["$45^\\circ$","$135^\\circ$","$60^\\circ$","$30^\\circ$"]'::jsonb, '"$45^\\circ$"'::jsonb, 'medium', '$360 \div 8 = 45^\circ$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='polygons'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angles_plane_figures'
