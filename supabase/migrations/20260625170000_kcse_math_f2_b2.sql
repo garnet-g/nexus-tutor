@@ -207,3 +207,152 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rotational_symmetry'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='rotation'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallelogram: centre of $180^\circ$ rotational symmetry?');
 
+-- ========== SIMILARITY AND ENLARGEMENT ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Similar Figures', '{"blocks":[{"type":"heading","content":"Similar Figures"},{"type":"paragraph","content":"Two figures are **similar** if they have the same shape but not necessarily the same size. Corresponding angles are equal and corresponding sides are in proportion."},{"type":"callout","variant":"key_point","content":"For similar triangles: $\\frac{AB}{PQ} = \\frac{BC}{QR} = \\frac{CA}{RP}$ and matching angles are equal."},{"type":"example","title":"Are two equilateral triangles always similar?","steps":["All angles are $60^\\circ$.","Corresponding sides are in proportion.","Yes — all equilateral triangles are similar."],"answer":"Yes, always similar"},{"type":"question","questionText":"Similar shapes have equal?","questionType":"multiple_choice","options":["Corresponding angles","All side lengths","Perimeters","Areas"],"correctAnswer":"Corresponding angles","explanation":"Sides are proportional, not necessarily equal."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'similarity'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Similar Figures');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding Missing Sides in Similar Triangles', '{"blocks":[{"type":"heading","content":"Missing Sides"},{"type":"example","title":"$\\triangle ABC \\sim \\triangle PQR$. $AB=6$, $PQ=9$, $BC=8$. Find $QR$.","steps":["Scale factor $k = \\frac{PQ}{AB} = \\frac{9}{6} = \\frac{3}{2}$.","$QR = BC \\times k = 8 \\times \\frac{3}{2} = 12$."],"answer":"$QR = 12$"},{"type":"example","title":"Rectangles $4$ cm $\\times$ $6$ cm and $6$ cm $\\times$ $9$ cm — similar?","steps":["Check ratios: $\\frac{4}{6} = \\frac{2}{3}$, $\\frac{6}{9} = \\frac{2}{3}$.","Same ratio — similar."],"answer":"Yes"},{"type":"callout","variant":"warning","content":"Match corresponding sides correctly — order matters."},{"type":"question","questionText":"$\\triangle ABC \\sim \\triangle DEF$. $AB=4$, $DE=10$, $BC=6$. Find $EF$.","questionType":"multiple_choice","options":["$15$","$12$","$8$","$24$"],"correctAnswer":"$15$","explanation":"$EF = 6 \\times \\frac{10}{4} = 15$."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'similarity'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding Missing Sides in Similar Triangles');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Similarity — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Similarity"},{"type":"example","title":"A tree casts a $4$ m shadow when a $1.5$ m stick casts $2$ m. Height of tree?","steps":["Similar triangles: $\\frac{h}{1.5} = \\frac{4}{2}$.","$h = 1.5 \\times 2 = 3$ m."],"answer":"$3$ m"},{"type":"callout","variant":"warning","content":"Set up ratios with corresponding lengths on the same side of each fraction."},{"type":"question","questionText":"Two maps: scale $1:50000$ and $1:25000$. The second map lengths are?","questionType":"multiple_choice","options":["Twice as long","Half as long","Same","Four times"],"correctAnswer":"Twice as long","explanation":"Smaller scale denominator means larger drawing."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'similarity'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Similarity — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Enlargement Transformations', '{"blocks":[{"type":"heading","content":"Enlargement"},{"type":"paragraph","content":"An **enlargement** maps every point $P$ to $P''$ so that $OP'' = k \\cdot OP$ from a centre $O$, where $k$ is the scale factor."},{"type":"callout","variant":"key_point","content":"$k > 1$ enlarges; $0 < k < 1$ reduces; $k < 0$ inverts through the centre."},{"type":"example","title":"Enlarge shape from $O$ with scale factor $2$","steps":["Each point moves twice as far from $O$ along the ray $OP$.","A side of length $3$ cm becomes $6$ cm."],"answer":"Lengths multiplied by $2$"},{"type":"question","questionText":"Scale factor $0.5$ means?","questionType":"multiple_choice","options":["Half the size","Double the size","Same size","Inverted"],"correctAnswer":"Half the size","explanation":"$k < 1$ is a reduction."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Enlargement Transformations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Drawing Enlargements', '{"blocks":[{"type":"heading","content":"Drawing Enlargements"},{"type":"example","title":"Enlarge $\\triangle ABC$ with $A(2,0)$, $B(4,0)$, $C(3,2)$ from $O(0,0)$ by factor $3$","steps":["$A''(6,0)$, $B''(12,0)$, $C''(9,6)$ — multiply each coordinate by $3$."],"answer":"Vertices $(6,0)$, $(12,0)$, $(9,6)$"},{"type":"example","title":"Enlarge from centre $C(1,1)$ with factor $2$. Point $P(3,1)$.","steps":["Vector $\\overrightarrow{CP} = (2,0)$.","$\\overrightarrow{CP''} = 2(2,0) = (4,0)$.","$P'' = C + (4,0) = (5,1)$."],"answer":"$P''(5,1)$"},{"type":"callout","variant":"warning","content":"From centre not at origin: use vectors from centre, multiply by $k$, add back."},{"type":"question","questionText":"Enlarge $(2,4)$ from $O$ by factor $-1$.","questionType":"multiple_choice","options":["$(-2,-4)$","$(2,-4)$","$(-2,4)$","$(4,2)$"],"correctAnswer":"$(-2,-4)$","explanation":"$k=-1$ is a half-turn about $O$."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Drawing Enlargements');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Enlargement — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Enlargement"},{"type":"example","title":"Photo enlarged from $6$ cm $\\times$ $4$ cm to width $15$ cm. New height?","steps":["Scale factor $k = \\frac{15}{6} = 2.5$.","Height $= 4 \\times 2.5 = 10$ cm."],"answer":"$10$ cm"},{"type":"callout","variant":"warning","content":"Area scales as $k^2$, not $k$."},{"type":"question","questionText":"Linear scale factor $3$. Area factor?","questionType":"multiple_choice","options":["$9$","$3$","$6$","$27$"],"correctAnswer":"$9$","explanation":"$k^2 = 9$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Enlargement — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Scale Factor', '{"blocks":[{"type":"heading","content":"Scale Factor"},{"type":"paragraph","content":"The **scale factor** $k$ compares image length to object length: $k = \\frac{\\text{image}}{\\text{object}}$."},{"type":"math_block","latex":"k = \\frac{OP''}{OP}","caption":"Scale factor from centre $O$"},{"type":"callout","variant":"key_point","content":"If $k = \\frac{3}{2}$, every length on the image is $\\frac{3}{2}$ times the original."},{"type":"example","title":"Object side $8$ cm, image side $12$ cm. Scale factor?","steps":["$k = \\frac{12}{8} = \\frac{3}{2}$."],"answer":"$k = \\frac{3}{2}$"},{"type":"question","questionText":"Scale factor from $5$ cm to $2$ cm?","questionType":"multiple_choice","options":["$\\frac{2}{5}$","$\\frac{5}{2}$","$3$","$10$"],"correctAnswer":"$\\frac{2}{5}$","explanation":"Image $\\div$ object $= \\frac{2}{5}$."}]}'::jsonb, 10, 1
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'scale_factor'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Scale Factor');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area and Volume Scale Factors', '{"blocks":[{"type":"heading","content":"Area and Volume"},{"type":"paragraph","content":"If linear scale factor is $k$, then area scales as $k^2$ and volume as $k^3$."},{"type":"example","title":"Similar triangles: sides ratio $2:3$. Area ratio?","steps":["Linear $k = \\frac{3}{2}$.","Area ratio $= k^2 = \\frac{9}{4}$."],"answer":"$9:4$"},{"type":"example","title":"Cube side doubled. Volume factor?","steps":["$k = 2$, volume factor $= 2^3 = 8$."],"answer":"$8$ times"},{"type":"callout","variant":"warning","content":"Do not multiply area by $k$ — use $k^2$."},{"type":"question","questionText":"Linear factor $4$. Volume factor?","questionType":"multiple_choice","options":["$64$","$16$","$4$","$12$"],"correctAnswer":"$64$","explanation":"$4^3 = 64$."}]}'::jsonb, 12, 2
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'scale_factor'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area and Volume Scale Factors');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Scale Factor — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Scale Factor"},{"type":"example","title":"Model ship $1:200$. Real mast $30$ m. Model mast?","steps":["$\\frac{\\text{model}}{30} = \\frac{1}{200}$.","Model $= 0.15$ m $= 15$ cm."],"answer":"$15$ cm"},{"type":"callout","variant":"warning","content":"Convert units before applying scale factor."},{"type":"question","questionText":"Areas in ratio $25:16$. Linear scale factor (image:object)?","questionType":"multiple_choice","options":["$\\frac{5}{4}$","$\\frac{25}{16}$","$\\frac{4}{5}$","$5$"],"correctAnswer":"$\\frac{5}{4}$","explanation":"$k = \\sqrt{\\frac{25}{16}} = \\frac{5}{4}$."}]}'::jsonb, 10, 3
+FROM public.subtopics st JOIN public.topics t ON t.id = st.topic_id JOIN public.subjects s ON s.id = t.subject_id JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'similarity_enlargement' AND st.code = 'scale_factor'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Scale Factor — Exam Practice');
+
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Similar figures have equal corresponding?', 'multiple_choice', '["Angles","Side lengths","Perimeters","Volumes"]'::jsonb, '"Angles"'::jsonb, 'easy', 'Sides are proportional.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='similarity'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Similar figures have equal corresponding?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'All equilateral triangles are?', 'multiple_choice', '["Similar","Congruent","Different shapes","Never similar"]'::jsonb, '"Similar"'::jsonb, 'easy', 'Equal angles, proportional sides.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='similarity'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='All equilateral triangles are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Scale factor $k = 3$ multiplies lengths by?', 'multiple_choice', '["$3$","$6$","$9$","$1$"]'::jsonb, '"$3$"'::jsonb, 'easy', 'Linear scale factor.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Scale factor $k = 3$ multiplies lengths by?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Enlargement with $k = 0.25$ is a?', 'multiple_choice', '["Reduction","Doubling","Rotation","Translation"]'::jsonb, '"Reduction"'::jsonb, 'easy', '$k < 1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='enlargement'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Enlargement with $k = 0.25$ is a?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Negative scale factor $k = -2$ gives?', 'multiple_choice', '["Enlargement and inversion through centre","Reduction only","Same shape orientation","Translation"]'::jsonb, '"Enlargement and inversion through centre"'::jsonb, 'easy', '$|k|>1$ enlarges; sign inverts.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='enlargement'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Negative scale factor $k = -2$ gives?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Similar triangles: sides $3$ cm and $5$ cm correspond. Ratio $AB:PQ$?', 'multiple_choice', '["$3:5$","$5:3$","$9:25$","$1:1$"]'::jsonb, '"$3:5$"'::jsonb, 'easy', 'Object to image order.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='similarity'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Similar triangles: sides $3$ cm and $5$ cm correspond. Ratio $AB:PQ$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Linear factor $2$. Area multiplied by?', 'multiple_choice', '["$4$","$2$","$8$","$6$"]'::jsonb, '"$4$"'::jsonb, 'easy', '$k^2 = 4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Linear factor $2$. Area multiplied by?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\triangle ABC \sim \triangle DEF$. $AB=5$, $DE=15$, $BC=8$. Find $EF$.', 'multiple_choice', '["$24$","$16$","$12$","$40$"]'::jsonb, '"$24$"'::jsonb, 'medium', '$EF = 8 \times \frac{15}{5} = 24$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='similarity'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\triangle ABC \sim \triangle DEF$. $AB=5$, $DE=15$, $BC=8$. Find $EF$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Enlarge $(4,2)$ from $O(0,0)$ by factor $1.5$.', 'multiple_choice', '["$(6,3)$","$(5.5,3.5)$","$(8,4)$","$(2,1)$"]'::jsonb, '"$(6,3)$"'::jsonb, 'medium', 'Multiply coordinates by $1.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='enlargement'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Enlarge $(4,2)$ from $O(0,0)$ by factor $1.5$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Stick $1.2$ m casts $1.8$ m shadow. Tree shadow $12$ m. Tree height?', 'multiple_choice', '["$8$ m","$14.4$ m","$6$ m","$20$ m"]'::jsonb, '"$8$ m"'::jsonb, 'medium', '$\frac{h}{1.2} = \frac{12}{1.8}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='similarity'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Stick $1.2$ m casts $1.8$ m shadow. Tree shadow $12$ m. Tree height?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Photo $10$ cm wide enlarged to $25$ cm. Linear scale factor?', 'multiple_choice', '["$2.5$","$0.4$","$15$","$1.5$"]'::jsonb, '"$2.5$"'::jsonb, 'medium', '$\frac{25}{10}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Photo $10$ cm wide enlarged to $25$ cm. Linear scale factor?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Similar solids: linear ratio $3:2$. Volume ratio?', 'multiple_choice', '["$27:8$","$9:4$","$3:2$","$6:4$"]'::jsonb, '"$27:8$"'::jsonb, 'medium', '$k^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Similar solids: linear ratio $3:2$. Volume ratio?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Enlarge $(2,6)$ from $C(1,2)$ by factor $3$.', 'multiple_choice', '["$(4,14)$","$(6,18)$","$(3,8)$","$(5,12)$"]'::jsonb, '"$(4,14)$"'::jsonb, 'medium', 'Vector $(1,4)$ times $3$ plus centre.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='enlargement'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Enlarge $(2,6)$ from $C(1,2)$ by factor $3$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Map scale $1:25000$. $4$ cm on map equals real distance?', 'multiple_choice', '["$1$ km","$0.25$ km","$10$ km","$100$ m"]'::jsonb, '"$1$ km"'::jsonb, 'medium', '$4 \times 25000$ cm $= 1$ km.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Map scale $1:25000$. $4$ cm on map equals real distance?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Areas $36$ cm$^2$ and $81$ cm$^2$ on similar shapes. Linear scale (larger:smaller)?', 'multiple_choice', '["$3:2$","$9:4$","$2:3$","$81:36$"]'::jsonb, '"$3:2$"'::jsonb, 'hard', '$k = \sqrt{\frac{81}{36}} = \frac{3}{2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Areas $36$ cm$^2$ and $81$ cm$^2$ on similar shapes. Linear scale (larger:smaller)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder radius doubled, height unchanged. Volume factor?', 'multiple_choice', '["$4$","$2$","$8$","$6$"]'::jsonb, '"$4$"'::jsonb, 'hard', 'Volume $\propto r^2 h$; only $r$ doubles.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder radius doubled, height unchanged. Volume factor?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\triangle ABC \sim \triangle PQR$. Perimeter $ABC$ is $24$ cm, $PQ=9$, $AB=6$. Perimeter $PQR$?', 'multiple_choice', '["$36$ cm","$27$ cm","$18$ cm","$48$ cm"]'::jsonb, '"$36$ cm"'::jsonb, 'hard', 'Scale $\frac{3}{2}$; $24 \times \frac{3}{2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='similarity'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\triangle ABC \sim \triangle PQR$. Perimeter $ABC$ is $24$ cm, $PQ=9$, $AB=6$. Perimeter $PQR$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Model $1:100$. Real floor $4$ m $\times$ $5$ m. Model area?', 'multiple_choice', '["$20$ cm$^2$","$200$ cm$^2$","$2$ cm$^2$","$0.2$ cm$^2$"]'::jsonb, '"$20$ cm$^2$"'::jsonb, 'hard', 'Sides $4$ cm and $5$ cm; area $20$ cm$^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scale_factor'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Model $1:100$. Real floor $4$ m $\times$ $5$ m. Model area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Enlargement centre $O$, $A(6,0)$ maps to $A''(9,0)$. Scale factor?', 'multiple_choice', '["$1.5$","$3$","$0.67$","$15$"]'::jsonb, '"$1.5$"'::jsonb, 'hard', '$\frac{9}{6} = 1.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='enlargement'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Enlargement centre $O$, $A(6,0)$ maps to $A''(9,0)$. Scale factor?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two similar rectangles: widths $6$ and $15$ cm. Smaller area $24$ cm$^2$. Larger area?', 'multiple_choice', '["$150$ cm$^2$","$60$ cm$^2$","$96$ cm$^2$","$375$ cm$^2$"]'::jsonb, '"$150$ cm$^2$"'::jsonb, 'hard', '$k=2.5$; area $\times 6.25$ — ratio $(15/6)^2 = 6.25$; $24 \times 6.25 = 150$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id JOIN public.subtopics st ON st.topic_id=t.id AND st.code='similarity'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='similarity_enlargement'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two similar rectangles: widths $6$ and $15$ cm. Smaller area $24$ cm$^2$. Larger area?');
+
