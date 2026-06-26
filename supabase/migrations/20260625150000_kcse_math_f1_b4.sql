@@ -205,3 +205,204 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='construct_triangles'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='geometric_constructions'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sides $7$, $7$, $10$ cm. Where is apex for SSS construction?');
 
+
+-- ========== SCALE DRAWING ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Understanding Scale Ratios', '{"blocks":[{"type":"heading","content":"Understanding Scale Ratios"},{"type":"paragraph","content":"A **scale** compares a length on a drawing or map to the real length. We write it as a ratio, e.g. $1 : 50\\,000$."},{"type":"callout","variant":"key_point","content":"Scale $1 : n$ means $1$ unit on the drawing represents $n$ units in reality."},{"type":"math_block","latex":"\\text{scale} = \\frac{\\text{drawing length}}{\\text{actual length}}","caption":"Same units on both sides before forming the ratio."},{"type":"example","title":"A map uses scale $1 : 25\\,000$. What real distance does $2$ cm represent?","steps":["Actual $= 2 \\times 25\\,000 = 50\\,000$ cm.","$50\\,000$ cm $= 500$ m $= 0.5$ km."],"answer":"$500$ m"},{"type":"callout","variant":"warning","content":"Convert to the units asked for in the question — km, m or cm."},{"type":"question","questionText":"On scale $1 : 100$, $3$ cm on the drawing equals how many cm in reality?","questionType":"multiple_choice","options":["$300$ cm","$100$ cm","$3$ cm","$30$ cm"],"correctAnswer":"$300$ cm","explanation":"$3 \\times 100 = 300$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'scales'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Understanding Scale Ratios');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Scale Calculation Methods', '{"blocks":[{"type":"heading","content":"Scale Calculation Methods"},{"type":"example","title":"A room is $4$ m long. Draw it at scale $1 : 100$.","steps":["Convert $4$ m $= 400$ cm actual.","Drawing length $= \\frac{400}{100} = 4$ cm."],"answer":"$4$ cm on the drawing"},{"type":"example","title":"On a plan, a wall measures $6$ cm. Scale is $1 : 200$. Find the real length in metres.","steps":["Actual $= 6 \\times 200 = 1200$ cm.","$1200$ cm $= 12$ m."],"answer":"$12$ m"},{"type":"callout","variant":"warning","content":"Drawing $\\rightarrow$ actual: multiply by the scale factor. Actual $\\rightarrow$ drawing: divide."},{"type":"question","questionText":"Actual length $8$ m at $1 : 50$. Drawing length in cm?","questionType":"multiple_choice","options":["$16$ cm","$8$ cm","$400$ cm","$4$ cm"],"correctAnswer":"$16$ cm","explanation":"$800 \\div 50 = 16$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'scales'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Scale Calculation Methods');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Scale Problems — KCSE Practice', '{"blocks":[{"type":"heading","content":"KCSE Scale Problems"},{"type":"example","title":"A rectangular field is $120$ m by $80$ m. Draw a rectangle $6$ cm by $4$ cm. Find the scale.","steps":["Compare corresponding sides: $\\frac{120\\,000}{6} = 20\\,000$ and $\\frac{80\\,000}{4} = 20\\,000$.","Scale is $1 : 20\\,000$."],"answer":"$1 : 20\\,000$"},{"type":"callout","variant":"warning","content":"Check both dimensions give the same ratio before stating the scale."},{"type":"question","questionText":"Scale $1 : 5000$. Real distance $250$ m equals how many cm on the map?","questionType":"multiple_choice","options":["$5$ cm","$50$ cm","$0.5$ cm","$25$ cm"],"correctAnswer":"$5$ cm","explanation":"$25\\,000 \\div 5000 = 5$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'scales'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Scale Problems — KCSE Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'What Are Bearings?', '{"blocks":[{"type":"heading","content":"What Are Bearings?"},{"type":"paragraph","content":"A **bearing** is the direction of one point from another, measured **clockwise from North**."},{"type":"callout","variant":"key_point","content":"Bearings are written as three digits: $045^\\circ$, $120^\\circ$, $270^\\circ$."},{"type":"paragraph","content":"North is $000^\\circ$ (or $360^\\circ$). East is $090^\\circ$, South $180^\\circ$, West $270^\\circ$."},{"type":"example","title":"State the bearing of East from an observer.","steps":["From North, turn clockwise to East.","That is a quarter turn: $90^\\circ$.","Bearing $= 090^\\circ$."],"answer":"$090^\\circ$"},{"type":"callout","variant":"warning","content":"Never measure anticlockwise — bearings are always clockwise from North."},{"type":"question","questionText":"The bearing of South is?","questionType":"multiple_choice","options":["$180^\\circ$","$090^\\circ$","$270^\\circ$","$360^\\circ$"],"correctAnswer":"$180^\\circ$","explanation":"Half turn from North."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'bearings_intro'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'What Are Bearings?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Measuring and Drawing Bearings', '{"blocks":[{"type":"heading","content":"Measuring and Drawing Bearings"},{"type":"example","title":"Draw a bearing of $060^\\circ$ from point $A$","steps":["Draw a vertical line upwards from $A$ and mark North ($N$).","Place protractor centre at $A$ with $0^\\circ$ on North.","Mark $60^\\circ$ clockwise and draw ray $AB$."],"answer":"Ray at $060^\\circ$ from North"},{"type":"example","title":"Find the bearing of $B$ from $A$ if $B$ lies North-East of $A$","steps":["North-East is halfway between North and East.","Clockwise from North: $45^\\circ$.","Bearing $= 045^\\circ$."],"answer":"$045^\\circ$"},{"type":"callout","variant":"warning","content":"Always draw a North line at the point you are measuring **from**."},{"type":"question","questionText":"North-West as a bearing is?","questionType":"multiple_choice","options":["$315^\\circ$","$225^\\circ$","$135^\\circ$","$045^\\circ$"],"correctAnswer":"$315^\\circ$","explanation":"$360^\\circ - 45^\\circ = 315^\\circ$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'bearings_intro'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Measuring and Drawing Bearings');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Bearings — KCSE Practice', '{"blocks":[{"type":"heading","content":"KCSE Bearing Problems"},{"type":"example","title":"Town $B$ is on a bearing of $140^\\circ$ from town $A$. Draw the line and describe the direction.","steps":["Draw North at $A$.","Mark $140^\\circ$ clockwise — south-east of North.","Join $A$ to $B$ along that ray."],"answer":"$B$ lies SE of $A$"},{"type":"callout","variant":"warning","content":"Back-bearing: if bearing of $B$ from $A$ is $\\theta$, bearing of $A$ from $B$ is $\\theta \\pm 180^\\circ$ (adjust to $000$–$360$)."},{"type":"question","questionText":"Bearing of $B$ from $A$ is $030^\\circ$. Bearing of $A$ from $B$?","questionType":"multiple_choice","options":["$210^\\circ$","$150^\\circ$","$030^\\circ$","$330^\\circ$"],"correctAnswer":"$210^\\circ$","explanation":"$30 + 180 = 210$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'bearings_intro'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Bearings — KCSE Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Scale Drawings and Plans', '{"blocks":[{"type":"heading","content":"Scale Drawings and Plans"},{"type":"paragraph","content":"A **scale drawing** is an accurate diagram of a real object or place, with every length reduced (or enlarged) by the same factor."},{"type":"callout","variant":"key_point","content":"Angles are unchanged in scale drawings; only lengths scale."},{"type":"paragraph","content":"Architects and surveyors use plans at scales like $1 : 100$ or $1 : 500$."},{"type":"example","title":"A door is $2$ m high. On a $1 : 50$ plan, how high is the door?","steps":["$2$ m $= 200$ cm.","Drawing height $= 200 \\div 50 = 4$ cm."],"answer":"$4$ cm"},{"type":"callout","variant":"warning","content":"Label the scale on your drawing in exams."},{"type":"question","questionText":"In a scale drawing, what stays the same as the real object?","questionType":"multiple_choice","options":["Angles","Areas","Volumes","Perimeters"],"correctAnswer":"Angles","explanation":"Shape is similar; angles match."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'representation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Scale Drawings and Plans');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Drawing to Scale', '{"blocks":[{"type":"heading","content":"Drawing to Scale"},{"type":"example","title":"Draw a rectangular plot $40$ m by $30$ m at scale $1 : 1000$","steps":["$40$ m $= 40\\,000$ mm; drawing $= 40\\,000 \\div 1000 = 40$ mm $= 4$ cm.","$30$ m gives $3$ cm.","Draw rectangle $4$ cm $\\times$ $3$ cm; label scale $1 : 1000$."],"answer":"Rectangle $4$ cm by $3$ cm"},{"type":"example","title":"Enlarge triangle sides $3$, $4$, $5$ cm by scale factor $2$","steps":["Multiply each side by $2$: $6$ cm, $8$ cm, $10$ cm.","Draw the enlarged triangle with the same angles."],"answer":"Sides $6$, $8$, $10$ cm"},{"type":"callout","variant":"warning","content":"Scale factor $> 1$ enlarges; scale factor between $0$ and $1$ reduces."},{"type":"question","questionText":"Scale factor $\\frac{1}{2}$ means the drawing is?","questionType":"multiple_choice","options":["Half the real size","Twice the real size","Same size","Four times the size"],"correctAnswer":"Half the real size","explanation":"Multiply lengths by $\\frac{1}{2}$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'representation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Drawing to Scale');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Representation — KCSE Practice', '{"blocks":[{"type":"heading","content":"KCSE Representation Problems"},{"type":"example","title":"A school field measures $90$ m $\\times$ $60$ m. On a drawing the longer side is $9$ cm. Find the scale and the shorter side on the drawing.","steps":["$90$ m $= 9000$ cm; scale $= 9 : 9000 = 1 : 1000$.","Shorter side $= 60\\,000 \\div 1000 = 6$ cm."],"answer":"Scale $1 : 1000$; shorter side $6$ cm"},{"type":"callout","variant":"warning","content":"When finding an unknown scale, use one known pair of lengths first."},{"type":"question","questionText":"Map scale $1 : 50\\,000$. Two towns $7.5$ cm apart on the map. Real distance in km?","questionType":"multiple_choice","options":["$3.75$ km","$37.5$ km","$0.375$ km","$375$ km"],"correctAnswer":"$3.75$ km","explanation":"$7.5 \\times 50\\,000$ cm $= 3.75$ km."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'scale_drawing' AND st.code = 'representation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Representation — KCSE Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Scale $1 : 200$. Real length $400$ cm equals how many cm on the drawing?', 'multiple_choice', '["$2$ cm","$200$ cm","$4$ cm","$800$ cm"]'::jsonb, '"$2$ cm"'::jsonb, 'easy', '$400 \div 200 = 2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scales'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Scale $1 : 200$. Real length $400$ cm equals how many cm on the drawing?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'On scale $1 : 50$, a line $5$ cm long represents real length?', 'multiple_choice', '["$250$ cm","$50$ cm","$5$ cm","$2.5$ m"]'::jsonb, '"$250$ cm"'::jsonb, 'easy', '$5 \times 50 = 250$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scales'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='On scale $1 : 50$, a line $5$ cm long represents real length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A scale of $1 : 10\,000$ means $1$ cm represents?', 'multiple_choice', '["$100$ m","$10$ m","$1$ km","$10$ km"]'::jsonb, '"$100$ m"'::jsonb, 'easy', '$10\,000$ cm $= 100$ m.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scales'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A scale of $1 : 10\,000$ means $1$ cm represents?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bearing of East from a point is?', 'multiple_choice', '["$090^\\circ$","$000^\\circ$","$180^\\circ$","$270^\\circ$"]'::jsonb, '"$090^\\circ$"'::jsonb, 'easy', 'Quarter turn clockwise from North.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='bearings_intro'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bearing of East from a point is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bearings are measured from which direction?', 'multiple_choice', '["North","East","South","West"]'::jsonb, '"North"'::jsonb, 'easy', 'Always clockwise from North.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='bearings_intro'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bearings are measured from which direction?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bearing $270^\circ$ points towards?', 'multiple_choice', '["West","East","North","South"]'::jsonb, '"West"'::jsonb, 'easy', 'Three-quarter turn from North.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='bearings_intro'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bearing $270^\circ$ points towards?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'In a scale drawing, lengths are reduced but what is preserved?', 'multiple_choice', '["Angles","Areas","Volumes","Mass"]'::jsonb, '"Angles"'::jsonb, 'easy', 'Similar shapes keep angles.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='representation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='In a scale drawing, lengths are reduced but what is preserved?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Actual distance $3$ km. Scale $1 : 25\,000$. Map distance in cm?', 'multiple_choice', '["$12$ cm","$75$ cm","$1.2$ cm","$120$ cm"]'::jsonb, '"$12$ cm"'::jsonb, 'medium', '$300\,000 \div 25\,000 = 12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scales'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Actual distance $3$ km. Scale $1 : 25\,000$. Map distance in cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Drawing length $8$ cm at $1 : 500$. Real length in metres?', 'multiple_choice', '["$40$ m","$4$ m","$400$ m","$0.4$ m"]'::jsonb, '"$40$ m"'::jsonb, 'medium', '$8 \times 500 = 4000$ cm $= 40$ m.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scales'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Drawing length $8$ cm at $1 : 500$. Real length in metres?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bearing of $P$ from $Q$ is $075^\circ$. Bearing of $Q$ from $P$?', 'multiple_choice', '["$255^\\circ$","$105^\\circ$","$075^\\circ$","$285^\\circ$"]'::jsonb, '"$255^\\circ$"'::jsonb, 'medium', '$75 + 180 = 255$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='bearings_intro'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bearing of $P$ from $Q$ is $075^\circ$. Bearing of $Q$ from $P$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A ship sails on a bearing of $150^\circ$. Its direction is?', 'multiple_choice', '["South-east of North","North-west","Due East","Due West"]'::jsonb, '"South-east of North"'::jsonb, 'medium', '$150^\circ$ is between $090^\circ$ and $180^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='bearings_intro'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A ship sails on a bearing of $150^\circ$. Its direction is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Plot $50$ m by $20$ m drawn as $10$ cm by $4$ cm. The scale is?', 'multiple_choice', '["$1 : 500$","$1 : 50$","$1 : 200$","$1 : 1000$"]'::jsonb, '"$1 : 500$"'::jsonb, 'medium', '$5000 : 10 = 500$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='representation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Plot $50$ m by $20$ m drawn as $10$ cm by $4$ cm. The scale is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Enlarge a $6$ cm line by scale factor $3$. New length?', 'multiple_choice', '["$18$ cm","$9$ cm","$2$ cm","$3$ cm"]'::jsonb, '"$18$ cm"'::jsonb, 'medium', '$6 \times 3 = 18$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='representation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Enlarge a $6$ cm line by scale factor $3$. New length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Field $150$ m by $100$ m. Scale $1 : 5000$. Drawing dimensions in cm?', 'multiple_choice', '["$3$ cm by $2$ cm","$30$ cm by $20$ cm","$1.5$ cm by $1$ cm","$15$ cm by $10$ cm"]'::jsonb, '"$3$ cm by $2$ cm"'::jsonb, 'hard', 'Divide each side by $5000$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scales'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Field $150$ m by $100$ m. Scale $1 : 5000$. Drawing dimensions in cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Town $A$ is $12$ km from $B$ on bearing $040^\circ$. Town $C$ is $12$ km from $B$ on bearing $130^\circ$. Angle $ABC$?', 'multiple_choice', '["$90^\\circ$","$40^\\circ$","$130^\\circ$","$50^\\circ$"]'::jsonb, '"$90^\\circ$"'::jsonb, 'hard', '$130 - 40 = 90$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='bearings_intro'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Town $A$ is $12$ km from $B$ on bearing $040^\circ$. Town $C$ is $12$ km from $B$ on bearing $130^\circ$. Angle $ABC$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Map scale $2$ cm $:$ $5$ km. Two lakes $9$ cm apart on the map. Real distance?', 'multiple_choice', '["$22.5$ km","$18$ km","$4.5$ km","$45$ km"]'::jsonb, '"$22.5$ km"'::jsonb, 'hard', '$9 \div 2 \times 5 = 22.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='representation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Map scale $2$ cm $:$ $5$ km. Two lakes $9$ cm apart on the map. Real distance?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A plan shows a road $4.5$ cm long. Scale $1 : 20\,000$. Real length in km?', 'multiple_choice', '["$0.9$ km","$9$ km","$90$ km","$0.09$ km"]'::jsonb, '"$0.9$ km"'::jsonb, 'hard', '$4.5 \times 20\,000$ cm $= 0.9$ km.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scales'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A plan shows a road $4.5$ cm long. Scale $1 : 20\,000$. Real length in km?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Village $X$: bearing of $Y$ is $220^\circ$. Bearing of $X$ from $Y$?', 'multiple_choice', '["$040^\\circ$","$220^\\circ$","$140^\\circ$","$320^\\circ$"]'::jsonb, '"$040^\\circ$"'::jsonb, 'hard', '$220 - 180 = 40$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='bearings_intro'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Village $X$: bearing of $Y$ is $220^\circ$. Bearing of $X$ from $Y$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reduce a rectangle $12$ cm by $8$ cm using scale factor $\frac{1}{4}$. New area in cm$^2$?', 'multiple_choice', '["$6$ cm$^2$","$24$ cm$^2$","$96$ cm$^2$","$1.5$ cm$^2$"]'::jsonb, '"$6$ cm$^2$"'::jsonb, 'hard', 'Sides $3$ and $2$; area $= 6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='representation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reduce a rectangle $12$ cm by $8$ cm using scale factor $\frac{1}{4}$. New area in cm$^2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Real length $600$ m. Scale $1 : 50\,000$. Map length in cm?', 'multiple_choice', '["$1.2$ cm","$12$ cm","$0.12$ cm","$120$ cm"]'::jsonb, '"$1.2$ cm"'::jsonb, 'medium', '$60\,000 \div 50\,000 = 1.2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='scales'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Real length $600$ m. Scale $1 : 50\,000$. Map length in cm?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Similar triangles have sides $3,4,5$ cm and $9,12,15$ cm. Scale factor from small to large?', 'multiple_choice', '["$3$","$2$","$\frac{1}{3}$","$5$"]'::jsonb, '"$3$"'::jsonb, 'hard', '$9 \div 3 = 3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='representation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='scale_drawing'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Similar triangles have sides $3,4,5$ cm and $9,12,15$ cm. Scale factor from small to large?');
