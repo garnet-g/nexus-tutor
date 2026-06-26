@@ -16,6 +16,10 @@ const SEED_FILES = [
     path: "supabase/migrations/20260625130000_kcse_math_f1_b2.sql",
     expectedLessonCount: 45,
   },
+  {
+    path: "supabase/migrations/20260625140000_kcse_math_f1_b3.sql",
+    expectedLessonCount: 45,
+  },
 ] as const;
 
 // extract every lesson content JSON: , '{...}'::jsonb  (SQL doubles '' for apostrophes)
@@ -27,6 +31,40 @@ function extractLessonJson(text: string): string[] {
     out.push(m[1].replace(/''/g, "'"));
   }
   return out;
+}
+
+// Find plain (non-JSONB) SQL string literals containing a double-backslash. LaTeX in plain string
+// fields (question_text, explanation) must use a single backslash; "\\" there renders broken in KaTeX.
+// (JSONB literals legitimately use "\\" and are excluded.)
+function plainStringsWithDoubleBackslash(text: string): string[] {
+  const bad: string[] = [];
+  let i = 0;
+  while (i < text.length) {
+    if (text[i] === "'") {
+      let j = i + 1;
+      let body = "";
+      while (j < text.length) {
+        if (text[j] === "'") {
+          if (text[j + 1] === "'") {
+            body += "''";
+            j += 2;
+            continue;
+          }
+          break;
+        }
+        body += text[j];
+        j += 1;
+      }
+      const isJsonb = text.slice(j + 1, j + 8).startsWith("::jsonb");
+      if (!isJsonb && body.includes("\\\\")) {
+        bad.push(body.slice(0, 80));
+      }
+      i = j + 1;
+    } else {
+      i += 1;
+    }
+  }
+  return bad;
 }
 
 // extract every practice question's options + correct_answer JSONB pair
@@ -86,6 +124,10 @@ describe("KCSE math seed — lesson content validates against schema", () => {
           }
         }
         expect(failures).toEqual([]);
+      });
+
+      it("no plain SQL string over-escapes LaTeX (question_text/explanation must use single backslash)", () => {
+        expect(plainStringsWithDoubleBackslash(sql)).toEqual([]);
       });
     });
   }

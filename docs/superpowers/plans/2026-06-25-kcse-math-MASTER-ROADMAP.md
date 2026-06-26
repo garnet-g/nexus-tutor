@@ -54,8 +54,8 @@ add finer subtopics per topic as needed — additive only.)
 ✅ `integers` · ✅ `algebraic_expressions` · ✅ `rates_ratio_proportion` · ✅ `fractions`
 ✅ `natural_numbers` · ✅ `factors` (incl. gcd_hcf, lcm subtopics) · ✅ `divisibility_tests`
 ✅ `decimals` · ✅ `squares_square_roots` · ✅ `length` · ✅ `area` · ✅ `volume_capacity`
-✅ `mass_weight_density` · ▢ `time` · ▢ `linear_equations` · ▢ `commercial_arithmetic_i`
-▢ `coordinates_graphs` · ▢ `angles_plane_figures` · ▢ `geometric_constructions`
+✅ `mass_weight_density` · ✅ `time` · ✅ `linear_equations` · ✅ `commercial_arithmetic_i`
+✅ `coordinates_graphs` · ✅ `angles_plane_figures` · ▢ `geometric_constructions`
 ▢ `scale_drawing` · ▢ `common_solids`
 
 ### Form 2 — 20 topics
@@ -77,7 +77,7 @@ add finer subtopics per topic as needed — additive only.)
 ▢ `three_dimensional_geometry` · ▢ `longitudes_latitudes` · ▢ `linear_programming`
 ▢ `differentiation` · ▢ `area_approximation` · ▢ `integration`
 
-**Status: 13 done · 52 remaining.**
+**Status: 18 done · 47 remaining.**
 
 ## 5. Per-topic workflow (the repeatable recipe)
 
