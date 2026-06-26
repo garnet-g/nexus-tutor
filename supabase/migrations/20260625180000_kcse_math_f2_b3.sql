@@ -850,3 +850,209 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pyramids_cones_vol'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='volume_solids'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pyramid same base and height as cylinder $r=3$, $h=8$. Pyramid volume?');
 
+-- ========== QUADRATIC EXPRESSIONS AND EQUATIONS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Expanding Binomial Products', '{"blocks": [{"type": "heading", "content": "Expanding $(a+b)(c+d)$"}, {"type": "paragraph", "content": "Use the **FOIL** pattern or grid method: every term in the first bracket multiplies every term in the second."}, {"type": "math_block", "latex": "(x+a)(x+b) = x^2 + (a+b)x + ab"}, {"type": "callout", "variant": "key_point", "content": "For $(x+a)^2$: $x^2 + 2ax + a^2$ — do not forget the middle term $2ax$."}, {"type": "example", "title": "Expand $(x+3)(x+5)$.", "steps": ["$x^2 + 5x + 3x + 15$.", "$x^2 + 8x + 15$."], "answer": "$x^2 + 8x + 15$"}, {"type": "question", "questionText": "Expand $(x+2)(x+4)$.", "questionType": "multiple_choice", "options": ["$x^2+6x+8$", "$x^2+8x+6$", "$x^2+2x+8$", "$2x^2+6x+8$"], "correctAnswer": "$x^2+6x+8$", "explanation": "FOIL."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'expansion'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Expanding Binomial Products');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Expanding with Negatives', '{"blocks": [{"type": "heading", "content": "Negative Terms in Expansion"}, {"type": "example", "title": "Expand $(x-4)(x+7)$.", "steps": ["$x^2 + 7x - 4x - 28$.", "$x^2 + 3x - 28$."], "answer": "$x^2 + 3x - 28$"}, {"type": "example", "title": "Expand $(2x+1)(x-3)$.", "steps": ["$2x^2 - 6x + x - 3$.", "$2x^2 - 5x - 3$."], "answer": "$2x^2 - 5x - 3$"}, {"type": "callout", "variant": "warning", "content": "$(x-3)^2 = x^2 - 6x + 9$, not $x^2 - 9$."}, {"type": "question", "questionText": "Expand $(x-5)^2$.", "questionType": "multiple_choice", "options": ["$x^2-10x+25$", "$x^2-25$", "$x^2+10x+25$", "$x^2-5x+25$"], "correctAnswer": "$x^2-10x+25$", "explanation": "Perfect square."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'expansion'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Expanding with Negatives');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Expansion — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Expansion"}, {"type": "example", "title": "Expand $(3x-2)(2x+5)$.", "steps": ["$6x^2 + 15x - 4x - 10$.", "$6x^2 + 11x - 10$."], "answer": "$6x^2 + 11x - 10$"}, {"type": "callout", "variant": "warning", "content": "Check signs when multiplying negatives."}, {"type": "question", "questionText": "Expand $(x+9)(x-9)$.", "questionType": "multiple_choice", "options": ["$x^2-81$", "$x^2+81$", "$x^2-18x+81$", "$2x^2-81$"], "correctAnswer": "$x^2-81$", "explanation": "Difference of squares."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'expansion'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Expansion — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Factorising by Common Factor', '{"blocks": [{"type": "heading", "content": "Common Factor"}, {"type": "paragraph", "content": "Factorisation reverses expansion. First step: take out the **highest common factor** (HCF)."}, {"type": "example", "title": "Factorise $6x^2 + 9x$.", "steps": ["HCF $3x$.", "$3x(2x + 3)$."], "answer": "$3x(2x+3)$"}, {"type": "callout", "variant": "key_point", "content": "Always check for an HCF before using other methods."}, {"type": "question", "questionText": "Factorise $4x^2 - 8x$.", "questionType": "multiple_choice", "options": ["$4x(x-2)$", "$4(x^2-2x)$", "$2x(2x-4)$", "$x(4x-8)$"], "correctAnswer": "$4x(x-2)$", "explanation": "HCF $4x$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'factorisation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Factorising by Common Factor');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Factorising Trinomials', '{"blocks": [{"type": "heading", "content": "Quadratic Trinomials"}, {"type": "math_block", "latex": "x^2 + bx + c = (x+p)(x+q) \\text{ where } p+q=b,\\; pq=c"}, {"type": "example", "title": "Factorise $x^2 + 7x + 12$.", "steps": ["Find numbers sum $7$, product $12$: $3$ and $4$.", "$(x+3)(x+4)$."], "answer": "$(x+3)(x+4)$"}, {"type": "callout", "variant": "warning", "content": "If $c$ is positive and $b$ positive, both factors are positive."}, {"type": "question", "questionText": "Factorise $x^2 + 5x + 6$.", "questionType": "multiple_choice", "options": ["$(x+2)(x+3)$", "$(x+1)(x+6)$", "$(x+5)(x+1)$", "$(x+2)(x+4)$"], "correctAnswer": "$(x+2)(x+3)$", "explanation": "$2+3=5$, $2 \\times 3=6$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'factorisation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Factorising Trinomials');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Factorisation — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Factorisation"}, {"type": "example", "title": "Factorise $2x^2 + 7x + 3$.", "steps": ["$ac$ method: $2 \\times 3 = 6$; numbers $6$ and $1$.", "$(2x+1)(x+3)$."], "answer": "$(2x+1)(x+3)$"}, {"type": "example", "title": "Factorise $x^2 - 9$.", "steps": ["Difference of squares: $(x+3)(x-3)$."], "answer": "$(x+3)(x-3)$"}, {"type": "callout", "variant": "warning", "content": "For $ax^2+bx+c$ when $a \\neq 1$, use grouping or $ac$ method."}, {"type": "question", "questionText": "Factorise $x^2 - x - 12$.", "questionType": "multiple_choice", "options": ["$(x-4)(x+3)$", "$(x+4)(x-3)$", "$(x-6)(x+2)$", "$(x+2)(x+6)$"], "correctAnswer": "$(x-4)(x+3)$", "explanation": "$-4+3=-1$, $-12$ product."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'factorisation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Factorisation — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving by Factorisation', '{"blocks": [{"type": "heading", "content": "Zero Product Property"}, {"type": "paragraph", "content": "If $(x-a)(x-b)=0$, then $x=a$ or $x=b$. Rewrite equation as product $= 0$, factorise, solve each factor."}, {"type": "example", "title": "Solve $x^2 + 5x + 6 = 0$.", "steps": ["$(x+2)(x+3)=0$.", "$x=-2$ or $x=-3$."], "answer": "$x=-2, -3$"}, {"type": "callout", "variant": "key_point", "content": "Rearrange to standard form $ax^2+bx+c=0$ before factorising."}, {"type": "question", "questionText": "Solve $(x-4)(x+1)=0$.", "questionType": "multiple_choice", "options": ["$x=4$ or $x=-1$", "$x=-4$ or $x=1$", "$x=4$ only", "$x=0$"], "correctAnswer": "$x=4$ or $x=-1$", "explanation": "Zero product."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'solving_quadratics'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving by Factorisation');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Word Problems Leading to Quadratics', '{"blocks": [{"type": "heading", "content": "Quadratic Word Problems"}, {"type": "example", "title": "Two consecutive integers with product $132$. Setup?", "steps": ["Let $n$, $n+1$: $n(n+1)=132$.", "$n^2+n-132=0$.", "$(n+12)(n-11)=0$; $n=11$."], "answer": "$11$ and $12$"}, {"type": "callout", "variant": "warning", "content": "Reject solutions that do not fit the context (e.g. negative length)."}, {"type": "question", "questionText": "Solve $x^2 - 9 = 0$.", "questionType": "multiple_choice", "options": ["$x=\\pm 3$", "$x=3$ only", "$x=-3$ only", "$x=9$"], "correctAnswer": "$x=\\pm 3$", "explanation": "Difference of squares."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'solving_quadratics'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Word Problems Leading to Quadratics');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Quadratics — Exam Practice', '{"blocks": [{"type": "heading", "content": "KCSE — Solving Quadratics"}, {"type": "example", "title": "Solve $2x^2 - 5x - 3 = 0$.", "steps": ["$(2x+1)(x-3)=0$.", "$x = -\\frac{1}{2}$ or $x=3$."], "answer": "$x = -\\frac{1}{2}, 3$"}, {"type": "callout", "variant": "warning", "content": "Always substitute answers back to verify."}, {"type": "question", "questionText": "Rectangle: length $2$ m more than width, area $24$ m$^2$. Width?", "questionType": "multiple_choice", "options": ["$4$ m", "$6$ m", "$3$ m", "$8$ m"], "correctAnswer": "$4$ m", "explanation": "$w(w+2)=24$; $w=4$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'quadratic_expressions_equations' AND st.code = 'solving_quadratics'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Quadratics — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Expand $(x+1)(x+2)$.', 'multiple_choice', '["$x^2+3x+2$", "$x^2+2x+1$", "$2x^2+3x+2$", "$x^2+3x+1$"]'::jsonb, '"$x^2+3x+2$"'::jsonb, 'easy', 'FOIL.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Expand $(x+1)(x+2)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Expand $(x+4)(x-4)$.', 'multiple_choice', '["$x^2-16$", "$x^2+16$", "$x^2-8$", "$2x^2-16$"]'::jsonb, '"$x^2-16$"'::jsonb, 'easy', 'Difference of squares.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Expand $(x+4)(x-4)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(x+3)^2$ equals?', 'multiple_choice', '["$x^2+6x+9$", "$x^2+9$", "$x^2+3x+9$", "$2x^2+6x+9$"]'::jsonb, '"$x^2+6x+9$"'::jsonb, 'easy', 'Perfect square.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(x+3)^2$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Expand $(x-2)(x+5)$.', 'multiple_choice', '["$x^2+3x-10$", "$x^2+7x-10$", "$x^2-3x-10$", "$x^2+3x+10$"]'::jsonb, '"$x^2+3x-10$"'::jsonb, 'easy', '$-2x+5x=3x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Expand $(x-2)(x+5)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Expand $(2x)(x+3)$.', 'multiple_choice', '["$2x^2+6x$", "$2x^2+3x$", "$x^2+6x$", "$3x^2+6x$"]'::jsonb, '"$2x^2+6x$"'::jsonb, 'easy', 'Distribute $2x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Expand $(2x)(x+3)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(x-1)^2$ equals?', 'multiple_choice', '["$x^2-2x+1$", "$x^2-1$", "$x^2+2x+1$", "$x^2-2x-1$"]'::jsonb, '"$x^2-2x+1$"'::jsonb, 'easy', 'Square binomial.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(x-1)^2$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Expand $(x+0)(x+7)$.', 'multiple_choice', '["$x^2+7x$", "$x^2+7$", "$7x$", "$x^2+0x+7$"]'::jsonb, '"$x^2+7x$"'::jsonb, 'easy', 'Simplify.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Expand $(x+0)(x+7)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Factorise $x^2+8x+15$.', 'multiple_choice', '["$(x+3)(x+5)$", "$(x+1)(x+15)$", "$(x+2)(x+7)$", "$(x+4)(x+4)$"]'::jsonb, '"$(x+3)(x+5)$"'::jsonb, 'medium', '$3+5=8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='factorisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Factorise $x^2+8x+15$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Factorise $x^2-16$.', 'multiple_choice', '["$(x+4)(x-4)$", "$(x-4)^2$", "$(x+8)(x-2)$", "$(x+16)(x-1)$"]'::jsonb, '"$(x+4)(x-4)$"'::jsonb, 'medium', 'DOTS.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='factorisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Factorise $x^2-16$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Factorise $3x^2+6x$.', 'multiple_choice', '["$3x(x+2)$", "$3(x^2+2x)$", "$x(3x+6)$", "$6x(x+1)$"]'::jsonb, '"$3x(x+2)$"'::jsonb, 'medium', 'HCF $3x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='factorisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Factorise $3x^2+6x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Factorise $x^2-5x+6$.', 'multiple_choice', '["$(x-2)(x-3)$", "$(x+2)(x+3)$", "$(x-1)(x-6)$", "$(x+1)(x+6)$"]'::jsonb, '"$(x-2)(x-3)$"'::jsonb, 'medium', 'Product $6$, sum $-5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='factorisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Factorise $x^2-5x+6$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Factorise $2x^2+5x+2$.', 'multiple_choice', '["$(2x+1)(x+2)$", "$(2x+2)(x+1)$", "$(x+2)(x+2)$", "$(2x+4)(x+1)$"]'::jsonb, '"$(2x+1)(x+2)$"'::jsonb, 'medium', '$ac$ method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='factorisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Factorise $2x^2+5x+2$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Factorise $x^2+x-20$.', 'multiple_choice', '["$(x+5)(x-4)$", "$(x-5)(x+4)$", "$(x+2)(x-10)$", "$(x+10)(x-2)$"]'::jsonb, '"$(x+5)(x-4)$"'::jsonb, 'medium', '$5-4=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='factorisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Factorise $x^2+x-20$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $x^2-4=0$.', 'multiple_choice', '["$x=\\pm 2$", "$x=2$ only", "$x=4$", "$x=0$"]'::jsonb, '"$x=\\pm 2$"'::jsonb, 'medium', '$x^2=4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_quadratics'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $x^2-4=0$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $x^2+6x+9=0$.', 'multiple_choice', '["$x=-3$", "$x=3$", "$x=\\pm 3$", "$x=0$"]'::jsonb, '"$x=-3$"'::jsonb, 'medium', 'Perfect square $(x+3)^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_quadratics'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $x^2+6x+9=0$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $x^2-7x+12=0$.', 'multiple_choice', '["$x=3,4$", "$x=-3,-4$", "$x=2,6$", "$x=1,12$"]'::jsonb, '"$x=3,4$"'::jsonb, 'hard', '$(x-3)(x-4)=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_quadratics'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $x^2-7x+12=0$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $2x^2-x-3=0$.', 'multiple_choice', '["$x=\\frac{3}{2}, -1$", "$x=3, -1$", "$x=\\frac{3}{2}, 1$", "$x=-\\frac{3}{2}, 1$"]'::jsonb, '"$x=\\frac{3}{2}, -1$"'::jsonb, 'hard', '$(2x-3)(x+1)=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_quadratics'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $2x^2-x-3=0$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Product of two consecutive even integers is $48$. Larger integer?', 'multiple_choice', '["$8$", "$6$", "$12$", "$4$"]'::jsonb, '"$8$"'::jsonb, 'hard', '$6 \times 8 = 48$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_quadratics'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Product of two consecutive even integers is $48$. Larger integer?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Expand $(3x-1)(x+4)$.', 'multiple_choice', '["$3x^2+11x-4$", "$3x^2+12x-1$", "$3x^2+11x+4$", "$4x^2+11x-4$"]'::jsonb, '"$3x^2+11x-4$"'::jsonb, 'hard', 'Full FOIL.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Expand $(3x-1)(x+4)$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $x^2+2x-15=0$.', 'multiple_choice', '["$x=3, -5$", "$x=-3, 5$", "$x=5, -3$", "$x=15, -1$"]'::jsonb, '"$x=3, -5$"'::jsonb, 'hard', '$(x+5)(x-3)=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_quadratics'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $x^2+2x-15=0$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Factorise $6x^2-x-2$.', 'multiple_choice', '["$(3x-2)(2x+1)$", "$(6x+1)(x-2)$", "$(3x+2)(2x-1)$", "$(2x-1)(3x+2)$"]'::jsonb, '"$(3x-2)(2x+1)$"'::jsonb, 'hard', '$ac=-12$; $-4+3=-1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='factorisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Factorise $6x^2-x-2$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area rectangle: width $x$, length $x+5$, area $50$. Find $x$.', 'multiple_choice', '["$5$", "$10$", "$-10$", "$25$"]'::jsonb, '"$5$"'::jsonb, 'hard', '$x(x+5)=50$; $x=5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_quadratics'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='quadratic_expressions_equations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area rectangle: width $x$, length $x+5$, area $50$. Find $x$.');
