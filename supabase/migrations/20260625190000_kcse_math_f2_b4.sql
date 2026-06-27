@@ -79,7 +79,7 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_inequalities' AND st.code = 'graphical_region'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Graphical Region — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Symbol for ''greater than or equal''?', 'multiple_choice', '["$\geq$", "$>$", "$\leq$", "$=$"]'::jsonb, '"$\geq$"'::jsonb, 'easy', 'Inclusive lower bound.'
+SELECT t.id, st.id, 'Symbol for ''greater than or equal''?', 'multiple_choice', '["$\\geq$", "$>$", "$\\leq$", "$=$"]'::jsonb, '"$\\geq$"'::jsonb, 'easy', 'Inclusive lower bound.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_inequalities'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
@@ -91,7 +91,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_inequalities'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $x + 4 > 9$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Solve $2x \leq 8$.', 'multiple_choice', '["$x \leq 4$", "$x \geq 4$", "$x \leq 16$", "$x \geq 16$"]'::jsonb, '"$x \leq 4$"'::jsonb, 'easy', 'Divide by $2$.'
+SELECT t.id, st.id, 'Solve $2x \leq 8$.', 'multiple_choice', '["$x \\leq 4$", "$x \\geq 4$", "$x \\leq 16$", "$x \\geq 16$"]'::jsonb, '"$x \\leq 4$"'::jsonb, 'easy', 'Divide by $2$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_inequalities'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
@@ -103,7 +103,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_inequalities'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reverse sign when multiplying by?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Solve $x - 7 \geq 0$.', 'multiple_choice', '["$x \geq 7$", "$x \leq 7$", "$x > 7$", "$x < 7$"]'::jsonb, '"$x \geq 7$"'::jsonb, 'easy', 'Add $7$.'
+SELECT t.id, st.id, 'Solve $x - 7 \geq 0$.', 'multiple_choice', '["$x \\geq 7$", "$x \\leq 7$", "$x > 7$", "$x < 7$"]'::jsonb, '"$x \\geq 7$"'::jsonb, 'easy', 'Add $7$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='solving_inequalities'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
@@ -127,7 +127,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line_ineq'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $2x - 3 > 5$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Solve $-3x \geq 9$.', 'multiple_choice', '["$x \leq -3$", "$x \geq -3$", "$x \leq 3$", "$x \geq 3$"]'::jsonb, '"$x \leq -3$"'::jsonb, 'medium', 'Divide by $-3$.'
+SELECT t.id, st.id, 'Solve $-3x \geq 9$.', 'multiple_choice', '["$x \\leq -3$", "$x \\geq -3$", "$x \\leq 3$", "$x \\geq 3$"]'::jsonb, '"$x \\leq -3$"'::jsonb, 'medium', 'Divide by $-3$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line_ineq'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
@@ -145,7 +145,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line_ineq'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$-2 < x \leq 5$ includes $5$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Solve $\frac{x}{2} + 1 \leq 5$.', 'multiple_choice', '["$x \leq 8$", "$x \geq 8$", "$x \leq 4$", "$x \geq 4$"]'::jsonb, '"$x \leq 8$"'::jsonb, 'medium', '$\frac{x}{2} \leq 4$.'
+SELECT t.id, st.id, 'Solve $\frac{x}{2} + 1 \leq 5$.', 'multiple_choice', '["$x \\leq 8$", "$x \\geq 8$", "$x \\leq 4$", "$x \\geq 4$"]'::jsonb, '"$x \\leq 8$"'::jsonb, 'medium', '$\frac{x}{2} \leq 4$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='number_line_ineq'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
@@ -187,13 +187,13 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $\frac{2x+1}{3} > 3$.');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Age: at least $18$ means?', 'multiple_choice', '["$a \geq 18$", "$a > 18$", "$a \leq 18$", "$a < 18$"]'::jsonb, '"$a \geq 18$"'::jsonb, 'hard', 'At least = inclusive.'
+SELECT t.id, st.id, 'Age: at least $18$ means?', 'multiple_choice', '["$a \\geq 18$", "$a > 18$", "$a \\leq 18$", "$a < 18$"]'::jsonb, '"$a \\geq 18$"'::jsonb, 'hard', 'At least = inclusive.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Age: at least $18$ means?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Solve $5x - 2 \geq 3x + 6$.', 'multiple_choice', '["$x \geq 4$", "$x \leq 4$", "$x \geq 2$", "$x \leq 2$"]'::jsonb, '"$x \geq 4$"'::jsonb, 'hard', '$2x \geq 8$.'
+SELECT t.id, st.id, 'Solve $5x - 2 \geq 3x + 6$.', 'multiple_choice', '["$x \\geq 4$", "$x \\leq 4$", "$x \\geq 2$", "$x \\leq 2$"]'::jsonb, '"$x \\geq 4$"'::jsonb, 'hard', '$2x \geq 8$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
@@ -565,7 +565,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='frequency_tables'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cumulative frequency last value equals?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Mean of 5,5,10?', 'multiple_choice', '["$\frac{20}{3}$", "$5$", "$10$", "$20$"]'::jsonb, '"$\frac{20}{3}$"'::jsonb, 'medium', '$20/3$.'
+SELECT t.id, st.id, 'Mean of 5,5,10?', 'multiple_choice', '["$\\frac{20}{3}$", "$5$", "$10$", "$20$"]'::jsonb, '"$\\frac{20}{3}$"'::jsonb, 'medium', '$20/3$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
@@ -682,31 +682,31 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'tangent_angles'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Angles — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Angle at centre vs circumference?', 'multiple_choice', '["Centre is double", "Equal always", "Circumference double", "Sum $90^\circ$"]'::jsonb, '"Centre is double"'::jsonb, 'easy', 'Same arc rule.'
+SELECT t.id, st.id, 'Angle at centre vs circumference?', 'multiple_choice', '["Centre is double", "Equal always", "Circumference double", "Sum $90^\\circ$"]'::jsonb, '"Centre is double"'::jsonb, 'easy', 'Same arc rule.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle at centre vs circumference?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Circumference angle $40^\circ$. Centre?', 'multiple_choice', '["$80^\circ$", "$40^\circ$", "$160^\circ$", "$20^\circ$"]'::jsonb, '"$80^\circ$"'::jsonb, 'easy', 'Multiply by $2$.'
+SELECT t.id, st.id, 'Circumference angle $40^\circ$. Centre?', 'multiple_choice', '["$80^\\circ$", "$40^\\circ$", "$160^\\circ$", "$20^\\circ$"]'::jsonb, '"$80^\\circ$"'::jsonb, 'easy', 'Multiply by $2$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Circumference angle $40^\circ$. Centre?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Angle in semicircle?', 'multiple_choice', '["$90^\circ$", "$180^\circ$", "$45^\circ$", "$60^\circ$"]'::jsonb, '"$90^\circ$"'::jsonb, 'easy', 'Standard theorem.'
+SELECT t.id, st.id, 'Angle in semicircle?', 'multiple_choice', '["$90^\\circ$", "$180^\\circ$", "$45^\\circ$", "$60^\\circ$"]'::jsonb, '"$90^\\circ$"'::jsonb, 'easy', 'Standard theorem.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle in semicircle?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Same segment angles are?', 'multiple_choice', '["Equal", "Supplementary", "Complementary", "Always $90^\circ$"]'::jsonb, '"Equal"'::jsonb, 'easy', 'Same arc.'
+SELECT t.id, st.id, 'Same segment angles are?', 'multiple_choice', '["Equal", "Supplementary", "Complementary", "Always $90^\\circ$"]'::jsonb, '"Equal"'::jsonb, 'easy', 'Same arc.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Same segment angles are?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Centre angle $50^\circ$. Circumference?', 'multiple_choice', '["$25^\circ$", "$50^\circ$", "$100^\circ$", "$75^\circ$"]'::jsonb, '"$25^\circ$"'::jsonb, 'easy', 'Half.'
+SELECT t.id, st.id, 'Centre angle $50^\circ$. Circumference?', 'multiple_choice', '["$25^\\circ$", "$50^\\circ$", "$100^\\circ$", "$75^\\circ$"]'::jsonb, '"$25^\\circ$"'::jsonb, 'easy', 'Half.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
@@ -718,25 +718,25 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumfe
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Subtended means?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Diameter angle at centre?', 'multiple_choice', '["$180^\circ$", "$90^\circ$", "$360^\circ$", "$0^\circ$"]'::jsonb, '"$180^\circ$"'::jsonb, 'easy', 'Straight line through centre.'
+SELECT t.id, st.id, 'Diameter angle at centre?', 'multiple_choice', '["$180^\\circ$", "$90^\\circ$", "$360^\\circ$", "$0^\\circ$"]'::jsonb, '"$180^\\circ$"'::jsonb, 'easy', 'Straight line through centre.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Diameter angle at centre?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Opposite angles in cyclic quad sum?', 'multiple_choice', '["$180^\circ$", "$90^\circ$", "$360^\circ$", "$270^\circ$"]'::jsonb, '"$180^\circ$"'::jsonb, 'medium', 'Supplementary.'
+SELECT t.id, st.id, 'Opposite angles in cyclic quad sum?', 'multiple_choice', '["$180^\\circ$", "$90^\\circ$", "$360^\\circ$", "$270^\\circ$"]'::jsonb, '"$180^\\circ$"'::jsonb, 'medium', 'Supplementary.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Opposite angles in cyclic quad sum?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\angle A=65^\circ$ cyclic. $\angle C$?', 'multiple_choice', '["$115^\circ$", "$65^\circ$", "$125^\circ$", "$90^\circ$"]'::jsonb, '"$115^\circ$"'::jsonb, 'medium', '$180-65$.'
+SELECT t.id, st.id, '$\angle A=65^\circ$ cyclic. $\angle C$?', 'multiple_choice', '["$115^\\circ$", "$65^\\circ$", "$125^\\circ$", "$90^\\circ$"]'::jsonb, '"$115^\\circ$"'::jsonb, 'medium', '$180-65$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\angle A=65^\circ$ cyclic. $\angle C$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\angle B=110^\circ$. $\angle D$?', 'multiple_choice', '["$70^\circ$", "$110^\circ$", "$250^\circ$", "$90^\circ$"]'::jsonb, '"$70^\circ$"'::jsonb, 'medium', 'Opposite pair.'
+SELECT t.id, st.id, '$\angle B=110^\circ$. $\angle D$?', 'multiple_choice', '["$70^\\circ$", "$110^\\circ$", "$250^\\circ$", "$90^\\circ$"]'::jsonb, '"$70^\\circ$"'::jsonb, 'medium', 'Opposite pair.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
@@ -766,7 +766,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Exterior angle equals interior?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Radius and tangent at contact?', 'multiple_choice', '["Perpendicular", "Parallel", "$45^\circ$", "Collinear"]'::jsonb, '"Perpendicular"'::jsonb, 'medium', '$90^\circ$.'
+SELECT t.id, st.id, 'Radius and tangent at contact?', 'multiple_choice', '["Perpendicular", "Parallel", "$45^\\circ$", "Collinear"]'::jsonb, '"Perpendicular"'::jsonb, 'medium', '$90^\circ$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
@@ -784,7 +784,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two tangents from point lengths?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Centre angle $140^\circ$. Minor arc circumference angle?', 'multiple_choice', '["$70^\circ$", "$140^\circ$", "$280^\circ$", "$35^\circ$"]'::jsonb, '"$70^\circ$"'::jsonb, 'hard', 'Half centre.'
+SELECT t.id, st.id, 'Centre angle $140^\circ$. Minor arc circumference angle?', 'multiple_choice', '["$70^\\circ$", "$140^\\circ$", "$280^\\circ$", "$35^\\circ$"]'::jsonb, '"$70^\\circ$"'::jsonb, 'hard', 'Half centre.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
@@ -802,7 +802,7 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $9$, tangent $40$. Distance to centre?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\angle at circumference=55^\circ$. Reflex centre angle?', 'multiple_choice', '["$110^\circ$", "$250^\circ$", "$55^\circ$", "$220^\circ$"]'::jsonb, '"$110^\circ$"'::jsonb, 'hard', 'Minor arc centre $110^\circ$.'
+SELECT t.id, st.id, '$\angle at circumference=55^\circ$. Reflex centre angle?', 'multiple_choice', '["$110^\\circ$", "$250^\\circ$", "$55^\\circ$", "$220^\\circ$"]'::jsonb, '"$110^\\circ$"'::jsonb, 'hard', 'Minor arc centre $110^\circ$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
@@ -889,11 +889,11 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Vector has?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\begin{pmatrix}5\\0\end{pmatrix}$ points?', 'multiple_choice', '["Along $x$-axis", "Along $y$-axis", "Origin only", "Diagonal only"]'::jsonb, '"Along $x$-axis"'::jsonb, 'easy', 'No $y$ component.'
+SELECT t.id, st.id, 'Column vector $(5, 0)$ points?', 'multiple_choice', '["Along $x$-axis", "Along $y$-axis", "Origin only", "Diagonal only"]'::jsonb, '"Along $x$-axis"'::jsonb, 'easy', 'No $y$ component.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}5\\0\end{pmatrix}$ points?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Column vector $(5, 0)$ points?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Scalar quantity example?', 'multiple_choice', '["Mass", "Velocity", "Displacement", "Force vector"]'::jsonb, '"Mass"'::jsonb, 'easy', 'No direction.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -907,11 +907,11 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equal vectors must have?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$|\begin{pmatrix}0\\7\end{pmatrix}|$?', 'multiple_choice', '["$7$", "$0$", "$49$", "$1$"]'::jsonb, '"$7$"'::jsonb, 'easy', 'Vertical only.'
+SELECT t.id, st.id, 'Magnitude of column vector $(0, 7)$?', 'multiple_choice', '["$7$", "$0$", "$49$", "$1$"]'::jsonb, '"$7$"'::jsonb, 'easy', 'Vertical only.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$|\begin{pmatrix}0\\7\end{pmatrix}|$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Magnitude of column vector $(0, 7)$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Parallel vectors are?', 'multiple_choice', '["Scalar multiples", "Always equal", "Always perpendicular", "Unit only"]'::jsonb, '"Scalar multiples"'::jsonb, 'easy', 'Same direction line.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -919,23 +919,23 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallel vectors are?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, 'Zero vector components?', 'multiple_choice', '["Both $0$", "Both $1$", "Undefined", "One zero"]'::jsonb, '"Both $0$"'::jsonb, 'easy', '$\begin{pmatrix}0\\0\end{pmatrix}$.'
+SELECT t.id, st.id, 'Zero vector components?', 'multiple_choice', '["Both $0$", "Both $1$", "Undefined", "One zero"]'::jsonb, '"Both $0$"'::jsonb, 'easy', 'Column vector $(0, 0)$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Zero vector components?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\begin{pmatrix}1\\2\end{pmatrix}+\begin{pmatrix}3\\4\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}4\\6\end{pmatrix}$", "$\begin{pmatrix}2\\-2\end{pmatrix}$", "$\begin{pmatrix}4\\2\end{pmatrix}$", "$\begin{pmatrix}3\\6\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}4\\6\end{pmatrix}$"'::jsonb, 'medium', 'Add pairs.'
+SELECT t.id, st.id, '$(1, 2) + (3, 4)$ as column vectors?', 'multiple_choice', '["$(4, 6)$", "$(2, -2)$", "$(4, 2)$", "$(3, 6)$"]'::jsonb, '"$(4, 6)$"'::jsonb, 'medium', 'Add pairs.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}1\\2\end{pmatrix}+\begin{pmatrix}3\\4\end{pmatrix}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(1, 2) + (3, 4)$ as column vectors?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\begin{pmatrix}8\\5\end{pmatrix}-\begin{pmatrix}3\\9\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}5\\-4\end{pmatrix}$", "$\begin{pmatrix}11\\14\end{pmatrix}$", "$\begin{pmatrix}5\\4\end{pmatrix}$", "$\begin{pmatrix}-5\\4\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}5\\-4\end{pmatrix}$"'::jsonb, 'medium', 'Subtract components.'
+SELECT t.id, st.id, '$(8, 5) - (3, 9)$ as column vectors?', 'multiple_choice', '["$(5, -4)$", "$(11, 14)$", "$(5, 4)$", "$(-5, 4)$"]'::jsonb, '"$(5, -4)$"'::jsonb, 'medium', 'Subtract components.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}8\\5\end{pmatrix}-\begin{pmatrix}3\\9\end{pmatrix}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(8, 5) - (3, 9)$ as column vectors?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, '$\mathbf{a}+\mathbf{b}=\mathbf{b}+\mathbf{a}$ shows?', 'multiple_choice', '["Commutative", "Not defined", "Zero only", "Anti-parallel"]'::jsonb, '"Commutative"'::jsonb, 'medium', 'Order does not matter.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -943,68 +943,68 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\mathbf{a}+\mathbf{b}=\mathbf{b}+\mathbf{a}$ shows?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$3\begin{pmatrix}2\\1\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}6\\3\end{pmatrix}$", "$\begin{pmatrix}5\\4\end{pmatrix}$", "$\begin{pmatrix}6\\1\end{pmatrix}$", "$\begin{pmatrix}2\\3\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}6\\3\end{pmatrix}$"'::jsonb, 'medium', 'Scale both.'
+SELECT t.id, st.id, '$3(2, 1)$ as column vector?', 'multiple_choice', '["$(6, 3)$", "$(5, 4)$", "$(6, 1)$", "$(2, 3)$"]'::jsonb, '"$(6, 3)$"'::jsonb, 'medium', 'Scale both.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$3\begin{pmatrix}2\\1\end{pmatrix}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$3(2, 1)$ as column vector?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\begin{pmatrix}-2\\4\end{pmatrix}+\begin{pmatrix}5\\-1\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}3\\3\end{pmatrix}$", "$\begin{pmatrix}7\\5\end{pmatrix}$", "$\begin{pmatrix}3\\5\end{pmatrix}$", "$\begin{pmatrix}-7\\3\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}3\\3\end{pmatrix}$"'::jsonb, 'medium', 'Component add.'
+SELECT t.id, st.id, '$(-2, 4) + (5, -1)$?', 'multiple_choice', '["$(3, 3)$", "$(7, 5)$", "$(3, 5)$", "$(-7, 3)$"]'::jsonb, '"$(3, 3)$"'::jsonb, 'medium', 'Component add.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}-2\\4\end{pmatrix}+\begin{pmatrix}5\\-1\end{pmatrix}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(-2, 4) + (5, -1)$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$-\begin{pmatrix}4\\-2\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}-4\\2\end{pmatrix}$", "$\begin{pmatrix}4\\2\end{pmatrix}$", "$\begin{pmatrix}-4\\-2\end{pmatrix}$", "$\begin{pmatrix}4\\-2\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}-4\\2\end{pmatrix}$"'::jsonb, 'medium', 'Negate both.'
+SELECT t.id, st.id, 'Negative of column vector $(4, -2)$?', 'multiple_choice', '["$(-4, 2)$", "$(4, 2)$", "$(-4, -2)$", "$(4, -2)$"]'::jsonb, '"$(-4, 2)$"'::jsonb, 'medium', 'Negate both.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$-\begin{pmatrix}4\\-2\end{pmatrix}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Negative of column vector $(4, -2)$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\begin{pmatrix}0\\0\end{pmatrix}$ is called?', 'multiple_choice', '["Zero vector", "Unit vector", "Position vector", "Scalar"]'::jsonb, '"Zero vector"'::jsonb, 'medium', 'No displacement.'
+SELECT t.id, st.id, 'Column vector $(0, 0)$ is called?', 'multiple_choice', '["Zero vector", "Unit vector", "Position vector", "Scalar"]'::jsonb, '"Zero vector"'::jsonb, 'medium', 'No displacement.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}0\\0\end{pmatrix}$ is called?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Column vector $(0, 0)$ is called?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$|\begin{pmatrix}-5\\12\end{pmatrix}|$?', 'multiple_choice', '["$13$", "$17$", "$7$", "$169$"]'::jsonb, '"$13$"'::jsonb, 'hard', '5-12-13 triangle.'
+SELECT t.id, st.id, 'Magnitude of column vector $(-5, 12)$?', 'multiple_choice', '["$13$", "$17$", "$7$", "$169$"]'::jsonb, '"$13$"'::jsonb, 'hard', '5-12-13 triangle.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$|\begin{pmatrix}-5\\12\end{pmatrix}|$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Magnitude of column vector $(-5, 12)$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$2\begin{pmatrix}3\\4\end{pmatrix}-\begin{pmatrix}1\\2\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}5\\6\end{pmatrix}$", "$\begin{pmatrix}7\\10\end{pmatrix}$", "$\begin{pmatrix}5\\10\end{pmatrix}$", "$\begin{pmatrix}4\\6\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}5\\6\end{pmatrix}$"'::jsonb, 'hard', '$\begin{pmatrix}6\\8\end{pmatrix}-\begin{pmatrix}1\\2\end{pmatrix}$.'
+SELECT t.id, st.id, '$2(3, 4) - (1, 2)$ as column vectors?', 'multiple_choice', '["$(5, 6)$", "$(7, 10)$", "$(5, 10)$", "$(4, 6)$"]'::jsonb, '"$(5, 6)$"'::jsonb, 'hard', '$(6, 8) - (1, 2)$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2\begin{pmatrix}3\\4\end{pmatrix}-\begin{pmatrix}1\\2\end{pmatrix}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2(3, 4) - (1, 2)$ as column vectors?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$|\begin{pmatrix}1\\1\end{pmatrix}|$?', 'multiple_choice', '["$\sqrt{2}$", "$2$", "$1$", "$0$"]'::jsonb, '"$\sqrt{2}$"'::jsonb, 'hard', '$\sqrt{1+1}$.'
+SELECT t.id, st.id, 'Magnitude of $(1, 1)$?', 'multiple_choice', '["$\\sqrt{2}$", "$2$", "$1$", "$0$"]'::jsonb, '"$\\sqrt{2}$"'::jsonb, 'hard', '$\sqrt{1+1}$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$|\begin{pmatrix}1\\1\end{pmatrix}|$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Magnitude of $(1, 1)$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\begin{pmatrix}8\\15\end{pmatrix}$ magnitude?', 'multiple_choice', '["$17$", "$23$", "$7$", "$289$"]'::jsonb, '"$17$"'::jsonb, 'hard', '8-15-17 triangle.'
+SELECT t.id, st.id, 'Magnitude of column vector $(8, 15)$?', 'multiple_choice', '["$17$", "$23$", "$7$", "$289$"]'::jsonb, '"$17$"'::jsonb, 'hard', '8-15-17 triangle.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}8\\15\end{pmatrix}$ magnitude?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Magnitude of column vector $(8, 15)$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$-3\begin{pmatrix}2\\-1\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}-6\\3\end{pmatrix}$", "$\begin{pmatrix}6\\-3\end{pmatrix}$", "$\begin{pmatrix}-6\\-3\end{pmatrix}$", "$\begin{pmatrix}6\\3\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}-6\\3\end{pmatrix}$"'::jsonb, 'hard', 'Multiply then sign.'
+SELECT t.id, st.id, '$-3(2, -1)$ as column vector?', 'multiple_choice', '["$(-6, 3)$", "$(6, -3)$", "$(-6, -3)$", "$(6, 3)$"]'::jsonb, '"$(-6, 3)$"'::jsonb, 'hard', 'Multiply then sign.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$-3\begin{pmatrix}2\\-1\end{pmatrix}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$-3(2, -1)$ as column vector?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$\begin{pmatrix}2\\6\end{pmatrix}$ parallel to $\begin{pmatrix}1\\3\end{pmatrix}$?', 'multiple_choice', '["Yes", "No", "Perpendicular", "Unit vectors"]'::jsonb, '"Yes"'::jsonb, 'hard', 'Factor $2$.'
+SELECT t.id, st.id, 'Is $(2, 6)$ parallel to $(1, 3)$?', 'multiple_choice', '["Yes", "No", "Perpendicular", "Unit vectors"]'::jsonb, '"Yes"'::jsonb, 'hard', 'Factor $2$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}2\\6\end{pmatrix}$ parallel to $\begin{pmatrix}1\\3\end{pmatrix}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Is $(2, 6)$ parallel to $(1, 3)$?');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
-SELECT t.id, st.id, '$|\begin{pmatrix}7\\24\end{pmatrix}|$?', 'multiple_choice', '["$25$", "$31$", "$17$", "$576$"]'::jsonb, '"$25$"'::jsonb, 'hard', '7-24-25 triangle.'
+SELECT t.id, st.id, 'Magnitude of column vector $(7, 24)$?', 'multiple_choice', '["$25$", "$31$", "$17$", "$576$"]'::jsonb, '"$25$"'::jsonb, 'hard', '7-24-25 triangle.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$|\begin{pmatrix}7\\24\end{pmatrix}|$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Magnitude of column vector $(7, 24)$?');
