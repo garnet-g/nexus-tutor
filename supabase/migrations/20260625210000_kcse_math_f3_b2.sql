@@ -816,3 +816,205 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='joint_partial'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$F \propto ma$, $F=20$ when $m=4$, $a=5$. $F$ when $m=10$, $a=3$?');
 
+-- ========== SEQUENCES AND SERIES ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Arithmetic Progressions (AP)', '{"blocks":[{"type":"heading","content":"Arithmetic Progression"},{"type":"paragraph","content":"An **AP** has a constant **common difference** $d$ between consecutive terms."},{"type":"math_block","latex":"a_n = a + (n-1)d","caption":"$n$th term: $a$ = first term"},{"type":"callout","variant":"key_point","content":"$d = a_2 - a_1 = a_3 - a_2$ (constant)."},{"type":"question","questionText":"AP $3, 7, 11, \\ldots$ common difference?","questionType":"multiple_choice","options":["$4$","$3$","$7$","$11$"],"correctAnswer":"$4$","explanation":"$7-3$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'arithmetic_progression'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Arithmetic Progressions (AP)');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'nth Term of an AP', '{"blocks":[{"type":"heading","content":"Finding Terms"},{"type":"example","title":"AP: $a=5$, $d=3$. Find $10$th term.","steps":["$a_{10} = 5 + (10-1)(3) = 5 + 27 = 32$."],"answer":"$32$"},{"type":"callout","variant":"warning","content":"Use $n-1$ multiples of $d$, not $n$."},{"type":"example","title":"Which term of $2, 5, 8, \\ldots$ is $32$?","steps":["$32 = 2 + (n-1)3$.","$30 = 3(n-1)$.","$n-1=10$, $n=11$."],"answer":"$11$th term"},{"type":"question","questionText":"$a=10$, $d=-2$. $5$th term?","questionType":"multiple_choice","options":["$2$","$8$","$0$","$18$"],"correctAnswer":"$2$","explanation":"$10+4(-2)$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'arithmetic_progression'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'nth Term of an AP');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'AP â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Arithmetic Progression"},{"type":"example","title":"KES savings: week $1$ saves $500$, each week adds KES $200$. Amount in week $8$?","steps":["$a=500$, $d=200$.","$a_8 = 500 + 7(200) = 1900$."],"answer":"KES $1900$"},{"type":"callout","variant":"warning","content":"Word problems: identify $a$, $d$, and which term $n$ is asked."},{"type":"question","questionText":"AP with $d=0$ is?","questionType":"multiple_choice","options":["Constant sequence","GP","Increasing only","Undefined"],"correctAnswer":"Constant sequence","explanation":"All terms equal."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'arithmetic_progression'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'AP â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'AP common difference $d$ is?', 'multiple_choice', '["Constant between terms","Ratio","First term","Sum"]'::jsonb, '"Constant between terms"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='arithmetic_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='AP common difference $d$ is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$5, 9, 13, \ldots$ $d$?', 'multiple_choice', '["$4$","$5$","$9$","$13$"]'::jsonb, '"$4$"'::jsonb, 'easy', '$9-5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='arithmetic_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$5, 9, 13, \ldots$ $d$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a_n = a + (n-1)d$. $4$th term uses?', 'multiple_choice', '["$3d$","$4d$","$d$","$0$"]'::jsonb, '"$3d$"'::jsonb, 'easy', '$n-1=3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='arithmetic_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a_n = a + (n-1)d$. $4$th term uses?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=3$, $d=4$. Which $n$ gives $a_n=31$?', 'multiple_choice', '["$8$","$7$","$9$","$6$"]'::jsonb, '"$8$"'::jsonb, 'medium', '$28=4(n-1)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='arithmetic_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=3$, $d=4$. Which $n$ gives $a_n=31$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'AP: $7$th term $23$, $a=5$. $d$?', 'multiple_choice', '["$3$","$4$","$2$","$18$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$23=5+6d$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='arithmetic_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='AP: $7$th term $23$, $a=5$. $d$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'AP sum of first $n$ terms formula?', 'multiple_choice', '["$S_n = \\frac{n}{2}(2a+(n-1)d)$","$S_n = an$","$S_n = a+d$","$S_n = n^2$"]'::jsonb, '"$S_n = \\frac{n}{2}(2a+(n-1)d)$"'::jsonb, 'hard', 'Standard AP sum.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='arithmetic_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='AP sum of first $n$ terms formula?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=6$, $d=4$, $a_n=86$. $n$?', 'multiple_choice', '["$21$","$20$","$22$","$19$"]'::jsonb, '"$21$"'::jsonb, 'hard', '$80=4(n-1)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='arithmetic_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=6$, $d=4$, $a_n=86$. $n$?');
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Geometric Progressions (GP)', '{"blocks":[{"type":"heading","content":"Geometric Progression"},{"type":"paragraph","content":"A **GP** has a constant **common ratio** $r$ between consecutive terms."},{"type":"math_block","latex":"a_n = ar^{n-1}","caption":"$n$th term of a GP"},{"type":"callout","variant":"key_point","content":"$r = a_2/a_1 = a_3/a_2$ (constant ratio)."},{"type":"question","questionText":"GP $3, 6, 12, \\ldots$ common ratio?","questionType":"multiple_choice","options":["$2$","$3$","$6$","$1/2$"],"correctAnswer":"$2$","explanation":"$6/3$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'geometric_progression'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Geometric Progressions (GP)');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'nth Term of a GP', '{"blocks":[{"type":"heading","content":"GP Calculations"},{"type":"example","title":"GP: $a=2$, $r=3$. Find $5$th term.","steps":["$a_5 = 2 \\times 3^4 = 2 \\times 81 = 162$."],"answer":"$162$"},{"type":"callout","variant":"warning","content":"Exponent is $n-1$, not $n$."},{"type":"example","title":"Which term of $5, 10, 20, \\ldots$ is $320$?","steps":["$320 = 5 \\times 2^{n-1}$.","$64 = 2^{n-1}$.","$n-1=6$, $n=7$."],"answer":"$7$th term"},{"type":"question","questionText":"$a=81$, $r=1/3$. $4$th term?","questionType":"multiple_choice","options":["$3$","$9$","$27$","$1$"],"correctAnswer":"$3$","explanation":"$81(1/3)^3$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'geometric_progression'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'nth Term of a GP');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'GP â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Geometric Progression"},{"type":"example","title":"Bacteria double every hour. Start $500$. Count after $4$ hours?","steps":["$a=500$, $r=2$.","$a_5 = 500 \\times 2^4 = 8000$ (after 4 hours from start = 5th term if hour 0 is start).","Or $500 \\times 2^4 = 8000$."],"answer":"$8000$ bacteria"},{"type":"callout","variant":"warning","content":"Clarify whether $n$ counts from first term or growth periods."},{"type":"question","questionText":"$r=1$ in GP means?","questionType":"multiple_choice","options":["All terms equal","Alternating signs","Zero terms","No GP"],"correctAnswer":"All terms equal","explanation":"Constant sequence."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'geometric_progression'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'GP â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'GP common ratio $r$ is?', 'multiple_choice', '["Constant multiplier","Difference","Sum","First term"]'::jsonb, '"Constant multiplier"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='GP common ratio $r$ is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2, 6, 18, \ldots$ $r$?', 'multiple_choice', '["$3$","$2$","$6$","$4$"]'::jsonb, '"$3$"'::jsonb, 'easy', '$6/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2, 6, 18, \ldots$ $r$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=3$, $r=2$. $a_n=96$. $n$?', 'multiple_choice', '["$6$","$5$","$7$","$4$"]'::jsonb, '"$6$"'::jsonb, 'medium', '$32=2^{n-1}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=3$, $r=2$. $a_n=96$. $n$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=100$, $r=0.9$. $3$rd term?', 'multiple_choice', '["$81$","$90$","$72.9$","$99$"]'::jsonb, '"$81$"'::jsonb, 'medium', '$100 \times 0.81$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=100$, $r=0.9$. $3$rd term?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'GP $5$th term $48$, $a=3$. $r$?', 'multiple_choice', '["$2$","$3$","$4$","$16$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$48=3r^4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='GP $5$th term $48$, $a=3$. $r$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'GP infinite terms if $|r|<1$ sum?', 'multiple_choice', '["$a/(1-r)$","$ar$","$a/(r-1)$","Undefined always"]'::jsonb, '"$a/(1-r)$"'::jsonb, 'hard', 'Infinite GP sum.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='GP infinite terms if $|r|<1$ sum?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=5$, $r=2$, $a_n=320$. $n$?', 'multiple_choice', '["$7$","$6$","$8$","$5$"]'::jsonb, '"$7$"'::jsonb, 'hard', '$64=2^{n-1}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_progression'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=5$, $r=2$, $a_n=320$. $n$?');
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Sum of Arithmetic and Geometric Series', '{"blocks":[{"type":"heading","content":"Series Sums"},{"type":"math_block","latex":"S_n = \\frac{n}{2}(2a + (n-1)d)","caption":"Sum of first $n$ terms of an AP"},{"type":"math_block","latex":"S_n = \\frac{a(r^n - 1)}{r - 1}, \\quad r \\neq 1","caption":"Sum of first $n$ terms of a GP"},{"type":"callout","variant":"key_point","content":"A **series** is the sum of terms of a sequence."},{"type":"question","questionText":"$S_n$ denotes?","questionType":"multiple_choice","options":["Sum of first $n$ terms","$n$th term","Common difference","Ratio"],"correctAnswer":"Sum of first $n$ terms","explanation":"Series notation."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'series_sums'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Sum of Arithmetic and Geometric Series');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Calculating Series Sums', '{"blocks":[{"type":"heading","content":"Worked Sums"},{"type":"example","title":"Sum first $10$ terms of AP $3, 7, 11, \\ldots$","steps":["$a=3$, $d=4$.","$S_{10} = 5(6 + 36) = 5(42) = 210$."],"answer":"$210$"},{"type":"example","title":"Sum first $4$ terms of GP $2, 6, 18, 54$.","steps":["$a=2$, $r=3$.","$S_4 = 2(3^4-1)/(3-1) = 2(80)/2 = 80$."],"answer":"$80$"},{"type":"callout","variant":"warning","content":"GP sum formula requires $r \\neq 1$."},{"type":"question","questionText":"AP $1+2+3+\\cdots+10$ equals?","questionType":"multiple_choice","options":["$55$","$45$","$100$","$10$"],"correctAnswer":"$55$","explanation":"$10 \\times 11/2$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'series_sums'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating Series Sums');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Series Sums â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Series"},{"type":"example","title":"KES fines: day $1$ KES $200$, increase KES $50$ daily for $7$ days. Total?","steps":["$a=200$, $d=50$, $n=7$.","$S_7 = 3.5(400+300) = 2450$."],"answer":"KES $2450$"},{"type":"callout","variant":"warning","content":"Identify AP vs GP before choosing sum formula."},{"type":"question","questionText":"GP sum with $r=1$ and $n$ terms?","questionType":"multiple_choice","options":["$na$","$a^n$","$n+a$","$0$"],"correctAnswer":"$na$","explanation":"All terms equal $a$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'series_sums'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Series Sums â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sum of AP first $n$ terms uses?', 'multiple_choice', '["$S_n = \\frac{n}{2}(2a+(n-1)d)$","$S_n = ar^{n-1}$","$S_n = nd$","$S_n = a+d$"]'::jsonb, '"$S_n = \\frac{n}{2}(2a+(n-1)d)$"'::jsonb, 'easy', 'AP sum formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='series_sums'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sum of AP first $n$ terms uses?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sum $1+2+3+4+5$?', 'multiple_choice', '["$15$","$10$","$20$","$5$"]'::jsonb, '"$15$"'::jsonb, 'easy', 'Direct add.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='series_sums'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sum $1+2+3+4+5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=5$, $d=3$, $S_{10}$?', 'multiple_choice', '["$185$","$170$","$200$","$150$"]'::jsonb, '"$185$"'::jsonb, 'medium', '$5(10+27)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='series_sums'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=5$, $d=3$, $S_{10}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=2$, $r=3$, $S_3$?', 'multiple_choice', '["$26$","$20$","$8$","$29$"]'::jsonb, '"$26$"'::jsonb, 'medium', '$2(27-1)/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='series_sums'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=2$, $r=3$, $S_3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sum first $20$ naturals?', 'multiple_choice', '["$210$","$200$","$190$","$420$"]'::jsonb, '"$210$"'::jsonb, 'hard', '$20 \times 21/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='series_sums'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sum first $20$ naturals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=8$, $d=5$, $S_n=210$. $n$?', 'multiple_choice', '["$7$","$6$","$8$","$5$"]'::jsonb, '"$7$"'::jsonb, 'hard', 'Solve for $n$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='series_sums'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=8$, $d=5$, $S_n=210$. $n$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$a=3$, $r=1/2$, $S_4$?', 'multiple_choice', '["$4.875$","$5$","$4.5$","$6$"]'::jsonb, '"$4.875$"'::jsonb, 'hard', 'GP sum formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='series_sums'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='sequences_series'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$a=3$, $r=1/2$, $S_4$?');
