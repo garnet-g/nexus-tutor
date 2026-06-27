@@ -410,3 +410,206 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_chords'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$PA=x$, $PB=9$, $PC=6$, $PD=6$. $x$?');
 
+-- ========== MATRICES ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Introduction to 2Ã—2 Matrices', '{"blocks":[{"type":"heading","content":"Matrix Basics"},{"type":"paragraph","content":"A **2Ã—2 matrix** has two rows and two columns: $\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$."},{"type":"table","rows":[["$\\begin{pmatrix} 2 & 3 \\\\ 1 & 4 \\end{pmatrix}$","Row 1: $2, 3$"],["","Row 2: $1, 4$"]],"caption":"Reading a 2Ã—2 matrix"},{"type":"callout","variant":"key_point","content":"Add/subtract matrices of the **same order** by adding corresponding entries."},{"type":"question","questionText":"$\\begin{pmatrix} 1 & 2 \\\\ 0 & 3 \\end{pmatrix}$ has order?","questionType":"multiple_choice","options":["$2 \\times 2$","$2 \\times 1$","$1 \\times 2$","$4 \\times 4$"],"correctAnswer":"$2 \\times 2$","explanation":"Two rows, two columns."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'matrix_operations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Introduction to 2Ã—2 Matrices');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Matrix Addition and Multiplication', '{"blocks":[{"type":"heading","content":"Operations on 2Ã—2 Matrices"},{"type":"example","title":"Add $\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix} + \\begin{pmatrix} 5 & 0 \\\\ 1 & 2 \\end{pmatrix}$.","steps":["Add entries: $\\begin{pmatrix} 6 & 2 \\\\ 4 & 6 \\end{pmatrix}$."],"answer":"$\\begin{pmatrix} 6 & 2 \\\\ 4 & 6 \\end{pmatrix}$"},{"type":"math_block","latex":"\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}\\begin{pmatrix} e & f \\\\ g & h \\end{pmatrix} = \\begin{pmatrix} ae+bg & af+bh \\\\ ce+dg & cf+dh \\end{pmatrix}","caption":"2Ã—2 multiplication rule"},{"type":"callout","variant":"warning","content":"Matrix multiplication is **not commutative**: $AB \\neq BA$ in general."},{"type":"question","questionText":"Can you multiply $2\\times2$ by $2\\times2$?","questionType":"multiple_choice","options":["Yes","No","Only if equal","Only if identity"],"correctAnswer":"Yes","explanation":"Inner dimensions match."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'matrix_operations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Matrix Addition and Multiplication');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Matrix Operations â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Matrix Operations"},{"type":"example","title":"Compute $\\begin{pmatrix} 2 & 1 \\\\ 0 & 3 \\end{pmatrix}\\begin{pmatrix} 1 & 4 \\\\ 2 & 0 \\end{pmatrix}$.","steps":["Top-left: $2(1)+1(2)=4$.","Top-right: $2(4)+1(0)=8$.","Bottom-left: $0(1)+3(2)=6$.","Bottom-right: $0(4)+3(0)=0$."],"answer":"$\\begin{pmatrix} 4 & 8 \\\\ 6 & 0 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Show each cell calculation â€” method marks in KCSE."},{"type":"question","questionText":"Scalar $3 \\times \\begin{pmatrix} 2 & 1 \\\\ 0 & 4 \\end{pmatrix}$ top-left entry?","questionType":"multiple_choice","options":["$6$","$2$","$3$","$5$"],"correctAnswer":"$6$","explanation":"$3 \\times 2$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'matrix_operations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Matrix Operations â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Matrix $[3 & 5 ;  2 & 1]$: entry row 2 col 1?', 'multiple_choice', '["$2$","$3$","$5$","$1$"]'::jsonb, '"$2$"'::jsonb, 'easy', 'Second row, first column.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='matrix_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Matrix $[3 & 5 ;  2 & 1]$: entry row 2 col 1?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$[1 & 0 ;  0 & 1]$ is?', 'multiple_choice', '["Identity matrix","Zero matrix","Transpose","Inverse of all"]'::jsonb, '"Identity matrix"'::jsonb, 'easy', 'Ones on diagonal.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='matrix_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$[1 & 0 ;  0 & 1]$ is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Add $[2 & 1 ;  3 & 4] + [1 & 2 ;  0 & 1]$. Top-left?', 'multiple_choice', '["$3$","$2$","$1$","$4$"]'::jsonb, '"$3$"'::jsonb, 'easy', '$2+1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='matrix_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Add $[2 & 1 ;  3 & 4] + [1 & 2 ;  0 & 1]$. Top-left?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$[1 & 2 ;  3 & 4][1 ;  0]$ top entry?', 'multiple_choice', '["$1$","$3$","$2$","$4$"]'::jsonb, '"$1$"'::jsonb, 'medium', '$1(1)+2(0)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='matrix_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$[1 & 2 ;  3 & 4][1 ;  0]$ top entry?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$[2 & 0 ;  0 & 3][4 & 1 ;  2 & 5]$ top-left?', 'multiple_choice', '["$8$","$4$","$6$","$2$"]'::jsonb, '"$8$"'::jsonb, 'medium', '$2 \times 4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='matrix_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$[2 & 0 ;  0 & 3][4 & 1 ;  2 & 5]$ top-left?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$[1 & 2 ;  3 & 4][2 & 0 ;  1 & 3]$ bottom-left?', 'multiple_choice', '["$10$","$6$","$8$","$12$"]'::jsonb, '"$10$"'::jsonb, 'hard', '$6+4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='matrix_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$[1 & 2 ;  3 & 4][2 & 0 ;  1 & 3]$ bottom-left?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$[2 & -1 ;  0 & 3][1 & 4 ;  2 & 0]$ full product bottom-right?', 'multiple_choice', '["$0$","$6$","$-2$","$3$"]'::jsonb, '"$0$"'::jsonb, 'hard', '$0+0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='matrix_operations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$[2 & -1 ;  0 & 3][1 & 4 ;  2 & 0]$ full product bottom-right?');
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Determinant of a 2Ã—2 Matrix', '{"blocks":[{"type":"heading","content":"Determinant"},{"type":"math_block","latex":"\\det\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} = ad - bc","caption":"2Ã—2 determinant formula"},{"type":"callout","variant":"key_point","content":"If determinant $= 0$, the matrix has **no inverse**."},{"type":"example","title":"Find $\\det\\begin{pmatrix} 3 & 2 \\\\ 1 & 4 \\end{pmatrix}$.","steps":["$ad - bc = 3(4) - 2(1) = 12 - 2 = 10$."],"answer":"$10$"},{"type":"question","questionText":"$\\det\\begin{pmatrix} 2 & 1 \\\\ 4 & 2 \\end{pmatrix}$?","questionType":"multiple_choice","options":["$0$","$4$","$8$","$2$"],"correctAnswer":"$0$","explanation":"$4-4=0$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'determinant_inverse'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Determinant of a 2Ã—2 Matrix');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Inverse of a 2Ã—2 Matrix', '{"blocks":[{"type":"heading","content":"Finding the Inverse"},{"type":"math_block","latex":"A^{-1} = \\frac{1}{ad-bc}\\begin{pmatrix} d & -b \\\\ -c & a \\end{pmatrix}","caption":"Inverse when $ad-bc \\neq 0$"},{"type":"example","title":"Find inverse of $\\begin{pmatrix} 2 & 1 \\\\ 3 & 4 \\end{pmatrix}$.","steps":["$\\det = 8-3=5$.","$A^{-1} = \\frac{1}{5}\\begin{pmatrix} 4 & -1 \\\\ -3 & 2 \\end{pmatrix}$."],"answer":"$\\frac{1}{5}\\begin{pmatrix} 4 & -1 \\\\ -3 & 2 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Swap diagonal entries and negate off-diagonal â€” then divide by determinant."},{"type":"question","questionText":"$AA^{-1}$ equals?","questionType":"multiple_choice","options":["Identity matrix","Zero matrix","$A^2$","Determinant"],"correctAnswer":"Identity matrix","explanation":"Definition of inverse."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'determinant_inverse'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Inverse of a 2Ã—2 Matrix');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Determinant & Inverse â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Determinant and Inverse"},{"type":"example","title":"Inverse of $\\begin{pmatrix} 4 & 0 \\\\ 0 & 2 \\end{pmatrix}$.","steps":["$\\det=8$.","$A^{-1}=\\begin{pmatrix} 1/4 & 0 \\\\ 0 & 1/2 \\end{pmatrix}$."],"answer":"$\\begin{pmatrix} 1/4 & 0 \\\\ 0 & 1/2 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Check: multiply $A$ by $A^{-1}$ to get $I$."},{"type":"question","questionText":"No inverse when determinant is?","questionType":"multiple_choice","options":["$0$","$1$","$-1$","Any positive"],"correctAnswer":"$0$","explanation":"Singular matrix."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'determinant_inverse'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Determinant & Inverse â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\det[5 & 2 ;  3 & 1]$?', 'multiple_choice', '["$-1$","$11$","$5$","$1$"]'::jsonb, '"$-1$"'::jsonb, 'easy', '$5-6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='determinant_inverse'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\det[5 & 2 ;  3 & 1]$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Formula $ad-bc$ applies to?', 'multiple_choice', '["$2\\times2$ determinant","$3\\times3$ only","Addition","Transpose"]'::jsonb, '"$2\\times2$ determinant"'::jsonb, 'easy', 'Standard formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='determinant_inverse'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Formula $ad-bc$ applies to?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\det[4 & 3 ;  2 & 5]$?', 'multiple_choice', '["$14$","$20$","$26$","$10$"]'::jsonb, '"$14$"'::jsonb, 'medium', '$20-6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='determinant_inverse'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\det[4 & 3 ;  2 & 5]$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Inverse of $[2 & 0 ;  0 & 3]$ top-left?', 'multiple_choice', '["$1/2$","$2$","$1/3$","$3$"]'::jsonb, '"$1/2$"'::jsonb, 'medium', 'Diagonal reciprocals.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='determinant_inverse'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Inverse of $[2 & 0 ;  0 & 3]$ top-left?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\det[-1 & 2 ;  3 & 4]$?', 'multiple_choice', '["$-10$","$10$","$2$","$-2$"]'::jsonb, '"$-10$"'::jsonb, 'medium', '$-4-6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='determinant_inverse'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\det[-1 & 2 ;  3 & 4]$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Inverse of $[1 & 2 ;  0 & 1]$ top-right?', 'multiple_choice', '["$-2$","$2$","$1$","$0$"]'::jsonb, '"$-2$"'::jsonb, 'hard', 'Det $1$; adjugate.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='determinant_inverse'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Inverse of $[1 & 2 ;  0 & 1]$ top-right?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\det[2 & 3 ;  4 & 6]$. Inverse?', 'multiple_choice', '["Does not exist","Identity","$[6 & -3 ;  -4 & 2]$","Zero matrix"]'::jsonb, '"Does not exist"'::jsonb, 'hard', 'Det $0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='determinant_inverse'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\det[2 & 3 ;  4 & 6]$. Inverse?');
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Equations Using Matrices', '{"blocks":[{"type":"heading","content":"Matrix Form of Equations"},{"type":"paragraph","content":"Equations $ax+by=e$, $cx+dy=f$ become $A\\mathbf{x}=\\mathbf{b}$ where $A=\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$, $\\mathbf{x}=\\begin{pmatrix} x \\\\ y \\end{pmatrix}$."},{"type":"math_block","latex":"\\mathbf{x} = A^{-1}\\mathbf{b}","caption":"Solution when $A^{-1}$ exists"},{"type":"callout","variant":"key_point","content":"Write equations in standard form before building the matrix."},{"type":"question","questionText":"$2x+y=7$ and $x-y=2$ â€” matrix $A$ top row?","questionType":"multiple_choice","options":["$2, 1$","$1, -1$","$7, 2$","$1, 2$"],"correctAnswer":"$2, 1$","explanation":"Coeffs of $x,y$ in eqn 1."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'simultaneous_matrices'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Equations Using Matrices');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Matrix Method for Simultaneous Equations', '{"blocks":[{"type":"heading","content":"Worked Matrix Solution"},{"type":"example","title":"Solve $2x+y=5$, $x+3y=7$ using matrices.","steps":["$A=\\begin{pmatrix} 2 & 1 \\\\ 1 & 3 \\end{pmatrix}$, $\\mathbf{b}=\\begin{pmatrix} 5 \\\\ 7 \\end{pmatrix}$.","$\\det=5$.","$A^{-1}=\\frac{1}{5}\\begin{pmatrix} 3 & -1 \\\\ -1 & 2 \\end{pmatrix}$.","$\\mathbf{x}=A^{-1}\\mathbf{b}$ gives $x=2$, $y=1$."],"answer":"$x=2$, $y=1$"},{"type":"callout","variant":"warning","content":"Order of $\\mathbf{b}$ must match equation order."},{"type":"question","questionText":"After finding $A^{-1}$, multiply by?","questionType":"multiple_choice","options":["$\\mathbf{b}$","$A$ again","Determinant only","Zero vector"],"correctAnswer":"$\\mathbf{b}$","explanation":"$x=A^{-1}b$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'simultaneous_matrices'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Matrix Method for Simultaneous Equations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Simultaneous Equations â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Matrix Method"},{"type":"example","title":"Solve $3x+2y=12$, $x-y=1$.","steps":["$A=\\begin{pmatrix} 3 & 2 \\\\ 1 & -1 \\end{pmatrix}$, $\\det=-5$.","$x=2$, $y=3$ after $A^{-1}\\mathbf{b}$."],"answer":"$x=2$, $y=3$"},{"type":"callout","variant":"warning","content":"Verify by substituting into **both** original equations."},{"type":"question","questionText":"$x+y=10$, $x-y=4$. $x$?","questionType":"multiple_choice","options":["$7$","$6$","$4$","$10$"],"correctAnswer":"$7$","explanation":"Add equations."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'simultaneous_matrices'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simultaneous Equations â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$A\mathbf{x}=\mathbf{b}$ solved by $\mathbf{x}=$?', 'multiple_choice', '["$A^{-1}\\mathbf{b}$","$A\\mathbf{b}$","$\\mathbf{b}A^{-1}$","$\\det A$"]'::jsonb, '"$A^{-1}\\mathbf{b}$"'::jsonb, 'easy', 'Matrix method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simultaneous_matrices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$A\mathbf{x}=\mathbf{b}$ solved by $\mathbf{x}=$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x+y=5$, $x-y=1$. $x$?', 'multiple_choice', '["$3$","$2$","$4$","$5$"]'::jsonb, '"$3$"'::jsonb, 'easy', 'Add: $2x=6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simultaneous_matrices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x+y=5$, $x-y=1$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $2x+y=7$, $x-y=2$. $y$?', 'multiple_choice', '["$1$","$3$","$2$","$5$"]'::jsonb, '"$1$"'::jsonb, 'medium', '$x=3$, $y=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simultaneous_matrices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $2x+y=7$, $x-y=2$. $y$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$A=[1 & 1 ;  1 & -1]$, $\mathbf{b}=[10 ;  4]$. $x$?', 'multiple_choice', '["$7$","$6$","$4$","$3$"]'::jsonb, '"$7$"'::jsonb, 'medium', 'Standard system.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simultaneous_matrices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$A=[1 & 1 ;  1 & -1]$, $\mathbf{b}=[10 ;  4]$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2x+3y=13$, $4x+6y=26$. Solutions?', 'multiple_choice', '["Infinitely many","None unique finite","Exactly one","None"]'::jsonb, '"Infinitely many"'::jsonb, 'hard', 'Second is double first.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simultaneous_matrices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2x+3y=13$, $4x+6y=26$. Solutions?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x+2y=5$, $2x+4y=9$. Solutions?', 'multiple_choice', '["No solution","$x=1,y=2$","Infinite","$x=5,y=0$"]'::jsonb, '"No solution"'::jsonb, 'hard', 'Parallel lines.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simultaneous_matrices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x+2y=5$, $2x+4y=9$. Solutions?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$A=[2 & 1 ;  1 & 3]$, $\mathbf{b}=[5 ;  7]$. $y$?', 'multiple_choice', '["$1$","$2$","$3$","$7$"]'::jsonb, '"$1$"'::jsonb, 'hard', 'From worked example.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simultaneous_matrices'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$A=[2 & 1 ;  1 & 3]$, $\mathbf{b}=[5 ;  7]$. $y$?');
+
