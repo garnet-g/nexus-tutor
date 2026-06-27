@@ -207,3 +207,206 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='hire_purchase'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='commercial_arithmetic_ii'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='TV HP KES $84000$ (cash KES $75000$). Deposit KES $21000$, find monthly instalment if $10$ months.');
 
+-- ========== CIRCLES: CHORDS AND TANGENTS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Chord Properties of Circles', '{"blocks":[{"type":"heading","content":"Chords in a Circle"},{"type":"paragraph","content":"A **chord** is a straight line joining **two points on the circumference**. The **longest chord** through the centre is a **diameter**."},{"type":"callout","variant":"key_point","content":"**Equal chords** are equidistant from the centre. **Chords equidistant from the centre are equal**."},{"type":"paragraph","content":"Imagine circle centre $O$: chord $AB$ with midpoint $M$. If $OM \\perp AB$, then $AM = MB$ (perpendicular from centre bisects the chord)."},{"type":"question","questionText":"A diameter is a chord that?","questionType":"multiple_choice","options":["Passes through the centre","Touches one point only","Lies outside","Is always shortest"],"correctAnswer":"Passes through the centre","explanation":"Definition."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'chord_properties'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Chord Properties of Circles');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Using Chord Theorems', '{"blocks":[{"type":"heading","content":"Perpendicular from Centre"},{"type":"example","title":"Chord $AB$ length $16$ cm; centre $O$ is $3$ cm from chord. Find radius.","steps":["Half chord $= 8$ cm.","Right triangle: $r^2 = 8^2 + 3^2 = 73$.","$r = \\sqrt{73}$ cm."],"answer":"$\\sqrt{73}$ cm $\\approx 8.54$ cm"},{"type":"callout","variant":"warning","content":"Draw the radius to the **midpoint** of the chord â€” it is perpendicular to the chord."},{"type":"example","title":"Two parallel chords $6$ cm and $8$ cm on opposite sides of centre, distance apart $14$ cm. Find radius.","steps":["Use distances from centre to each chord.","Set up $r^2 = d_1^2 + 9$ and $r^2 = d_2^2 + 16$ with $d_1+d_2=14$.","Solve simultaneously."],"answer":"Radius $= \\sqrt{58}$ cm"},{"type":"question","questionText":"Perpendicular from centre to chord bisects?","questionType":"multiple_choice","options":["The chord","The circle","The tangent","The arc only"],"correctAnswer":"The chord","explanation":"Creates two equal segments."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'chord_properties'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Using Chord Theorems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Chord Properties â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Chords"},{"type":"example","title":"In circle centre $O$, chord $PQ=24$ cm, $OM \\perp PQ$ at $M$, $OM=5$ cm. Radius?","steps":["$PM=12$.","$r=\\sqrt{12^2+5^2}=13$ cm."],"answer":"$13$ cm"},{"type":"callout","variant":"warning","content":"Always halve the chord before using Pythagoras with the radius."},{"type":"question","questionText":"Equal chords in same circle are?","questionType":"multiple_choice","options":["Equidistant from centre","Parallel always","Perpendicular","Diameters"],"correctAnswer":"Equidistant from centre","explanation":"Chord theorem."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'chord_properties'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Chord Properties â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A chord joins?', 'multiple_choice', '["Two points on circumference","Centre to tangent","Two centres","Two tangents"]'::jsonb, '"Two points on circumference"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='chord_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A chord joins?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Longest chord in a circle is?', 'multiple_choice', '["Diameter","Radius","Tangent","Arc"]'::jsonb, '"Diameter"'::jsonb, 'easy', 'Through centre.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='chord_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Longest chord in a circle is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Perpendicular from centre to chord meets chord at?', 'multiple_choice', '["Midpoint","Endpoint","Outside","Tangent point"]'::jsonb, '"Midpoint"'::jsonb, 'easy', 'Bisects chord.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='chord_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Perpendicular from centre to chord meets chord at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Chord $16$ cm, distance from centre $6$ cm. Radius?', 'multiple_choice', '["$10$ cm","$8$ cm","$\\sqrt{52}$ cm","$22$ cm"]'::jsonb, '"$10$ cm"'::jsonb, 'medium', '$8^2+6^2=100$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='chord_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Chord $16$ cm, distance from centre $6$ cm. Radius?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $13$ cm, chord $10$ cm from centre. Chord length?', 'multiple_choice', '["$24$ cm","$12$ cm","$26$ cm","$10$ cm"]'::jsonb, '"$24$ cm"'::jsonb, 'medium', 'Half $=12$; chord $24$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='chord_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $13$ cm, chord $10$ cm from centre. Chord length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Circle radius $10$; chord $16$ cm. Distance from centre?', 'multiple_choice', '["$6$ cm","$8$ cm","$4$ cm","$\\sqrt{164}$ cm"]'::jsonb, '"$6$ cm"'::jsonb, 'hard', '$8^2+d^2=100$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='chord_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Circle radius $10$; chord $16$ cm. Distance from centre?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Chords $AB$ and $CD$ equal; prove distances from $O$ equal. Uses?', 'multiple_choice', '["Congruent triangles $OMA$ and $ONC$","Parallel lines only","Tangent properties","Area ratios"]'::jsonb, '"Congruent triangles $OMA$ and $ONC$"'::jsonb, 'hard', 'RHS congruence.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='chord_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Chords $AB$ and $CD$ equal; prove distances from $O$ equal. Uses?');
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tangent Properties', '{"blocks":[{"type":"heading","content":"Tangents to a Circle"},{"type":"paragraph","content":"A **tangent** touches the circle at **exactly one point**. The tangent is **perpendicular to the radius** drawn to the point of contact."},{"type":"math_block","latex":"OT \\perp \\text{tangent at } T","caption":"$O$ centre, $T$ point of contact"},{"type":"callout","variant":"key_point","content":"Tangents from an **external point** to a circle are **equal in length**."},{"type":"question","questionText":"Tangent meets radius at point of contact at?","questionType":"multiple_choice","options":["$90^\\circ$","$45^\\circ$","$180^\\circ$","$60^\\circ$"],"correctAnswer":"$90^\\circ$","explanation":"Perpendicular."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'tangent_properties'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Properties');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tangent Length and Angles', '{"blocks":[{"type":"heading","content":"Equal Tangents"},{"type":"example","title":"From external point $P$, tangents $PA$ and $PB$ touch circle at $A$, $B$. If $PA=7$ cm, find $PB$.","steps":["Tangents from $P$ are equal.","$PB = 7$ cm."],"answer":"$7$ cm"},{"type":"callout","variant":"warning","content":"The line $OP$ bisects the angle between the two tangents."},{"type":"example","title":"Radius $5$ cm, tangent at $T$. Point $P$ on tangent, $PT=12$ cm. Find $OP$.","steps":["$OT \\perp PT$; $OT=5$, $PT=12$.","$OP=\\sqrt{5^2+12^2}=13$ cm."],"answer":"$13$ cm"},{"type":"question","questionText":"Two tangents from $P$ to circle â€” lengths?","questionType":"multiple_choice","options":["Equal","Unequal always","Sum to radius","Half the diameter"],"correctAnswer":"Equal","explanation":"Tangent theorem."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'tangent_properties'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Length and Angles');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tangent Properties â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Tangents"},{"type":"example","title":"Circle radius $6$ cm; tangent from $P$ has length $8$ cm. Distance $OP$?","steps":["Right triangle: $OP^2=6^2+8^2=100$.","$OP=10$ cm."],"answer":"$10$ cm"},{"type":"callout","variant":"warning","content":"Diagram in words: draw radius to point of contact â€” it is the height of the right triangle."},{"type":"question","questionText":"Tangent touches circle at how many points?","questionType":"multiple_choice","options":["One","Two","Zero","Infinitely many"],"correctAnswer":"One","explanation":"Definition."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'tangent_properties'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Properties â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tangent to circle touches at?', 'multiple_choice', '["One point","Two points","No point","All points"]'::jsonb, '"One point"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tangent to circle touches at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius to point of contact is ___ tangent.', 'multiple_choice', '["Perpendicular to","Parallel to","Equal to","Tangent to"]'::jsonb, '"Perpendicular to"'::jsonb, 'easy', 'Key theorem.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius to point of contact is ___ tangent.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $8$ cm, tangent segment $15$ cm from contact to $P$. $OP$?', 'multiple_choice', '["$17$ cm","$23$ cm","$7$ cm","$\\sqrt{289}$ cm"]'::jsonb, '"$17$ cm"'::jsonb, 'medium', '$8^2+15^2=289$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $8$ cm, tangent segment $15$ cm from contact to $P$. $OP$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tangents $TA$, $TB$ from $T$; $TA=9$ cm. $TB$?', 'multiple_choice', '["$9$ cm","$18$ cm","$4.5$ cm","Unknown"]'::jsonb, '"$9$ cm"'::jsonb, 'medium', 'Equal tangents.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tangents $TA$, $TB$ from $T$; $TA=9$ cm. $TB$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $r$, distance from centre to external point $d$. Tangent length?', 'multiple_choice', '["$\\sqrt{d^2-r^2}$","$d-r$","$d+r$","$dr$"]'::jsonb, '"$\\sqrt{d^2-r^2}$"'::jsonb, 'medium', 'Pythagoras.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $r$, distance from centre to external point $d$. Tangent length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $10$ cm; tangent from $P$ length $24$ cm. $OP$?', 'multiple_choice', '["$26$ cm","$14$ cm","$34$ cm","$20$ cm"]'::jsonb, '"$26$ cm"'::jsonb, 'hard', '$10^2+24^2=676$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $10$ cm; tangent from $P$ length $24$ cm. $OP$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two tangents from $P$ make $50^\circ$ at $P$. Angle between radii to contact points?', 'multiple_choice', '["$130^\\circ$","$50^\\circ$","$230^\\circ$","$80^\\circ$"]'::jsonb, '"$130^\\circ$"'::jsonb, 'hard', 'Supplementary in cyclic quad.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_properties'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two tangents from $P$ make $50^\circ$ at $P$. Angle between radii to contact points?');
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Intersecting Chords Inside a Circle', '{"blocks":[{"type":"heading","content":"Chord-Chord Products"},{"type":"paragraph","content":"When two chords **intersect inside** a circle at point $P$, the product of the segments of one chord equals the product of the segments of the other."},{"type":"math_block","latex":"PA \\times PB = PC \\times PD","caption":"Chords $AB$ and $CD$ meet at $P$ inside the circle"},{"type":"callout","variant":"key_point","content":"Label segments carefully: each segment is from $P$ to the circumference along that chord."},{"type":"question","questionText":"Intersecting chords meet?","questionType":"multiple_choice","options":["Inside the circle","Always at centre","Outside only","On tangent"],"correctAnswer":"Inside the circle","explanation":"Interior intersection."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'intersecting_chords'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Intersecting Chords Inside a Circle');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Intersecting Chord Problems', '{"blocks":[{"type":"heading","content":"Product Rule"},{"type":"example","title":"Chords intersect at $P$: $PA=4$, $PB=9$, $PC=6$. Find $PD$.","steps":["$PA \\cdot PB = PC \\cdot PD$.","$4 \\times 9 = 6 \\times PD$.","$PD = 6$."],"answer":"$PD = 6$"},{"type":"callout","variant":"warning","content":"Do not mix segments from different chords â€” pair $PA$ with $PB$, and $PC$ with $PD$."},{"type":"example","title":"$AP=3$, $BP=8$, $CP=4$. Find $DP$.","steps":["$3 \\times 8 = 4 \\times DP$.","$DP = 6$."],"answer":"$DP = 6$"},{"type":"question","questionText":"$PA \\cdot PB$ equals?","questionType":"multiple_choice","options":["$PC \\cdot PD$","$PA + PB$","$PC - PD$","$PA / PB$"],"correctAnswer":"$PC \\cdot PD$","explanation":"Intersecting chords theorem."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'intersecting_chords'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Intersecting Chord Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Intersecting Chords â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Intersecting Chords"},{"type":"example","title":"Two chords cross: segments $5$ cm and $12$ cm on one; one segment $6$ cm on the other. Find unknown segment.","steps":["$5 \\times 12 = 6 \\times x$.","$x = 10$ cm."],"answer":"$10$ cm"},{"type":"callout","variant":"warning","content":"Sketch: mark intersection $P$ and all four segments before calculating."},{"type":"question","questionText":"If $PA=2$, $PB=18$, $PC=3$, then $PD$?","questionType":"multiple_choice","options":["$12$","$6$","$9$","$36$"],"correctAnswer":"$12$","explanation":"$36=3 \\cdot PD$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'intersecting_chords'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Intersecting Chords â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Intersecting chords theorem: $PA \times PB$ equals?', 'multiple_choice', '["$PC \\times PD$","$PA + PB$","$PC + PD$","$PA - PB$"]'::jsonb, '"$PC \\times PD$"'::jsonb, 'easy', 'Product equality.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_chords'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Intersecting chords theorem: $PA \times PB$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Chords intersect?', 'multiple_choice', '["Inside circle","Outside circle only","At centre always","Never"]'::jsonb, '"Inside circle"'::jsonb, 'easy', 'Interior point $P$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_chords'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Chords intersect?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$AP=5$, $BP=4$, $CP=10$. Find $DP$.', 'multiple_choice', '["$2$","$5$","$20$","$40$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$20=10 \cdot DP$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_chords'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$AP=5$, $BP=4$, $CP=10$. Find $DP$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$PA=8$, $PB=3$, $PC=6$. $PD$?', 'multiple_choice', '["$4$","$24$","$2$","$18$"]'::jsonb, '"$4$"'::jsonb, 'medium', '$24=6 \cdot PD$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_chords'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$PA=8$, $PB=3$, $PC=6$. $PD$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$PA=2.5$, $PB=12$, $PC=4$. $PD$?', 'multiple_choice', '["$7.5$","$30$","$5$","$3$"]'::jsonb, '"$7.5$"'::jsonb, 'hard', '$30=4 \cdot PD$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_chords'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$PA=2.5$, $PB=12$, $PC=4$. $PD$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Intersecting chords: if one segment triples, other chord product?', 'multiple_choice', '["Unchanged if other segments adjust","Always triples","Halves","Zero"]'::jsonb, '"Unchanged if other segments adjust"'::jsonb, 'hard', 'Product constant for fixed chords.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_chords'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Intersecting chords: if one segment triples, other chord product?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$PA=x$, $PB=9$, $PC=6$, $PD=6$. $x$?', 'multiple_choice', '["$4$","$9$","$36$","$1$"]'::jsonb, '"$4$"'::jsonb, 'hard', '$9x=36$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_chords'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='circles_chords_tangents'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$PA=x$, $PB=9$, $PC=6$, $PD=6$. $x$?');
+
