@@ -807,3 +807,204 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\angle at circumference=55^\circ$. Reflex centre angle?');
+
+-- ========== VECTORS I ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Vector Notation', '{"blocks":[{"type":"heading","content":"What is a Vector?"},{"type":"paragraph","content":"A **vector** has magnitude and direction. Notation: $\\mathbf{a}$, $\\overrightarrow{AB}$, or column $\\begin{pmatrix} x \\\\ y \\end{pmatrix}$."},{"type":"callout","variant":"key_point","content":"Scalars have magnitude only (mass, speed). Vectors have direction (velocity, displacement)."},{"type":"example","title":"Displacement east $3$ km, north $4$ km.","steps":["Vector $\\begin{pmatrix} 3 \\\\ 4 \\end{pmatrix}$ km.","Magnitude $5$ km."],"answer":"$5$ km northeast direction"},{"type":"question","questionText":"Vector represents?","questionType":"multiple_choice","options":["Magnitude and direction","Magnitude only","Direction only","Area"],"correctAnswer":"Magnitude and direction","explanation":"Both required."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'vector_notation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Vector Notation');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Equal and Parallel Vectors', '{"blocks":[{"type":"heading","content":"Equal Vectors"},{"type":"paragraph","content":"Vectors are **equal** if same magnitude and direction. **Parallel** vectors are scalar multiples."},{"type":"example","title":"$\\mathbf{a}=\\begin{pmatrix}2\\\\-1\\end{pmatrix}$. Is $2\\mathbf{a}$ parallel?","steps":["$2\\mathbf{a}=\\begin{pmatrix}4\\\\-2\\end{pmatrix}$.","Same direction, double length — parallel."],"answer":"Parallel"},{"type":"callout","variant":"warning","content":"Position matters for directed segments; free vectors can translate."},{"type":"question","questionText":"$\\begin{pmatrix}3\\\\6\\end{pmatrix}$ parallel to $\\begin{pmatrix}1\\\\2\\end{pmatrix}$?","questionType":"multiple_choice","options":["Yes","No","Perpendicular","Unit vectors"],"correctAnswer":"Yes","explanation":"Scalar multiple $3$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'vector_notation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Equal and Parallel Vectors');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Vector Notation — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Notation"},{"type":"example","title":"$\\overrightarrow{PQ}=\\begin{pmatrix}5\\\\-2\\end{pmatrix}$. Length?","steps":["$|PQ|=\\sqrt{25+4}=\\sqrt{29}$."],"answer":"$\\sqrt{29}$ units"},{"type":"callout","variant":"warning","content":"Use column form consistently in exams unless directed otherwise."},{"type":"question","questionText":"Zero vector magnitude?","questionType":"multiple_choice","options":["$0$","$1$","Undefined","Infinite"],"correctAnswer":"$0$","explanation":"No displacement."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'vector_notation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Vector Notation — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Adding Vectors', '{"blocks":[{"type":"heading","content":"Vector Addition"},{"type":"paragraph","content":"Add vectors **component-wise** or use **triangle/parallelogram** rule."},{"type":"math_block","latex":"\\begin{pmatrix} a \\\\ b \\end{pmatrix} + \\begin{pmatrix} c \\\\ d \\end{pmatrix} = \\begin{pmatrix} a+c \\\\ b+d \\end{pmatrix}","caption":"Column vector addition"},{"type":"example","title":"$\\begin{pmatrix}2\\\\3\\end{pmatrix}+\\begin{pmatrix}-1\\\\5\\end{pmatrix}$.","steps":["$\\begin{pmatrix}1\\\\8\\end{pmatrix}$."],"answer":"$\\begin{pmatrix}1\\\\8\\end{pmatrix}$"},{"type":"question","questionText":"$\\begin{pmatrix}4\\\\1\\end{pmatrix}+\\begin{pmatrix}2\\\\3\\end{pmatrix}$?","questionType":"multiple_choice","options":["$\\begin{pmatrix}6\\\\4\\end{pmatrix}$","$\\begin{pmatrix}2\\\\-2\\end{pmatrix}$","$\\begin{pmatrix}8\\\\3\\end{pmatrix}$","$\\begin{pmatrix}6\\\\3\\end{pmatrix}$"],"correctAnswer":"$\\begin{pmatrix}6\\\\4\\end{pmatrix}$","explanation":"Add components."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'addition_subtraction'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Adding Vectors');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Subtracting Vectors', '{"blocks":[{"type":"heading","content":"Vector Subtraction"},{"type":"paragraph","content":"$\\mathbf{a}-\\mathbf{b}=\\mathbf{a}+(-\\mathbf{b})$. Subtract component-wise."},{"type":"example","title":"$\\begin{pmatrix}7\\\\-2\\end{pmatrix}-\\begin{pmatrix}3\\\\5\\end{pmatrix}$.","steps":["$\\begin{pmatrix}4\\\\-7\\end{pmatrix}$."],"answer":"$\\begin{pmatrix}4\\\\-7\\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"$\\overrightarrow{AB} = \\mathbf{b}-\\mathbf{a}$ when $\\mathbf{a},\\mathbf{b}$ are position vectors from origin."},{"type":"question","questionText":"$\\mathbf{a}-\\mathbf{a}$ equals?","questionType":"multiple_choice","options":["Zero vector","Unit vector","$2\\mathbf{a}$","Undefined"],"correctAnswer":"Zero vector","explanation":"Same vector subtracted."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'addition_subtraction'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Subtracting Vectors');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Addition & Subtraction — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Vector Operations"},{"type":"example","title":"$\\mathbf{p}=\\begin{pmatrix}1\\\\4\\end{pmatrix}$, $\\mathbf{q}=\\begin{pmatrix}3\\\\-2\\end{pmatrix}$. Find $\\mathbf{p}+\\mathbf{q}$ and $\\mathbf{p}-\\mathbf{q}$.","steps":["Sum $\\begin{pmatrix}4\\\\2\\end{pmatrix}$.","Diff $\\begin{pmatrix}-2\\\\6\\end{pmatrix}$."],"answer":"Sum and difference by components"},{"type":"callout","variant":"warning","content":"Watch signs when subtracting — common error is adding instead."},{"type":"question","questionText":"$2\\begin{pmatrix}1\\\\3\\end{pmatrix}+\\begin{pmatrix}-2\\\\1\\end{pmatrix}$?","questionType":"multiple_choice","options":["$\\begin{pmatrix}0\\\\7\\end{pmatrix}$","$\\begin{pmatrix}4\\\\7\\end{pmatrix}$","$\\begin{pmatrix}0\\\\5\\end{pmatrix}$","$\\begin{pmatrix}2\\\\4\\end{pmatrix}$"],"correctAnswer":"$\\begin{pmatrix}0\\\\7\\end{pmatrix}$","explanation":"$\\begin{pmatrix}2\\\\6\\end{pmatrix}+\\begin{pmatrix}-2\\\\1\\end{pmatrix}$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'addition_subtraction'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Addition & Subtraction — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Column Vectors and Magnitude', '{"blocks":[{"type":"heading","content":"Column Vectors"},{"type":"math_block","latex":"|\\mathbf{v}| = \\sqrt{x^2 + y^2}","caption":"Magnitude of $\\begin{pmatrix}x\\\\y\\end{pmatrix}$"},{"type":"example","title":"Find $| \\begin{pmatrix}6\\\\8\\end{pmatrix} |$.","steps":["$\\sqrt{36+64}=\\sqrt{100}=10$."],"answer":"$10$"},{"type":"callout","variant":"key_point","content":"Top component = horizontal ($x$), bottom = vertical ($y$)."},{"type":"question","questionText":"$|\\begin{pmatrix}3\\\\4\\end{pmatrix}|$?","questionType":"multiple_choice","options":["$5$","$7$","$12$","$1$"],"correctAnswer":"$5$","explanation":"3-4-5 triangle."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'column_vectors'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Column Vectors and Magnitude');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Scalar Multiplication', '{"blocks":[{"type":"heading","content":"Scalar Multiples"},{"type":"paragraph","content":"$k\\begin{pmatrix}x\\\\y\\end{pmatrix}=\\begin{pmatrix}kx\\\\ky\\end{pmatrix}$. Negative $k$ reverses direction."},{"type":"example","title":"$-2\\begin{pmatrix}3\\\\-1\\end{pmatrix}$.","steps":["$\\begin{pmatrix}-6\\\\2\\end{pmatrix}$."],"answer":"$\\begin{pmatrix}-6\\\\2\\end{pmatrix}$"},{"type":"question","questionText":"$3\\begin{pmatrix}2\\\\5\\end{pmatrix}$?","questionType":"multiple_choice","options":["$\\begin{pmatrix}6\\\\15\\end{pmatrix}$","$\\begin{pmatrix}5\\\\8\\end{pmatrix}$","$\\begin{pmatrix}6\\\\5\\end{pmatrix}$","$\\begin{pmatrix}2\\\\15\\end{pmatrix}$"],"correctAnswer":"$\\begin{pmatrix}6\\\\15\\end{pmatrix}$","explanation":"Multiply each component."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'column_vectors'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Scalar Multiplication');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Column Vectors — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Column Vectors"},{"type":"example","title":"$\\mathbf{a}=\\begin{pmatrix}-3\\\\4\\end{pmatrix}$. Find $2\\mathbf{a}$ and $|2\\mathbf{a}|$.","steps":["$2\\mathbf{a}=\\begin{pmatrix}-6\\\\8\\end{pmatrix}$.","$|2\\mathbf{a}|=10$."],"answer":"Magnitude scales by $|2|=2$"},{"type":"callout","variant":"warning","content":"Squaring negatives: $(-6)^2=36$ — sign errors lose marks in magnitude questions."},{"type":"question","questionText":"Unit vector has magnitude?","questionType":"multiple_choice","options":["$1$","$0$","$2$","Depends on components"],"correctAnswer":"$1$","explanation":"Definition of unit vector."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'vectors_i' AND st.code = 'column_vectors'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Column Vectors — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Vector has?', 'multiple_choice', '["Magnitude and direction", "Magnitude only", "Direction only", "No properties"]'::jsonb, '"Magnitude and direction"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Vector has?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\begin{pmatrix}5\\0\end{pmatrix}$ points?', 'multiple_choice', '["Along $x$-axis", "Along $y$-axis", "Origin only", "Diagonal only"]'::jsonb, '"Along $x$-axis"'::jsonb, 'easy', 'No $y$ component.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}5\\0\end{pmatrix}$ points?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Scalar quantity example?', 'multiple_choice', '["Mass", "Velocity", "Displacement", "Force vector"]'::jsonb, '"Mass"'::jsonb, 'easy', 'No direction.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Scalar quantity example?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Equal vectors must have?', 'multiple_choice', '["Same magnitude and direction", "Same start point", "Same magnitude only", "Opposite direction"]'::jsonb, '"Same magnitude and direction"'::jsonb, 'easy', 'Both required.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equal vectors must have?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$|\begin{pmatrix}0\\7\end{pmatrix}|$?', 'multiple_choice', '["$7$", "$0$", "$49$", "$1$"]'::jsonb, '"$7$"'::jsonb, 'easy', 'Vertical only.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$|\begin{pmatrix}0\\7\end{pmatrix}|$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Parallel vectors are?', 'multiple_choice', '["Scalar multiples", "Always equal", "Always perpendicular", "Unit only"]'::jsonb, '"Scalar multiples"'::jsonb, 'easy', 'Same direction line.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parallel vectors are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Zero vector components?', 'multiple_choice', '["Both $0$", "Both $1$", "Undefined", "One zero"]'::jsonb, '"Both $0$"'::jsonb, 'easy', '$\begin{pmatrix}0\\0\end{pmatrix}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_notation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Zero vector components?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\begin{pmatrix}1\\2\end{pmatrix}+\begin{pmatrix}3\\4\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}4\\6\end{pmatrix}$", "$\begin{pmatrix}2\\-2\end{pmatrix}$", "$\begin{pmatrix}4\\2\end{pmatrix}$", "$\begin{pmatrix}3\\6\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}4\\6\end{pmatrix}$"'::jsonb, 'medium', 'Add pairs.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}1\\2\end{pmatrix}+\begin{pmatrix}3\\4\end{pmatrix}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\begin{pmatrix}8\\5\end{pmatrix}-\begin{pmatrix}3\\9\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}5\\-4\end{pmatrix}$", "$\begin{pmatrix}11\\14\end{pmatrix}$", "$\begin{pmatrix}5\\4\end{pmatrix}$", "$\begin{pmatrix}-5\\4\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}5\\-4\end{pmatrix}$"'::jsonb, 'medium', 'Subtract components.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}8\\5\end{pmatrix}-\begin{pmatrix}3\\9\end{pmatrix}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\mathbf{a}+\mathbf{b}=\mathbf{b}+\mathbf{a}$ shows?', 'multiple_choice', '["Commutative", "Not defined", "Zero only", "Anti-parallel"]'::jsonb, '"Commutative"'::jsonb, 'medium', 'Order does not matter.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\mathbf{a}+\mathbf{b}=\mathbf{b}+\mathbf{a}$ shows?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$3\begin{pmatrix}2\\1\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}6\\3\end{pmatrix}$", "$\begin{pmatrix}5\\4\end{pmatrix}$", "$\begin{pmatrix}6\\1\end{pmatrix}$", "$\begin{pmatrix}2\\3\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}6\\3\end{pmatrix}$"'::jsonb, 'medium', 'Scale both.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$3\begin{pmatrix}2\\1\end{pmatrix}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\begin{pmatrix}-2\\4\end{pmatrix}+\begin{pmatrix}5\\-1\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}3\\3\end{pmatrix}$", "$\begin{pmatrix}7\\5\end{pmatrix}$", "$\begin{pmatrix}3\\5\end{pmatrix}$", "$\begin{pmatrix}-7\\3\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}3\\3\end{pmatrix}$"'::jsonb, 'medium', 'Component add.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}-2\\4\end{pmatrix}+\begin{pmatrix}5\\-1\end{pmatrix}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$-\begin{pmatrix}4\\-2\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}-4\\2\end{pmatrix}$", "$\begin{pmatrix}4\\2\end{pmatrix}$", "$\begin{pmatrix}-4\\-2\end{pmatrix}$", "$\begin{pmatrix}4\\-2\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}-4\\2\end{pmatrix}$"'::jsonb, 'medium', 'Negate both.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$-\begin{pmatrix}4\\-2\end{pmatrix}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\begin{pmatrix}0\\0\end{pmatrix}$ is called?', 'multiple_choice', '["Zero vector", "Unit vector", "Position vector", "Scalar"]'::jsonb, '"Zero vector"'::jsonb, 'medium', 'No displacement.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='addition_subtraction'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}0\\0\end{pmatrix}$ is called?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$|\begin{pmatrix}-5\\12\end{pmatrix}|$?', 'multiple_choice', '["$13$", "$17$", "$7$", "$169$"]'::jsonb, '"$13$"'::jsonb, 'hard', '5-12-13 triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$|\begin{pmatrix}-5\\12\end{pmatrix}|$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2\begin{pmatrix}3\\4\end{pmatrix}-\begin{pmatrix}1\\2\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}5\\6\end{pmatrix}$", "$\begin{pmatrix}7\\10\end{pmatrix}$", "$\begin{pmatrix}5\\10\end{pmatrix}$", "$\begin{pmatrix}4\\6\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}5\\6\end{pmatrix}$"'::jsonb, 'hard', '$\begin{pmatrix}6\\8\end{pmatrix}-\begin{pmatrix}1\\2\end{pmatrix}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2\begin{pmatrix}3\\4\end{pmatrix}-\begin{pmatrix}1\\2\end{pmatrix}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$|\begin{pmatrix}1\\1\end{pmatrix}|$?', 'multiple_choice', '["$\sqrt{2}$", "$2$", "$1$", "$0$"]'::jsonb, '"$\sqrt{2}$"'::jsonb, 'hard', '$\sqrt{1+1}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$|\begin{pmatrix}1\\1\end{pmatrix}|$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\begin{pmatrix}8\\15\end{pmatrix}$ magnitude?', 'multiple_choice', '["$17$", "$23$", "$7$", "$289$"]'::jsonb, '"$17$"'::jsonb, 'hard', '8-15-17 triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}8\\15\end{pmatrix}$ magnitude?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$-3\begin{pmatrix}2\\-1\end{pmatrix}$?', 'multiple_choice', '["$\begin{pmatrix}-6\\3\end{pmatrix}$", "$\begin{pmatrix}6\\-3\end{pmatrix}$", "$\begin{pmatrix}-6\\-3\end{pmatrix}$", "$\begin{pmatrix}6\\3\end{pmatrix}$"]'::jsonb, '"$\begin{pmatrix}-6\\3\end{pmatrix}$"'::jsonb, 'hard', 'Multiply then sign.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$-3\begin{pmatrix}2\\-1\end{pmatrix}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\begin{pmatrix}2\\6\end{pmatrix}$ parallel to $\begin{pmatrix}1\\3\end{pmatrix}$?', 'multiple_choice', '["Yes", "No", "Perpendicular", "Unit vectors"]'::jsonb, '"Yes"'::jsonb, 'hard', 'Factor $2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\begin{pmatrix}2\\6\end{pmatrix}$ parallel to $\begin{pmatrix}1\\3\end{pmatrix}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$|\begin{pmatrix}7\\24\end{pmatrix}|$?', 'multiple_choice', '["$25$", "$31$", "$17$", "$576$"]'::jsonb, '"$25$"'::jsonb, 'hard', '7-24-25 triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='column_vectors'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$|\begin{pmatrix}7\\24\end{pmatrix}|$?');
