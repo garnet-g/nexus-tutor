@@ -405,3 +405,204 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='acceleration'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Uniform deceleration from $30$ m/s to $10$ m/s in $5$ s. $a$?');
+
+-- ========== STATISTICS I ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Types of Data', '{"blocks":[{"type":"heading","content":"Collecting Data"},{"type":"paragraph","content":"**Primary data** is collected firsthand (surveys, experiments). **Secondary data** comes from existing sources (records, reports)."},{"type":"callout","variant":"key_point","content":"**Discrete** data counts items (goals scored). **Continuous** data is measured (height, mass)."},{"type":"example","title":"Class survey of shoe sizes.","steps":["Discrete if whole sizes only.","Define how ties are measured."],"answer":"Plan before collecting"},{"type":"question","questionText":"Number of siblings is?","questionType":"multiple_choice","options":["Discrete","Continuous","Secondary only","Not data"],"correctAnswer":"Discrete","explanation":"Countable whole numbers."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'data_collection'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Types of Data');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Sampling and Bias', '{"blocks":[{"type":"heading","content":"Sampling"},{"type":"paragraph","content":"A **sample** represents a **population**. Random sampling reduces bias."},{"type":"callout","variant":"warning","content":"Biased samples (only friends, only one class) cannot represent the whole population."},{"type":"example","title":"Estimate average height of Form 2 students.","steps":["Population: all Form 2.","Random sample across streams."],"answer":"Random sample"},{"type":"question","questionText":"Census means?","questionType":"multiple_choice","options":["Every member counted","Small sample only","Guess","Secondary data only"],"correctAnswer":"Every member counted","explanation":"Full population."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'data_collection'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Sampling and Bias');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Data Collection — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Data Collection"},{"type":"example","title":"Design a tally for transport to school.","steps":["Categories: walk, bus, matatu, bicycle.","Tally during registration."],"answer":"Clear categories"},{"type":"callout","variant":"warning","content":"State whether data is discrete or continuous in your introduction."},{"type":"question","questionText":"Mass of pupils is usually?","questionType":"multiple_choice","options":["Continuous","Discrete","Qualitative only","Ordinal only"],"correctAnswer":"Continuous","explanation":"Measured to decimals."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'data_collection'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Data Collection — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Frequency Tables', '{"blocks":[{"type":"heading","content":"Frequency Tables"},{"type":"paragraph","content":"A **frequency table** shows how often each value (or class) occurs. **Tally marks** help counting."},{"type":"callout","variant":"key_point","content":"Total frequency = sum of all class frequencies."},{"type":"example","title":"Scores: 3,4,4,5,5,5. Build table.","steps":["3→1, 4→2, 5→3.","Total $6$."],"answer":"Freq sum $6$"},{"type":"question","questionText":"Frequency of $7$ if tally shows |||| |?","questionType":"multiple_choice","options":["$6$","$5$","$7$","$4$"],"correctAnswer":"$6$","explanation":"Five + one."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'frequency_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Frequency Tables');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Grouped Frequency', '{"blocks":[{"type":"heading","content":"Class Intervals"},{"type":"paragraph","content":"For large data, use **class intervals** e.g. $10$–$19$, $20$–$29$. **Class width** = upper − lower (for equal classes)."},{"type":"example","title":"Classes $0$–$9$, $10$–$19$, $20$–$29$ with freqs $4,7,5$.","steps":["Total $16$.","Modal class has highest freq."],"answer":"$10$–$19$ modal class"},{"type":"callout","variant":"warning","content":"Check whether intervals are inclusive on both ends (KNEC style varies — read the question)."},{"type":"question","questionText":"Class width $20$–$29$?","questionType":"multiple_choice","options":["$10$","$9$","$29$","$20$"],"correctAnswer":"$10$","explanation":"$29-20+1$ or interval span."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'frequency_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Grouped Frequency');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Frequency Tables — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Frequency Tables"},{"type":"example","title":"From table total freq $40$, class $30$–$39$ has freq $12$. Percentage?","steps":["$\\frac{12}{40} \\times 100 = 30\\%$."],"answer":"$30\\%$"},{"type":"callout","variant":"warning","content":"Always verify frequencies sum to the stated total."},{"type":"question","questionText":"Cumulative frequency at row $k$ includes?","questionType":"multiple_choice","options":["All frequencies up to $k$","Only row $k$","Half the total","Maximum value"],"correctAnswer":"All frequencies up to $k$","explanation":"Running total."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'frequency_tables'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Frequency Tables — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mean, Median and Mode', '{"blocks":[{"type":"heading","content":"Averages"},{"type":"math_block","latex":"\\text{Mean} = \\frac{\\sum fx}{\\sum f}","caption":"For frequency table with values $x$ and frequencies $f$"},{"type":"callout","variant":"key_point","content":"**Median** = middle value (ordered). **Mode** = most frequent value."},{"type":"example","title":"Data: 2,3,3,5,7. Mean, median, mode?","steps":["Mean $(2+3+3+5+7)/5 = 4$.","Median $3$.","Mode $3$."],"answer":"Mean $4$, median & mode $3$"},{"type":"question","questionText":"Mode is?","questionType":"multiple_choice","options":["Most frequent value","Middle value","Sum divided by $n$","Largest value"],"correctAnswer":"Most frequent value","explanation":"Highest frequency."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'mean_median_mode'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mean, Median and Mode');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mean from Frequency Tables', '{"blocks":[{"type":"heading","content":"Calculating Mean"},{"type":"example","title":"Value $x$: 1,2,3 with freq 2,3,1.","steps":["$\\sum fx = 2+6+3 = 11$.","$\\sum f = 6$.","Mean $= 11/6 \\approx 1.83$."],"answer":"$\\approx 1.83$"},{"type":"callout","variant":"warning","content":"For grouped data use class midpoints (Statistics II); Form 2 tables are usually ungrouped values."},{"type":"question","questionText":"Median of 4,7,9,12?","questionType":"multiple_choice","options":["$8$","$7$","$9$","$32$"],"correctAnswer":"$8$","explanation":"$(7+9)/2$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'mean_median_mode'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mean from Frequency Tables');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Averages — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Mean, Median, Mode"},{"type":"example","title":"Test marks: 6,8,8,10,12. Find all three averages.","steps":["Mean $44/5=8.8$.","Median $8$.","Mode $8$."],"answer":"Mean $8.8$, median & mode $8$"},{"type":"callout","variant":"warning","content":"Even count: median is mean of two middle values."},{"type":"question","questionText":"Which average uses all values?","questionType":"multiple_choice","options":["Mean","Mode only","Median only","Range"],"correctAnswer":"Mean","explanation":"Uses every data point."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_i' AND st.code = 'mean_median_mode'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Averages — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Primary data is?', 'multiple_choice', '["Collected firsthand", "From textbooks only", "Always biased", "Only continuous"]'::jsonb, '"Collected firsthand"'::jsonb, 'easy', 'You gather it.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='data_collection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Primary data is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Goals in a match are?', 'multiple_choice', '["Discrete", "Continuous", "Secondary", "Qualitative"]'::jsonb, '"Discrete"'::jsonb, 'easy', 'Whole number count.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='data_collection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Goals in a match are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Height measured to 0.1 cm is?', 'multiple_choice', '["Continuous", "Discrete", "Mode", "Census"]'::jsonb, '"Continuous"'::jsonb, 'easy', 'Can take any value in range.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='data_collection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Height measured to 0.1 cm is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Random sample reduces?', 'multiple_choice', '["Bias", "Data size to zero", "Mean always", "Mode"]'::jsonb, '"Bias"'::jsonb, 'easy', 'Fair representation.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='data_collection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Random sample reduces?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Secondary data comes from?', 'multiple_choice', '["Existing sources", "New experiment only", "Tally only", "Mode calculation"]'::jsonb, '"Existing sources"'::jsonb, 'easy', 'Already published/collected.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='data_collection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Secondary data comes from?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Population in statistics means?', 'multiple_choice', '["Whole group studied", "Country only", "Sample size", "Frequency"]'::jsonb, '"Whole group studied"'::jsonb, 'easy', 'All members of interest.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='data_collection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Population in statistics means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Qualitative data describes?', 'multiple_choice', '["Categories/qualities", "Always numbers only", "Only mean", "Only range"]'::jsonb, '"Categories/qualities"'::jsonb, 'easy', 'Non-numeric attributes.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='data_collection'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Qualitative data describes?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Total frequency equals?', 'multiple_choice', '["Sum of all class frequencies", "Largest frequency", "Class width", "Mean"]'::jsonb, '"Sum of all class frequencies"'::jsonb, 'medium', 'Add all $f$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='frequency_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Total frequency equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tally |||| means frequency?', 'multiple_choice', '["$5$", "$4$", "$6$", "$10$"]'::jsonb, '"$5$"'::jsonb, 'medium', 'Standard tally group.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='frequency_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tally |||| means frequency?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Modal class has?', 'multiple_choice', '["Highest frequency", "Lowest frequency", "Zero frequency", "Widest interval only"]'::jsonb, '"Highest frequency"'::jsonb, 'medium', 'Most common group.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='frequency_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Modal class has?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Data 1,1,2,3,3,3. Mode?', 'multiple_choice', '["$3$", "$1$", "$2$", "$3.5$"]'::jsonb, '"$3$"'::jsonb, 'medium', 'Appears three times.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='frequency_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Data 1,1,2,3,3,3. Mode?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Class $15$–$24$ midpoint?', 'multiple_choice', '["$19.5$", "$15$", "$24$", "$9$"]'::jsonb, '"$19.5$"'::jsonb, 'medium', '$(15+24)/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='frequency_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Class $15$–$24$ midpoint?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Freq 3 for score 8 means?', 'multiple_choice', '["Score 8 occurred 3 times", "Score is 3", "Total is 8", "Mean is 3"]'::jsonb, '"Score 8 occurred 3 times"'::jsonb, 'medium', 'Frequency counts repeats.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='frequency_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Freq 3 for score 8 means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cumulative frequency last value equals?', 'multiple_choice', '["Total frequency", "Mode", "Class width", "Median always"]'::jsonb, '"Total frequency"'::jsonb, 'medium', 'Sum of all data.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='frequency_tables'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cumulative frequency last value equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mean of 5,5,10?', 'multiple_choice', '["$\frac{20}{3}$", "$5$", "$10$", "$20$"]'::jsonb, '"$\frac{20}{3}$"'::jsonb, 'medium', '$20/3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mean of 5,5,10?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Median of 3,5,7,9,11?', 'multiple_choice', '["$7$", "$5$", "$9$", "$35$"]'::jsonb, '"$7$"'::jsonb, 'hard', 'Middle of ordered list.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Median of 3,5,7,9,11?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x$:2,3 freq:4,6. Mean?', 'multiple_choice', '["$2.6$", "$2.5$", "$3$", "$5$"]'::jsonb, '"$2.6$"'::jsonb, 'hard', '$(8+18)/10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x$:2,3 freq:4,6. Mean?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Marks 12,15,15,18,20. Mode?', 'multiple_choice', '["$15$", "$12$", "$16$", "$18$"]'::jsonb, '"$15$"'::jsonb, 'hard', 'Most frequent.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Marks 12,15,15,18,20. Mode?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mean of 4,6,8,10?', 'multiple_choice', '["$7$", "$6$", "$8$", "$28$"]'::jsonb, '"$7$"'::jsonb, 'hard', '$28/4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mean of 4,6,8,10?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Range of 5,9,12,20?', 'multiple_choice', '["$15$", "$12$", "$20$", "$5$"]'::jsonb, '"$15$"'::jsonb, 'hard', '$20-5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Range of 5,9,12,20?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is affected most by outlier?', 'multiple_choice', '["Mean", "Mode", "Median", "Frequency"]'::jsonb, '"Mean"'::jsonb, 'hard', 'Pulls mean toward extreme.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is affected most by outlier?');
