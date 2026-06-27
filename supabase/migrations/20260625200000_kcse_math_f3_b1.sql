@@ -1364,3 +1364,457 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='sine_cosine_rules'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_ii'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Survey: $d=200$ m, angles at ends $50^\circ$ and $70^\circ$. Third angle?');
 
+
+-- ========== SURDS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'What Are Surds?', '{"blocks":[{"type":"heading","content":"Irrational Roots"},{"type":"paragraph","content":"A **surd** is an irrational root left in exact form, e.g. $\\sqrt{2}$, $\\sqrt{5}$. Simplify by extracting perfect square factors."},{"type":"math_block","latex":"\\sqrt{ab} = \\sqrt{a}\\sqrt{b}","caption":"Product rule for surds"},{"type":"callout","variant":"key_point","content":"Simplify $\\sqrt{72} = \\sqrt{36 \\times 2} = 6\\sqrt{2}$."},{"type":"example","title":"Simplify $\\sqrt{50}$.","steps":["$50 = 25 \\times 2$.","$\\sqrt{50} = 5\\sqrt{2}$."],"answer":"$5\\sqrt{2}$"},{"type":"question","questionText":"$\\sqrt{16}$ is surd?","questionType":"multiple_choice","options":["No — it is $4$","Yes","Sometimes","Always surd"],"correctAnswer":"No — it is $4$","explanation":"Perfect square."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'simplifying_surds'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'What Are Surds?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Simplifying Nested and Larger Surds', '{"blocks":[{"type":"heading","content":"Factorise Under the Root"},{"type":"example","title":"Simplify $\\sqrt{98}$.","steps":["$98 = 49 \\times 2$.","$\\sqrt{98} = 7\\sqrt{2}$."],"answer":"$7\\sqrt{2}$"},{"type":"callout","variant":"warning","content":"Always factor into **largest** perfect square factor first."},{"type":"example","title":"Simplify $\\sqrt{12} + \\sqrt{27}$.","steps":["$2\\sqrt{3} + 3\\sqrt{3} = 5\\sqrt{3}$."],"answer":"$5\\sqrt{3}$"},{"type":"question","questionText":"Simplify $\\sqrt{32}$.","questionType":"multiple_choice","options":["$4\\sqrt{2}$","$2\\sqrt{8}$","$16\\sqrt{2}$","$8\\sqrt{2}$"],"correctAnswer":"$4\\sqrt{2}$","explanation":"$32=16\\times2$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'simplifying_surds'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simplifying Nested and Larger Surds');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Simplifying Surds — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Surd Simplification"},{"type":"example","title":"Express $\\sqrt{18} \\times \\sqrt{8}$ in simplest surd form.","steps":["$\\sqrt{144} = 12$."],"answer":"$12$"},{"type":"question","questionText":"$\\sqrt{45}$ simplified?","questionType":"multiple_choice","options":["$3\\sqrt{5}$","$5\\sqrt{3}$","$9\\sqrt{5}$","$15$"],"correctAnswer":"$3\\sqrt{5}$","explanation":"$45=9\\times5$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'simplifying_surds'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simplifying Surds — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\sqrt{25}$.', 'multiple_choice', '["$5$","$5\\sqrt{5}$","$\\sqrt{5}$","$25$"]'::jsonb, '"$5$"'::jsonb, 'easy', 'Perfect square.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\sqrt{25}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\sqrt{8}$.', 'multiple_choice', '["$2\\sqrt{2}$","$4\\sqrt{2}$","$2\\sqrt{4}$","$8$"]'::jsonb, '"$2\\sqrt{2}$"'::jsonb, 'easy', '$4\times2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\sqrt{8}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{3} \times \sqrt{3}$?', 'multiple_choice', '["$3$","$9$","$\\sqrt{6}$","$6$"]'::jsonb, '"$3$"'::jsonb, 'easy', 'Same surd.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{3} \times \sqrt{3}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\sqrt{20}$.', 'multiple_choice', '["$2\\sqrt{5}$","$4\\sqrt{5}$","$10\\sqrt{2}$","$5\\sqrt{2}$"]'::jsonb, '"$2\\sqrt{5}$"'::jsonb, 'easy', '$4\times5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\sqrt{20}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is simplest?', 'multiple_choice', '["$5\\sqrt{2}$","$\\sqrt{50}$","$\\sqrt{25}$","$10$"]'::jsonb, '"$5\\sqrt{2}$"'::jsonb, 'easy', 'Extracted factor.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is simplest?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{49}$?', 'multiple_choice', '["$7$","$7\\sqrt{7}$","Surd","$49$"]'::jsonb, '"$7$"'::jsonb, 'easy', 'Rational.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{49}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\sqrt{27}$.', 'multiple_choice', '["$3\\sqrt{3}$","$9\\sqrt{3}$","$3\\sqrt{9}$","$27$"]'::jsonb, '"$3\\sqrt{3}$"'::jsonb, 'easy', '$9\times3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\sqrt{27}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\sqrt{75}$.', 'multiple_choice', '["$5\\sqrt{3}$","$3\\sqrt{5}$","$25\\sqrt{3}$","$15$"]'::jsonb, '"$5\\sqrt{3}$"'::jsonb, 'medium', '$25\times3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\sqrt{75}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{2} + \sqrt{2}$?', 'multiple_choice', '["$2\\sqrt{2}$","$\\sqrt{4}$","$4$","$2$"]'::jsonb, '"$2\\sqrt{2}$"'::jsonb, 'medium', 'Like surds.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{2} + \sqrt{2}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\sqrt{200}$.', 'multiple_choice', '["$10\\sqrt{2}$","$20\\sqrt{2}$","$5\\sqrt{8}$","$100\\sqrt{2}$"]'::jsonb, '"$10\\sqrt{2}$"'::jsonb, 'medium', '$100\times2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\sqrt{200}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{18}$ simplified?', 'multiple_choice', '["$3\\sqrt{2}$","$2\\sqrt{3}$","$9\\sqrt{2}$","$6$"]'::jsonb, '"$3\\sqrt{2}$"'::jsonb, 'medium', '$9\times2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{18}$ simplified?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{12} + \sqrt{3}$?', 'multiple_choice', '["$3\\sqrt{3}$","$4\\sqrt{3}$","$15$","$\\sqrt{15}$"]'::jsonb, '"$3\\sqrt{3}$"'::jsonb, 'medium', '$2\sqrt3+\sqrt3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{12} + \sqrt{3}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{50} - \sqrt{8}$?', 'multiple_choice', '["$3\\sqrt{2}$","$5\\sqrt{2}$","$42$","$\\sqrt{42}$"]'::jsonb, '"$3\\sqrt{2}$"'::jsonb, 'medium', '$5\sqrt2-2\sqrt2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{50} - \sqrt{8}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Largest square factor of $48$?', 'multiple_choice', '["$16$","$8$","$4$","$24$"]'::jsonb, '"$16$"'::jsonb, 'medium', '$48=16\times3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Largest square factor of $48$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{6} \times \sqrt{6}$?', 'multiple_choice', '["$6$","$36$","$\\sqrt{12}$","$12$"]'::jsonb, '"$6$"'::jsonb, 'medium', 'Product.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{6} \times \sqrt{6}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\sqrt{288}$.', 'multiple_choice', '["$12\\sqrt{2}$","$6\\sqrt{8}$","$144\\sqrt{2}$","$24\\sqrt{3}$"]'::jsonb, '"$12\\sqrt{2}$"'::jsonb, 'hard', '$144\times2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\sqrt{288}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{5}(\sqrt{20}+\sqrt{5})$?', 'multiple_choice', '["$15$","$10$","$5\\sqrt{5}$","$25$"]'::jsonb, '"$15$"'::jsonb, 'hard', 'Expand: $10+5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{5}(\sqrt{20}+\sqrt{5})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Side of square area $18$ cm$^2$. Side length?', 'multiple_choice', '["$3\\sqrt{2}$ cm","$9$ cm","$18$ cm","$\\sqrt{9}$ cm"]'::jsonb, '"$3\\sqrt{2}$ cm"'::jsonb, 'hard', '$\sqrt{18}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Side of square area $18$ cm$^2$. Side length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{a^2b}$ with $a,b>0$?', 'multiple_choice', '["$a\\sqrt{b}$","$ab$","$a^2\\sqrt{b}$","$\\sqrt{a}\\sqrt{b}$ only"]'::jsonb, '"$a\\sqrt{b}$"'::jsonb, 'hard', 'Take out $a^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{a^2b}$ with $a,b>0$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Compare $\sqrt{50}$ and $7$.', 'multiple_choice', '["$\\sqrt{50}>7$","$\\sqrt{50}<7$","Equal","Cannot"]'::jsonb, '"$\\sqrt{50}>7$"'::jsonb, 'hard', '$\sqrt{50}\approx7.07$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Compare $\sqrt{50}$ and $7$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\sqrt{98}+\sqrt{32}$.', 'multiple_choice', '["$11\\sqrt{2}$","$7\\sqrt{2}$","$9\\sqrt{2}$","$\\sqrt{130}$"]'::jsonb, '"$11\\sqrt{2}$"'::jsonb, 'hard', '$7\sqrt2+4\sqrt2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simplifying_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\sqrt{98}+\sqrt{32}$.');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Adding and Subtracting Surds', '{"blocks":[{"type":"heading","content":"Like Surds"},{"type":"paragraph","content":"Only **like surds** (same number under the root) can be combined: $3\\sqrt{2} + 5\\sqrt{2} = 8\\sqrt{2}$."},{"type":"example","title":"Simplify $4\\sqrt{3} - \\sqrt{12}$.","steps":["$\\sqrt{12} = 2\\sqrt{3}$.","$4\\sqrt{3} - 2\\sqrt{3} = 2\\sqrt{3}$."],"answer":"$2\\sqrt{3}$"},{"type":"question","questionText":"$2\\sqrt{5} + 3\\sqrt{5}$?","questionType":"multiple_choice","options":["$5\\sqrt{5}$","$6\\sqrt{5}$","$5\\sqrt{10}$","$10$"],"correctAnswer":"$5\\sqrt{5}$","explanation":"Add coefficients."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'operations_surds'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Adding and Subtracting Surds');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Multiplying and Dividing Surds', '{"blocks":[{"type":"heading","content":"Products and Quotients"},{"type":"math_block","latex":"\\sqrt{a} \\times \\sqrt{b} = \\sqrt{ab}","caption":"Multiply surds"},{"type":"example","title":"Simplify $\\sqrt{6} \\times \\sqrt{10}$.","steps":["$\\sqrt{60} = \\sqrt{4 \\times 15} = 2\\sqrt{15}$."],"answer":"$2\\sqrt{15}$"},{"type":"callout","variant":"warning","content":"Simplify the result — do not leave $\\sqrt{60}$ if it can be reduced."},{"type":"question","questionText":"$\\frac{\\sqrt{8}}{\\sqrt{2}}$?","questionType":"multiple_choice","options":["$2$","$4$","$\\sqrt{4}$","$\\sqrt{6}$"],"correctAnswer":"$2$","explanation":"$\\sqrt{4}=2$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'operations_surds'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Multiplying and Dividing Surds');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Operations with Surds — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Mixed Surd Operations"},{"type":"example","title":"Expand $(\\sqrt{3} + 2)(\\sqrt{3} - 2)$.","steps":["$3 - 4 = -1$."],"answer":"$-1$"},{"type":"question","questionText":"$(\\sqrt{2}+1)^2$?","questionType":"multiple_choice","options":["$3+2\\sqrt{2}$","$5$","$2+\\sqrt{2}$","$4$"],"correctAnswer":"$3+2\\sqrt{2}$","explanation":"FOIL."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'operations_surds'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Operations with Surds — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$3\sqrt{2}+2\sqrt{2}$?', 'multiple_choice', '["$5\\sqrt{2}$","$6\\sqrt{2}$","$5\\sqrt{4}$","$10$"]'::jsonb, '"$5\\sqrt{2}$"'::jsonb, 'easy', 'Like surds.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$3\sqrt{2}+2\sqrt{2}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{3}\times\sqrt{3}$?', 'multiple_choice', '["$3$","$9$","$\\sqrt{6}$","$6$"]'::jsonb, '"$3$"'::jsonb, 'easy', 'Square.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{3}\times\sqrt{3}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{2}+\sqrt{3}$ can simplify to one term?', 'multiple_choice', '["No","Yes","$\\sqrt{5}$","$5$"]'::jsonb, '"No"'::jsonb, 'easy', 'Unlike surds.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{2}+\sqrt{3}$ can simplify to one term?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2\sqrt{7}-\sqrt{7}$?', 'multiple_choice', '["$\\sqrt{7}$","$\\sqrt{14}$","$7$","$1$"]'::jsonb, '"$\\sqrt{7}$"'::jsonb, 'easy', 'Subtract coef.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2\sqrt{7}-\sqrt{7}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{5}\times\sqrt{20}$?', 'multiple_choice', '["$10$","$\\sqrt{25}$","$5\\sqrt{2}$","$100$"]'::jsonb, '"$10$"'::jsonb, 'easy', '$\sqrt{100}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{5}\times\sqrt{20}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{\sqrt{18}}{\sqrt{2}}$?', 'multiple_choice', '["$3$","$9$","$\\sqrt{16}$","$6$"]'::jsonb, '"$3$"'::jsonb, 'easy', 'Divide inside.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{\sqrt{18}}{\sqrt{2}}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$4\sqrt{3}+\sqrt{27}$?', 'multiple_choice', '["$7\\sqrt{3}$","$31\\sqrt{3}$","$7\\sqrt{9}$","$12$"]'::jsonb, '"$7\\sqrt{3}$"'::jsonb, 'medium', '$4+3$ coef.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$4\sqrt{3}+\sqrt{27}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(\sqrt{2})(\sqrt{8})$?', 'multiple_choice', '["$4$","$\\sqrt{10}$","$16$","$2\\sqrt{2}$"]'::jsonb, '"$4$"'::jsonb, 'medium', '$\sqrt{16}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(\sqrt{2})(\sqrt{8})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{6}(\sqrt{2}+\sqrt{3})$ expanded?', 'multiple_choice', '["$2\\sqrt{3}+3\\sqrt{2}$","$5\\sqrt{6}$","$6$","$\\sqrt{5}$"]'::jsonb, '"$2\\sqrt{3}+3\\sqrt{2}$"'::jsonb, 'medium', 'Distribute.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{6}(\sqrt{2}+\sqrt{3})$ expanded?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$5\sqrt{2}-3\sqrt{8}$?', 'multiple_choice', '["$-\\sqrt{2}$","$2\\sqrt{2}$","$8\\sqrt{2}$","$-7\\sqrt{2}$"]'::jsonb, '"$-\\sqrt{2}$"'::jsonb, 'medium', '$3\cdot2\sqrt2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$5\sqrt{2}-3\sqrt{8}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{12}\div\sqrt{3}$?', 'multiple_choice', '["$2$","$4$","$\\sqrt{4}$","$3$"]'::jsonb, '"$2$"'::jsonb, 'medium', 'Quotient.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{12}\div\sqrt{3}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(2\sqrt{5})^2$?', 'multiple_choice', '["$20$","$10$","$4\\sqrt{5}$","$25$"]'::jsonb, '"$20$"'::jsonb, 'medium', '$4\times5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(2\sqrt{5})^2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{2}\cdot\sqrt{18}$?', 'multiple_choice', '["$6$","$\\sqrt{20}$","$9$","$36$"]'::jsonb, '"$6$"'::jsonb, 'medium', '$\sqrt{36}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{2}\cdot\sqrt{18}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{50}+\sqrt{18}$?', 'multiple_choice', '["$8\\sqrt{2}$","$10\\sqrt{2}$","$\\sqrt{68}$","$68$"]'::jsonb, '"$8\\sqrt{2}$"'::jsonb, 'medium', '$5+3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{50}+\sqrt{18}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(\sqrt{7}-\sqrt{7})$?', 'multiple_choice', '["$0$","$7$","$\\sqrt{0}$","$14$"]'::jsonb, '"$0$"'::jsonb, 'medium', 'Cancel.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(\sqrt{7}-\sqrt{7})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(\sqrt{5}+\sqrt{2})(\sqrt{5}-\sqrt{2})$?', 'multiple_choice', '["$3$","$7$","$3\\sqrt{10}$","$1$"]'::jsonb, '"$3$"'::jsonb, 'hard', 'Difference of squares.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(\sqrt{5}+\sqrt{2})(\sqrt{5}-\sqrt{2})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{1}{\sqrt{2}}+\frac{1}{\sqrt{2}}$?', 'multiple_choice', '["$\\sqrt{2}$","$2$","$\\frac{2}{\\sqrt{2}}$","$1$"]'::jsonb, '"$\\sqrt{2}$"'::jsonb, 'hard', 'Combine like.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{1}{\sqrt{2}}+\frac{1}{\sqrt{2}}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(3+\sqrt{2})(3-\sqrt{2})$?', 'multiple_choice', '["$7$","$9$","$5$","$11$"]'::jsonb, '"$7$"'::jsonb, 'hard', '$9-2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(3+\sqrt{2})(3-\sqrt{2})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{24}\times\sqrt{15}$ simplified?', 'multiple_choice', '["$6\\sqrt{10}$","$\\sqrt{39}$","$12\\sqrt{5}$","$360$"]'::jsonb, '"$6\\sqrt{10}$"'::jsonb, 'hard', '$\sqrt{360}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{24}\times\sqrt{15}$ simplified?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2(\sqrt{12}-\sqrt{3})$?', 'multiple_choice', '["$2\\sqrt{3}$","$4\\sqrt{3}$","$\\sqrt{9}$","$6$"]'::jsonb, '"$2\\sqrt{3}$"'::jsonb, 'hard', 'Inner $2\sqrt3-\sqrt3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2(\sqrt{12}-\sqrt{3})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $x=\sqrt{3}+1$, $x^2$?', 'multiple_choice', '["$4+2\\sqrt{3}$","$4$","$3+1$","$6$"]'::jsonb, '"$4+2\\sqrt{3}$"'::jsonb, 'hard', 'Expand square.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='operations_surds'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $x=\sqrt{3}+1$, $x^2$?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Rationalising Simple Denominators', '{"blocks":[{"type":"heading","content":"Removing Surds from Denominators"},{"type":"paragraph","content":"**Rationalise** by multiplying top and bottom by the surd on the denominator."},{"type":"example","title":"Rationalise $\\frac{1}{\\sqrt{3}}$.","steps":["Multiply by $\\frac{\\sqrt{3}}{\\sqrt{3}}$.","$\\frac{\\sqrt{3}}{3}$."],"answer":"$\\frac{\\sqrt{3}}{3}$"},{"type":"callout","variant":"key_point","content":"Goal: denominator becomes **rational** (no surd)."},{"type":"question","questionText":"$\\frac{2}{\\sqrt{5}}$ rationalised?","questionType":"multiple_choice","options":["$\\frac{2\\sqrt{5}}{5}$","$\\frac{\\sqrt{5}}{2}$","$2\\sqrt{5}$","$\\frac{2}{5}$"],"correctAnswer":"$\\frac{2\\sqrt{5}}{5}$","explanation":"Multiply by $\\sqrt{5}$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'rationalising'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Rationalising Simple Denominators');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Conjugate Pairs', '{"blocks":[{"type":"heading","content":"Binomial Denominators"},{"type":"math_block","latex":"\\frac{1}{a+\\sqrt{b}} \\cdot \\frac{a-\\sqrt{b}}{a-\\sqrt{b}}","caption":"Use conjugate $a-\\sqrt{b}$"},{"type":"example","title":"Rationalise $\\frac{1}{2+\\sqrt{3}}$.","steps":["Multiply by $2-\\sqrt{3}$.","Denominator $4-3=1$.","Answer $2-\\sqrt{3}$."],"answer":"$2-\\sqrt{3}$"},{"type":"callout","variant":"warning","content":"Use the **conjugate** $a - \\sqrt{b}$ when denominator is $a + \\sqrt{b}$."},{"type":"question","questionText":"Conjugate of $5+\\sqrt{2}$?","questionType":"multiple_choice","options":["$5-\\sqrt{2}$","$-5-\\sqrt{2}$","$5+\\sqrt{2}$","$\\sqrt{2}-5$"],"correctAnswer":"$5-\\sqrt{2}$","explanation":"Change sign of surd term."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'rationalising'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Conjugate Pairs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Rationalising — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Rationalise Denominator"},{"type":"example","title":"Rationalise $\\frac{3}{\\sqrt{7}-2}$.","steps":["Multiply by $\\sqrt{7}+2$.","Denominator $7-4=3$.","Cancels to $\\sqrt{7}+2$."],"answer":"$\\sqrt{7}+2$"},{"type":"question","questionText":"Why rationalise?","questionType":"multiple_choice","options":["Standard form / easier comparison","Remove numerator","Always decimal","Required for addition"],"correctAnswer":"Standard form / easier comparison","explanation":"Convention."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'surds' AND st.code = 'rationalising'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Rationalising — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rationalise $\frac{1}{\sqrt{2}}$.', 'multiple_choice', '["$\\frac{\\sqrt{2}}{2}$","$\\sqrt{2}$","$\\frac{1}{2}$","$2$"]'::jsonb, '"$\\frac{\\sqrt{2}}{2}$"'::jsonb, 'easy', 'Standard.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rationalise $\frac{1}{\sqrt{2}}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Multiply $\frac{1}{\sqrt{3}}$ by $\frac{\sqrt{3}}{\sqrt{3}}$ gives denom?', 'multiple_choice', '["$3$","$\\sqrt{3}$","$9$","$1$"]'::jsonb, '"$3$"'::jsonb, 'easy', 'Rational denom.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Multiply $\frac{1}{\sqrt{3}}$ by $\frac{\sqrt{3}}{\sqrt{3}}$ gives denom?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Conjugate of $3+\sqrt{5}$?', 'multiple_choice', '["$3-\\sqrt{5}$","$3+\\sqrt{5}$","$-3+\\sqrt{5}$","$\\sqrt{5}-3$"]'::jsonb, '"$3-\\sqrt{5}$"'::jsonb, 'easy', 'Sign change.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Conjugate of $3+\sqrt{5}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{4}{\sqrt{2}}$ simplified?', 'multiple_choice', '["$2\\sqrt{2}$","$4\\sqrt{2}$","$2$","$8$"]'::jsonb, '"$2\\sqrt{2}$"'::jsonb, 'easy', 'Rationalise.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{4}{\sqrt{2}}$ simplified?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Denominator after rationalising $\frac{1}{\sqrt{7}}$?', 'multiple_choice', '["$7$","$\\sqrt{7}$","$1$","$49$"]'::jsonb, '"$7$"'::jsonb, 'easy', '$\sqrt7\times\sqrt7$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Denominator after rationalising $\frac{1}{\sqrt{7}}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{1}{1+\sqrt{2}}$ rationalised?', 'multiple_choice', '["$\\sqrt{2}-1$","$1-\\sqrt{2}$","$\\sqrt{2}+1$","$-1$"]'::jsonb, '"$\\sqrt{2}-1$"'::jsonb, 'medium', 'Conjugate.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{1}{1+\sqrt{2}}$ rationalised?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(a+\sqrt{b})(a-\sqrt{b})$?', 'multiple_choice', '["$a^2-b$","$a^2+b$","$2a$","$b-a^2$"]'::jsonb, '"$a^2-b$"'::jsonb, 'medium', 'Difference squares.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(a+\sqrt{b})(a-\sqrt{b})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{5}{\sqrt{10}}$?', 'multiple_choice', '["$\\frac{\\sqrt{10}}{2}$","$\\frac{5\\sqrt{10}}{10}$","Both equivalent","$5\\sqrt{10}$"]'::jsonb, '"$\\frac{\\sqrt{10}}{2}$"'::jsonb, 'medium', 'Simplify.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{5}{\sqrt{10}}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rationalise $\frac{2}{3-\sqrt{5}}$ denominator value?', 'multiple_choice', '["$4$","$9-5=4$","$14$","$1$"]'::jsonb, '"$9-5=4$"'::jsonb, 'medium', 'Conjugate product.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rationalise $\frac{2}{3-\sqrt{5}}$ denominator value?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{\sqrt{3}}{\sqrt{12}}$ simplified?', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{1}{4}$","$\\sqrt{3}$","$3$"]'::jsonb, '"$\\frac{1}{2}$"'::jsonb, 'medium', '$\sqrt{3}/(2\sqrt3)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{\sqrt{3}}{\sqrt{12}}$ simplified?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{1}{\sqrt{a}} \cdot \sqrt{a}$ equals?', 'multiple_choice', '["$1$","$a$","$\\sqrt{a}$","$2$"]'::jsonb, '"$1$"'::jsonb, 'medium', 'Cancels.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{1}{\sqrt{a}} \cdot \sqrt{a}$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{6}{2\sqrt{3}}$ simplified?', 'multiple_choice', '["$\\sqrt{3}$","$3$","$2\\sqrt{3}$","$\\frac{3}{\\sqrt{3}}$"]'::jsonb, '"$\\sqrt{3}$"'::jsonb, 'medium', 'Cancel $2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{6}{2\sqrt{3}}$ simplified?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rationalise $\frac{\sqrt{2}}{\sqrt{8}}$.', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{1}{4}$","$2$","$\\sqrt{4}$"]'::jsonb, '"$\\frac{1}{2}$"'::jsonb, 'medium', '$\sqrt2/(2\sqrt2)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rationalise $\frac{\sqrt{2}}{\sqrt{8}}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{1}{4+2\sqrt{3}}$: useful conjugate?', 'multiple_choice', '["$4-2\\sqrt{3}$","$4+2\\sqrt{3}$","$2+\\sqrt{3}$","$-4$"]'::jsonb, '"$4-2\\sqrt{3}$"'::jsonb, 'medium', 'Whole binomial.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{1}{4+2\sqrt{3}}$: useful conjugate?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{3+\sqrt{2}}{\sqrt{2}}$ split as?', 'multiple_choice', '["$\\frac{3}{\\sqrt{2}}+1$","$3+1$","$5$","$3\\sqrt{2}$"]'::jsonb, '"$\\frac{3}{\\sqrt{2}}+1$"'::jsonb, 'medium', 'Separate.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{3+\sqrt{2}}{\sqrt{2}}$ split as?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{1}{\sqrt{5}-\sqrt{3}}$ uses conjugate?', 'multiple_choice', '["$\\sqrt{5}+\\sqrt{3}$","$\\sqrt{5}-\\sqrt{3}$","$\\sqrt{3}-\\sqrt{5}$","$5+3$"]'::jsonb, '"$\\sqrt{5}+\\sqrt{3}$"'::jsonb, 'hard', 'Sign flip.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{1}{\sqrt{5}-\sqrt{3}}$ uses conjugate?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Rationalise $\frac{2+\sqrt{3}}{\sqrt{3}}$ fully.', 'multiple_choice', '["$\\frac{2\\sqrt{3}}{3}+1$","$2+1$","$3$","$\\sqrt{3}+2$"]'::jsonb, '"$\\frac{2\\sqrt{3}}{3}+1$"'::jsonb, 'hard', 'Split fraction.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rationalise $\frac{2+\sqrt{3}}{\sqrt{3}}$ fully.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{1}{1-\sqrt{2}}$ equals?', 'multiple_choice', '["$-(1+\\sqrt{2})$","$1-\\sqrt{2}$","$\\sqrt{2}-1$","$-1$"]'::jsonb, '"$-(1+\\sqrt{2})$"'::jsonb, 'hard', 'Denom $-1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{1}{1-\sqrt{2}}$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\frac{\sqrt{6}+\sqrt{6}}{\sqrt{3}}$.', 'multiple_choice', '["$2\\sqrt{2}$","$2\\sqrt{3}$","$\\sqrt{12}$","$4$"]'::jsonb, '"$2\\sqrt{2}$"'::jsonb, 'hard', 'Num $2\sqrt6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\frac{\sqrt{6}+\sqrt{6}}{\sqrt{3}}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{5}{\sqrt{5}-1}$ rationalised simplified?', 'multiple_choice', '["$\\frac{5(\\sqrt{5}+1)}{4}$","$5$","$\\sqrt{5}$","$1$"]'::jsonb, '"$\\frac{5(\\sqrt{5}+1)}{4}$"'::jsonb, 'hard', 'Conjugate.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{5}{\sqrt{5}-1}$ rationalised simplified?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is fully rationalised? $\frac{3}{2\sqrt{7}}$', 'multiple_choice', '["$\\frac{3\\sqrt{7}}{14}$","$\\frac{3}{2\\sqrt{7}}$","$3\\sqrt{7}$","$\\frac{\\sqrt{7}}{6}$"]'::jsonb, '"$\\frac{3\\sqrt{7}}{14}$"'::jsonb, 'hard', 'No surd in denom.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is fully rationalised? $\frac{3}{2\sqrt{7}}$');
+
