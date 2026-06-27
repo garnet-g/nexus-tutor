@@ -1818,3 +1818,456 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rationalising'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='surds'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is fully rationalised? $\frac{3}{2\sqrt{7}}$');
 
+
+-- ========== FURTHER LOGARITHMS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Multiplication and Division Laws', '{"blocks":[{"type":"heading","content":"Laws of Logarithms"},{"type":"math_block","latex":"\\log_a(MN) = \\log_a M + \\log_a N","caption":"Product law"},{"type":"math_block","latex":"\\log_a\\left(\\frac{M}{N}\\right) = \\log_a M - \\log_a N","caption":"Quotient law"},{"type":"callout","variant":"key_point","content":"Logs turn **multiplication into addition** and **division into subtraction**."},{"type":"example","title":"Write $\\log_2 8 + \\log_2 4$ as single log.","steps":["$\\log_2(8 \\times 4) = \\log_2 32 = 5$."],"answer":"$\\log_2 32 = 5$"},{"type":"question","questionText":"$\\log_{10} 1000$?","questionType":"multiple_choice","options":["$3$","$2$","$10$","$1000$"],"correctAnswer":"$3$","explanation":"$10^3=1000$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'laws_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Multiplication and Division Laws');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Power Law and Special Logs', '{"blocks":[{"type":"heading","content":"Power Rule"},{"type":"math_block","latex":"\\log_a(M^n) = n\\log_a M","caption":"Power law"},{"type":"example","title":"Simplify $\\log_3 81$.","steps":["$81 = 3^4$.","$\\log_3 81 = 4$."],"answer":"$4$"},{"type":"callout","variant":"warning","content":"$\\log_a 1 = 0$ and $\\log_a a = 1$ for valid base $a>0$, $a\\neq 1$."},{"type":"question","questionText":"$\\log_5 25$?","questionType":"multiple_choice","options":["$2$","$5$","$25$","$0$"],"correctAnswer":"$2$","explanation":"$5^2=25$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'laws_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Power Law and Special Logs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Log Laws — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Simplify Using Laws"},{"type":"example","title":"Simplify $2\\log_{10} 5 + \\log_{10} 2$.","steps":["$\\log_{10} 25 + \\log_{10} 2 = \\log_{10} 50$."],"answer":"$\\log_{10} 50$"},{"type":"question","questionText":"$\\log_2 8 - \\log_2 2$?","questionType":"multiple_choice","options":["$2$","$6$","$4$","$1$"],"correctAnswer":"$2$","explanation":"$\\log_2 4$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'laws_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Log Laws — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_a(MN)$ equals?', 'multiple_choice', '["$\\log_a M + \\log_a N$","$\\log_a M - \\log_a N$","$MN$","$\\log_a M \\cdot \\log_a N$"]'::jsonb, '"$\\log_a M + \\log_a N$"'::jsonb, 'easy', 'Product law.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_a(MN)$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_{10} 100$?', 'multiple_choice', '["$2$","$10$","$100$","$1$"]'::jsonb, '"$2$"'::jsonb, 'easy', '$10^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_{10} 100$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_a 1$?', 'multiple_choice', '["$0$","$1$","$a$","Undefined"]'::jsonb, '"$0$"'::jsonb, 'easy', '$a^0=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_a 1$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_a a$?', 'multiple_choice', '["$1$","$0$","$a$","$2$"]'::jsonb, '"$1$"'::jsonb, 'easy', '$a^1=a$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_a a$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_3 9$?', 'multiple_choice', '["$2$","$3$","$9$","$0$"]'::jsonb, '"$2$"'::jsonb, 'easy', '$3^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_3 9$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log(M^n)$ equals?', 'multiple_choice', '["$n\\log M$","$\\log M^n$","$n+M$","$\\log n$"]'::jsonb, '"$n\\log M$"'::jsonb, 'easy', 'Power law.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log(M^n)$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_{10} 1$?', 'multiple_choice', '["$0$","$1$","$10$","$-1$"]'::jsonb, '"$0$"'::jsonb, 'easy', 'Identity.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_{10} 1$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_2 16$?', 'multiple_choice', '["$4$","$2$","$8$","$16$"]'::jsonb, '"$4$"'::jsonb, 'medium', '$2^4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_2 16$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log 50 = \log 25 + ?$', 'multiple_choice', '["$\\log 2$","$\\log 48$","$\\log 23$","$\\log 5$"]'::jsonb, '"$\\log 2$"'::jsonb, 'medium', '$25\times2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log 50 = \log 25 + ?$');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$3\log_2 2$?', 'multiple_choice', '["$3$","$6$","$8$","$1$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$\log_2 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$3\log_2 2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_{10} 5 + \log_{10} 2$?', 'multiple_choice', '["$\\log_{10} 10 = 1$","$\\log_{10} 7$","$7$","$10$"]'::jsonb, '"$\\log_{10} 10 = 1$"'::jsonb, 'medium', 'Product.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_{10} 5 + \log_{10} 2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_4 64$?', 'multiple_choice', '["$3$","$2$","$4$","$16$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$4^3=64$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_4 64$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{\log 100}{\log 10}$?', 'multiple_choice', '["$2$","$10$","$1$","$100$"]'::jsonb, '"$2$"'::jsonb, 'medium', 'Quotient.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{\log 100}{\log 10}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_2 32 - \log_2 4$?', 'multiple_choice', '["$3$","$8$","$28$","$1$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$\log_2 8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_2 32 - \log_2 4$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2\log_3 3$?', 'multiple_choice', '["$2$","$3$","$6$","$9$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$\log_3 9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2\log_3 3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_a b \cdot \log_b a$?', 'multiple_choice', '["$1$","$0$","$ab$","$a+b$"]'::jsonb, '"$1$"'::jsonb, 'hard', 'Change of base symmetry.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_a b \cdot \log_b a$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Simplify $\log_2 12 - \log_2 3$.', 'multiple_choice', '["$2$","$4$","$1$","$9$"]'::jsonb, '"$2$"'::jsonb, 'hard', '$\log_2 4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Simplify $\log_2 12 - \log_2 3$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_{10} 0.01$?', 'multiple_choice', '["$-2$","$2$","$0.01$","$-1$"]'::jsonb, '"$-2$"'::jsonb, 'hard', '$10^{-2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_{10} 0.01$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $\log_2 x = 5$, $x$?', 'multiple_choice', '["$32$","$10$","$25$","$64$"]'::jsonb, '"$32$"'::jsonb, 'hard', '$2^5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $\log_2 x = 5$, $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_5 125 + \log_5 5$?', 'multiple_choice', '["$4$","$3$","$130$","$5$"]'::jsonb, '"$4$"'::jsonb, 'hard', '$3+1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_5 125 + \log_5 5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Express $\log 18$ using $\log 2$ and $\log 3$.', 'multiple_choice', '["$\\log 2 + 2\\log 3$","$2\\log 2 + \\log 3$","$\\log 9 + \\log 2$","$\\log 36$"]'::jsonb, '"$\\log 2 + 2\\log 3$"'::jsonb, 'hard', '$18=2\cdot9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='laws_logarithms'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Express $\log 18$ using $\log 2$ and $\log 3$.');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Basic Log Equations', '{"blocks":[{"type":"heading","content":"Same Base Method"},{"type":"paragraph","content":"If $\\log_a x = \\log_a y$ then $x = y$ (with $x,y > 0$). Convert $\\log_a x = k$ to $x = a^k$."},{"type":"example","title":"Solve $\\log_2 x = 3$.","steps":["$x = 2^3 = 8$."],"answer":"$x = 8$"},{"type":"question","questionText":"Solve $\\log_{10} x = 2$.","questionType":"multiple_choice","options":["$x = 100$","$x = 20$","$x = 2$","$x = 10$"],"correctAnswer":"$x = 100$","explanation":"$10^2$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'logarithmic_equations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Basic Log Equations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Equations Using Log Laws', '{"blocks":[{"type":"heading","content":"Combine Then Solve"},{"type":"example","title":"Solve $\\log_3(x+2) + \\log_3(x-2) = 2$.","steps":["$\\log_3[(x+2)(x-2)] = 2$.","$(x+2)(x-2) = 9$.","$x^2 - 4 = 9$, $x^2 = 13$.","$x = \\sqrt{13}$ (reject negative)."],"answer":"$x = \\sqrt{13}$"},{"type":"callout","variant":"warning","content":"Check solutions satisfy **domain**: arguments of log must be positive."},{"type":"question","questionText":"$\\log_5 x = 0$ gives?","questionType":"multiple_choice","options":["$x = 1$","$x = 0$","$x = 5$","No solution"],"correctAnswer":"$x = 1$","explanation":"$5^0=1$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'logarithmic_equations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Equations Using Log Laws');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Log Equations — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Logarithmic Equations"},{"type":"example","title":"Solve $2^{x} = 16$ using logs.","steps":["$x = \\log_2 16 = 4$."],"answer":"$x = 4$"},{"type":"question","questionText":"Solve $\\log_2(3x-1) = 4$.","questionType":"multiple_choice","options":["$x = \\frac{17}{3}$","$x = 5$","$x = 4$","$x = 3$"],"correctAnswer":"$x = \\frac{17}{3}$","explanation":"$3x-1=16$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'logarithmic_equations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Log Equations — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_3 x = 2$ means?', 'multiple_choice', '["$x = 9$","$x = 6$","$x = 3$","$x = 2$"]'::jsonb, '"$x = 9$"'::jsonb, 'easy', '$3^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_3 x = 2$ means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $\log_{10} x = 1$.', 'multiple_choice', '["$x = 10$","$x = 1$","$x = 0$","$x = 100$"]'::jsonb, '"$x = 10$"'::jsonb, 'easy', '$10^1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $\log_{10} x = 1$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_2 8 = x$. $x$?', 'multiple_choice', '["$3$","$2$","$4$","$8$"]'::jsonb, '"$3$"'::jsonb, 'easy', '$2^3=8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_2 8 = x$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Domain of $\log x$?', 'multiple_choice', '["$x > 0$","$x \\geq 0$","All reals","$x > 1$"]'::jsonb, '"$x > 0$"'::jsonb, 'easy', 'Positive argument.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Domain of $\log x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_a x = 0$ implies?', 'multiple_choice', '["$x = 1$","$x = 0$","$x = a$","No solution"]'::jsonb, '"$x = 1$"'::jsonb, 'easy', '$a^0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_a x = 0$ implies?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_4 x = \frac{1}{2}$. $x$?', 'multiple_choice', '["$2$","$4$","$8$","$16$"]'::jsonb, '"$2$"'::jsonb, 'easy', '$4^{0.5}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_4 x = \frac{1}{2}$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_5(2x) = 1$. $x$?', 'multiple_choice', '["$\\frac{5}{2}$","$5$","$2$","$10$"]'::jsonb, '"$\\frac{5}{2}$"'::jsonb, 'medium', '$2x=5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_5(2x) = 1$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $\log_3 x = \log_3 7$.', 'multiple_choice', '["$x = 7$","$x = 3$","$x = 21$","$x = 1$"]'::jsonb, '"$x = 7$"'::jsonb, 'medium', 'Same base.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $\log_3 x = \log_3 7$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_2(x-1) = 3$. $x$?', 'multiple_choice', '["$9$","$8$","$7$","$5$"]'::jsonb, '"$9$"'::jsonb, 'medium', '$x-1=8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_2(x-1) = 3$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_{10}(x+1) = 0$. $x$?', 'multiple_choice', '["$0$","$1$","$9$","$-1$"]'::jsonb, '"$0$"'::jsonb, 'medium', '$x+1=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_{10}(x+1) = 0$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2^x = 8$. $x$?', 'multiple_choice', '["$3$","$2$","$4$","$16$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$2^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2^x = 8$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log x + \log 4 = \log 12$. $x$?', 'multiple_choice', '["$3$","$4$","$8$","$48$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$4x=12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log x + \log 4 = \log 12$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_2 x - \log_2 3 = 1$. $x$?', 'multiple_choice', '["$6$","$3$","$2$","$9$"]'::jsonb, '"$6$"'::jsonb, 'medium', '$x/3=2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_2 x - \log_2 3 = 1$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Reject $x = -2$ in $\log(x+5)$ because?', 'multiple_choice', '["Argument $\\leq 0$","Too small","Not integer","Base wrong"]'::jsonb, '"Argument $\\leq 0$"'::jsonb, 'medium', 'Domain.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Reject $x = -2$ in $\log(x+5)$ because?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_3(2x+1) = 2$. $x$?', 'multiple_choice', '["$4$","$3$","$5$","$8$"]'::jsonb, '"$4$"'::jsonb, 'medium', '$2x+1=9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_3(2x+1) = 2$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $10^x = 1000$.', 'multiple_choice', '["$x = 3$","$x = 2$","$x = 10$","$x = 100$"]'::jsonb, '"$x = 3$"'::jsonb, 'hard', '$10^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $10^x = 1000$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_2(x^2-9) - \log_2(x-3) = 2$ leads to?', 'multiple_choice', '["$x+3=4$","$x=1$","$x=7$","$x=3$"]'::jsonb, '"$x+3=4$"'::jsonb, 'hard', 'Quotient law.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_2(x^2-9) - \log_2(x-3) = 2$ leads to?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$3^{2x} = 81$. $x$?', 'multiple_choice', '["$2$","$4$","$3$","$1$"]'::jsonb, '"$2$"'::jsonb, 'hard', '$3^{2x}=3^4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$3^{2x} = 81$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_5 x + \log_5 x = 3$. $x$?', 'multiple_choice', '["$5^{1.5}$ or $\\sqrt{125}$","$5$","$25$","$15$"]'::jsonb, '"$5^{1.5}$ or $\\sqrt{125}$"'::jsonb, 'hard', '$\log x^2=3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_5 x + \log_5 x = 3$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $\log_2 x = -1$, $x$?', 'multiple_choice', '["$\\frac{1}{2}$","$-2$","$2$","$0$"]'::jsonb, '"$\\frac{1}{2}$"'::jsonb, 'hard', '$2^{-1}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $\log_2 x = -1$, $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_a x = \log_a 5 + \log_a 2$. $x$?', 'multiple_choice', '["$10$","$7$","$3$","$a^{10}$"]'::jsonb, '"$10$"'::jsonb, 'hard', 'Product $5\times2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='logarithmic_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_a x = \log_a 5 + \log_a 2$. $x$?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Exponential Growth and Decay', '{"blocks":[{"type":"heading","content":"Real-World Logs"},{"type":"paragraph","content":"Many growth models use $N = N_0 a^t$. Taking logs linearises exponential change."},{"type":"math_block","latex":"t = \\frac{\\log(N/N_0)}{\\log a}","caption":"Solve time from growth formula"},{"type":"example","title":"Population doubles every $3$ years. After how many years is it $8$ times original?","steps":["$8 = 2^3$ requires $3$ doubling periods.","$3 \\times 3 = 9$ years."],"answer":"$9$ years"},{"type":"question","questionText":"pH involves logs base?","questionType":"multiple_choice","options":["$10$","$2$","$e$ only","$\\pi$"],"correctAnswer":"$10$","explanation":"Chemistry scale."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'applications_logs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Exponential Growth and Decay');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Compound Interest and Logs', '{"blocks":[{"type":"heading","content":"Finding Time in Finance"},{"type":"example","title":"How long for KES $5000$ to reach $8000$ at $10\\%$ p.a. compound?","steps":["$8000 = 5000(1.1)^n$.","$(1.1)^n = 1.6$.","$n = \\frac{\\log 1.6}{\\log 1.1} \\approx 4.9$ years."],"answer":"About $4.9$ years"},{"type":"callout","variant":"warning","content":"Use consistent log base (often $\\log_{10}$ or $\\ln$)."},{"type":"question","questionText":"Decibel scale is?","questionType":"multiple_choice","options":["Logarithmic","Linear","Quadratic","Random"],"correctAnswer":"Logarithmic","explanation":"Sound intensity."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'applications_logs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Compound Interest and Logs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applications — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Applied Logarithms"},{"type":"example","title":"Bacteria count grows from $500$ to $2000$ in $t$ hours with $N = 500 \\cdot 2^{t/2}$. Find $t$.","steps":["$2000 = 500 \\cdot 2^{t/2}$.","$4 = 2^{t/2}$.","$t/2 = 2$, $t = 4$ hours."],"answer":"$4$ hours"},{"type":"question","questionText":"Richter scale measures earthquakes using?","questionType":"multiple_choice","options":["Logarithms","Square roots","Sines","Vectors"],"correctAnswer":"Logarithms","explanation":"Magnitude scale."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'further_logarithms' AND st.code = 'applications_logs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applications — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Logs useful for solving?', 'multiple_choice', '["Exponential equations","Linear only","Angles","Areas"]'::jsonb, '"Exponential equations"'::jsonb, 'easy', 'Inverse of exp.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Logs useful for solving?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'pH is logarithmic measure of?', 'multiple_choice', '["Acidity","Length","Mass","Speed"]'::jsonb, '"Acidity"'::jsonb, 'easy', 'Chemistry.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='pH is logarithmic measure of?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Population $P = P_0 e^{kt}$: logs help find?', 'multiple_choice', '["$t$ or $k$","Area","Perimeter","Angle"]'::jsonb, '"$t$ or $k$"'::jsonb, 'easy', 'Unknown exponent.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Population $P = P_0 e^{kt}$: logs help find?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sound intensity decibels use?', 'multiple_choice', '["Log scale","Linear cm","Degrees","Radians"]'::jsonb, '"Log scale"'::jsonb, 'easy', 'Application.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sound intensity decibels use?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$1000$ grows to $2000$: factor?', 'multiple_choice', '["$2$","$10$","$1000$","$500$"]'::jsonb, '"$2$"'::jsonb, 'easy', 'Doubled.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$1000$ grows to $2000$: factor?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Earthquake Richter uses?', 'multiple_choice', '["Logs","Pythagoras","Cosine rule","Surds"]'::jsonb, '"Logs"'::jsonb, 'easy', 'Standard app.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Earthquake Richter uses?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'If $2^t = 32$, $t$?', 'multiple_choice', '["$5$","$4$","$6$","$16$"]'::jsonb, '"$5$"'::jsonb, 'easy', '$2^5=32$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='If $2^t = 32$, $t$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$N = 200(1.05)^n$. Find $n$ when $N=242$ (approx).', 'multiple_choice', '["$4$","$2$","$10$","$1$"]'::jsonb, '"$4$"'::jsonb, 'medium', '$(1.05)^4\approx1.21$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$N = 200(1.05)^n$. Find $n$ when $N=242$ (approx).');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Half-life problems often use?', 'multiple_choice', '["$\\log_2$ or general logs","Sine rule","Surds","Vectors"]'::jsonb, '"$\\log_2$ or general logs"'::jsonb, 'medium', 'Halving.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Half-life problems often use?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$A = P(1+r)^n$: solve $n$ using?', 'multiple_choice', '["$\\log$ both sides","Square root only","Factorise","Complete square"]'::jsonb, '"$\\log$ both sides"'::jsonb, 'medium', 'Unknown in power.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$A = P(1+r)^n$: solve $n$ using?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Carbon dating uses exponential decay and?', 'multiple_choice', '["Logarithms","Quadratic formula","Unit circle","Error bounds"]'::jsonb, '"Logarithms"'::jsonb, 'medium', 'Solve for age.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Carbon dating uses exponential decay and?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$10^x = 50$. $x$ equals?', 'multiple_choice', '["$\\log_{10} 50$","$5$","$500$","$2$"]'::jsonb, '"$\\log_{10} 50$"'::jsonb, 'medium', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$10^x = 50$. $x$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Investment doubles in $6$ years at constant rate. Triple time to $8\times$?', 'multiple_choice', '["$18$ years","$12$ years","$6$ years","$24$ years"]'::jsonb, '"$18$ years"'::jsonb, 'medium', 'Three doublings.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Investment doubles in $6$ years at constant rate. Triple time to $8\times$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log_{10} I - \log_{10} I_0$ relates to?', 'multiple_choice', '["Decibels difference","pH","Area","Slope"]'::jsonb, '"Decibels difference"'::jsonb, 'medium', 'Intensity ratio.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log_{10} I - \log_{10} I_0$ relates to?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bacteria $N=1000\cdot 2^t$: when $N=8000$?', 'multiple_choice', '["$t=3$","$t=8$","$t=4$","$t=2$"]'::jsonb, '"$t=3$"'::jsonb, 'medium', '$2^3=8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bacteria $N=1000\cdot 2^t$: when $N=8000$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Loan repayment $M = \frac{Pr(1+r)^n}{(1+r)^n-1}$: find $n$ needs?', 'multiple_choice', '["Logarithms","Sine rule","Rationalising","Completing square"]'::jsonb, '"Logarithms"'::jsonb, 'hard', 'Unknown exponent.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Loan repayment $M = \frac{Pr(1+r)^n}{(1+r)^n-1}$: find $n$ needs?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$e^x = 20$. $x$ approximately?', 'multiple_choice', '["$\\ln 20$","$20$","$\\log_{10} 20$","$e^{20}$"]'::jsonb, '"$\\ln 20$"'::jsonb, 'hard', 'Natural log.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$e^x = 20$. $x$ approximately?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radioactive $N=N_0(0.5)^{t/T}$: $t=T$ means?', 'multiple_choice', '["Half original","Zero","Double","Triple"]'::jsonb, '"Half original"'::jsonb, 'hard', 'One half-life.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radioactive $N=N_0(0.5)^{t/T}$: $t=T$ means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'pH $= -\log_{10}[H^+]$. If $[H^+]=10^{-3}$, pH?', 'multiple_choice', '["$3$","$-3$","$10$","$0.001$"]'::jsonb, '"$3$"'::jsonb, 'hard', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='pH $= -\log_{10}[H^+]$. If $[H^+]=10^{-3}$, pH?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Town grows $5\%$ yearly from $40000$. Pop $50000$ after $n$ nearest?', 'multiple_choice', '["$5$ years","$2$ years","$10$ years","$1$ year"]'::jsonb, '"$5$ years"'::jsonb, 'hard', 'Use logs on $(1.05)^n=1.25$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Town grows $5\%$ yearly from $40000$. Pop $50000$ after $n$ nearest?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Magnitude $M = \log_{10}(A/A_0)$: if amplitude $10\times$, $M$ increases by?', 'multiple_choice', '["$1$","$10$","$0$","$100$"]'::jsonb, '"$1$"'::jsonb, 'hard', 'Log of ratio $10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_logs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='further_logarithms'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Magnitude $M = \log_{10}(A/A_0)$: if amplitude $10\times$, $M$ increases by?');
