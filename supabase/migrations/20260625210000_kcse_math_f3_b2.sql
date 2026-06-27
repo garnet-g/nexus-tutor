@@ -613,3 +613,206 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='simultaneous_matrices'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$A=[2 & 1 ;  1 & 3]$, $\mathbf{b}=[5 ;  7]$. $y$?');
 
+-- ========== FORMULAE AND VARIATIONS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Change of Subject', '{"blocks":[{"type":"heading","content":"Making a Letter the Subject"},{"type":"paragraph","content":"To **change the subject** of a formula, rearrange so the required letter stands alone on one side."},{"type":"example","title":"Make $r$ the subject of $A = \\pi r^2$.","steps":["Divide by $\\pi$: $r^2 = A/\\pi$.","Square root: $r = \\sqrt{A/\\pi}$."],"answer":"$r = \\sqrt{A/\\pi}$"},{"type":"callout","variant":"key_point","content":"Undo operations in **reverse order** â€” what was done last is undone first."},{"type":"question","questionText":"Subject means?","questionType":"multiple_choice","options":["Letter alone on one side","Any constant","The equals sign","Exponent only"],"correctAnswer":"Letter alone on one side","explanation":"Definition."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'subject_of_formula'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Change of Subject');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Rearranging Formulae', '{"blocks":[{"type":"heading","content":"Worked Rearrangements"},{"type":"example","title":"Make $t$ subject of $v = u + at$.","steps":["Subtract $u$: $v - u = at$.","Divide by $a$: $t = (v-u)/a$."],"answer":"$t = \\frac{v-u}{a}$"},{"type":"callout","variant":"warning","content":"Treat other letters as constants when changing subject."},{"type":"example","title":"Make $h$ subject of $V = \\frac{1}{3}\\pi r^2 h$.","steps":["Multiply by $3$: $3V = \\pi r^2 h$.","$h = 3V/(\\pi r^2)$."],"answer":"$h = \\frac{3V}{\\pi r^2}$"},{"type":"question","questionText":"Make $x$ subject of $y = mx + c$.","questionType":"multiple_choice","options":["$x = (y-c)/m$","$x = y/m + c$","$x = y - mx$","$x = m/y$"],"correctAnswer":"$x = (y-c)/m$","explanation":"Subtract $c$, divide $m$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'subject_of_formula'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Rearranging Formulae');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Change of Subject â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Formulae"},{"type":"example","title":"Make $R$ subject of $I = V/R$.","steps":["Multiply by $R$: $IR = V$.","$R = V/I$."],"answer":"$R = V/I$"},{"type":"callout","variant":"warning","content":"When the subject appears twice, collect like terms first."},{"type":"question","questionText":"$P = 2(l+w)$. Make $w$ subject.","questionType":"multiple_choice","options":["$w = P/2 - l$","$w = P - 2l$","$w = P/(2l)$","$w = 2P - l$"],"correctAnswer":"$w = P/2 - l$","explanation":"Divide $2$, subtract $l$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'subject_of_formula'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Change of Subject â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Make $x$ subject of $y = 3x$.', 'multiple_choice', '["$x = y/3$","$x = 3y$","$x = y-3$","$x = y+3$"]'::jsonb, '"$x = y/3$"'::jsonb, 'easy', 'Divide by $3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='subject_of_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Make $x$ subject of $y = 3x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Make $a$ subject of $F = ma$.', 'multiple_choice', '["$a = F/m$","$a = Fm$","$a = m/F$","$a = F+m$"]'::jsonb, '"$a = F/m$"'::jsonb, 'easy', 'Divide by $m$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='subject_of_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Make $a$ subject of $F = ma$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Make $r$ subject of $C = 2\pi r$.', 'multiple_choice', '["$r = C/(2\\pi)$","$r = 2\\pi C$","$r = C - 2\\pi$","$r = C/2$"]'::jsonb, '"$r = C/(2\\pi)$"'::jsonb, 'easy', 'Divide $2\pi$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='subject_of_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Make $r$ subject of $C = 2\pi r$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Make $u$ subject of $v = u + at$.', 'multiple_choice', '["$u = v - at$","$u = v + at$","$u = v/at$","$u = at - v$"]'::jsonb, '"$u = v - at$"'::jsonb, 'medium', 'Subtract $at$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='subject_of_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Make $u$ subject of $v = u + at$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Make $l$ subject of $P = 2l + 2w$.', 'multiple_choice', '["$l = (P-2w)/2$","$l = P - 2w$","$l = P/2w$","$l = 2P - w$"]'::jsonb, '"$l = (P-2w)/2$"'::jsonb, 'medium', 'Collect and divide.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='subject_of_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Make $l$ subject of $P = 2l + 2w$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Make $x$ subject of $y = \sqrt{x+3}$.', 'multiple_choice', '["$x = y^2 - 3$","$x = y - 3$","$x = (y-3)^2$","$x = y^2 + 3$"]'::jsonb, '"$x = y^2 - 3$"'::jsonb, 'hard', 'Square both sides.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='subject_of_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Make $x$ subject of $y = \sqrt{x+3}$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Make $r$ subject of $V = \frac{4}{3}\pi r^3$.', 'multiple_choice', '["$r = \\sqrt[3]{3V/(4\\pi)}$","$r = 3V/(4\\pi)$","$r = \\sqrt{3V/(4\\pi)}$","$r = 4\\pi V/3$"]'::jsonb, '"$r = \\sqrt[3]{3V/(4\\pi)}$"'::jsonb, 'hard', 'Cube root.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='subject_of_formula'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Make $r$ subject of $V = \frac{4}{3}\pi r^3$.');
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Direct and Inverse Variation', '{"blocks":[{"type":"heading","content":"Variation"},{"type":"paragraph","content":"**Direct variation**: $y \\propto x$ means $y = kx$ for constant $k$."},{"type":"paragraph","content":"**Inverse variation**: $y \\propto 1/x$ means $y = k/x$ or $xy = k$."},{"type":"callout","variant":"key_point","content":"Find $k$ using one pair of values, then solve."},{"type":"question","questionText":"$y$ varies directly as $x$. Symbol?","questionType":"multiple_choice","options":["$y \\propto x$","$y \\propto 1/x$","$y = x + k$","$y = kx^2$ only"],"correctAnswer":"$y \\propto x$","explanation":"Direct proportion."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'direct_inverse_variation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Direct and Inverse Variation');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Variation Problems', '{"blocks":[{"type":"heading","content":"Worked Variation"},{"type":"example","title":"$y \\propto x$. When $x=4$, $y=12$. Find $y$ when $x=10$.","steps":["$y = kx$; $12 = 4k$; $k=3$.","$y = 3(10) = 30$."],"answer":"$y = 30$"},{"type":"example","title":"$P \\propto 1/V$. $P=120$ when $V=5$. Find $P$ when $V=8$.","steps":["$PV = k$; $k = 600$.","$P = 600/8 = 75$."],"answer":"$P = 75$"},{"type":"callout","variant":"warning","content":"Inverse: product $xy$ is constant, not sum."},{"type":"question","questionText":"$y \\propto 1/x$, $x$ doubles. $y$ becomes?","questionType":"multiple_choice","options":["Halved","Doubled","Unchanged","Squared"],"correctAnswer":"Halved","explanation":"Inverse relationship."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'direct_inverse_variation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Variation Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Variation â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Variation"},{"type":"example","title":"Workers $w$ vary inversely with days $d$. $6$ workers take $10$ days. Days for $8$ workers?","steps":["$wd = 60$.","$d = 60/8 = 7.5$ days."],"answer":"$7.5$ days"},{"type":"callout","variant":"warning","content":"Identify direct vs inverse from wording: ''increases with'' vs ''decreases as''."},{"type":"question","questionText":"$y \\propto x$, $k=5$, $x=3$. $y$?","questionType":"multiple_choice","options":["$15$","$8$","$5/3$","$2$"],"correctAnswer":"$15$","explanation":"$y=5x$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'direct_inverse_variation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Variation â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto x$ means?', 'multiple_choice', '["$y = kx$","$y = k/x$","$y = x + k$","$y = k - x$"]'::jsonb, '"$y = kx$"'::jsonb, 'easy', 'Direct variation.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='direct_inverse_variation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto x$ means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto 1/x$ means?', 'multiple_choice', '["$xy = k$","$y = kx$","$x + y = k$","$y = x/k$"]'::jsonb, '"$xy = k$"'::jsonb, 'easy', 'Inverse variation.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='direct_inverse_variation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto 1/x$ means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto x$, $y=18$ when $x=6$. $y$ when $x=9$?', 'multiple_choice', '["$27$","$24$","$15$","$36$"]'::jsonb, '"$27$"'::jsonb, 'medium', '$k=3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='direct_inverse_variation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto x$, $y=18$ when $x=6$. $y$ when $x=9$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$T \propto 1/P$, $T=4$ when $P=3$. $T$ when $P=6$?', 'multiple_choice', '["$2$","$8$","$12$","$1.5$"]'::jsonb, '"$2$"'::jsonb, 'medium', '$TP=12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='direct_inverse_variation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$T \propto 1/P$, $T=4$ when $P=3$. $T$ when $P=6$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y$ varies inversely with $x$. $x$ triples, $y$?', 'multiple_choice', '["Divides by $3$","Triples","Unchanged","Adds $3$"]'::jsonb, '"Divides by $3$"'::jsonb, 'medium', 'Inverse effect.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='direct_inverse_variation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y$ varies inversely with $x$. $x$ triples, $y$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto x^2$, $y=32$ when $x=4$. $y$ when $x=5$?', 'multiple_choice', '["$50$","$40$","$25$","$62.5$"]'::jsonb, '"$50$"'::jsonb, 'hard', '$y=2x^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='direct_inverse_variation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto x^2$, $y=32$ when $x=4$. $y$ when $x=5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$w$ workers, $d$ days inverse. $5$ workers $12$ days. Workers for $8$ days?', 'multiple_choice', '["$7.5$","$6$","$10$","$8$"]'::jsonb, '"$7.5$"'::jsonb, 'hard', '$wd=60$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='direct_inverse_variation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$w$ workers, $d$ days inverse. $5$ workers $12$ days. Workers for $8$ days?');
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Joint and Partial Variation', '{"blocks":[{"type":"heading","content":"Joint Variation"},{"type":"paragraph","content":"**Joint variation**: $y \\propto xz$ means $y = kxz$ â€” $y$ varies directly with the **product** of $x$ and $z$."},{"type":"paragraph","content":"**Partial variation**: $y = kx + c$ â€” partly varies with $x$ plus a **fixed** part $c$."},{"type":"callout","variant":"key_point","content":"Joint: multiply variables. Partial: add constant term."},{"type":"question","questionText":"$y \\propto xz$ means?","questionType":"multiple_choice","options":["$y = kxz$","$y = kx/z$","$y = kx + z$","$y = x + z$"],"correctAnswer":"$y = kxz$","explanation":"Joint direct."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'joint_partial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Joint and Partial Variation');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Joint and Partial Problems', '{"blocks":[{"type":"heading","content":"Worked Examples"},{"type":"example","title":"$y \\propto xz$. $y=24$ when $x=3$, $z=4$. Find $y$ when $x=5$, $z=2$.","steps":["$24 = k(12)$; $k=2$.","$y = 2(5)(2) = 20$."],"answer":"$y = 20$"},{"type":"example","title":"$C$ partly varies with $n$: $C = kn + 500$. $C=1100$ when $n=20$.","steps":["$1100 = 20k + 500$.","$600 = 20k$; $k=30$.","$C = 30n + 500$."],"answer":"$C = 30n + 500$"},{"type":"callout","variant":"warning","content":"Partial variation needs **two** conditions to find $k$ and $c$."},{"type":"question","questionText":"Partial $y = kx + c$. $c$ is?","questionType":"multiple_choice","options":["Fixed part when $x=0$","Slope always","Product $kx$","Inverse"],"correctAnswer":"Fixed part when $x=0$","explanation":"Constant term."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'joint_partial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Joint and Partial Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Joint & Partial â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Joint and Partial"},{"type":"example","title":"Electric bill: KES $800$ standing charge plus KES $12$/unit. Cost for $45$ units?","steps":["$C = 12(45) + 800 = 540 + 800 = 1340$."],"answer":"KES $1340$"},{"type":"callout","variant":"warning","content":"Kenyan utility bills often use partial variation (fixed + per unit)."},{"type":"question","questionText":"$F \\propto ma$ means force varies jointly with?","questionType":"multiple_choice","options":["$m$ and $a$","$m$ only","$1/a$","$m+a$"],"correctAnswer":"$m$ and $a$","explanation":"Newton''s law form."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'joint_partial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Joint & Partial â€” Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto xz$ means?', 'multiple_choice', '["$y = kxz$","$y = kx + z$","$y = k/xz$","$y = x + z$"]'::jsonb, '"$y = kxz$"'::jsonb, 'easy', 'Joint variation.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='joint_partial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto xz$ means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Partial variation form?', 'multiple_choice', '["$y = kx + c$","$y = kx$ only","$y = k/x$","$y = x^2$"]'::jsonb, '"$y = kx + c$"'::jsonb, 'easy', 'Linear plus constant.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='joint_partial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Partial variation form?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto xz$, $y=60$, $x=4$, $z=5$. $k$?', 'multiple_choice', '["$3$","$12$","$20$","$15$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$60/(20)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='joint_partial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto xz$, $y=60$, $x=4$, $z=5$. $k$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto xz$, $k=4$, $x=2$, $z=7$. $y$?', 'multiple_choice', '["$56$","$28$","$13$","$42$"]'::jsonb, '"$56$"'::jsonb, 'medium', '$4 \times 14$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='joint_partial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto xz$, $k=4$, $x=2$, $z=7$. $y$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto x/z$, $y=6$ when $x=12$, $z=4$. $y$ when $x=15$, $z=5$?', 'multiple_choice', '["$6$","$5$","$7.5$","$10$"]'::jsonb, '"$6$"'::jsonb, 'hard', '$k=2$; $y=2(15/5)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='joint_partial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto x/z$, $y=6$ when $x=12$, $z=4$. $y$ when $x=15$, $z=5$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$C=an+b$, $C=95$ at $n=3$, $C=155$ at $n=7$. $C$ at $n=10$?', 'multiple_choice', '["$200$","$185$","$210$","$170$"]'::jsonb, '"$200$"'::jsonb, 'hard', '$a=15,b=50$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='joint_partial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$C=an+b$, $C=95$ at $n=3$, $C=155$ at $n=7$. $C$ at $n=10$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$F \propto ma$, $F=20$ when $m=4$, $a=5$. $F$ when $m=10$, $a=3$?', 'multiple_choice', '["$30$","$25$","$15$","$50$"]'::jsonb, '"$30$"'::jsonb, 'hard', '$k=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='joint_partial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$F \propto ma$, $F=20$ when $m=4$, $a=5$. $F$ when $m=10$, $a=3$?');
+
