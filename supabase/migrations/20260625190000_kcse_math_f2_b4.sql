@@ -204,3 +204,204 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_inequalities'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Region $x \geq 0$ and $y \geq 0$ is?');
+
+-- ========== LINEAR MOTION ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Distance–Time Graphs', '{"blocks":[{"type":"heading","content":"Distance–Time Graphs"},{"type":"paragraph","content":"On a **distance–time graph**, gradient equals **speed**. Horizontal line means stationary."},{"type":"math_block","latex":"\\text{speed} = \\frac{\\Delta d}{\\Delta t}","caption":"Gradient of distance–time graph"},{"type":"callout","variant":"key_point","content":"Steeper line ⇒ greater speed."},{"type":"example","title":"Distance $60$ km in $2$ h. Average speed?","steps":["$\\frac{60}{2} = 30$ km/h."],"answer":"$30$ km/h"},{"type":"question","questionText":"Horizontal section on d–t graph means?","questionType":"multiple_choice","options":["Stationary","Constant speed","Accelerating","Returning"],"correctAnswer":"Stationary","explanation":"Distance unchanged."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'distance_time'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Distance–Time Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reading Distance–Time Graphs', '{"blocks":[{"type":"heading","content":"Interpreting Graphs"},{"type":"example","title":"Graph rises $40$ km in $1$ h then flat $30$ min.","steps":["First hour: speed $40$ km/h.","Flat: rest $0.5$ h."],"answer":"Speed then rest"},{"type":"callout","variant":"warning","content":"Units on axes must match before calculating gradient."},{"type":"question","questionText":"Distance $100$ m in $25$ s. Speed?","questionType":"multiple_choice","options":["$4$ m/s","$25$ m/s","$0.25$ m/s","$125$ m/s"],"correctAnswer":"$4$ m/s","explanation":"$100/25$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'distance_time'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reading Distance–Time Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Distance–Time — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Distance–Time"},{"type":"example","title":"Bus: $0$–$2$ h travels $80$ km; $2$–$3$ h rest; $3$–$5$ h returns $80$ km.","steps":["Outward speed $40$ km/h.","Return speed $40$ km/h opposite direction."],"answer":"Piecewise journey"},{"type":"callout","variant":"warning","content":"Returning shows decreasing distance from start — negative gradient."},{"type":"question","questionText":"Gradient of d–t graph represents?","questionType":"multiple_choice","options":["Speed","Acceleration","Distance","Time"],"correctAnswer":"Speed","explanation":"$\\Delta d/\\Delta t$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'distance_time'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Distance–Time — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Velocity–Time Graphs', '{"blocks":[{"type":"heading","content":"Velocity–Time Graphs"},{"type":"paragraph","content":"On a **velocity–time graph**, gradient is **acceleration** and area under graph is **distance** (or displacement)."},{"type":"math_block","latex":"a = \\frac{\\Delta v}{\\Delta t}, \\quad d = \\text{area under } v\\text{–}t \\text{ graph}","caption":"Key v–t interpretations"},{"type":"example","title":"Speed constant $20$ m/s for $5$ s. Distance?","steps":["Rectangle area $20 \\times 5 = 100$ m."],"answer":"$100$ m"},{"type":"question","questionText":"Zero gradient on v–t graph means?","questionType":"multiple_choice","options":["Constant velocity","Zero velocity","Maximum speed","Returning"],"correctAnswer":"Constant velocity","explanation":"No acceleration."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'velocity_time'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Velocity–Time Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area Under Velocity–Time Graphs', '{"blocks":[{"type":"heading","content":"Area Methods"},{"type":"example","title":"Triangle: $v$ from $0$ to $10$ m/s in $4$ s.","steps":["Area $\\frac{1}{2}(4)(10) = 20$ m."],"answer":"$20$ m"},{"type":"callout","variant":"warning","content":"Split complex graphs into rectangles and triangles."},{"type":"question","questionText":"Trapezium on v–t: use?","questionType":"multiple_choice","options":["Area formula for trapezium","Circumference","Pythagoras only","Gradient only"],"correctAnswer":"Area formula for trapezium","explanation":"Area = distance."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'velocity_time'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area Under Velocity–Time Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Velocity–Time — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Velocity–Time"},{"type":"example","title":"$v=6$ m/s for $3$ s, then $v=2$ m/s for $2$ s. Total distance?","steps":["$6(3)+2(2)=22$ m."],"answer":"$22$ m"},{"type":"callout","variant":"warning","content":"Show area calculation clearly — method marks for splitting the graph."},{"type":"question","questionText":"Negative velocity on graph means?","questionType":"multiple_choice","options":["Moving opposite direction","Slowing only","Stationary","Speed increasing"],"correctAnswer":"Moving opposite direction","explanation":"Direction reversed."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'velocity_time'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Velocity–Time — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Acceleration Concept', '{"blocks":[{"type":"heading","content":"Acceleration"},{"type":"paragraph","content":"**Acceleration** is rate of change of velocity: $a = (v-u)/t$ for constant acceleration."},{"type":"math_block","latex":"a = \\frac{v - u}{t}","caption":"$u$ initial velocity, $v$ final, $t$ time"},{"type":"example","title":"Car $20$ m/s to $35$ m/s in $5$ s. Acceleration?","steps":["$a = (35-20)/5 = 3$ m/s$^2$."],"answer":"$3$ m/s$^2$"},{"type":"question","questionText":"Deceleration means acceleration is?","questionType":"multiple_choice","options":["Negative","Positive","Zero always","Infinite"],"correctAnswer":"Negative","explanation":"Slowing down."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'acceleration'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Acceleration Concept');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Equations of Linear Motion', '{"blocks":[{"type":"heading","content":"SUVAT for Linear Motion"},{"type":"callout","variant":"key_point","content":"For uniform acceleration: $v = u + at$, $s = ut + \\frac{1}{2}at^2$, $v^2 = u^2 + 2as$."},{"type":"example","title":"$u=0$, $a=2$ m/s$^2$, $t=6$ s. Find $v$ and $s$.","steps":["$v = 0 + 2(6) = 12$ m/s.","$s = 0 + \\frac{1}{2}(2)(36) = 36$ m."],"answer":"$v=12$ m/s, $s=36$ m"},{"type":"question","questionText":"$u=5$ m/s, $a=3$ m/s$^2$, $t=4$ s. Final $v$?","questionType":"multiple_choice","options":["$17$ m/s","$12$ m/s","$20$ m/s","$7$ m/s"],"correctAnswer":"$17$ m/s","explanation":"$5+12$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'acceleration'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Equations of Linear Motion');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Acceleration — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Acceleration"},{"type":"example","title":"Train brakes from $25$ m/s to $10$ m/s in $3$ s.","steps":["$a = (10-25)/3 = -5$ m/s$^2$."],"answer":"$-5$ m/s$^2$ (deceleration)"},{"type":"callout","variant":"warning","content":"State units: m/s$^2$ for acceleration, not m/s."},{"type":"question","questionText":"Uniform acceleration graph on v–t is?","questionType":"multiple_choice","options":["Straight line","Horizontal line","Circle","Hyperbola"],"correctAnswer":"Straight line","explanation":"Constant gradient."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_motion' AND st.code = 'acceleration'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Acceleration — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Distance–time gradient equals?', 'multiple_choice', '["Speed", "Acceleration", "Force", "Area"]'::jsonb, '"Speed"'::jsonb, 'easy', '$\Delta d/\Delta t$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distance_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Distance–time gradient equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$120$ km in $3$ h. Average speed?', 'multiple_choice', '["$40$ km/h", "$360$ km/h", "$117$ km/h", "$30$ km/h"]'::jsonb, '"$40$ km/h"'::jsonb, 'easy', '$120/3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distance_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$120$ km in $3$ h. Average speed?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Stationary object on d–t graph?', 'multiple_choice', '["Horizontal line", "Steep line", "Vertical line", "Curved line"]'::jsonb, '"Horizontal line"'::jsonb, 'easy', 'Distance constant.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distance_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Stationary object on d–t graph?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Speed $15$ m/s for $4$ s. Distance?', 'multiple_choice', '["$60$ m", "$19$ m", "$11$ m", "$240$ m"]'::jsonb, '"$60$ m"'::jsonb, 'easy', '$15 \times 4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distance_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Speed $15$ m/s for $4$ s. Distance?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Units of speed from km and h?', 'multiple_choice', '["km/h", "km h", "h/km", "km$^2$/h"]'::jsonb, '"km/h"'::jsonb, 'easy', 'Distance per time.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distance_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Units of speed from km and h?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Graph steeper means?', 'multiple_choice', '["Greater speed", "Less speed", "Zero speed", "Negative distance"]'::jsonb, '"Greater speed"'::jsonb, 'easy', 'Larger gradient.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distance_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Graph steeper means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$50$ m in $10$ s. Speed?', 'multiple_choice', '["$5$ m/s", "$500$ m/s", "$40$ m/s", "$0.2$ m/s"]'::jsonb, '"$5$ m/s"'::jsonb, 'easy', '$50/10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distance_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$50$ m in $10$ s. Speed?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area under v–t graph gives?', 'multiple_choice', '["Distance", "Speed only", "Mass", "Force"]'::jsonb, '"Distance"'::jsonb, 'medium', 'Integral of velocity.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='velocity_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area under v–t graph gives?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Gradient of v–t graph gives?', 'multiple_choice', '["Acceleration", "Distance", "Speed only", "Time"]'::jsonb, '"Acceleration"'::jsonb, 'medium', '$\Delta v/\Delta t$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='velocity_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Gradient of v–t graph gives?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Constant velocity on v–t is?', 'multiple_choice', '["Horizontal line", "Vertical line", "Parabola", "Circle"]'::jsonb, '"Horizontal line"'::jsonb, 'medium', 'Zero acceleration.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='velocity_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Constant velocity on v–t is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Triangle area $0$ to $8$ m/s in $2$ s. Distance?', 'multiple_choice', '["$8$ m", "$16$ m", "$4$ m", "$10$ m"]'::jsonb, '"$8$ m"'::jsonb, 'medium', '$\frac{1}{2}(2)(8)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='velocity_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Triangle area $0$ to $8$ m/s in $2$ s. Distance?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$v=10$ m/s for $6$ s. Distance?', 'multiple_choice', '["$60$ m", "$16$ m", "$4$ m", "$600$ m"]'::jsonb, '"$60$ m"'::jsonb, 'medium', 'Rectangle area.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='velocity_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$v=10$ m/s for $6$ s. Distance?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Speed increases — v–t gradient is?', 'multiple_choice', '["Positive", "Negative", "Zero", "Undefined always"]'::jsonb, '"Positive"'::jsonb, 'medium', 'Accelerating.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='velocity_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Speed increases — v–t gradient is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Retardation is?', 'multiple_choice', '["Negative acceleration", "Positive acceleration", "Constant speed", "Zero velocity"]'::jsonb, '"Negative acceleration"'::jsonb, 'medium', 'Slowing down.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='velocity_time'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Retardation is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$u=0$, $a=4$ m/s$^2$, $t=5$ s. Final $v$?', 'multiple_choice', '["$20$ m/s", "$25$ m/s", "$9$ m/s", "$1$ m/s"]'::jsonb, '"$20$ m/s"'::jsonb, 'hard', '$v=at$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='acceleration'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$u=0$, $a=4$ m/s$^2$, $t=5$ s. Final $v$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$u=10$ m/s, $v=30$ m/s, $t=4$ s. Acceleration?', 'multiple_choice', '["$5$ m/s$^2$", "$10$ m/s$^2$", "$7.5$ m/s$^2$", "$40$ m/s$^2$"]'::jsonb, '"$5$ m/s$^2$"'::jsonb, 'hard', '$(30-10)/4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='acceleration'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$u=10$ m/s, $v=30$ m/s, $t=4$ s. Acceleration?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$u=8$ m/s, $a=-2$ m/s$^2$, $t=3$ s. Final $v$?', 'multiple_choice', '["$2$ m/s", "$14$ m/s", "$6$ m/s", "$-6$ m/s"]'::jsonb, '"$2$ m/s"'::jsonb, 'hard', '$8-6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='acceleration'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$u=8$ m/s, $a=-2$ m/s$^2$, $t=3$ s. Final $v$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$s=ut+\frac{1}{2}at^2$ with $u=2$, $a=3$, $t=4$. Find $s$.', 'multiple_choice', '["$32$ m", "$24$ m", "$14$ m", "$48$ m"]'::jsonb, '"$32$ m"'::jsonb, 'hard', '$8+24$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='acceleration'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$s=ut+\frac{1}{2}at^2$ with $u=2$, $a=3$, $t=4$. Find $s$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Car $0$ to $20$ m/s in $10$ s. Acceleration?', 'multiple_choice', '["$2$ m/s$^2$", "$200$ m/s$^2$", "$0.5$ m/s$^2$", "$10$ m/s$^2$"]'::jsonb, '"$2$ m/s$^2$"'::jsonb, 'hard', '$20/10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='acceleration'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Car $0$ to $20$ m/s in $10$ s. Acceleration?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$v^2=u^2+2as$ with $u=0$, $v=12$, $s=18$. Find $a$.', 'multiple_choice', '["$4$ m/s$^2$", "$6$ m/s$^2$", "$2$ m/s$^2$", "$8$ m/s$^2$"]'::jsonb, '"$4$ m/s$^2$"'::jsonb, 'hard', '$144=36a$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='acceleration'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$v^2=u^2+2as$ with $u=0$, $v=12$, $s=18$. Find $a$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Uniform deceleration from $30$ m/s to $10$ m/s in $5$ s. $a$?', 'multiple_choice', '["$-4$ m/s$^2$", "$4$ m/s$^2$", "$-8$ m/s$^2$", "$8$ m/s$^2$"]'::jsonb, '"$-4$ m/s$^2$"'::jsonb, 'hard', '$(10-30)/5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='acceleration'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_motion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Uniform deceleration from $30$ m/s to $10$ m/s in $5$ s. $a$?');
