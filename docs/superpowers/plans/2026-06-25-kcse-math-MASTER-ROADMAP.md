@@ -68,8 +68,8 @@ add finer subtopics per topic as needed — additive only.)
 
 ### Form 3 — 15 topics
 ✅ `quadratic_equations_ii` · ✅ `approximations_errors` · ✅ `trigonometry_ii` · ✅ `surds`
-✅ `further_logarithms` · ▢ `commercial_arithmetic_ii` · ▢ `circles_chords_tangents` · ▢ `matrices`
-▢ `formulae_variations` · ▢ `sequences_series` · ▢ `vectors_ii` · ▢ `binomial_expansion`
+✅ `further_logarithms` · ✅ `commercial_arithmetic_ii` · ✅ `circles_chords_tangents` · ✅ `matrices`
+✅ `formulae_variations` · ✅ `sequences_series` · ▢ `vectors_ii` · ▢ `binomial_expansion`
 ▢ `probability` · ▢ `compound_proportions_rates_work` · ▢ `graphical_methods`
 
 ### Form 4 — 10 topics
@@ -77,7 +77,7 @@ add finer subtopics per topic as needed — additive only.)
 ▢ `three_dimensional_geometry` · ▢ `longitudes_latitudes` · ▢ `linear_programming`
 ▢ `differentiation` · ▢ `area_approximation` · ▢ `integration`
 
-**Status: 46 done · 19 remaining.**
+**Status: 51 done · 14 remaining.**
 
 ## 5. Per-topic workflow (the repeatable recipe)
 
