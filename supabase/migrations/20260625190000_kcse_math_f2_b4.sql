@@ -606,3 +606,204 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_median_mode'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_i'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is affected most by outlier?');
+
+-- ========== ANGLE PROPERTIES OF A CIRCLE ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angle at Centre and Circumference', '{"blocks":[{"type":"heading","content":"Centre and Circumference"},{"type":"paragraph","content":"The **angle at the centre** is twice the **angle at the circumference** standing on the same arc."},{"type":"math_block","latex":"\\angle \\text{centre} = 2 \\times \\angle \\text{circumference}","caption":"Same arc/subtended chord"},{"type":"example","title":"Angle at circumference $35^\\circ$. Centre angle?","steps":["$2 \\times 35 = 70^\\circ$."],"answer":"$70^\\circ$"},{"type":"question","questionText":"Angle at centre $120^\\circ$. Circumference angle?","questionType":"multiple_choice","options":["$60^\\circ$","$120^\\circ$","$240^\\circ$","$30^\\circ$"],"correctAnswer":"$60^\\circ$","explanation":"Half of centre angle."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'angles_centre_circumference'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angle at Centre and Circumference');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angles in the Same Segment', '{"blocks":[{"type":"heading","content":"Same Segment"},{"type":"callout","variant":"key_point","content":"Angles in the **same segment** (same side of chord) are **equal**."},{"type":"example","title":"Points A, B on circle; C, D on same arc. $\\angle ACB = \\angle ADB$.","steps":["Both subtend arc AB.","Equal angles."],"answer":"Equal angles"},{"type":"question","questionText":"Angle in semicircle is?","questionType":"multiple_choice","options":["$90^\\circ$","$180^\\circ$","$45^\\circ$","$60^\\circ$"],"correctAnswer":"$90^\\circ$","explanation":"Half of $180^\\circ$ at centre."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'angles_centre_circumference'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angles in the Same Segment');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Centre & Circumference — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Centre Angles"},{"type":"example","title":"Minor arc angle at centre $100^\\circ$. Angle at circumference?","steps":["$100/2 = 50^\\circ$."],"answer":"$50^\\circ$"},{"type":"callout","variant":"warning","content":"Use the correct arc — minor vs major gives different angles."},{"type":"question","questionText":"Diameter subtends at circumference?","questionType":"multiple_choice","options":["$90^\\circ$","$180^\\circ$","$45^\\circ$","$0^\\circ$"],"correctAnswer":"$90^\\circ$","explanation":"Semicircle theorem."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'angles_centre_circumference'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Centre & Circumference — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Cyclic Quadrilaterals', '{"blocks":[{"type":"heading","content":"Cyclic Quadrilaterals"},{"type":"paragraph","content":"A **cyclic quadrilateral** has all vertices on a circle. Opposite angles are **supplementary** (sum $180^\\circ$)."},{"type":"math_block","latex":"\\angle A + \\angle C = 180^\\circ, \\quad \\angle B + \\angle D = 180^\\circ","caption":"Opposite angles in cyclic quad"},{"type":"example","title":"Cyclic quad: $\\angle A = 70^\\circ$. Find $\\angle C$.","steps":["$\\angle C = 180 - 70 = 110^\\circ$."],"answer":"$110^\\circ$"},{"type":"question","questionText":"Opposite angles in cyclic quad sum to?","questionType":"multiple_choice","options":["$180^\\circ$","$90^\\circ$","$360^\\circ$","$270^\\circ$"],"correctAnswer":"$180^\\circ$","explanation":"Supplementary."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'cyclic_quadrilaterals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Cyclic Quadrilaterals');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Proving Cyclic Quadrilaterals', '{"blocks":[{"type":"heading","content":"Recognition"},{"type":"callout","variant":"key_point","content":"If opposite angles sum to $180^\\circ$, the quadrilateral is cyclic."},{"type":"example","title":"$\\angle P=85^\\circ$, $\\angle R=95^\\circ$. Cyclic?","steps":["$85+95=180$.","Yes, opposite angles supplementary."],"answer":"Cyclic"},{"type":"question","questionText":"$\\angle B=100^\\circ$ in cyclic quad. $\\angle D$?","questionType":"multiple_choice","options":["$80^\\circ$","$100^\\circ$","$280^\\circ$","$90^\\circ$"],"correctAnswer":"$80^\\circ$","explanation":"$180-100$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'cyclic_quadrilaterals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Proving Cyclic Quadrilaterals');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Cyclic Quadrilaterals — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Cyclic Quads"},{"type":"example","title":"ABCD cyclic, $\\angle A=2x$, $\\angle C=3x+20$. Find $x$.","steps":["$2x+3x+20=180$.","$5x=160$, $x=32$."],"answer":"$x=32$"},{"type":"callout","variant":"warning","content":"Label vertices in order around the circle — opposite means not adjacent."},{"type":"question","questionText":"Exterior angle of cyclic quad equals?","questionType":"multiple_choice","options":["Interior opposite angle","Adjacent angle","Always $90^\\circ$","Centre angle"],"correctAnswer":"Interior opposite angle","explanation":"Exterior angle theorem."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'cyclic_quadrilaterals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Cyclic Quadrilaterals — Exam Practice');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tangent and Radius', '{"blocks":[{"type":"heading","content":"Tangent Properties"},{"type":"paragraph","content":"A **tangent** touches the circle at one point. Radius to point of contact is **perpendicular** to tangent."},{"type":"callout","variant":"key_point","content":"Angle between radius and tangent = $90^\\circ$."},{"type":"example","title":"Radius OT, tangent at T. $\\angle OTT''$?","steps":["$90^\\circ$ at T."],"answer":"$90^\\circ$"},{"type":"question","questionText":"Tangent meets radius at?","questionType":"multiple_choice","options":["$90^\\circ$","$180^\\circ$","$45^\\circ$","$0^\\circ$"],"correctAnswer":"$90^\\circ$","explanation":"Perpendicular."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'tangent_angles'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent and Radius');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angle Between Tangent and Chord', '{"blocks":[{"type":"heading","content":"Alternate Segment Theorem"},{"type":"paragraph","content":"Angle between tangent and chord equals angle in **alternate segment**."},{"type":"example","title":"Tangent at A, chord AB. Angle between tangent and AB equals angle in opposite arc.","steps":["Identify alternate segment.","Copy angle to tangent-chord angle."],"answer":"Equal alternate segment angles"},{"type":"callout","variant":"warning","content":"Form 2 KCSE focuses on radius–tangent $90^\\circ$; alternate segment appears in harder items."},{"type":"question","questionText":"Two tangents from external point are?","questionType":"multiple_choice","options":["Equal in length","Perpendicular","Parallel","Different always"],"correctAnswer":"Equal in length","explanation":"Common external point property."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'tangent_angles'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angle Between Tangent and Chord');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tangent Angles — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Tangents"},{"type":"example","title":"Radius $5$ cm, tangent from external point length $12$ cm. Distance from centre to point?","steps":["Right triangle: $5^2+12^2=169$.","$13$ cm."],"answer":"$13$ cm"},{"type":"callout","variant":"warning","content":"Draw radius to point of contact — right angle unlocks Pythagoras."},{"type":"question","questionText":"Tangent radius $7$ cm, distance to centre $25$ cm. Tangent length?","questionType":"multiple_choice","options":["$24$ cm","$18$ cm","$32$ cm","$7$ cm"],"correctAnswer":"$24$ cm","explanation":"$25^2-7^2=576$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'angle_properties_circle' AND st.code = 'tangent_angles'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Angles — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angle at centre vs circumference?', 'multiple_choice', '["Centre is double", "Equal always", "Circumference double", "Sum $90^\circ$"]'::jsonb, '"Centre is double"'::jsonb, 'easy', 'Same arc rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle at centre vs circumference?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Circumference angle $40^\circ$. Centre?', 'multiple_choice', '["$80^\circ$", "$40^\circ$", "$160^\circ$", "$20^\circ$"]'::jsonb, '"$80^\circ$"'::jsonb, 'easy', 'Multiply by $2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Circumference angle $40^\circ$. Centre?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angle in semicircle?', 'multiple_choice', '["$90^\circ$", "$180^\circ$", "$45^\circ$", "$60^\circ$"]'::jsonb, '"$90^\circ$"'::jsonb, 'easy', 'Standard theorem.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle in semicircle?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Same segment angles are?', 'multiple_choice', '["Equal", "Supplementary", "Complementary", "Always $90^\circ$"]'::jsonb, '"Equal"'::jsonb, 'easy', 'Same arc.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Same segment angles are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Centre angle $50^\circ$. Circumference?', 'multiple_choice', '["$25^\circ$", "$50^\circ$", "$100^\circ$", "$75^\circ$"]'::jsonb, '"$25^\circ$"'::jsonb, 'easy', 'Half.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Centre angle $50^\circ$. Circumference?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Subtended means?', 'multiple_choice', '["Angle standing on arc/chord", "Radius length", "Tangent length", "Area"]'::jsonb, '"Angle standing on arc/chord"'::jsonb, 'easy', 'Geometry term.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Subtended means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Diameter angle at centre?', 'multiple_choice', '["$180^\circ$", "$90^\circ$", "$360^\circ$", "$0^\circ$"]'::jsonb, '"$180^\circ$"'::jsonb, 'easy', 'Straight line through centre.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_centre_circumference'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Diameter angle at centre?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Opposite angles in cyclic quad sum?', 'multiple_choice', '["$180^\circ$", "$90^\circ$", "$360^\circ$", "$270^\circ$"]'::jsonb, '"$180^\circ$"'::jsonb, 'medium', 'Supplementary.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Opposite angles in cyclic quad sum?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\angle A=65^\circ$ cyclic. $\angle C$?', 'multiple_choice', '["$115^\circ$", "$65^\circ$", "$125^\circ$", "$90^\circ$"]'::jsonb, '"$115^\circ$"'::jsonb, 'medium', '$180-65$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\angle A=65^\circ$ cyclic. $\angle C$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\angle B=110^\circ$. $\angle D$?', 'multiple_choice', '["$70^\circ$", "$110^\circ$", "$250^\circ$", "$90^\circ$"]'::jsonb, '"$70^\circ$"'::jsonb, 'medium', 'Opposite pair.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\angle B=110^\circ$. $\angle D$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'All vertices on circle — shape is?', 'multiple_choice', '["Cyclic quadrilateral", "Parallelogram always", "Rhombus", "Kite only"]'::jsonb, '"Cyclic quadrilateral"'::jsonb, 'medium', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='All vertices on circle — shape is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\angle P=3x$, $\angle R=2x+30$ cyclic. $x$?', 'multiple_choice', '["$30$", "$36$", "$25$", "$40$"]'::jsonb, '"$30$"'::jsonb, 'medium', '$5x+30=180$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\angle P=3x$, $\angle R=2x+30$ cyclic. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$80^\circ$ and $100^\circ$ opposite. Cyclic?', 'multiple_choice', '["Yes", "No", "Only if square", "Cannot tell"]'::jsonb, '"Yes"'::jsonb, 'medium', 'Sum $180$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$80^\circ$ and $100^\circ$ opposite. Cyclic?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Exterior angle equals interior?', 'multiple_choice', '["Opposite interior", "Adjacent interior", "Centre angle", "Tangent angle"]'::jsonb, '"Opposite interior"'::jsonb, 'medium', 'Cyclic property.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='cyclic_quadrilaterals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Exterior angle equals interior?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius and tangent at contact?', 'multiple_choice', '["Perpendicular", "Parallel", "$45^\circ$", "Collinear"]'::jsonb, '"Perpendicular"'::jsonb, 'medium', '$90^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius and tangent at contact?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $6$ cm, distance to point $10$ cm. Tangent?', 'multiple_choice', '["$8$ cm", "$4$ cm", "$16$ cm", "$12$ cm"]'::jsonb, '"$8$ cm"'::jsonb, 'hard', '$\sqrt{100-36}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $6$ cm, distance to point $10$ cm. Tangent?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two tangents from point lengths?', 'multiple_choice', '["Equal", "Unequal always", "Double radius", "Half radius"]'::jsonb, '"Equal"'::jsonb, 'hard', 'Symmetry.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two tangents from point lengths?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Centre angle $140^\circ$. Minor arc circumference angle?', 'multiple_choice', '["$70^\circ$", "$140^\circ$", "$280^\circ$", "$35^\circ$"]'::jsonb, '"$70^\circ$"'::jsonb, 'hard', 'Half centre.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Centre angle $140^\circ$. Minor arc circumference angle?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cyclic $\angle A=4x$, $\angle C=x+20$. Find $x$.', 'multiple_choice', '["$32$", "$40$", "$30$", "$36$"]'::jsonb, '"$32$"'::jsonb, 'hard', '$5x+20=180$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cyclic $\angle A=4x$, $\angle C=x+20$. Find $x$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Radius $9$, tangent $40$. Distance to centre?', 'multiple_choice', '["$41$", "$31$", "$49$", "$36$"]'::jsonb, '"$41$"'::jsonb, 'hard', '$\sqrt{81+1600}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Radius $9$, tangent $40$. Distance to centre?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\angle at circumference=55^\circ$. Reflex centre angle?', 'multiple_choice', '["$110^\circ$", "$250^\circ$", "$55^\circ$", "$220^\circ$"]'::jsonb, '"$110^\circ$"'::jsonb, 'hard', 'Minor arc centre $110^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tangent_angles'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='angle_properties_circle'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\angle at circumference=55^\circ$. Reflex centre angle?');
