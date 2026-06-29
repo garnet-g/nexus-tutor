@@ -599,4 +599,203 @@ SELECT t.id, st.id, '$y = 3x^2 - 12x + 7$. Minimum at $x$ equals?', 'multiple_ch
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_differentiation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = 3x^2 - 12x + 7$. Minimum at $x$ equals?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = 3x^2 - 12x + 7$. Minimum at $x$ equals?');-- ========== AREA APPROXIMATION ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Trapezium Rule — Concepts', '{"blocks":[{"type":"heading","content":"Approximating Area"},{"type":"paragraph","content":"The **trapezium rule** estimates the area under a curve $y = f(x)$ between $x = a$ and $x = b$ by splitting into strips and summing trapezium areas."},{"type":"math_block","latex":"A \\approx \\frac{h}{2}[y_0 + 2(y_1 + y_2 + \\cdots + y_{n-1}) + y_n]","caption":"Trapezium rule"},{"type":"callout","variant":"key_point","content":"$h$ is the **strip width**; $y_i$ are ordinates at equally spaced $x$-values."},{"type":"question","questionText":"Trapezium rule approximates?","questionType":"multiple_choice","options":["Area under a curve","Gradient","Volume of sphere","Derivative"],"correctAnswer":"Area under a curve","explanation":"Numerical integration."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'trapezium_rule'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Trapezium Rule — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applying the Trapezium Rule', '{"blocks":[{"type":"heading","content":"Worked Example"},{"type":"example","title":"$y = x^2$ from $x = 0$ to $x = 2$ with $4$ strips ($h = 0.5$). Ordinates: $0, 0.25, 1, 2.25, 4$.","steps":["$A \\approx \\frac{0.5}{2}[0 + 2(0.25+1+2.25) + 4]$","$= 0.25[0 + 7 + 4] = 2.75$."],"answer":"$2.75$ square units"},{"type":"callout","variant":"warning","content":"First and last ordinates have coefficient $1$; interior ordinates have coefficient $2$."},{"type":"question","questionText":"Strip width $h$ equals $(b-a)$ divided by?","questionType":"multiple_choice","options":["Number of strips $n$","$n+1$","$2n$","Ordinate count"],"correctAnswer":"Number of strips $n$","explanation":"Equal subdivision."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'trapezium_rule'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applying the Trapezium Rule');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Trapezium Rule — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Trapezium Rule"},{"type":"example","title":"Table of $x$ and $y$: $0,1,2,3,4$ with $y$: $1,3,5,7,9$. $h=1$. Area?","steps":["$A \\approx \\frac{1}{2}[1 + 2(3+5+7) + 9] = \\frac{1}{2}[1+30+9] = 20$."],"answer":"$20$ square units"},{"type":"callout","variant":"warning","content":"Show the bracket structure; arithmetic errors cost marks."},{"type":"question","questionText":"More strips generally make trapezium estimate?","questionType":"multiple_choice","options":["More accurate","Less accurate","Exactly exact always","Zero"],"correctAnswer":"More accurate","explanation":"Finer subdivision."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'trapezium_rule'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Trapezium Rule — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Trapezium rule estimates area under?', 'multiple_choice', '["A curve","A straight line only","A circle exactly","Derivative"]'::jsonb, '"A curve"'::jsonb, 'easy', 'Numerical method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trapezium_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Trapezium rule estimates area under?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Interior ordinates multiplied by?', 'multiple_choice', '["$2$","$1$","$0$","$h$"]'::jsonb, '"$2$"'::jsonb, 'easy', 'Standard formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trapezium_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Interior ordinates multiplied by?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$h$ in trapezium rule is?', 'multiple_choice', '["Strip width","Total height","Number of ordinates","Area"]'::jsonb, '"Strip width"'::jsonb, 'easy', 'Spacing in $x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trapezium_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$h$ in trapezium rule is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$h=2$, ordinates $2,6,10,14$. Trapezium area?', 'multiple_choice', '["$48$","$32$","$24$","$56$"]'::jsonb, '"$48$"'::jsonb, 'medium', '$1[2+2(6+10)+14]=48$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trapezium_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$h=2$, ordinates $2,6,10,14$. Trapezium area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'From $x=0$ to $x=4$ with $4$ strips, $h$ equals?', 'multiple_choice', '["$1$","$4$","$0.5$","$2$"]'::jsonb, '"$1$"'::jsonb, 'medium', '$4/4=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trapezium_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='From $x=0$ to $x=4$ with $4$ strips, $h$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=2x$, $x=0$ to $2$, $2$ strips. Trapezium area?', 'multiple_choice', '["$4$","$8$","$2$","$6$"]'::jsonb, '"$4$"'::jsonb, 'hard', 'Ordinates $0,2,4$; $h=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trapezium_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=2x$, $x=0$ to $2$, $2$ strips. Trapezium area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Trapezium rule on concave up curve tends to?', 'multiple_choice', '["Overestimate","Underestimate","Be exact","Give zero"]'::jsonb, '"Overestimate"'::jsonb, 'hard', 'Trapezia lie above curve.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trapezium_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Trapezium rule on concave up curve tends to?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mid-Ordinate Rule — Concepts', '{"blocks":[{"type":"heading","content":"Mid-Ordinate Method"},{"type":"paragraph","content":"Each strip''s height is taken at the **midpoint** of the strip. Area $\\approx h \\times$ (sum of mid-ordinates)."},{"type":"math_block","latex":"A \\approx h(y_{\\frac{1}{2}} + y_{\\frac{3}{2}} + \\cdots + y_{n-\\frac{1}{2}})","caption":"Mid-ordinate rule"},{"type":"callout","variant":"key_point","content":"Evaluate $f(x)$ at the centre of each sub-interval, not at the endpoints."},{"type":"question","questionText":"Mid-ordinate rule uses heights at?","questionType":"multiple_choice","options":["Strip midpoints","Left endpoints only","Right endpoints only","Origin only"],"correctAnswer":"Strip midpoints","explanation":"Definition."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'mid_ordinate_rule'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mid-Ordinate Rule — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applying the Mid-Ordinate Rule', '{"blocks":[{"type":"heading","content":"Worked Example"},{"type":"example","title":"$y = x^2$, $x = 0$ to $2$, $2$ strips ($h = 1$). Midpoints $x = 0.5, 1.5$.","steps":["$y(0.5) = 0.25$, $y(1.5) = 2.25$.","$A \\approx 1(0.25 + 2.25) = 2.5$."],"answer":"$2.5$ square units"},{"type":"callout","variant":"warning","content":"Do not double interior values — unlike trapezium rule."},{"type":"question","questionText":"Mid-ordinate area formula uses factor?","questionType":"multiple_choice","options":["$h$ times sum","$h/2$ times bracket","$2h$ times first only","$h^2$"],"correctAnswer":"$h$ times sum","explanation":"Simple sum of mid-heights."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'mid_ordinate_rule'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applying the Mid-Ordinate Rule');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mid-Ordinate Rule — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Mid-Ordinate Rule"},{"type":"example","title":"$x$: $0$ to $6$ in steps of $2$ ($3$ strips, $h=2$). Mid-$x$: $1,3,5$. $y = x+1$ gives $2,4,6$.","steps":["$A \\approx 2(2+4+6) = 24$."],"answer":"$24$ square units"},{"type":"callout","variant":"warning","content":"State mid-$x$ values before computing ordinates."},{"type":"question","questionText":"$4$ strips from $x=a$ to $x=b$: how many mid-ordinates?","questionType":"multiple_choice","options":["$4$","$3$","$5$","$2$"],"correctAnswer":"$4$","explanation":"One per strip."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'mid_ordinate_rule'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mid-Ordinate Rule — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mid-ordinate rule sums?', 'multiple_choice', '["Midpoint ordinates","End ordinates only","Derivatives","Gradients"]'::jsonb, '"Midpoint ordinates"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mid_ordinate_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mid-ordinate rule sums?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area $\approx h \times$?', 'multiple_choice', '["Sum of mid-ordinates","First ordinate only","$y_0 + y_n$","Gradient"]'::jsonb, '"Sum of mid-ordinates"'::jsonb, 'easy', 'Formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mid_ordinate_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area $\approx h \times$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x=0$ to $4$, $4$ strips. Mid-$x$ of first strip?', 'multiple_choice', '["$0.5$","$0$","$1$","$2$"]'::jsonb, '"$0.5$"'::jsonb, 'medium', 'Centre of $[0,1]$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mid_ordinate_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x=0$ to $4$, $4$ strips. Mid-$x$ of first strip?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$h=2$, mid-$y$: $5,9,13$. Mid-ordinate area?', 'multiple_choice', '["$54$","$27$","$36$","$48$"]'::jsonb, '"$54$"'::jsonb, 'medium', '$2(5+9+13)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mid_ordinate_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$h=2$, mid-$y$: $5,9,13$. Mid-ordinate area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$h=1$, mid-$y$ values $2,5,8$. Area?', 'multiple_choice', '["$15$","$10$","$8$","$12$"]'::jsonb, '"$15$"'::jsonb, 'medium', '$1(2+5+8)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mid_ordinate_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$h=1$, mid-$y$ values $2,5,8$. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=x^2$, $0 \leq x \leq 2$, $2$ strips. Mid-ordinate area?', 'multiple_choice', '["$2.5$","$2.75$","$4$","$1.5$"]'::jsonb, '"$2.5$"'::jsonb, 'hard', 'Mid at $0.5,1.5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mid_ordinate_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=x^2$, $0 \leq x \leq 2$, $2$ strips. Mid-ordinate area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Compared to trapezium, mid-ordinate uses?', 'multiple_choice', '["No doubling of interior terms","Coefficient $2$ on all","Only endpoints","Integration by parts"]'::jsonb, '"No doubling of interior terms"'::jsonb, 'hard', 'Different weighting.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mid_ordinate_rule'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Compared to trapezium, mid-ordinate uses?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Comparing Methods — Concepts', '{"blocks":[{"type":"heading","content":"Trapezium vs Mid-Ordinate"},{"type":"paragraph","content":"Both approximate $\\int_a^b f(x)\\,dx$. Accuracy depends on the curve and number of strips."},{"type":"table","rows":[["Trapezium rule","Uses all boundary ordinates; interior $\\times 2$"],["Mid-ordinate rule","Uses one height per strip at midpoint"]],"caption":"Method comparison"},{"type":"callout","variant":"key_point","content":"**More strips** generally improve accuracy for smooth curves."},{"type":"question","questionText":"Exact area requires?","questionType":"multiple_choice","options":["Integration (if possible)","Trapezium rule always","Mid-ordinate only","No calculation"],"correctAnswer":"Integration (if possible)","explanation":"Analytical integral."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'comparisons'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Comparing Methods — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Accuracy and Error', '{"blocks":[{"type":"heading","content":"When Methods Differ"},{"type":"example","title":"For $y = x^2$ on $[0,2]$, exact area $= \\frac{8}{3} \\approx 2.67$. Trapezium ($4$ strips) gave $2.75$; mid-ordinate ($2$ strips) gave $2.5$.","steps":["Compare with exact integral when available."],"answer":"Trapezium closer with more strips"},{"type":"callout","variant":"warning","content":"KCSE may ask which estimate is better or to compare with exact value."},{"type":"question","questionText":"Increasing strips $n$ generally?","questionType":"multiple_choice","options":["Reduces error","Increases error always","Gives zero area","Changes $h$ only with no effect"],"correctAnswer":"Reduces error","explanation":"Finer approximation."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'comparisons'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Accuracy and Error');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Comparisons — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Choosing a Method"},{"type":"example","title":"Given table of $x$ and $y$, either rule may be specified — read the question carefully.","steps":["Identify required rule from wording."],"answer":"Follow question instruction"},{"type":"callout","variant":"warning","content":"Show all ordinates or mid-ordinates used; state $h$ clearly."},{"type":"question","questionText":"Same strips: trapezium uses how many ordinates vs mid-ordinate midpoints?","questionType":"multiple_choice","options":["$n+1$ ordinates vs $n$ midpoints","Equal count","$n$ vs $n+1$","One each"],"correctAnswer":"$n+1$ ordinates vs $n$ midpoints","explanation":"Boundary points included."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'area_approximation' AND st.code = 'comparisons'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Comparisons — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Exact area under curve found by?', 'multiple_choice', '["Definite integration","Trapezium only","Mid-ordinate only","Differentiation"]'::jsonb, '"Definite integration"'::jsonb, 'easy', 'Analytical method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='comparisons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Exact area under curve found by?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'More strips usually means?', 'multiple_choice', '["Better approximation","Worse approximation","No change","Negative area"]'::jsonb, '"Better approximation"'::jsonb, 'easy', 'Smaller $h$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='comparisons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='More strips usually means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=4$ (constant) from $x=0$ to $4$. Exact area?', 'multiple_choice', '["$16$","$8$","$4$","$0$"]'::jsonb, '"$16$"'::jsonb, 'medium', '$4 \times 4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='comparisons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=4$ (constant) from $x=0$ to $4$. Exact area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Linear function $y=mx+c$: trapezium rule gives?', 'multiple_choice', '["Exact area","Always zero","Always overestimate","Undefined"]'::jsonb, '"Exact area"'::jsonb, 'medium', 'Trapezia match line.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='comparisons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Linear function $y=mx+c$: trapezium rule gives?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mid-ordinate with $1$ strip on $[0,2]$ for $y=x$: area?', 'multiple_choice', '["$2$","$1$","$4$","$0$"]'::jsonb, '"$2$"'::jsonb, 'hard', 'Mid at $x=1$, $y=1$; $2 \times 1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='comparisons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mid-ordinate with $1$ strip on $[0,2]$ for $y=x$: area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Which is generally true for convex increasing curve?', 'multiple_choice', '["Trapezium $\\geq$ exact area","Trapezium $\\leq$ exact always","Mid-ordinate always exact","Both always underestimate"]'::jsonb, '"Trapezium $\\geq$ exact area"'::jsonb, 'hard', 'Trapezia lie above curve.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='comparisons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Which is generally true for convex increasing curve?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Exact $\int_0^2 x\,dx$ equals?', 'multiple_choice', '["$2$","$4$","$1$","$0$"]'::jsonb, '"$2$"'::jsonb, 'hard', '$[x^2/2]_0^2=2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='comparisons'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Exact $\int_0^2 x\,dx$ equals?');
