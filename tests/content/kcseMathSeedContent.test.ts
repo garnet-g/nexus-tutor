@@ -65,7 +65,7 @@ const SEED_FILES = [
 // extract every lesson content JSON: , '{...}'::jsonb  (SQL doubles '' for apostrophes)
 function extractLessonJson(text: string): string[] {
   const out: string[] = [];
-  const re = /,\s*'(\{.*?\})'::jsonb/gs;
+  const re = /,\s*'(\{[\s\S]*?\})'::jsonb/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
     out.push(m[1].replace(/''/g, "'"));
@@ -112,7 +112,7 @@ function extractQuestions(
   text: string,
 ): Array<{ options: string; answer: string }> {
   const out: Array<{ options: string; answer: string }> = [];
-  const re = /'(\[[^\]]*\])'::jsonb,\s*'("[^']*")'::jsonb/gs;
+  const re = /'(\[[^\]]*\])'::jsonb,\s*'("[^']*")'::jsonb/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
     out.push({
@@ -167,7 +167,7 @@ describe("KCSE math seed — lesson content validates against schema", () => {
             if (!Array.isArray(opts) || !opts.includes(ans)) {
               failures.push(`answer ${answer} not in options ${options}`);
             }
-          } catch (error) {
+          } catch {
             // invalid JSON (e.g. single-backslash LaTeX in a JSONB field) — would fail ::jsonb load
             failures.push(`invalid JSON: ${options} / ${answer}`);
           }

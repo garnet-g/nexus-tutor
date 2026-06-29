@@ -36,6 +36,8 @@ jobs:
 
       - run: npm run build
 
+      - run: npm audit --audit-level=moderate
+
       - name: Supabase DB lint
         continue-on-error: true
         run: npx supabase db lint --linked
@@ -44,6 +46,4 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: End-to-end smoke tests
-        run: npm run test:e2e
-        env:
-          PLAYWRIGHT_BASE_URL: http://localhost:3000
+        run: npm run test:e2e:ci

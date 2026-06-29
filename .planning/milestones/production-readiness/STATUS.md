@@ -1,0 +1,121 @@
+---
+milestone: production-readiness
+phase: 00
+agent: orchestrator
+version: 1
+status: DRAFT
+supersedes: null
+inputs:
+  - nexus-map.md
+  - docs/cursor/nexus-production-remediation-master-prompt.md
+outputs:
+  - .planning/milestones/production-readiness/STATUS.md
+---
+
+# Production Readiness — Program Status
+
+**Orchestrator state:** `PHASE_01_CODER_COMPLETE`
+
+**Active branch:** `feat/kcse-math-f4-b2` (QA re-run observed `main` — verify branch at Phase 01 start)
+
+**Program verdict:** `NOT_READY` (baseline not yet verified through Phase 12)
+
+## Worktree capture (2026-06-29)
+
+Captured at program start. Preserve dirty worktree; do not reset/stash/discard.
+
+### Branch
+
+```
+feat/kcse-math-f4-b2
+```
+
+### `git status --short`
+
+```
+?? docs/cursor/nexus-production-remediation-master-prompt.md
+?? nexus-map.md
+```
+
+### `git diff --stat`
+
+```
+(empty — no unstaged tracked changes)
+```
+
+### `git diff --staged --stat`
+
+```
+(empty — nothing staged)
+```
+
+### `git log -10 --oneline`
+
+```
+5790235 docs(roadmap): mark Form 4 Batch 2 complete — all 66 topics done
+0bcedb0 test(content): validate KCSE Form 4 Batch 2 migration lessons
+652ae3b feat(content): author KCSE Form 4 Integration
+6fdb19a feat(content): author KCSE Form 4 Area Approximation
+d73b993 feat(content): author KCSE Form 4 Differentiation
+42a3cf1 feat(content): author KCSE Form 4 Linear Programming
+7f65aea feat(content): author KCSE Form 4 Longitudes and Latitudes
+15068dc Merge feat/kcse-math-f4-b1: KCSE Form 4 Batch 1 (matrices-transf/stats II/loci/trig III/3D geometry)
+c03d026 docs(roadmap): mark Form 4 Batch 1 complete
+6e891ac test(content): validate KCSE Form 4 Batch 1 migration lessons
+```
+
+### Ownership notes
+
+- Untracked `nexus-map.md` and remediation master prompt are program inputs; not owned by concurrent F4 B2 content commits.
+- F4 B2 migration `supabase/migrations/20260625240000_kcse_math_f4_b2.sql` **exists** on current branch (map section 11 stale on missing migration).
+- Prior audit observed staged `tests/content/kcseMathSeedContent.test.ts` and `.gen_f4_b2.mjs` that later landed as commits `0bcedb0` / content migrations — treat as concurrency evidence only.
+
+## Baseline gate evidence (fresh run 2026-06-29)
+
+| Gate | Result | Notes |
+|------|--------|-------|
+| `npm run orchestrator:status` | PASS | v2-tier-1 `PHASE_2_5_CODE_COMPLETE` |
+| `npm run lint` | PASS (4 warnings) | unused vars in scripts + kcseMathSeedContent.test.ts |
+| `npm run typecheck` | **PASS** | dotAll regex rewritten (DEC-012) |
+| `npm test` | PASS | 85 files, 464 tests |
+| `npm run test:scope-check` | PASS | |
+| `npm run build` | PASS | Next 16.2.9 production build, all routes emitted |
+| `npm audit --audit-level=moderate` | **PASS** | undici fix + postcss override (DEC-004) |
+| `npm run env:check` | PASS (stub) | exits 0; strict validation Phase 02 |
+| `npm run deploy:check` | PASS | lint + typecheck + test + scope-check + build + audit |
+| `npm run test:e2e:ci` | NOT_RUN | QA matrix (Playwright harness ready) |
+| `npx lhci autorun` | NOT_PRESENT | Phase 11 |
+| `npm run db:reset` | NOT_RUN | Phase 01+ |
+| `npx supabase migration list` | NOT_RUN | Phase 00 rescan |
+
+### Repository counts (verified 2026-06-29)
+
+| Surface | Count |
+|---------|------:|
+| Page routes (`src/app/**/page.tsx`) | 69 |
+| API route files | 73 |
+| SQL migrations | 39 |
+| Unit/integration test files | 71+ (82 vitest files per run) |
+| Playwright E2E specs | 5 files |
+
+## Phase status
+
+| Phase | Title | Coder | QA | Ledger rows owned |
+|-------|-------|-------|-----|-------------------|
+| 00 | Ground truth, ledger, authority reset | DONE | QA retry after ledger fix | PR-121, PR-122 closed |
+| 01 | Green baseline and release harness | DONE | — | P1.1, P1.4, Tier-2.5 verify |
+| 02 | Production environment policy | — | — | P0.3, P1.10 env half |
+| 03 | Payment trust | — | — | P0.1, P0.2 |
+| 04 | AuthZ and account consistency | — | — | P1.2, signup/OAuth |
+| 05 | Atomic DB + rate limiting | — | — | P1.3, P1.11 |
+| 06 | Admin authZ, rollouts, audit | — | — | P1.6, P1.7 |
+| 07 | Student utilities | — | — | P1.8 utilities |
+| 08 | Parent, family, notifications | — | — | parent/privacy |
+| 09 | Admin operational workflows | — | — | admin shells |
+| 10 | Content coverage and product truth | — | — | P1.9, P1.12 |
+| 11 | Browser security, a11y, perf | — | — | P1.5, observability |
+| 12 | Full-system release proof | — | — | E2E, staging, signoff |
+
+## Next action
+
+QA verifies Phase 01 (`CODER-CHANGELOG.md`, full gate matrix including `test:e2e:ci`).

@@ -1,15 +1,27 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const E2E_PORT = 3000;
+const E2E_BASE_URL = `http://localhost:${E2E_PORT}`;
+
+/** CI harness: `test:e2e:ci` sets CI via npm lifecycle; Playwright starts/stops production server. */
+const isCiHarness =
+  process.env.CI === "true" ||
+  process.env.npm_lifecycle_event === "test:e2e:ci";
+
+if (isCiHarness) {
+  process.env.CI = "true";
+}
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
-  forbidOnly: Boolean(process.env.CI),
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: isCiHarness,
+  retries: isCiHarness ? 2 : 0,
+  workers: isCiHarness ? 1 : undefined,
   reporter: "list",
   timeout: 60_000,
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? E2E_BASE_URL,
     trace: "on-first-retry",
     viewport: { width: 375, height: 812 },
     navigationTimeout: 60_000,
@@ -20,16 +32,16 @@ export default defineConfig({
       use: { ...devices["Pixel 5"] },
     },
   ],
-  webServer: process.env.CI
+  webServer: isCiHarness
     ? {
-        command: "npm run start",
-        url: "http://localhost:3000",
+        command: `npm run start -- -p ${E2E_PORT}`,
+        url: E2E_BASE_URL,
         reuseExistingServer: false,
         timeout: 120_000,
       }
     : {
         command: "npm run dev",
-        url: "http://localhost:3000",
+        url: E2E_BASE_URL,
         reuseExistingServer: true,
         timeout: 120_000,
       },
