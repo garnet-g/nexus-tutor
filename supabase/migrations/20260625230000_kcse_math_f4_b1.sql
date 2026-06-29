@@ -203,3 +203,203 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_scale_factor'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices_transformations'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Shear matrix $\det=1$. Area scale factor?');
+-- ========== STATISTICS II ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Grouped Data — Concepts', '{"blocks":[{"type":"heading","content":"Class Intervals"},{"type":"paragraph","content":"**Grouped data** lists frequencies in class intervals such as $10\\le x<20$. The **class width** is upper boundary minus lower."},{"type":"table","rows":[["$0$–$10$","$3$"],["$10$–$20$","$7$"],["$20$–$30$","$5$"]],"caption":"Example frequency table"},{"type":"callout","variant":"key_point","content":"Use **class midpoints** for mean estimates: midpoint $=\\frac{\\text{lower}+\\text{upper}}{2}$."},{"type":"question","questionText":"Class $15$–$25$ has width?","questionType":"multiple_choice","options":["$10$","$20$","$15$","$5$"],"correctAnswer":"$10$","explanation":"$25-15$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'grouped_data'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Grouped Data — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reading Grouped Tables', '{"blocks":[{"type":"heading","content":"Frequency Tables"},{"type":"example","title":"Total frequency from table with classes $0$–$10$: $4$, $10$–$20$: $6$, $20$–$30$: $2$.","steps":["Total $=4+6+2=12$."],"answer":"$12$"},{"type":"callout","variant":"warning","content":"Check whether boundaries are inclusive — KCSE tables state this clearly."},{"type":"question","questionText":"Midpoint of $20$–$30$?","questionType":"multiple_choice","options":["$25$","$20$","$30$","$10$"],"correctAnswer":"$25$","explanation":"Average of bounds."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'grouped_data'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reading Grouped Tables');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Grouped Data — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Grouped Data"},{"type":"example","title":"Which class has highest frequency if $0$–$5$: $2$, $5$–$10$: $9$, $10$–$15$: $4$?","steps":["$5$–$10$ has $9$."],"answer":"$5$–$10$"},{"type":"callout","variant":"warning","content":"Label axes clearly when drawing histograms — frequency density if widths differ."},{"type":"question","questionText":"Histogram with unequal classes uses?","questionType":"multiple_choice","options":["Frequency density","Raw frequency only on $y$","Cumulative freq only","Midpoints on $y$"],"correctAnswer":"Frequency density","explanation":"Area represents frequency."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'grouped_data'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Grouped Data — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Grouped data uses?', 'multiple_choice', '["Class intervals","Only single values","No frequencies","Pie charts only"]'::jsonb, '"Class intervals"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='grouped_data'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Grouped data uses?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Midpoint of $0$–$10$?', 'multiple_choice', '["$5$","$10$","$0$","$20$"]'::jsonb, '"$5$"'::jsonb, 'easy', 'Average bound.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='grouped_data'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Midpoint of $0$–$10$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Class width $5$–$15$?', 'multiple_choice', '["$10$","$5$","$15$","$20$"]'::jsonb, '"$10$"'::jsonb, 'easy', '$15-5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='grouped_data'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Class width $5$–$15$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Frequencies $3,7,5$. Total?', 'multiple_choice', '["$15$","$14$","$16$","$12$"]'::jsonb, '"$15$"'::jsonb, 'medium', 'Sum.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='grouped_data'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Frequencies $3,7,5$. Total?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cumulative freq at end equals?', 'multiple_choice', '["Total frequency","Class width","Mean","Variance"]'::jsonb, '"Total frequency"'::jsonb, 'medium', 'Running total.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='grouped_data'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cumulative freq at end equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Classes $10$–$20$ ($f=4$), $20$–$40$ ($f=8$). Histogram: second bar width?', 'multiple_choice', '["$20$","$10$","$8$","$4$"]'::jsonb, '"$20$"'::jsonb, 'hard', 'Unequal width.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='grouped_data'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Classes $10$–$20$ ($f=4$), $20$–$40$ ($f=8$). Histogram: second bar width?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Frequency density $=\frac{f}{w}$. Class $f=12$, $w=4$. Density?', 'multiple_choice', '["$3$","$48$","$8$","$16$"]'::jsonb, '"$3$"'::jsonb, 'hard', '$12/4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='grouped_data'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Frequency density $=\frac{f}{w}$. Class $f=12$, $w=4$. Density?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mean of Grouped Data — Concepts', '{"blocks":[{"type":"heading","content":"Estimated Mean"},{"type":"math_block","latex":"\\bar{x} = \\frac{\\sum fx}{\\sum f}","caption":"Using class midpoints for $x$"},{"type":"callout","variant":"key_point","content":"Multiply each midpoint by frequency, sum, divide by total frequency."},{"type":"question","questionText":"Grouped mean is?","questionType":"multiple_choice","options":["An estimate","Always exact","Always zero","Same as median always"],"correctAnswer":"An estimate","explanation":"Assumes uniform spread in class."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'mean_grouped'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mean of Grouped Data — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Calculating the Grouped Mean', '{"blocks":[{"type":"heading","content":"Worked Mean"},{"type":"table","rows":[["Class","$f$","Midpoint $x$","$fx$"],["$0$–$10$","$2$","$5$","$10$"],["$10$–$20$","$3$","$15$","$45$"]],"caption":"Mean calculation layout"},{"type":"example","title":"From table: $\\sum f=5$, $\\sum fx=55$.","steps":["$\\bar{x}=55/5=11$."],"answer":"$11$"},{"type":"callout","variant":"warning","content":"Show $\\sum fx$ and $\\sum f$ columns — method marks."},{"type":"question","questionText":"$\\sum fx=200$, $\\sum f=25$. Mean?","questionType":"multiple_choice","options":["$8$","$175$","$225$","$5$"],"correctAnswer":"$8$","explanation":"$200/25$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'mean_grouped'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating the Grouped Mean');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Grouped Mean — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Grouped Mean"},{"type":"example","title":"Classes: $10$–$20$ ($f=4$, mid $15$), $20$–$30$ ($f=6$, mid $25$). Mean?","steps":["$\\sum fx=60+150=210$, $\\sum f=10$.","$\\bar{x}=21$."],"answer":"$21$"},{"type":"callout","variant":"warning","content":"Use midpoints — not upper bounds."},{"type":"question","questionText":"If all midpoints increase by $2$, mean?","questionType":"multiple_choice","options":["Increases by $2$","Unchanged","Doubles","Halves"],"correctAnswer":"Increases by $2$","explanation":"Shift in data."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'mean_grouped'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Grouped Mean — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Grouped mean formula?', 'multiple_choice', '["$\\sum fx/\\sum f$","$\\sum f/\\sum x$","$\\sum x$ only","$f \\times w$"]'::jsonb, '"$\\sum fx/\\sum f$"'::jsonb, 'easy', 'Standard formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_grouped'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Grouped mean formula?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Use ___ as $x$ in grouped mean.', 'multiple_choice', '["Class midpoint","Upper bound only","Class width","Variance"]'::jsonb, '"Class midpoint"'::jsonb, 'easy', 'Representative value.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_grouped'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Use ___ as $x$ in grouped mean.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Class $5$–$15$, $f=8$. $fx$?', 'multiple_choice', '["$80$","$40$","$120$","$8$"]'::jsonb, '"$80$"'::jsonb, 'medium', 'Mid $10$, $8\times10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_grouped'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Class $5$–$15$, $f=8$. $fx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two classes same width, $f$ equal. Mean equals?', 'multiple_choice', '["Average of midpoints","Sum of widths","Zero","Median always"]'::jsonb, '"Average of midpoints"'::jsonb, 'medium', 'Symmetric weights.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_grouped'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two classes same width, $f$ equal. Mean equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sum fx=360$, $\sum f=30$. Mean?', 'multiple_choice', '["$12$","$330$","$390$","$30$"]'::jsonb, '"$12$"'::jsonb, 'medium', 'Division.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_grouped'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sum fx=360$, $\sum f=30$. Mean?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Add observation in highest class. Mean generally?', 'multiple_choice', '["Increases","Always decreases","Stays $0$","Undefined"]'::jsonb, '"Increases"'::jsonb, 'hard', 'Pulls mean up.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_grouped'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Add observation in highest class. Mean generally?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Classes $0$–$20$ ($f=5$), $20$–$40$ ($f=5$). Mean?', 'multiple_choice', '["$20$","$10$","$30$","$25$"]'::jsonb, '"$20$"'::jsonb, 'hard', 'Symmetric midpoints.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mean_grouped'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Classes $0$–$20$ ($f=5$), $20$–$40$ ($f=5$). Mean?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Quartiles and Spread — Concepts', '{"blocks":[{"type":"heading","content":"Quartiles"},{"type":"paragraph","content":"**$Q_1$** (lower quartile): $25\\%$ of data below. **$Q_2$**: median. **$Q_3$**: $75\\%$ below."},{"type":"math_block","latex":"IQR = Q_3 - Q_1","caption":"Interquartile range"},{"type":"callout","variant":"key_point","content":"From ogive, read $Q_1$, $Q_2$, $Q_3$ at $\\frac{n}{4}$, $\\frac{n}{2}$, $\\frac{3n}{4}$ positions."},{"type":"question","questionText":"IQR measures?","questionType":"multiple_choice","options":["Middle spread","Mean","Total frequency","Class width"],"correctAnswer":"Middle spread","explanation":"Spread of middle 50%."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'quartiles_deviation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Quartiles and Spread — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Variance and Standard Deviation', '{"blocks":[{"type":"heading","content":"Variance & SD"},{"type":"math_block","latex":"\\sigma^2 = \\frac{\\sum f(x-\\bar{x})^2}{\\sum f}, \\quad \\sigma = \\sqrt{\\sigma^2}","caption":"Grouped variance (estimate)"},{"type":"example","title":"If $\\sum f(x-\\bar{x})^2=100$ and $\\sum f=25$, variance?","steps":["$\\sigma^2=4$.","$\\sigma=2$."],"answer":"$\\sigma=2$"},{"type":"callout","variant":"warning","content":"Variance uses squared deviations — SD returns to original units."},{"type":"question","questionText":"Larger SD means data is?","questionType":"multiple_choice","options":["More spread out","Always larger mean","Always symmetric","Always grouped"],"correctAnswer":"More spread out","explanation":"Spread measure."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'quartiles_deviation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Variance and Standard Deviation');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Quartiles & SD — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Quartiles, Ogives, SD"},{"type":"example","title":"Ogive: $Q_1=12$, $Q_3=28$. IQR?","steps":["$IQR=16$."],"answer":"$16$"},{"type":"callout","variant":"warning","content":"Plot points at upper boundaries for a cumulative frequency curve."},{"type":"question","questionText":"$\\sigma^2=9$. $\\sigma$?","questionType":"multiple_choice","options":["$3$","$81$","$4.5$","$9$"],"correctAnswer":"$3$","explanation":"Square root."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'statistics_ii' AND st.code = 'quartiles_deviation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Quartiles & SD — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$Q_2$ is the?', 'multiple_choice', '["Median","Lower quartile","Upper quartile","Range"]'::jsonb, '"Median"'::jsonb, 'easy', '50th percentile.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='quartiles_deviation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$Q_2$ is the?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'IQR equals?', 'multiple_choice', '["$Q_3-Q_1$","$Q_2-Q_1$","$Q_3+Q_1$","$n/4$"]'::jsonb, '"$Q_3-Q_1$"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='quartiles_deviation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='IQR equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$Q_1=8$, $Q_3=20$. IQR?', 'multiple_choice', '["$12$","$28$","$10$","$16$"]'::jsonb, '"$12$"'::jsonb, 'medium', '$20-8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='quartiles_deviation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$Q_1=8$, $Q_3=20$. IQR?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sigma^2=25$. SD?', 'multiple_choice', '["$5$","$625$","$12.5$","$25$"]'::jsonb, '"$5$"'::jsonb, 'medium', '$\sqrt{25}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='quartiles_deviation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sigma^2=25$. SD?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'All values equal. SD?', 'multiple_choice', '["$0$","$1$","Undefined","Equals mean"]'::jsonb, '"$0$"'::jsonb, 'hard', 'No spread.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='quartiles_deviation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='All values equal. SD?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$n=80$. Position for $Q_3$ on ogive at?', 'multiple_choice', '["$60$","$40$","$20$","$80$"]'::jsonb, '"$60$"'::jsonb, 'hard', '$\frac{3n}{4}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='quartiles_deviation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$n=80$. Position for $Q_3$ on ogive at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Variance doubles when all values multiplied by?', 'multiple_choice', '["$2$","$4$","$\\sqrt{2}$","$1$"]'::jsonb, '"$2$"'::jsonb, 'hard', 'Scale factor squares for variance.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='quartiles_deviation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Variance doubles when all values multiplied by?');
