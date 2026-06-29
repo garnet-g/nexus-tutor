@@ -121,6 +121,15 @@ describe("KCSE math seed — lesson content validates against schema", () => {
         expect(blobs.length).toBe(expectedLessonCount);
       });
 
+      it("file is clean UTF-8 (no BOM, no mojibake)", () => {
+        // A leading BOM makes Postgres reject the file ("syntax error at or near ...").
+        expect(sql.charCodeAt(0)).not.toBe(0xfeff);
+        // UTF-8 -> cp1252 -> UTF-8 double-encoding leaves Â/Ã/â lead chars (e.g. â€" for —,
+        // Ã— for ×). Clean KCSE math content (ASCII + math symbols like — × − ≤ √ π) has none.
+        const mojibake = sql.match(/[ÂÃâ]/g);
+        expect(mojibake ?? []).toEqual([]);
+      });
+
       it("every lesson passes lessonContentSchema", () => {
         const failures: string[] = [];
         for (const blob of blobs) {

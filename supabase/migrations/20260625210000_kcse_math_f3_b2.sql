@@ -1,4 +1,4 @@
-﻿-- KCSE Form 3 Mathematics â€” Wave 3 Batch 2
+-- KCSE Form 3 Mathematics — Wave 3 Batch 2
 -- Topics: commercial_arithmetic_ii, circles_chords_tangents, matrices, formulae_variations, sequences_series
 -- Idempotent migration: lessons + practice questions.
 -- Authoring standard: docs/superpowers/plans/2026-06-25-kcse-math-CONTENT-GUIDE.md
@@ -23,13 +23,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_ii' AND st.code = 'compound_interest'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating Compound Interest');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Compound Interest â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Compound Interest"},{"type":"example","title":"A SACCO member deposits KES $15\\,000$ at $12\\%$ p.a. compounded yearly for $2$ years.","steps":["$A = 15000(1.12)^2 = 15000 \\times 1.2544 = 18816$.","Interest $= 3816$."],"answer":"Amount KES $18\\,816$; interest KES $3816$"},{"type":"callout","variant":"warning","content":"Check whether the question wants **amount** or **interest only**."},{"type":"question","questionText":"Which grows faster over several years?","questionType":"multiple_choice","options":["Compound interest","Simple interest at same rate","Both always equal","Neither grows"],"correctAnswer":"Compound interest","explanation":"Interest-on-interest effect."}]}'::jsonb, 10, 3
+SELECT st.id, 'Compound Interest — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Compound Interest"},{"type":"example","title":"A SACCO member deposits KES $15\\,000$ at $12\\%$ p.a. compounded yearly for $2$ years.","steps":["$A = 15000(1.12)^2 = 15000 \\times 1.2544 = 18816$.","Interest $= 3816$."],"answer":"Amount KES $18\\,816$; interest KES $3816$"},{"type":"callout","variant":"warning","content":"Check whether the question wants **amount** or **interest only**."},{"type":"question","questionText":"Which grows faster over several years?","questionType":"multiple_choice","options":["Compound interest","Simple interest at same rate","Both always equal","Neither grows"],"correctAnswer":"Compound interest","explanation":"Interest-on-interest effect."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_ii' AND st.code = 'compound_interest'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Compound Interest â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Compound Interest — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Compound interest formula uses?', 'multiple_choice', '["$\\left(1 + \\frac{R}{100}\\right)^n$","$\\frac{PRT}{100}$ only","$P + Rn$","$P - Rn$"]'::jsonb, '"$\\left(1 + \\frac{R}{100}\\right)^n$"'::jsonb, 'easy', 'Growth factor raised to $n$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -90,13 +90,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_ii' AND st.code = 'appreciation_depreciation'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating Appreciation and Depreciation');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Appreciation & Depreciation â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Value Change"},{"type":"example","title":"House bought KES $2\\,400\\,000$, appreciates $5\\%$ yearly. Worth after $4$ years?","steps":["$V = 2400000(1.05)^4 \\approx 2916030$."],"answer":"KES $2\\,916\\,030$"},{"type":"callout","variant":"warning","content":"State whether the rate is appreciation (+) or depreciation (âˆ’)."},{"type":"question","questionText":"Depreciating asset value after many years?","questionType":"multiple_choice","options":["Approaches zero but compound model never negative","Always negative","Doubles","Stays constant"],"correctAnswer":"Approaches zero but compound model never negative","explanation":"Repeated multiplication by factor $<1$."}]}'::jsonb, 10, 3
+SELECT st.id, 'Appreciation & Depreciation — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Value Change"},{"type":"example","title":"House bought KES $2\\,400\\,000$, appreciates $5\\%$ yearly. Worth after $4$ years?","steps":["$V = 2400000(1.05)^4 \\approx 2916030$."],"answer":"KES $2\\,916\\,030$"},{"type":"callout","variant":"warning","content":"State whether the rate is appreciation (+) or depreciation (−)."},{"type":"question","questionText":"Depreciating asset value after many years?","questionType":"multiple_choice","options":["Approaches zero but compound model never negative","Always negative","Doubles","Stays constant"],"correctAnswer":"Approaches zero but compound model never negative","explanation":"Repeated multiplication by factor $<1$."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_ii' AND st.code = 'appreciation_depreciation'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Appreciation & Depreciation â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Appreciation & Depreciation — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Appreciation means value?', 'multiple_choice', '["Increases","Decreases","Stays same","Becomes zero"]'::jsonb, '"Increases"'::jsonb, 'easy', 'Definition.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -149,7 +149,7 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_ii' AND st.code = 'hire_purchase'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Hire Purchase Agreements');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'HP Calculations and Comparisons', '{"blocks":[{"type":"heading","content":"Comparing Cash and HP"},{"type":"example","title":"Fridge cash KES $36\\,000$. HP: deposit KES $9000$, $12$ instalments of KES $2500$.","steps":["HP total $= 9000 + 12 \\times 2500 = 39000$.","HP interest/charge $= 39000 - 36000 = 3000$."],"answer":"HP costs KES $3000$ more than cash"},{"type":"callout","variant":"warning","content":"HP price is almost always **higher** than cash price â€” the difference is the cost of credit."},{"type":"example","title":"Find deposit if HP price KES $60\\,000$, $15$ instalments of KES $3000$.","steps":["Instalments total $= 45000$.","Deposit $= 60000 - 45000 = 15000$."],"answer":"KES $15\\,000$"},{"type":"question","questionText":"HP total minus cash price gives?","questionType":"multiple_choice","options":["Extra HP cost","Deposit","VAT only","Profit margin"],"correctAnswer":"Extra HP cost","explanation":"Credit charge."}]}'::jsonb, 12, 2
+SELECT st.id, 'HP Calculations and Comparisons', '{"blocks":[{"type":"heading","content":"Comparing Cash and HP"},{"type":"example","title":"Fridge cash KES $36\\,000$. HP: deposit KES $9000$, $12$ instalments of KES $2500$.","steps":["HP total $= 9000 + 12 \\times 2500 = 39000$.","HP interest/charge $= 39000 - 36000 = 3000$."],"answer":"HP costs KES $3000$ more than cash"},{"type":"callout","variant":"warning","content":"HP price is almost always **higher** than cash price — the difference is the cost of credit."},{"type":"example","title":"Find deposit if HP price KES $60\\,000$, $15$ instalments of KES $3000$.","steps":["Instalments total $= 45000$.","Deposit $= 60000 - 45000 = 15000$."],"answer":"KES $15\\,000$"},{"type":"question","questionText":"HP total minus cash price gives?","questionType":"multiple_choice","options":["Extra HP cost","Deposit","VAT only","Profit margin"],"correctAnswer":"Extra HP cost","explanation":"Credit charge."}]}'::jsonb, 12, 2
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
@@ -157,13 +157,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_ii' AND st.code = 'hire_purchase'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'HP Calculations and Comparisons');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Hire Purchase â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Hire Purchase"},{"type":"example","title":"Laptop cash KES $72\\,000$. Shop A: deposit $25\\%$ of cash plus $8$ months at KES $6500$. Find HP price.","steps":["Deposit $= 0.25 \\times 72000 = 18000$.","HP $= 18000 + 8 \\times 6500 = 70000$."],"answer":"KES $70\\,000$"},{"type":"callout","variant":"warning","content":"Deposit may be quoted as a **percentage of cash price** â€” calculate the actual KES amount first."},{"type":"question","questionText":"$18$ instalments of KES $2000$ plus deposit KES $5000$. HP price?","questionType":"multiple_choice","options":["KES $41000$","KES $36000$","KES $45000$","KES $5000$"],"correctAnswer":"KES $41000$","explanation":"$5000 + 18 \\times 2000$."}]}'::jsonb, 10, 3
+SELECT st.id, 'Hire Purchase — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Hire Purchase"},{"type":"example","title":"Laptop cash KES $72\\,000$. Shop A: deposit $25\\%$ of cash plus $8$ months at KES $6500$. Find HP price.","steps":["Deposit $= 0.25 \\times 72000 = 18000$.","HP $= 18000 + 8 \\times 6500 = 70000$."],"answer":"KES $70\\,000$"},{"type":"callout","variant":"warning","content":"Deposit may be quoted as a **percentage of cash price** — calculate the actual KES amount first."},{"type":"question","questionText":"$18$ instalments of KES $2000$ plus deposit KES $5000$. HP price?","questionType":"multiple_choice","options":["KES $41000$","KES $36000$","KES $45000$","KES $5000$"],"correctAnswer":"KES $41000$","explanation":"$5000 + 18 \\times 2000$."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'commercial_arithmetic_ii' AND st.code = 'hire_purchase'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Hire Purchase â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Hire Purchase — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'HP price equals deposit plus?', 'multiple_choice', '["Total instalments","Cash price only","VAT only","Interest rate"]'::jsonb, '"Total instalments"'::jsonb, 'easy', 'Sum all payments.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -218,7 +218,7 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'chord_properties'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Chord Properties of Circles');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Using Chord Theorems', '{"blocks":[{"type":"heading","content":"Perpendicular from Centre"},{"type":"example","title":"Chord $AB$ length $16$ cm; centre $O$ is $3$ cm from chord. Find radius.","steps":["Half chord $= 8$ cm.","Right triangle: $r^2 = 8^2 + 3^2 = 73$.","$r = \\sqrt{73}$ cm."],"answer":"$\\sqrt{73}$ cm $\\approx 8.54$ cm"},{"type":"callout","variant":"warning","content":"Draw the radius to the **midpoint** of the chord â€” it is perpendicular to the chord."},{"type":"example","title":"Two parallel chords $6$ cm and $8$ cm on opposite sides of centre, distance apart $14$ cm. Find radius.","steps":["Use distances from centre to each chord.","Set up $r^2 = d_1^2 + 9$ and $r^2 = d_2^2 + 16$ with $d_1+d_2=14$.","Solve simultaneously."],"answer":"Radius $= \\sqrt{58}$ cm"},{"type":"question","questionText":"Perpendicular from centre to chord bisects?","questionType":"multiple_choice","options":["The chord","The circle","The tangent","The arc only"],"correctAnswer":"The chord","explanation":"Creates two equal segments."}]}'::jsonb, 12, 2
+SELECT st.id, 'Using Chord Theorems', '{"blocks":[{"type":"heading","content":"Perpendicular from Centre"},{"type":"example","title":"Chord $AB$ length $16$ cm; centre $O$ is $3$ cm from chord. Find radius.","steps":["Half chord $= 8$ cm.","Right triangle: $r^2 = 8^2 + 3^2 = 73$.","$r = \\sqrt{73}$ cm."],"answer":"$\\sqrt{73}$ cm $\\approx 8.54$ cm"},{"type":"callout","variant":"warning","content":"Draw the radius to the **midpoint** of the chord — it is perpendicular to the chord."},{"type":"example","title":"Two parallel chords $6$ cm and $8$ cm on opposite sides of centre, distance apart $14$ cm. Find radius.","steps":["Use distances from centre to each chord.","Set up $r^2 = d_1^2 + 9$ and $r^2 = d_2^2 + 16$ with $d_1+d_2=14$.","Solve simultaneously."],"answer":"Radius $= \\sqrt{58}$ cm"},{"type":"question","questionText":"Perpendicular from centre to chord bisects?","questionType":"multiple_choice","options":["The chord","The circle","The tangent","The arc only"],"correctAnswer":"The chord","explanation":"Creates two equal segments."}]}'::jsonb, 12, 2
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
@@ -226,13 +226,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'chord_properties'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Using Chord Theorems');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Chord Properties â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Chords"},{"type":"example","title":"In circle centre $O$, chord $PQ=24$ cm, $OM \\perp PQ$ at $M$, $OM=5$ cm. Radius?","steps":["$PM=12$.","$r=\\sqrt{12^2+5^2}=13$ cm."],"answer":"$13$ cm"},{"type":"callout","variant":"warning","content":"Always halve the chord before using Pythagoras with the radius."},{"type":"question","questionText":"Equal chords in same circle are?","questionType":"multiple_choice","options":["Equidistant from centre","Parallel always","Perpendicular","Diameters"],"correctAnswer":"Equidistant from centre","explanation":"Chord theorem."}]}'::jsonb, 10, 3
+SELECT st.id, 'Chord Properties — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Chords"},{"type":"example","title":"In circle centre $O$, chord $PQ=24$ cm, $OM \\perp PQ$ at $M$, $OM=5$ cm. Radius?","steps":["$PM=12$.","$r=\\sqrt{12^2+5^2}=13$ cm."],"answer":"$13$ cm"},{"type":"callout","variant":"warning","content":"Always halve the chord before using Pythagoras with the radius."},{"type":"question","questionText":"Equal chords in same circle are?","questionType":"multiple_choice","options":["Equidistant from centre","Parallel always","Perpendicular","Diameters"],"correctAnswer":"Equidistant from centre","explanation":"Chord theorem."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'chord_properties'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Chord Properties â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Chord Properties — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'A chord joins?', 'multiple_choice', '["Two points on circumference","Centre to tangent","Two centres","Two tangents"]'::jsonb, '"Two points on circumference"'::jsonb, 'easy', 'Definition.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -285,7 +285,7 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'tangent_properties'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Properties');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Tangent Length and Angles', '{"blocks":[{"type":"heading","content":"Equal Tangents"},{"type":"example","title":"From external point $P$, tangents $PA$ and $PB$ touch circle at $A$, $B$. If $PA=7$ cm, find $PB$.","steps":["Tangents from $P$ are equal.","$PB = 7$ cm."],"answer":"$7$ cm"},{"type":"callout","variant":"warning","content":"The line $OP$ bisects the angle between the two tangents."},{"type":"example","title":"Radius $5$ cm, tangent at $T$. Point $P$ on tangent, $PT=12$ cm. Find $OP$.","steps":["$OT \\perp PT$; $OT=5$, $PT=12$.","$OP=\\sqrt{5^2+12^2}=13$ cm."],"answer":"$13$ cm"},{"type":"question","questionText":"Two tangents from $P$ to circle â€” lengths?","questionType":"multiple_choice","options":["Equal","Unequal always","Sum to radius","Half the diameter"],"correctAnswer":"Equal","explanation":"Tangent theorem."}]}'::jsonb, 12, 2
+SELECT st.id, 'Tangent Length and Angles', '{"blocks":[{"type":"heading","content":"Equal Tangents"},{"type":"example","title":"From external point $P$, tangents $PA$ and $PB$ touch circle at $A$, $B$. If $PA=7$ cm, find $PB$.","steps":["Tangents from $P$ are equal.","$PB = 7$ cm."],"answer":"$7$ cm"},{"type":"callout","variant":"warning","content":"The line $OP$ bisects the angle between the two tangents."},{"type":"example","title":"Radius $5$ cm, tangent at $T$. Point $P$ on tangent, $PT=12$ cm. Find $OP$.","steps":["$OT \\perp PT$; $OT=5$, $PT=12$.","$OP=\\sqrt{5^2+12^2}=13$ cm."],"answer":"$13$ cm"},{"type":"question","questionText":"Two tangents from $P$ to circle — lengths?","questionType":"multiple_choice","options":["Equal","Unequal always","Sum to radius","Half the diameter"],"correctAnswer":"Equal","explanation":"Tangent theorem."}]}'::jsonb, 12, 2
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
@@ -293,13 +293,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'tangent_properties'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Length and Angles');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Tangent Properties â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Tangents"},{"type":"example","title":"Circle radius $6$ cm; tangent from $P$ has length $8$ cm. Distance $OP$?","steps":["Right triangle: $OP^2=6^2+8^2=100$.","$OP=10$ cm."],"answer":"$10$ cm"},{"type":"callout","variant":"warning","content":"Diagram in words: draw radius to point of contact â€” it is the height of the right triangle."},{"type":"question","questionText":"Tangent touches circle at how many points?","questionType":"multiple_choice","options":["One","Two","Zero","Infinitely many"],"correctAnswer":"One","explanation":"Definition."}]}'::jsonb, 10, 3
+SELECT st.id, 'Tangent Properties — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Tangents"},{"type":"example","title":"Circle radius $6$ cm; tangent from $P$ has length $8$ cm. Distance $OP$?","steps":["Right triangle: $OP^2=6^2+8^2=100$.","$OP=10$ cm."],"answer":"$10$ cm"},{"type":"callout","variant":"warning","content":"Diagram in words: draw radius to point of contact — it is the height of the right triangle."},{"type":"question","questionText":"Tangent touches circle at how many points?","questionType":"multiple_choice","options":["One","Two","Zero","Infinitely many"],"correctAnswer":"One","explanation":"Definition."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'tangent_properties'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Properties â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tangent Properties — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Tangent to circle touches at?', 'multiple_choice', '["One point","Two points","No point","All points"]'::jsonb, '"One point"'::jsonb, 'easy', 'Definition.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -352,7 +352,7 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'intersecting_chords'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Intersecting Chords Inside a Circle');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Solving Intersecting Chord Problems', '{"blocks":[{"type":"heading","content":"Product Rule"},{"type":"example","title":"Chords intersect at $P$: $PA=4$, $PB=9$, $PC=6$. Find $PD$.","steps":["$PA \\cdot PB = PC \\cdot PD$.","$4 \\times 9 = 6 \\times PD$.","$PD = 6$."],"answer":"$PD = 6$"},{"type":"callout","variant":"warning","content":"Do not mix segments from different chords â€” pair $PA$ with $PB$, and $PC$ with $PD$."},{"type":"example","title":"$AP=3$, $BP=8$, $CP=4$. Find $DP$.","steps":["$3 \\times 8 = 4 \\times DP$.","$DP = 6$."],"answer":"$DP = 6$"},{"type":"question","questionText":"$PA \\cdot PB$ equals?","questionType":"multiple_choice","options":["$PC \\cdot PD$","$PA + PB$","$PC - PD$","$PA / PB$"],"correctAnswer":"$PC \\cdot PD$","explanation":"Intersecting chords theorem."}]}'::jsonb, 12, 2
+SELECT st.id, 'Solving Intersecting Chord Problems', '{"blocks":[{"type":"heading","content":"Product Rule"},{"type":"example","title":"Chords intersect at $P$: $PA=4$, $PB=9$, $PC=6$. Find $PD$.","steps":["$PA \\cdot PB = PC \\cdot PD$.","$4 \\times 9 = 6 \\times PD$.","$PD = 6$."],"answer":"$PD = 6$"},{"type":"callout","variant":"warning","content":"Do not mix segments from different chords — pair $PA$ with $PB$, and $PC$ with $PD$."},{"type":"example","title":"$AP=3$, $BP=8$, $CP=4$. Find $DP$.","steps":["$3 \\times 8 = 4 \\times DP$.","$DP = 6$."],"answer":"$DP = 6$"},{"type":"question","questionText":"$PA \\cdot PB$ equals?","questionType":"multiple_choice","options":["$PC \\cdot PD$","$PA + PB$","$PC - PD$","$PA / PB$"],"correctAnswer":"$PC \\cdot PD$","explanation":"Intersecting chords theorem."}]}'::jsonb, 12, 2
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
@@ -360,13 +360,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'intersecting_chords'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Intersecting Chord Problems');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Intersecting Chords â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Intersecting Chords"},{"type":"example","title":"Two chords cross: segments $5$ cm and $12$ cm on one; one segment $6$ cm on the other. Find unknown segment.","steps":["$5 \\times 12 = 6 \\times x$.","$x = 10$ cm."],"answer":"$10$ cm"},{"type":"callout","variant":"warning","content":"Sketch: mark intersection $P$ and all four segments before calculating."},{"type":"question","questionText":"If $PA=2$, $PB=18$, $PC=3$, then $PD$?","questionType":"multiple_choice","options":["$12$","$6$","$9$","$36$"],"correctAnswer":"$12$","explanation":"$36=3 \\cdot PD$."}]}'::jsonb, 10, 3
+SELECT st.id, 'Intersecting Chords — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Intersecting Chords"},{"type":"example","title":"Two chords cross: segments $5$ cm and $12$ cm on one; one segment $6$ cm on the other. Find unknown segment.","steps":["$5 \\times 12 = 6 \\times x$.","$x = 10$ cm."],"answer":"$10$ cm"},{"type":"callout","variant":"warning","content":"Sketch: mark intersection $P$ and all four segments before calculating."},{"type":"question","questionText":"If $PA=2$, $PB=18$, $PC=3$, then $PD$?","questionType":"multiple_choice","options":["$12$","$6$","$9$","$36$"],"correctAnswer":"$12$","explanation":"$36=3 \\cdot PD$."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'circles_chords_tangents' AND st.code = 'intersecting_chords'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Intersecting Chords â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Intersecting Chords — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Intersecting chords theorem: $PA \times PB$ equals?', 'multiple_choice', '["$PC \\times PD$","$PA + PB$","$PC + PD$","$PA - PB$"]'::jsonb, '"$PC \\times PD$"'::jsonb, 'easy', 'Product equality.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -413,15 +413,15 @@ AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.i
 -- ========== MATRICES ==========
 
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Introduction to 2Ã—2 Matrices', '{"blocks":[{"type":"heading","content":"Matrix Basics"},{"type":"paragraph","content":"A **2Ã—2 matrix** has two rows and two columns: $\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$."},{"type":"table","rows":[["$\\begin{pmatrix} 2 & 3 \\\\ 1 & 4 \\end{pmatrix}$","Row 1: $2, 3$"],["","Row 2: $1, 4$"]],"caption":"Reading a 2Ã—2 matrix"},{"type":"callout","variant":"key_point","content":"Add/subtract matrices of the **same order** by adding corresponding entries."},{"type":"question","questionText":"$\\begin{pmatrix} 1 & 2 \\\\ 0 & 3 \\end{pmatrix}$ has order?","questionType":"multiple_choice","options":["$2 \\times 2$","$2 \\times 1$","$1 \\times 2$","$4 \\times 4$"],"correctAnswer":"$2 \\times 2$","explanation":"Two rows, two columns."}]}'::jsonb, 10, 1
+SELECT st.id, 'Introduction to 2×2 Matrices', '{"blocks":[{"type":"heading","content":"Matrix Basics"},{"type":"paragraph","content":"A **2×2 matrix** has two rows and two columns: $\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$."},{"type":"table","rows":[["$\\begin{pmatrix} 2 & 3 \\\\ 1 & 4 \\end{pmatrix}$","Row 1: $2, 3$"],["","Row 2: $1, 4$"]],"caption":"Reading a 2×2 matrix"},{"type":"callout","variant":"key_point","content":"Add/subtract matrices of the **same order** by adding corresponding entries."},{"type":"question","questionText":"$\\begin{pmatrix} 1 & 2 \\\\ 0 & 3 \\end{pmatrix}$ has order?","questionType":"multiple_choice","options":["$2 \\times 2$","$2 \\times 1$","$1 \\times 2$","$4 \\times 4$"],"correctAnswer":"$2 \\times 2$","explanation":"Two rows, two columns."}]}'::jsonb, 10, 1
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'matrix_operations'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Introduction to 2Ã—2 Matrices');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Introduction to 2×2 Matrices');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Matrix Addition and Multiplication', '{"blocks":[{"type":"heading","content":"Operations on 2Ã—2 Matrices"},{"type":"example","title":"Add $\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix} + \\begin{pmatrix} 5 & 0 \\\\ 1 & 2 \\end{pmatrix}$.","steps":["Add entries: $\\begin{pmatrix} 6 & 2 \\\\ 4 & 6 \\end{pmatrix}$."],"answer":"$\\begin{pmatrix} 6 & 2 \\\\ 4 & 6 \\end{pmatrix}$"},{"type":"math_block","latex":"\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}\\begin{pmatrix} e & f \\\\ g & h \\end{pmatrix} = \\begin{pmatrix} ae+bg & af+bh \\\\ ce+dg & cf+dh \\end{pmatrix}","caption":"2Ã—2 multiplication rule"},{"type":"callout","variant":"warning","content":"Matrix multiplication is **not commutative**: $AB \\neq BA$ in general."},{"type":"question","questionText":"Can you multiply $2\\times2$ by $2\\times2$?","questionType":"multiple_choice","options":["Yes","No","Only if equal","Only if identity"],"correctAnswer":"Yes","explanation":"Inner dimensions match."}]}'::jsonb, 12, 2
+SELECT st.id, 'Matrix Addition and Multiplication', '{"blocks":[{"type":"heading","content":"Operations on 2×2 Matrices"},{"type":"example","title":"Add $\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix} + \\begin{pmatrix} 5 & 0 \\\\ 1 & 2 \\end{pmatrix}$.","steps":["Add entries: $\\begin{pmatrix} 6 & 2 \\\\ 4 & 6 \\end{pmatrix}$."],"answer":"$\\begin{pmatrix} 6 & 2 \\\\ 4 & 6 \\end{pmatrix}$"},{"type":"math_block","latex":"\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}\\begin{pmatrix} e & f \\\\ g & h \\end{pmatrix} = \\begin{pmatrix} ae+bg & af+bh \\\\ ce+dg & cf+dh \\end{pmatrix}","caption":"2×2 multiplication rule"},{"type":"callout","variant":"warning","content":"Matrix multiplication is **not commutative**: $AB \\neq BA$ in general."},{"type":"question","questionText":"Can you multiply $2\\times2$ by $2\\times2$?","questionType":"multiple_choice","options":["Yes","No","Only if equal","Only if identity"],"correctAnswer":"Yes","explanation":"Inner dimensions match."}]}'::jsonb, 12, 2
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
@@ -429,13 +429,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'matrix_operations'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Matrix Addition and Multiplication');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Matrix Operations â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Matrix Operations"},{"type":"example","title":"Compute $\\begin{pmatrix} 2 & 1 \\\\ 0 & 3 \\end{pmatrix}\\begin{pmatrix} 1 & 4 \\\\ 2 & 0 \\end{pmatrix}$.","steps":["Top-left: $2(1)+1(2)=4$.","Top-right: $2(4)+1(0)=8$.","Bottom-left: $0(1)+3(2)=6$.","Bottom-right: $0(4)+3(0)=0$."],"answer":"$\\begin{pmatrix} 4 & 8 \\\\ 6 & 0 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Show each cell calculation â€” method marks in KCSE."},{"type":"question","questionText":"Scalar $3 \\times \\begin{pmatrix} 2 & 1 \\\\ 0 & 4 \\end{pmatrix}$ top-left entry?","questionType":"multiple_choice","options":["$6$","$2$","$3$","$5$"],"correctAnswer":"$6$","explanation":"$3 \\times 2$."}]}'::jsonb, 10, 3
+SELECT st.id, 'Matrix Operations — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Matrix Operations"},{"type":"example","title":"Compute $\\begin{pmatrix} 2 & 1 \\\\ 0 & 3 \\end{pmatrix}\\begin{pmatrix} 1 & 4 \\\\ 2 & 0 \\end{pmatrix}$.","steps":["Top-left: $2(1)+1(2)=4$.","Top-right: $2(4)+1(0)=8$.","Bottom-left: $0(1)+3(2)=6$.","Bottom-right: $0(4)+3(0)=0$."],"answer":"$\\begin{pmatrix} 4 & 8 \\\\ 6 & 0 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Show each cell calculation — method marks in KCSE."},{"type":"question","questionText":"Scalar $3 \\times \\begin{pmatrix} 2 & 1 \\\\ 0 & 4 \\end{pmatrix}$ top-left entry?","questionType":"multiple_choice","options":["$6$","$2$","$3$","$5$"],"correctAnswer":"$6$","explanation":"$3 \\times 2$."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'matrix_operations'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Matrix Operations â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Matrix Operations — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Matrix $[3 & 5 ;  2 & 1]$: entry row 2 col 1?', 'multiple_choice', '["$2$","$3$","$5$","$1$"]'::jsonb, '"$2$"'::jsonb, 'easy', 'Second row, first column.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -480,29 +480,29 @@ WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$[2 & -1 ;  0 & 3][1 & 4 ;  2 & 0]$ full product bottom-right?');
 
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Determinant of a 2Ã—2 Matrix', '{"blocks":[{"type":"heading","content":"Determinant"},{"type":"math_block","latex":"\\det\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} = ad - bc","caption":"2Ã—2 determinant formula"},{"type":"callout","variant":"key_point","content":"If determinant $= 0$, the matrix has **no inverse**."},{"type":"example","title":"Find $\\det\\begin{pmatrix} 3 & 2 \\\\ 1 & 4 \\end{pmatrix}$.","steps":["$ad - bc = 3(4) - 2(1) = 12 - 2 = 10$."],"answer":"$10$"},{"type":"question","questionText":"$\\det\\begin{pmatrix} 2 & 1 \\\\ 4 & 2 \\end{pmatrix}$?","questionType":"multiple_choice","options":["$0$","$4$","$8$","$2$"],"correctAnswer":"$0$","explanation":"$4-4=0$."}]}'::jsonb, 10, 1
+SELECT st.id, 'Determinant of a 2×2 Matrix', '{"blocks":[{"type":"heading","content":"Determinant"},{"type":"math_block","latex":"\\det\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} = ad - bc","caption":"2×2 determinant formula"},{"type":"callout","variant":"key_point","content":"If determinant $= 0$, the matrix has **no inverse**."},{"type":"example","title":"Find $\\det\\begin{pmatrix} 3 & 2 \\\\ 1 & 4 \\end{pmatrix}$.","steps":["$ad - bc = 3(4) - 2(1) = 12 - 2 = 10$."],"answer":"$10$"},{"type":"question","questionText":"$\\det\\begin{pmatrix} 2 & 1 \\\\ 4 & 2 \\end{pmatrix}$?","questionType":"multiple_choice","options":["$0$","$4$","$8$","$2$"],"correctAnswer":"$0$","explanation":"$4-4=0$."}]}'::jsonb, 10, 1
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'determinant_inverse'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Determinant of a 2Ã—2 Matrix');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Determinant of a 2×2 Matrix');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Inverse of a 2Ã—2 Matrix', '{"blocks":[{"type":"heading","content":"Finding the Inverse"},{"type":"math_block","latex":"A^{-1} = \\frac{1}{ad-bc}\\begin{pmatrix} d & -b \\\\ -c & a \\end{pmatrix}","caption":"Inverse when $ad-bc \\neq 0$"},{"type":"example","title":"Find inverse of $\\begin{pmatrix} 2 & 1 \\\\ 3 & 4 \\end{pmatrix}$.","steps":["$\\det = 8-3=5$.","$A^{-1} = \\frac{1}{5}\\begin{pmatrix} 4 & -1 \\\\ -3 & 2 \\end{pmatrix}$."],"answer":"$\\frac{1}{5}\\begin{pmatrix} 4 & -1 \\\\ -3 & 2 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Swap diagonal entries and negate off-diagonal â€” then divide by determinant."},{"type":"question","questionText":"$AA^{-1}$ equals?","questionType":"multiple_choice","options":["Identity matrix","Zero matrix","$A^2$","Determinant"],"correctAnswer":"Identity matrix","explanation":"Definition of inverse."}]}'::jsonb, 12, 2
+SELECT st.id, 'Inverse of a 2×2 Matrix', '{"blocks":[{"type":"heading","content":"Finding the Inverse"},{"type":"math_block","latex":"A^{-1} = \\frac{1}{ad-bc}\\begin{pmatrix} d & -b \\\\ -c & a \\end{pmatrix}","caption":"Inverse when $ad-bc \\neq 0$"},{"type":"example","title":"Find inverse of $\\begin{pmatrix} 2 & 1 \\\\ 3 & 4 \\end{pmatrix}$.","steps":["$\\det = 8-3=5$.","$A^{-1} = \\frac{1}{5}\\begin{pmatrix} 4 & -1 \\\\ -3 & 2 \\end{pmatrix}$."],"answer":"$\\frac{1}{5}\\begin{pmatrix} 4 & -1 \\\\ -3 & 2 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Swap diagonal entries and negate off-diagonal — then divide by determinant."},{"type":"question","questionText":"$AA^{-1}$ equals?","questionType":"multiple_choice","options":["Identity matrix","Zero matrix","$A^2$","Determinant"],"correctAnswer":"Identity matrix","explanation":"Definition of inverse."}]}'::jsonb, 12, 2
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'determinant_inverse'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Inverse of a 2Ã—2 Matrix');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Inverse of a 2×2 Matrix');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Determinant & Inverse â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Determinant and Inverse"},{"type":"example","title":"Inverse of $\\begin{pmatrix} 4 & 0 \\\\ 0 & 2 \\end{pmatrix}$.","steps":["$\\det=8$.","$A^{-1}=\\begin{pmatrix} 1/4 & 0 \\\\ 0 & 1/2 \\end{pmatrix}$."],"answer":"$\\begin{pmatrix} 1/4 & 0 \\\\ 0 & 1/2 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Check: multiply $A$ by $A^{-1}$ to get $I$."},{"type":"question","questionText":"No inverse when determinant is?","questionType":"multiple_choice","options":["$0$","$1$","$-1$","Any positive"],"correctAnswer":"$0$","explanation":"Singular matrix."}]}'::jsonb, 10, 3
+SELECT st.id, 'Determinant & Inverse — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Determinant and Inverse"},{"type":"example","title":"Inverse of $\\begin{pmatrix} 4 & 0 \\\\ 0 & 2 \\end{pmatrix}$.","steps":["$\\det=8$.","$A^{-1}=\\begin{pmatrix} 1/4 & 0 \\\\ 0 & 1/2 \\end{pmatrix}$."],"answer":"$\\begin{pmatrix} 1/4 & 0 \\\\ 0 & 1/2 \\end{pmatrix}$"},{"type":"callout","variant":"warning","content":"Check: multiply $A$ by $A^{-1}$ to get $I$."},{"type":"question","questionText":"No inverse when determinant is?","questionType":"multiple_choice","options":["$0$","$1$","$-1$","Any positive"],"correctAnswer":"$0$","explanation":"Singular matrix."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'determinant_inverse'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Determinant & Inverse â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Determinant & Inverse — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, '$\det[5 & 2 ;  3 & 1]$?', 'multiple_choice', '["$-1$","$11$","$5$","$1$"]'::jsonb, '"$-1$"'::jsonb, 'easy', '$5-6$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -547,7 +547,7 @@ WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='matrices'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\det[2 & 3 ;  4 & 6]$. Inverse?');
 
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Solving Equations Using Matrices', '{"blocks":[{"type":"heading","content":"Matrix Form of Equations"},{"type":"paragraph","content":"Equations $ax+by=e$, $cx+dy=f$ become $A\\mathbf{x}=\\mathbf{b}$ where $A=\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$, $\\mathbf{x}=\\begin{pmatrix} x \\\\ y \\end{pmatrix}$."},{"type":"math_block","latex":"\\mathbf{x} = A^{-1}\\mathbf{b}","caption":"Solution when $A^{-1}$ exists"},{"type":"callout","variant":"key_point","content":"Write equations in standard form before building the matrix."},{"type":"question","questionText":"$2x+y=7$ and $x-y=2$ â€” matrix $A$ top row?","questionType":"multiple_choice","options":["$2, 1$","$1, -1$","$7, 2$","$1, 2$"],"correctAnswer":"$2, 1$","explanation":"Coeffs of $x,y$ in eqn 1."}]}'::jsonb, 10, 1
+SELECT st.id, 'Solving Equations Using Matrices', '{"blocks":[{"type":"heading","content":"Matrix Form of Equations"},{"type":"paragraph","content":"Equations $ax+by=e$, $cx+dy=f$ become $A\\mathbf{x}=\\mathbf{b}$ where $A=\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$, $\\mathbf{x}=\\begin{pmatrix} x \\\\ y \\end{pmatrix}$."},{"type":"math_block","latex":"\\mathbf{x} = A^{-1}\\mathbf{b}","caption":"Solution when $A^{-1}$ exists"},{"type":"callout","variant":"key_point","content":"Write equations in standard form before building the matrix."},{"type":"question","questionText":"$2x+y=7$ and $x-y=2$ — matrix $A$ top row?","questionType":"multiple_choice","options":["$2, 1$","$1, -1$","$7, 2$","$1, 2$"],"correctAnswer":"$2, 1$","explanation":"Coeffs of $x,y$ in eqn 1."}]}'::jsonb, 10, 1
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
@@ -563,13 +563,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'simultaneous_matrices'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Matrix Method for Simultaneous Equations');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Simultaneous Equations â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Matrix Method"},{"type":"example","title":"Solve $3x+2y=12$, $x-y=1$.","steps":["$A=\\begin{pmatrix} 3 & 2 \\\\ 1 & -1 \\end{pmatrix}$, $\\det=-5$.","$x=2$, $y=3$ after $A^{-1}\\mathbf{b}$."],"answer":"$x=2$, $y=3$"},{"type":"callout","variant":"warning","content":"Verify by substituting into **both** original equations."},{"type":"question","questionText":"$x+y=10$, $x-y=4$. $x$?","questionType":"multiple_choice","options":["$7$","$6$","$4$","$10$"],"correctAnswer":"$7$","explanation":"Add equations."}]}'::jsonb, 10, 3
+SELECT st.id, 'Simultaneous Equations — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Matrix Method"},{"type":"example","title":"Solve $3x+2y=12$, $x-y=1$.","steps":["$A=\\begin{pmatrix} 3 & 2 \\\\ 1 & -1 \\end{pmatrix}$, $\\det=-5$.","$x=2$, $y=3$ after $A^{-1}\\mathbf{b}$."],"answer":"$x=2$, $y=3$"},{"type":"callout","variant":"warning","content":"Verify by substituting into **both** original equations."},{"type":"question","questionText":"$x+y=10$, $x-y=4$. $x$?","questionType":"multiple_choice","options":["$7$","$6$","$4$","$10$"],"correctAnswer":"$7$","explanation":"Add equations."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'matrices' AND st.code = 'simultaneous_matrices'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simultaneous Equations â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simultaneous Equations — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, '$A\mathbf{x}=\mathbf{b}$ solved by $\mathbf{x}=$?', 'multiple_choice', '["$A^{-1}\\mathbf{b}$","$A\\mathbf{b}$","$\\mathbf{b}A^{-1}$","$\\det A$"]'::jsonb, '"$A^{-1}\\mathbf{b}$"'::jsonb, 'easy', 'Matrix method.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -616,7 +616,7 @@ AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.i
 -- ========== FORMULAE AND VARIATIONS ==========
 
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Change of Subject', '{"blocks":[{"type":"heading","content":"Making a Letter the Subject"},{"type":"paragraph","content":"To **change the subject** of a formula, rearrange so the required letter stands alone on one side."},{"type":"example","title":"Make $r$ the subject of $A = \\pi r^2$.","steps":["Divide by $\\pi$: $r^2 = A/\\pi$.","Square root: $r = \\sqrt{A/\\pi}$."],"answer":"$r = \\sqrt{A/\\pi}$"},{"type":"callout","variant":"key_point","content":"Undo operations in **reverse order** â€” what was done last is undone first."},{"type":"question","questionText":"Subject means?","questionType":"multiple_choice","options":["Letter alone on one side","Any constant","The equals sign","Exponent only"],"correctAnswer":"Letter alone on one side","explanation":"Definition."}]}'::jsonb, 10, 1
+SELECT st.id, 'Change of Subject', '{"blocks":[{"type":"heading","content":"Making a Letter the Subject"},{"type":"paragraph","content":"To **change the subject** of a formula, rearrange so the required letter stands alone on one side."},{"type":"example","title":"Make $r$ the subject of $A = \\pi r^2$.","steps":["Divide by $\\pi$: $r^2 = A/\\pi$.","Square root: $r = \\sqrt{A/\\pi}$."],"answer":"$r = \\sqrt{A/\\pi}$"},{"type":"callout","variant":"key_point","content":"Undo operations in **reverse order** — what was done last is undone first."},{"type":"question","questionText":"Subject means?","questionType":"multiple_choice","options":["Letter alone on one side","Any constant","The equals sign","Exponent only"],"correctAnswer":"Letter alone on one side","explanation":"Definition."}]}'::jsonb, 10, 1
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
@@ -632,13 +632,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'subject_of_formula'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Rearranging Formulae');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Change of Subject â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Formulae"},{"type":"example","title":"Make $R$ subject of $I = V/R$.","steps":["Multiply by $R$: $IR = V$.","$R = V/I$."],"answer":"$R = V/I$"},{"type":"callout","variant":"warning","content":"When the subject appears twice, collect like terms first."},{"type":"question","questionText":"$P = 2(l+w)$. Make $w$ subject.","questionType":"multiple_choice","options":["$w = P/2 - l$","$w = P - 2l$","$w = P/(2l)$","$w = 2P - l$"],"correctAnswer":"$w = P/2 - l$","explanation":"Divide $2$, subtract $l$."}]}'::jsonb, 10, 3
+SELECT st.id, 'Change of Subject — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Formulae"},{"type":"example","title":"Make $R$ subject of $I = V/R$.","steps":["Multiply by $R$: $IR = V$.","$R = V/I$."],"answer":"$R = V/I$"},{"type":"callout","variant":"warning","content":"When the subject appears twice, collect like terms first."},{"type":"question","questionText":"$P = 2(l+w)$. Make $w$ subject.","questionType":"multiple_choice","options":["$w = P/2 - l$","$w = P - 2l$","$w = P/(2l)$","$w = 2P - l$"],"correctAnswer":"$w = P/2 - l$","explanation":"Divide $2$, subtract $l$."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'subject_of_formula'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Change of Subject â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Change of Subject — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Make $x$ subject of $y = 3x$.', 'multiple_choice', '["$x = y/3$","$x = 3y$","$x = y-3$","$x = y+3$"]'::jsonb, '"$x = y/3$"'::jsonb, 'easy', 'Divide by $3$.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -699,13 +699,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'direct_inverse_variation'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Variation Problems');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Variation â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Variation"},{"type":"example","title":"Workers $w$ vary inversely with days $d$. $6$ workers take $10$ days. Days for $8$ workers?","steps":["$wd = 60$.","$d = 60/8 = 7.5$ days."],"answer":"$7.5$ days"},{"type":"callout","variant":"warning","content":"Identify direct vs inverse from wording: ''increases with'' vs ''decreases as''."},{"type":"question","questionText":"$y \\propto x$, $k=5$, $x=3$. $y$?","questionType":"multiple_choice","options":["$15$","$8$","$5/3$","$2$"],"correctAnswer":"$15$","explanation":"$y=5x$."}]}'::jsonb, 10, 3
+SELECT st.id, 'Variation — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Variation"},{"type":"example","title":"Workers $w$ vary inversely with days $d$. $6$ workers take $10$ days. Days for $8$ workers?","steps":["$wd = 60$.","$d = 60/8 = 7.5$ days."],"answer":"$7.5$ days"},{"type":"callout","variant":"warning","content":"Identify direct vs inverse from wording: ''increases with'' vs ''decreases as''."},{"type":"question","questionText":"$y \\propto x$, $k=5$, $x=3$. $y$?","questionType":"multiple_choice","options":["$15$","$8$","$5/3$","$2$"],"correctAnswer":"$15$","explanation":"$y=5x$."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'direct_inverse_variation'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Variation â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Variation — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, '$y \propto x$ means?', 'multiple_choice', '["$y = kx$","$y = k/x$","$y = x + k$","$y = k - x$"]'::jsonb, '"$y = kx$"'::jsonb, 'easy', 'Direct variation.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -750,7 +750,7 @@ WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='formulae_variations'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$w$ workers, $d$ days inverse. $5$ workers $12$ days. Workers for $8$ days?');
 
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Joint and Partial Variation', '{"blocks":[{"type":"heading","content":"Joint Variation"},{"type":"paragraph","content":"**Joint variation**: $y \\propto xz$ means $y = kxz$ â€” $y$ varies directly with the **product** of $x$ and $z$."},{"type":"paragraph","content":"**Partial variation**: $y = kx + c$ â€” partly varies with $x$ plus a **fixed** part $c$."},{"type":"callout","variant":"key_point","content":"Joint: multiply variables. Partial: add constant term."},{"type":"question","questionText":"$y \\propto xz$ means?","questionType":"multiple_choice","options":["$y = kxz$","$y = kx/z$","$y = kx + z$","$y = x + z$"],"correctAnswer":"$y = kxz$","explanation":"Joint direct."}]}'::jsonb, 10, 1
+SELECT st.id, 'Joint and Partial Variation', '{"blocks":[{"type":"heading","content":"Joint Variation"},{"type":"paragraph","content":"**Joint variation**: $y \\propto xz$ means $y = kxz$ — $y$ varies directly with the **product** of $x$ and $z$."},{"type":"paragraph","content":"**Partial variation**: $y = kx + c$ — partly varies with $x$ plus a **fixed** part $c$."},{"type":"callout","variant":"key_point","content":"Joint: multiply variables. Partial: add constant term."},{"type":"question","questionText":"$y \\propto xz$ means?","questionType":"multiple_choice","options":["$y = kxz$","$y = kx/z$","$y = kx + z$","$y = x + z$"],"correctAnswer":"$y = kxz$","explanation":"Joint direct."}]}'::jsonb, 10, 1
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
@@ -766,13 +766,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'joint_partial'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Joint and Partial Problems');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Joint & Partial â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Joint and Partial"},{"type":"example","title":"Electric bill: KES $800$ standing charge plus KES $12$/unit. Cost for $45$ units?","steps":["$C = 12(45) + 800 = 540 + 800 = 1340$."],"answer":"KES $1340$"},{"type":"callout","variant":"warning","content":"Kenyan utility bills often use partial variation (fixed + per unit)."},{"type":"question","questionText":"$F \\propto ma$ means force varies jointly with?","questionType":"multiple_choice","options":["$m$ and $a$","$m$ only","$1/a$","$m+a$"],"correctAnswer":"$m$ and $a$","explanation":"Newton''s law form."}]}'::jsonb, 10, 3
+SELECT st.id, 'Joint & Partial — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Joint and Partial"},{"type":"example","title":"Electric bill: KES $800$ standing charge plus KES $12$/unit. Cost for $45$ units?","steps":["$C = 12(45) + 800 = 540 + 800 = 1340$."],"answer":"KES $1340$"},{"type":"callout","variant":"warning","content":"Kenyan utility bills often use partial variation (fixed + per unit)."},{"type":"question","questionText":"$F \\propto ma$ means force varies jointly with?","questionType":"multiple_choice","options":["$m$ and $a$","$m$ only","$1/a$","$m+a$"],"correctAnswer":"$m$ and $a$","explanation":"Newton''s law form."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'formulae_variations' AND st.code = 'joint_partial'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Joint & Partial â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Joint & Partial — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, '$y \propto xz$ means?', 'multiple_choice', '["$y = kxz$","$y = kx + z$","$y = k/xz$","$y = x + z$"]'::jsonb, '"$y = kxz$"'::jsonb, 'easy', 'Joint variation.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -835,13 +835,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'arithmetic_progression'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'nth Term of an AP');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'AP â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Arithmetic Progression"},{"type":"example","title":"KES savings: week $1$ saves $500$, each week adds KES $200$. Amount in week $8$?","steps":["$a=500$, $d=200$.","$a_8 = 500 + 7(200) = 1900$."],"answer":"KES $1900$"},{"type":"callout","variant":"warning","content":"Word problems: identify $a$, $d$, and which term $n$ is asked."},{"type":"question","questionText":"AP with $d=0$ is?","questionType":"multiple_choice","options":["Constant sequence","GP","Increasing only","Undefined"],"correctAnswer":"Constant sequence","explanation":"All terms equal."}]}'::jsonb, 10, 3
+SELECT st.id, 'AP — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Arithmetic Progression"},{"type":"example","title":"KES savings: week $1$ saves $500$, each week adds KES $200$. Amount in week $8$?","steps":["$a=500$, $d=200$.","$a_8 = 500 + 7(200) = 1900$."],"answer":"KES $1900$"},{"type":"callout","variant":"warning","content":"Word problems: identify $a$, $d$, and which term $n$ is asked."},{"type":"question","questionText":"AP with $d=0$ is?","questionType":"multiple_choice","options":["Constant sequence","GP","Increasing only","Undefined"],"correctAnswer":"Constant sequence","explanation":"All terms equal."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'arithmetic_progression'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'AP â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'AP — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'AP common difference $d$ is?', 'multiple_choice', '["Constant between terms","Ratio","First term","Sum"]'::jsonb, '"Constant between terms"'::jsonb, 'easy', 'Definition.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -902,13 +902,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'geometric_progression'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'nth Term of a GP');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'GP â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Geometric Progression"},{"type":"example","title":"Bacteria double every hour. Start $500$. Count after $4$ hours?","steps":["$a=500$, $r=2$.","$a_5 = 500 \\times 2^4 = 8000$ (after 4 hours from start = 5th term if hour 0 is start).","Or $500 \\times 2^4 = 8000$."],"answer":"$8000$ bacteria"},{"type":"callout","variant":"warning","content":"Clarify whether $n$ counts from first term or growth periods."},{"type":"question","questionText":"$r=1$ in GP means?","questionType":"multiple_choice","options":["All terms equal","Alternating signs","Zero terms","No GP"],"correctAnswer":"All terms equal","explanation":"Constant sequence."}]}'::jsonb, 10, 3
+SELECT st.id, 'GP — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Geometric Progression"},{"type":"example","title":"Bacteria double every hour. Start $500$. Count after $4$ hours?","steps":["$a=500$, $r=2$.","$a_5 = 500 \\times 2^4 = 8000$ (after 4 hours from start = 5th term if hour 0 is start).","Or $500 \\times 2^4 = 8000$."],"answer":"$8000$ bacteria"},{"type":"callout","variant":"warning","content":"Clarify whether $n$ counts from first term or growth periods."},{"type":"question","questionText":"$r=1$ in GP means?","questionType":"multiple_choice","options":["All terms equal","Alternating signs","Zero terms","No GP"],"correctAnswer":"All terms equal","explanation":"Constant sequence."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'geometric_progression'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'GP â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'GP — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'GP common ratio $r$ is?', 'multiple_choice', '["Constant multiplier","Difference","Sum","First term"]'::jsonb, '"Constant multiplier"'::jsonb, 'easy', 'Definition.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
@@ -969,13 +969,13 @@ JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'series_sums'
 AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating Series Sums');
 INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
-SELECT st.id, 'Series Sums â€” Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE â€” Series"},{"type":"example","title":"KES fines: day $1$ KES $200$, increase KES $50$ daily for $7$ days. Total?","steps":["$a=200$, $d=50$, $n=7$.","$S_7 = 3.5(400+300) = 2450$."],"answer":"KES $2450$"},{"type":"callout","variant":"warning","content":"Identify AP vs GP before choosing sum formula."},{"type":"question","questionText":"GP sum with $r=1$ and $n$ terms?","questionType":"multiple_choice","options":["$na$","$a^n$","$n+a$","$0$"],"correctAnswer":"$na$","explanation":"All terms equal $a$."}]}'::jsonb, 10, 3
+SELECT st.id, 'Series Sums — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Series"},{"type":"example","title":"KES fines: day $1$ KES $200$, increase KES $50$ daily for $7$ days. Total?","steps":["$a=200$, $d=50$, $n=7$.","$S_7 = 3.5(400+300) = 2450$."],"answer":"KES $2450$"},{"type":"callout","variant":"warning","content":"Identify AP vs GP before choosing sum formula."},{"type":"question","questionText":"GP sum with $r=1$ and $n$ terms?","questionType":"multiple_choice","options":["$na$","$a^n$","$n+a$","$0$"],"correctAnswer":"$na$","explanation":"All terms equal $a$."}]}'::jsonb, 10, 3
 FROM public.subtopics st
 JOIN public.topics t ON t.id = st.topic_id
 JOIN public.subjects s ON s.id = t.subject_id
 JOIN public.curricula c ON c.id = s.curriculum_id
 WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'sequences_series' AND st.code = 'series_sums'
-AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Series Sums â€” Exam Practice');
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Series Sums — Exam Practice');
 INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
 SELECT t.id, st.id, 'Sum of AP first $n$ terms uses?', 'multiple_choice', '["$S_n = \\frac{n}{2}(2a+(n-1)d)$","$S_n = ar^{n-1}$","$S_n = nd$","$S_n = a+d$"]'::jsonb, '"$S_n = \\frac{n}{2}(2a+(n-1)d)$"'::jsonb, 'easy', 'AP sum formula.'
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
