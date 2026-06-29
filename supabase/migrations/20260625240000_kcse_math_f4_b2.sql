@@ -798,4 +798,203 @@ SELECT t.id, st.id, 'Exact $\int_0^2 x\,dx$ equals?', 'multiple_choice', '["$2$"
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='comparisons'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='area_approximation'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Exact $\int_0^2 x\,dx$ equals?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Exact $\int_0^2 x\,dx$ equals?');-- ========== INTEGRATION ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Indefinite Integrals — Concepts', '{"blocks":[{"type":"heading","content":"Reverse of Differentiation"},{"type":"paragraph","content":"**Integration** is the inverse of differentiation. The **indefinite integral** $\\int f(x)\\,dx = F(x) + c$ where $F''(x) = f(x)$."},{"type":"math_block","latex":"\\int x^n\\,dx = \\frac{x^{n+1}}{n+1} + c \\quad (n \\neq -1)","caption":"Power rule for integration"},{"type":"callout","variant":"key_point","content":"Always include **$+ c$** (constant of integration) for indefinite integrals."},{"type":"question","questionText":"$\\int f(x)\\,dx$ means?","questionType":"multiple_choice","options":["Function whose derivative is $f(x)$","Gradient of $f$","Product of $f$","$f(x)^2$"],"correctAnswer":"Function whose derivative is $f(x)$","explanation":"Antiderivative."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'indefinite_integrals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Indefinite Integrals — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding Indefinite Integrals', '{"blocks":[{"type":"heading","content":"Worked Examples"},{"type":"example","title":"$\\int 3x^2\\,dx$.","steps":["$\\frac{3x^3}{3} + c = x^3 + c$."],"answer":"$x^3 + c$"},{"type":"example","title":"$\\int (4x + 5)\\,dx$.","steps":["$2x^2 + 5x + c$."],"answer":"$2x^2 + 5x + c$"},{"type":"callout","variant":"warning","content":"Integrate term by term; constants become $cx$."},{"type":"question","questionText":"$\\int 1\\,dx$ equals?","questionType":"multiple_choice","options":["$x + c$","$1 + c$","$0$","$\\frac{x^2}{2} + c$"],"correctAnswer":"$x + c$","explanation":"Power rule with $n=0$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'indefinite_integrals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding Indefinite Integrals');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Indefinite Integrals — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Indefinite Integration"},{"type":"example","title":"$\\int (6x^2 - 4)\\,dx$.","steps":["$2x^3 - 4x + c$."],"answer":"$2x^3 - 4x + c$"},{"type":"callout","variant":"warning","content":"Check by differentiating your answer — derivative should restore integrand."},{"type":"question","questionText":"$\\int x^{-2}\\,dx$ equals?","questionType":"multiple_choice","options":["$-x^{-1} + c$","$x^{-1} + c$","$\\ln x + c$","$-2x^{-3} + c$"],"correctAnswer":"$-x^{-1} + c$","explanation":"$n = -2$ in power rule."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'indefinite_integrals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Indefinite Integrals — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Indefinite integral includes?', 'multiple_choice', '["$+ c$","Limits only","No constant","Square root only"]'::jsonb, '"$+ c$"'::jsonb, 'easy', 'Constant of integration.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='indefinite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Indefinite integral includes?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int x^3\,dx$ equals?', 'multiple_choice', '["$\\frac{x^4}{4} + c$","$3x^2 + c$","$x^4 + c$","$\\frac{x^3}{3} + c$"]'::jsonb, '"$\\frac{x^4}{4} + c$"'::jsonb, 'easy', 'Power rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='indefinite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int x^3\,dx$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int 5\,dx$ equals?', 'multiple_choice', '["$5x + c$","$5 + c$","$\\frac{5x^2}{2} + c$","$0$"]'::jsonb, '"$5x + c$"'::jsonb, 'easy', 'Constant integrates to $5x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='indefinite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int 5\,dx$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int (2x + 3)\,dx$?', 'multiple_choice', '["$x^2 + 3x + c$","$x^2 + 3 + c$","$2x^2 + c$","$2 + c$"]'::jsonb, '"$x^2 + 3x + c$"'::jsonb, 'medium', 'Term by term.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='indefinite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int (2x + 3)\,dx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int 4x^3\,dx$?', 'multiple_choice', '["$x^4 + c$","$4x^4 + c$","$x^3 + c$","$12x^2 + c$"]'::jsonb, '"$x^4 + c$"'::jsonb, 'medium', '$4 \cdot x^4/4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='indefinite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int 4x^3\,dx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int \frac{1}{x^2}\,dx$?', 'multiple_choice', '["$-\\frac{1}{x} + c$","$\\ln x + c$","$\\frac{1}{x} + c$","$-\\frac{2}{x^3} + c$"]'::jsonb, '"$-\\frac{1}{x} + c$"'::jsonb, 'hard', '$x^{-2}$ integrated.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='indefinite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int \frac{1}{x^2}\,dx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{d}{dx}(x^3 + 7)$ equals integrand of?', 'multiple_choice', '["$\\int 3x^2\\,dx$","$\\int x^2\\,dx$","$\\int 3\\,dx$","$\\int x^3\\,dx$"]'::jsonb, '"$\\int 3x^2\\,dx$"'::jsonb, 'hard', 'Derivative checks integral.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='indefinite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{d}{dx}(x^3 + 7)$ equals integrand of?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Definite Integrals — Concepts', '{"blocks":[{"type":"heading","content":"Integration with Limits"},{"type":"paragraph","content":"A **definite integral** $\\int_a^b f(x)\\,dx$ gives a **number** (signed area). No $+c$ needed."},{"type":"math_block","latex":"\\int_a^b f(x)\\,dx = [F(x)]_a^b = F(b) - F(a)","caption":"Fundamental theorem"},{"type":"callout","variant":"key_point","content":"Evaluate antiderivative at **upper limit minus lower limit**."},{"type":"question","questionText":"$\\int_a^b f(x)\\,dx$ has result type?","questionType":"multiple_choice","options":["A number","A function + $c$","A gradient","Always zero"],"correctAnswer":"A number","explanation":"Definite value."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'definite_integrals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Definite Integrals — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Evaluating Definite Integrals', '{"blocks":[{"type":"heading","content":"Worked Examples"},{"type":"example","title":"$\\int_0^2 x^2\\,dx$.","steps":["$\\left[\\frac{x^3}{3}\\right]_0^2 = \\frac{8}{3} - 0 = \\frac{8}{3}$."],"answer":"$\\frac{8}{3}$"},{"type":"example","title":"$\\int_1^3 (2x)\\,dx$.","steps":["$[x^2]_1^3 = 9 - 1 = 8$."],"answer":"$8$"},{"type":"callout","variant":"warning","content":"Show $[F(x)]_a^b = F(b) - F(a)$ explicitly in KCSE working."},{"type":"question","questionText":"$\\int_0^1 1\\,dx$ equals?","questionType":"multiple_choice","options":["$1$","$0$","$x$","$2$"],"correctAnswer":"$1$","explanation":"Unit square area."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'definite_integrals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Evaluating Definite Integrals');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Definite Integrals — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Definite Integration"},{"type":"example","title":"$\\int_0^4 (3x^2 + 2)\\,dx$.","steps":["$[x^3 + 2x]_0^4 = 64 + 8 = 72$."],"answer":"$72$"},{"type":"callout","variant":"warning","content":"Simplify before substituting limits when possible."},{"type":"question","questionText":"$\\int_2^5 4\\,dx$ equals?","questionType":"multiple_choice","options":["$12$","$4$","$20$","$8$"],"correctAnswer":"$12$","explanation":"$4(5-2)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'definite_integrals'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Definite Integrals — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Definite integral result is?', 'multiple_choice', '["A numerical value","Always $+ c$","A function only","Undefined"]'::jsonb, '"A numerical value"'::jsonb, 'easy', 'Limits fix the constant.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='definite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Definite integral result is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int_0^2 2x\,dx$ equals?', 'multiple_choice', '["$4$","$2$","$8$","$0$"]'::jsonb, '"$4$"'::jsonb, 'easy', '$[x^2]_0^2=4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='definite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int_0^2 2x\,dx$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int_1^3 x^2\,dx$?', 'multiple_choice', '["$\\frac{26}{3}$","$8$","$9$","$6$"]'::jsonb, '"$\\frac{26}{3}$"'::jsonb, 'medium', '$27/3 - 1/3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='definite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int_1^3 x^2\,dx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int_0^2 (x+1)\,dx$?', 'multiple_choice', '["$4$","$2$","$3$","$6$"]'::jsonb, '"$4$"'::jsonb, 'medium', '$[x^2/2+x]_0^2=2+2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='definite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int_0^2 (x+1)\,dx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int_0^3 x\,dx$ equals?', 'multiple_choice', '["$\\frac{9}{2}$","$3$","$6$","$9$"]'::jsonb, '"$\\frac{9}{2}$"'::jsonb, 'medium', '$[x^2/2]_0^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='definite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int_0^3 x\,dx$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int_{-1}^1 x\,dx$ equals?', 'multiple_choice', '["$0$","$1$","$2$","$-1$"]'::jsonb, '"$0$"'::jsonb, 'hard', 'Odd function symmetric limits.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='definite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int_{-1}^1 x\,dx$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int_0^3 (6x - 2)\,dx$?', 'multiple_choice', '["$21$","$24$","$18$","$9$"]'::jsonb, '"$21$"'::jsonb, 'hard', '$[3x^2-2x]_0^3=27-6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='definite_integrals'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int_0^3 (6x - 2)\,dx$?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area Under a Curve — Concepts', '{"blocks":[{"type":"heading","content":"Area and Integration"},{"type":"paragraph","content":"The area between $y = f(x)$, the $x$-axis, and lines $x = a$, $x = b$ is $\\int_a^b f(x)\\,dx$ when $f(x) \\geq 0$."},{"type":"math_block","latex":"A = \\int_a^b y\\,dx","caption":"Area under curve"},{"type":"callout","variant":"key_point","content":"If the curve dips below the $x$-axis, split the integral or use absolute value as required."},{"type":"question","questionText":"Area under $y=f(x)$ from $x=a$ to $x=b$ (above axis) equals?","questionType":"multiple_choice","options":["$\\int_a^b f(x)\\,dx$","$\\frac{dy}{dx}$","$f(b)-f(a)$","$\\int f(x)\\,dx$ only"],"correctAnswer":"$\\int_a^b f(x)\\,dx$","explanation":"Definite integral."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'area_under_curve'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area Under a Curve — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding Areas', '{"blocks":[{"type":"heading","content":"Worked Example"},{"type":"example","title":"Area under $y = x^2$ from $x = 0$ to $x = 3$.","steps":["$A = \\int_0^3 x^2\\,dx = \\left[\\frac{x^3}{3}\\right]_0^3 = 9$ square units."],"answer":"$9$ square units"},{"type":"example","title":"Area between $y = 2x$ and $x$-axis from $0$ to $4$.","steps":["$\\int_0^4 2x\\,dx = [x^2]_0^4 = 16$."],"answer":"$16$ square units"},{"type":"callout","variant":"warning","content":"Sketch the region; state limits $a$ and $b$ before integrating."},{"type":"question","questionText":"Units of area from $\\int y\\,dx$?","questionType":"multiple_choice","options":["Square units","Linear units","Cubic units","No units"],"correctAnswer":"Square units","explanation":"Area measure."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'area_under_curve'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding Areas');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Area Under a Curve — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Area Problems"},{"type":"example","title":"$y = 4 - x^2$ and $x$-axis from $x = -2$ to $x = 2$.","steps":["Even function: $2\\int_0^2 (4-x^2)dx$ or direct evaluation.","$A = 32/3$ square units."],"answer":"$\\frac{32}{3}$ square units"},{"type":"callout","variant":"warning","content":"Show integral setup, antiderivative, and substitution of limits."},{"type":"question","questionText":"$y = 5$ from $x = 1$ to $x = 4$. Area?","questionType":"multiple_choice","options":["$15$","$5$","$20$","$3$"],"correctAnswer":"$15$","explanation":"Rectangle $5 \\times 3$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'integration' AND st.code = 'area_under_curve'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Area Under a Curve — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area above $x$-axis: $y=f(x)$, limits $a$ to $b$?', 'multiple_choice', '["$\\int_a^b f(x)\\,dx$","$f(b)-f(a)$","$\\int f(x)\\,dx + c$","$\\frac{dy}{dx}$"]'::jsonb, '"$\\int_a^b f(x)\\,dx$"'::jsonb, 'easy', 'Standard area formula.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_under_curve'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area above $x$-axis: $y=f(x)$, limits $a$ to $b$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=3$ from $x=0$ to $x=5$. Area?', 'multiple_choice', '["$15$","$8$","$3$","$5$"]'::jsonb, '"$15$"'::jsonb, 'easy', '$3 \times 5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_under_curve'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=3$ from $x=0$ to $x=5$. Area?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\int_0^2 (2x+1)\,dx$ (area interpretation)?', 'multiple_choice', '["$6$","$4$","$5$","$8$"]'::jsonb, '"$6$"'::jsonb, 'medium', '$[x^2+x]_0^2=6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_under_curve'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\int_0^2 (2x+1)\,dx$ (area interpretation)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area under $y=x^2$ from $0$ to $2$?', 'multiple_choice', '["$\\frac{8}{3}$","$4$","$2$","$\\frac{4}{3}$"]'::jsonb, '"$\\frac{8}{3}$"'::jsonb, 'medium', 'Standard integral.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_under_curve'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area under $y=x^2$ from $0$ to $2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=6-x^2$ crosses $x$-axis when $x$ equals?', 'multiple_choice', '["$\\pm\\sqrt{6}$","$\\pm 6$","$0$ only","$\\pm 3$"]'::jsonb, '"$\\pm\\sqrt{6}$"'::jsonb, 'hard', '$6-x^2=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_under_curve'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=6-x^2$ crosses $x$-axis when $x$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area between $y=x$ and $y=x^2$ on $[0,1]$?', 'multiple_choice', '["$\\frac{1}{6}$","$\\frac{1}{2}$","$\\frac{1}{3}$","$1$"]'::jsonb, '"$\\frac{1}{6}$"'::jsonb, 'hard', '$\int_0^1(x-x^2)dx$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_under_curve'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area between $y=x$ and $y=x^2$ on $[0,1]$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Area under $y=2$ from $x=1$ to $x=5$?', 'multiple_choice', '["$8$","$4$","$10$","$6$"]'::jsonb, '"$8$"'::jsonb, 'hard', '$2 \times 4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='area_under_curve'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='integration'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Area under $y=2$ from $x=1$ to $x=5$?');
