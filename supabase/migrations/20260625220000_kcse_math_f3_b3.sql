@@ -607,3 +607,204 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tree_diagrams'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bag $4$W $6$B, two draws no replacement, $P(\text{different colours})$?');
 
+-- ========== COMPOUND PROPORTIONS AND RATES OF WORK ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Joint and Compound Proportion', '{"blocks":[{"type":"heading","content":"Compound Proportion"},{"type":"paragraph","content":"**Compound proportion** links one quantity to **two or more** others. Example: $T \\propto \\frac{D}{S}$ (time directly to distance, inversely to speed)."},{"type":"math_block","latex":"T = k\\frac{D}{S}","caption":"Time from distance and speed"},{"type":"callout","variant":"key_point","content":"Identify direct ($\\uparrow$ together) and inverse ($\\uparrow\\downarrow$) relationships before writing the formula."},{"type":"question","questionText":"More workers, same job — days required?","questionType":"multiple_choice","options":["Decrease","Increase","Stay same","Double always"],"correctAnswer":"Decrease","explanation":"Inverse proportion."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'compound_proportion'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Joint and Compound Proportion');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Compound Proportion Problems', '{"blocks":[{"type":"heading","content":"Worked Problems"},{"type":"example","title":"$5$ workers take $12$ days. How long for $8$ workers (same job)?","steps":["$D \\propto \\frac{1}{W}$: $5 \\times 12 = 8 \\times d$.","$d = 7.5$ days."],"answer":"$7.5$ days"},{"type":"example","title":"$T \\propto D$ and $T \\propto \\frac{1}{S}$. $D=100$, $S=50$ gives $T=4$ hr. Find $T$ when $D=150$, $S=60$.","steps":["$T = k\\frac{D}{S}$; $4 = k\\frac{100}{50} \\Rightarrow k=2$.","$T = 2 \\times \\frac{150}{60} = 5$ hr."],"answer":"$5$ hours"},{"type":"callout","variant":"warning","content":"Keep units consistent (km/h with km, etc.)."},{"type":"question","questionText":"$y \\propto x$ and $y \\propto z$. Then $y \\propto$?","questionType":"multiple_choice","options":["$xz$","$x/z$","$x+z$","$1/xz$"],"correctAnswer":"$xz$","explanation":"Both direct."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'compound_proportion'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Compound Proportion Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Compound Proportion — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Compound Proportion"},{"type":"example","title":"$6$ taps fill a tank in $4$ hr. How long for $8$ taps?","steps":["Inverse: $6 \\times 4 = 8 \\times t$.","$t = 3$ hr."],"answer":"$3$ hours"},{"type":"callout","variant":"warning","content":"State the proportionality equation before substituting numbers."},{"type":"question","questionText":"More speed, fixed distance — time?","questionType":"multiple_choice","options":["Less","More","Same","Zero"],"correctAnswer":"Less","explanation":"Inverse."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'compound_proportion'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Compound Proportion — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Compound proportion involves?', 'multiple_choice', '["Two or more related quantities","One quantity only","Angles only","Vectors only"]'::jsonb, '"Two or more related quantities"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='compound_proportion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Compound proportion involves?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto \frac{1}{x}$ means?', 'multiple_choice', '["Inverse proportion","Direct proportion","No link","Equal values"]'::jsonb, '"Inverse proportion"'::jsonb, 'easy', 'As $x$ rises, $y$ falls.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='compound_proportion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto \frac{1}{x}$ means?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$4$ men, $15$ days. $6$ men, same work?', 'multiple_choice', '["$10$ days","$15$ days","$9$ days","$22.5$ days"]'::jsonb, '"$10$ days"'::jsonb, 'medium', '$4\times15=6d$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='compound_proportion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$4$ men, $15$ days. $6$ men, same work?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$T \propto D/S$: $D=80$, $S=40$, $T=2$. Find $T$ when $D=120$, $S=60$.', 'multiple_choice', '["$2$ hr","$3$ hr","$4$ hr","$1$ hr"]'::jsonb, '"$2$ hr"'::jsonb, 'easy', 'Ratio unchanged.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='compound_proportion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$T \propto D/S$: $D=80$, $S=40$, $T=2$. Find $T$ when $D=120$, $S=60$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$8$ machines produce $400$ items in $5$ hr. $10$ machines in $4$ hr produce?', 'multiple_choice', '["$400$","$500$","$320$","$250$"]'::jsonb, '"$400$"'::jsonb, 'medium', 'Joint proportion setup.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='compound_proportion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$8$ machines produce $400$ items in $5$ hr. $10$ machines in $4$ hr produce?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$P \propto \frac{MN}{T}$: $M=4,N=3,T=6,P=24$. Find $P$ when $M=5,N=4,T=8$.', 'multiple_choice', '["$25$","$30$","$20$","$40$"]'::jsonb, '"$25$"'::jsonb, 'hard', 'Find $k$ then substitute.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='compound_proportion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$P \propto \frac{MN}{T}$: $M=4,N=3,T=6,P=24$. Find $P$ when $M=5,N=4,T=8$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$12$ workers, $10$ days, $8$ hr/day. $15$ workers, $8$ days — hours/day?', 'multiple_choice', '["$8$ hr","$10$ hr","$6$ hr","$12$ hr"]'::jsonb, '"$8$ hr"'::jsonb, 'hard', 'Worker-days constant.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='compound_proportion'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$12$ workers, $10$ days, $8$ hr/day. $15$ workers, $8$ days — hours/day?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mixing Quantities', '{"blocks":[{"type":"heading","content":"Mixture Problems"},{"type":"paragraph","content":"In **mixture** problems, combine quantities with different concentrations or prices. Total amount $=$ sum of parts; value $=$ quantity $\\times$ unit value."},{"type":"example","title":"Mix $2$ L of $40\\%$ acid with $3$ L of $10\\%$ acid. Overall concentration?","steps":["Acid $= 0.4(2)+0.1(3)=1.1$ L.","Total $5$ L.","Conc $= 22\\%$."],"answer":"$22\\%$"},{"type":"question","questionText":"Mixing tea grades is a?","questionType":"multiple_choice","options":["Mixture problem","Vector problem","Circle theorem","Matrix problem"],"correctAnswer":"Mixture problem","explanation":"Blending quantities."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'mixtures'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mixing Quantities');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Alligation and Price Mixtures', '{"blocks":[{"type":"heading","content":"Price & Concentration"},{"type":"example","title":"Tea A KES $400$/kg mixed with Tea B KES $600$/kg to get $20$ kg at KES $450$/kg. Mass of A?","steps":["$400a+600(20-a)=450(20)$.","$a=15$ kg."],"answer":"$15$ kg of A"},{"type":"callout","variant":"warning","content":"Total value before mixing $=$ total value after mixing."},{"type":"question","questionText":"Pure water concentration of salt?","questionType":"multiple_choice","options":["$0\\%$","$50\\%$","$100\\%$","$25\\%$"],"correctAnswer":"$0\\%$","explanation":"No salt."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'mixtures'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Alligation and Price Mixtures');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mixtures — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Mixtures"},{"type":"example","title":"How many litres of $30\\%$ solution must be added to $5$ L of $50\\%$ to get $40\\%$?","steps":["Let $x$ L added.","$0.3x+2.5=0.4(x+5)$.","$x=5$ L."],"answer":"$5$ litres"},{"type":"callout","variant":"warning","content":"Define $x$ clearly — litres of which component?"},{"type":"question","questionText":"Total volume when mixing $3$ L and $7$ L?","questionType":"multiple_choice","options":["$10$ L","$4$ L","$21$ L","$3.5$ L"],"correctAnswer":"$10$ L","explanation":"Add volumes."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'mixtures'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mixtures — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mixture total quantity equals?', 'multiple_choice', '["Sum of parts","Product of parts","Difference","Average only"]'::jsonb, '"Sum of parts"'::jsonb, 'easy', 'Conservation of mass.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mixtures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mixture total quantity equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$1$ L of $100\%$ acid mixed with $1$ L water gives?', 'multiple_choice', '["$50\\%$","$100\\%$","$0\\%$","$25\\%$"]'::jsonb, '"$50\\%$"'::jsonb, 'easy', 'Equal volumes.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mixtures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$1$ L of $100\%$ acid mixed with $1$ L water gives?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mix $4$ kg at KES $50$ with $6$ kg at KES $80$. Mean price/kg?', 'multiple_choice', '["KES $68$","KES $65$","KES $70$","KES $130$"]'::jsonb, '"KES $68$"'::jsonb, 'medium', '$(200+480)/10$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mixtures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mix $4$ kg at KES $50$ with $6$ kg at KES $80$. Mean price/kg?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$3$ L of $20\%$ + $2$ L of $50\%$. Final concentration?', 'multiple_choice', '["$32\\%$","$35\\%$","$30\\%$","$25\\%$"]'::jsonb, '"$32\\%$"'::jsonb, 'hard', '$(0.6+1)/5$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mixtures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$3$ L of $20\%$ + $2$ L of $50\%$. Final concentration?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Alloy: $5$ kg copper + $x$ kg zinc, $40\%$ copper overall. $x$?', 'multiple_choice', '["$7.5$ kg","$5$ kg","$3$ kg","$10$ kg"]'::jsonb, '"$7.5$ kg"'::jsonb, 'medium', '$5/(5+x)=0.4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mixtures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Alloy: $5$ kg copper + $x$ kg zinc, $40\%$ copper overall. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Milk $4\%$ fat: mix $10$ L with $x$ L water for $2.5\%$. $x$?', 'multiple_choice', '["$6$ L","$4$ L","$8$ L","$2.5$ L"]'::jsonb, '"$6$ L"'::jsonb, 'hard', 'Fat mass constant.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mixtures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Milk $4\%$ fat: mix $10$ L with $x$ L water for $2.5\%$. $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Coffee KES $500$ and KES $700$ mixed for $30$ kg at KES $560$. Kg of cheaper?', 'multiple_choice', '["$21$ kg","$15$ kg","$9$ kg","$18$ kg"]'::jsonb, '"$21$ kg"'::jsonb, 'hard', 'Alligation: ratio $3:1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='mixtures'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Coffee KES $500$ and KES $700$ mixed for $30$ kg at KES $560$. Kg of cheaper?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Work Rates and Combined Workers', '{"blocks":[{"type":"heading","content":"Rates of Work"},{"type":"paragraph","content":"If person A finishes a job in $a$ days, daily rate $= \\frac{1}{a}$ of the job. Combined rate $=$ **sum** of individual rates."},{"type":"math_block","latex":"\\frac{1}{T} = \\frac{1}{a} + \\frac{1}{b}","caption":"Two workers together"},{"type":"example","title":"A: $6$ days, B: $3$ days. Together?","steps":["$\\frac{1}{T}=\\frac{1}{6}+\\frac{1}{3}=\\frac{1}{2}$.","$T=2$ days."],"answer":"$2$ days"},{"type":"question","questionText":"More workers on same job — completion time?","questionType":"multiple_choice","options":["Shorter","Longer","Unchanged","Infinite"],"correctAnswer":"Shorter","explanation":"Rates add."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'rates_of_work'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Work Rates and Combined Workers');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Pipes, Tanks and Partial Work', '{"blocks":[{"type":"heading","content":"Pipes Filling/Emptying"},{"type":"example","title":"Pipe A fills tank in $4$ hr, B in $6$ hr. Together?","steps":["$\\frac{1}{T}=\\frac{1}{4}+\\frac{1}{6}=\\frac{5}{12}$.","$T=2.4$ hr."],"answer":"$2.4$ hours"},{"type":"callout","variant":"warning","content":"An **emptying** pipe subtracts rate: $\\frac{1}{T}=\\frac{1}{a}-\\frac{1}{b}$."},{"type":"example","title":"A works $3$ days alone (job $12$ days), then B joins (job $6$ days). Total time?","steps":["A rate $\\frac{1}{12}$; in $3$ days $\\frac{1}{4}$ done.","Remaining $\\frac{3}{4}$ at $\\frac{1}{12}+\\frac{1}{6}=\\frac{1}{4}$/day.","$3$ more days; total $6$ days."],"answer":"$6$ days"},{"type":"question","questionText":"Emptying pipe rate sign in combined work?","questionType":"multiple_choice","options":["Negative (subtracted)","Always positive","Zero","Doubled"],"correctAnswer":"Negative (subtracted)","explanation":"Opposes filling."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'rates_of_work'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Pipes, Tanks and Partial Work');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Rates of Work — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Rates of Work"},{"type":"example","title":"Tap fills in $5$ hr; leak empties in $20$ hr. Both open — time to fill?","steps":["$\\frac{1}{T}=\\frac{1}{5}-\\frac{1}{20}=\\frac{3}{20}$.","$T=\\frac{20}{3}$ hr."],"answer":"$6\\frac{2}{3}$ hours"},{"type":"callout","variant":"warning","content":"Draw a table: worker/pipe, time for whole job, rate per hour."},{"type":"question","questionText":"Job rate unit is?","questionType":"multiple_choice","options":["Fraction of job per day","KES per hour","Metres per second","Degrees"],"correctAnswer":"Fraction of job per day","explanation":"Work per time."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'compound_proportions_rates_work' AND st.code = 'rates_of_work'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Rates of Work — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Worker finishes in $10$ days — daily rate?', 'multiple_choice', '["$\\frac{1}{10}$","$10$","$\\frac{1}{5}$","$1$"]'::jsonb, '"$\\frac{1}{10}$"'::jsonb, 'easy', 'Reciprocal of time.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rates_of_work'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Worker finishes in $10$ days — daily rate?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two workers together — rates are?', 'multiple_choice', '["Added","Subtracted","Multiplied","Ignored"]'::jsonb, '"Added"'::jsonb, 'easy', 'Combined work.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rates_of_work'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two workers together — rates are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A: $4$ days, B: $12$ days. Together?', 'multiple_choice', '["$3$ days","$8$ days","$16$ days","$4$ days"]'::jsonb, '"$3$ days"'::jsonb, 'medium', '$\frac{1}{4}+\frac{1}{12}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rates_of_work'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A: $4$ days, B: $12$ days. Together?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pipe fills $3$ hr, drain empties $6$ hr. Net fill time?', 'multiple_choice', '["$6$ hr","$3$ hr","$2$ hr","$9$ hr"]'::jsonb, '"$6$ hr"'::jsonb, 'medium', '$\frac{1}{3}-\frac{1}{6}=\frac{1}{6}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rates_of_work'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pipe fills $3$ hr, drain empties $6$ hr. Net fill time?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Three workers: $6$, $12$, $4$ days each. Together?', 'multiple_choice', '["$2$ days","$3$ days","$4$ days","$6$ days"]'::jsonb, '"$2$ days"'::jsonb, 'medium', 'Sum rates $=\frac{1}{2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rates_of_work'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Three workers: $6$, $12$, $4$ days each. Together?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'A+B: $3$ days; A alone $4$ days. B alone?', 'multiple_choice', '["$12$ days","$7$ days","$1$ day","$5$ days"]'::jsonb, '"$12$ days"'::jsonb, 'hard', '$\frac{1}{b}=\frac{1}{3}-\frac{1}{4}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rates_of_work'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='A+B: $3$ days; A alone $4$ days. B alone?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Half job by A ($8$ days full) then B ($24$ days full) finishes. Total days?', 'multiple_choice', '["$8$ days","$6$ days","$10$ days","$4$ days"]'::jsonb, '"$8$ days"'::jsonb, 'hard', '$4$ days A + $4$ days B.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rates_of_work'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Half job by A ($8$ days full) then B ($24$ days full) finishes. Total days?');
+
