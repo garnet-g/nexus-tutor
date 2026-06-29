@@ -400,4 +400,203 @@ SELECT t.id, st.id, 'Max $P=2x+y$ at $(0,0)$, $(4,0)$, $(0,6)$. Maximum?', 'mult
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='optimisation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Max $P=2x+y$ at $(0,0)$, $(4,0)$, $(0,6)$. Maximum?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Max $P=2x+y$ at $(0,0)$, $(4,0)$, $(0,6)$. Maximum?');-- ========== DIFFERENTIATION ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Gradient Function — Concepts', '{"blocks":[{"type":"heading","content":"Rate of Change"},{"type":"paragraph","content":"For $y = f(x)$, the **gradient function** (derivative) $f''(x)$ or $\\frac{dy}{dx}$ measures the rate of change of $y$ with respect to $x$."},{"type":"math_block","latex":"\\frac{dy}{dx} = \\lim_{\\delta x \\to 0} \\frac{\\delta y}{\\delta x}","caption":"Definition of derivative"},{"type":"callout","variant":"key_point","content":"At a point on the curve, $\\frac{dy}{dx}$ equals the **gradient of the tangent** at that point."},{"type":"question","questionText":"$\\frac{dy}{dx}$ represents?","questionType":"multiple_choice","options":["Gradient of tangent","Area under curve","Y-intercept only","Curvature only"],"correctAnswer":"Gradient of tangent","explanation":"Geometric meaning."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'gradient_function'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Gradient Function — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding the Gradient Function', '{"blocks":[{"type":"heading","content":"Power Rule"},{"type":"math_block","latex":"\\frac{d}{dx}(x^n) = nx^{n-1}","caption":"Power rule for differentiation"},{"type":"example","title":"If $y = x^3$, find $\\frac{dy}{dx}$.","steps":["$n = 3$.","$\\frac{dy}{dx} = 3x^2$."],"answer":"$3x^2$"},{"type":"callout","variant":"warning","content":"Differentiate term by term for sums; constants differentiate to zero."},{"type":"question","questionText":"$\\frac{d}{dx}(x^4)$ equals?","questionType":"multiple_choice","options":["$4x^3$","$x^4$","$4x$","$x^3$"],"correctAnswer":"$4x^3$","explanation":"Power rule."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'gradient_function'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding the Gradient Function');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Gradient Function — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Gradient Function"},{"type":"example","title":"$y = 5x^2 - 3x + 2$. Find $\\frac{dy}{dx}$.","steps":["$\\frac{dy}{dx} = 10x - 3$."],"answer":"$10x - 3$"},{"type":"math_block","latex":"\\frac{d}{dx}(ax^n) = nax^{n-1}","caption":"Constant multiple rule"},{"type":"question","questionText":"Gradient of $y = x^2$ at $x = 3$?","questionType":"multiple_choice","options":["$6$","$9$","$3$","$2$"],"correctAnswer":"$6$","explanation":"$2x$ at $x=3$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'gradient_function'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Gradient Function — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{dy}{dx}$ is also written as?', 'multiple_choice', '["$f''(x)$","$f(x)$","$\\int y\\,dx$","$y^2$"]'::jsonb, '"$f''(x)$"'::jsonb, 'easy', 'Derivative notation.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient_function'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{dy}{dx}$ is also written as?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{d}{dx}(x^2)$ equals?', 'multiple_choice', '["$2x$","$x$","$x^2$","$2$"]'::jsonb, '"$2x$"'::jsonb, 'easy', 'Power rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient_function'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{d}{dx}(x^2)$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Derivative of a constant is?', 'multiple_choice', '["$0$","$1$","The constant","Undefined"]'::jsonb, '"$0$"'::jsonb, 'easy', 'No change.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient_function'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Derivative of a constant is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = 3x^3$. $\frac{dy}{dx}$?', 'multiple_choice', '["$9x^2$","$3x^2$","$9x$","$x^3$"]'::jsonb, '"$9x^2$"'::jsonb, 'medium', '$3 \times 3x^2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient_function'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = 3x^3$. $\frac{dy}{dx}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = x^2 + 4x$. Gradient at $x = 1$?', 'multiple_choice', '["$6$","$5$","$4$","$2$"]'::jsonb, '"$6$"'::jsonb, 'medium', '$2x+4$ at $x=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient_function'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = x^2 + 4x$. Gradient at $x = 1$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = 2x^2 - 5$. $\frac{dy}{dx}$ at $x = -2$?', 'multiple_choice', '["$-8$","$8$","$-4$","$3$"]'::jsonb, '"$-8$"'::jsonb, 'hard', '$4x$ at $x=-2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient_function'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = 2x^2 - 5$. $\frac{dy}{dx}$ at $x = -2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tangent gradient zero when $\frac{dy}{dx}$ equals?', 'multiple_choice', '["$0$","$1$","Undefined","Always at origin"]'::jsonb, '"$0$"'::jsonb, 'hard', 'Stationary point condition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='gradient_function'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tangent gradient zero when $\frac{dy}{dx}$ equals?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Derivatives — Concepts', '{"blocks":[{"type":"heading","content":"Rules of Differentiation"},{"type":"paragraph","content":"KCSE Form 4 uses the **power rule**, constant multiples, and sums. For $y = ax^n$, $\\frac{dy}{dx} = nax^{n-1}$."},{"type":"table","rows":[["$y = x^n$","$\\frac{dy}{dx} = nx^{n-1}$"],["$y = c$ (constant)","$\\frac{dy}{dx} = 0$"],["$y = ax^n$","$\\frac{dy}{dx} = nax^{n-1}$"]],"caption":"Basic rules"},{"type":"callout","variant":"key_point","content":"Write $y$ with **positive indices** before differentiating fractional powers."},{"type":"question","questionText":"$\\frac{d}{dx}(5)$ equals?","questionType":"multiple_choice","options":["$0$","$5$","$5x$","$1$"],"correctAnswer":"$0$","explanation":"Constant rule."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'derivatives'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Derivatives — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Differentiating Polynomials', '{"blocks":[{"type":"heading","content":"Worked Examples"},{"type":"example","title":"$y = 4x^3 - 2x + 7$. Find $\\frac{dy}{dx}$.","steps":["$12x^2 - 2$."],"answer":"$12x^2 - 2$"},{"type":"example","title":"$y = \\frac{1}{x} = x^{-1}$. $\\frac{dy}{dx}$?","steps":["$-x^{-2} = -\\frac{1}{x^2}$."],"answer":"$-\\frac{1}{x^2}$"},{"type":"callout","variant":"warning","content":"Rewrite $\\frac{1}{x^n}$ as $x^{-n}$ before using the power rule."},{"type":"question","questionText":"$\\frac{d}{dx}(x^{-2})$ equals?","questionType":"multiple_choice","options":["$-2x^{-3}$","$x^{-3}$","$-2x^{-1}$","$2x^{-3}$"],"correctAnswer":"$-2x^{-3}$","explanation":"Power rule on negative index."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'derivatives'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Differentiating Polynomials');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Derivatives — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Differentiation"},{"type":"example","title":"$y = 3x^4 - x^2 + 6$. $\\frac{dy}{dx}$?","steps":["$12x^3 - 2x$."],"answer":"$12x^3 - 2x$"},{"type":"callout","variant":"warning","content":"Show each term''s derivative; simplify final expression."},{"type":"question","questionText":"$y = \\sqrt{x} = x^{1/2}$. $\\frac{dy}{dx}$?","questionType":"multiple_choice","options":["$\\frac{1}{2}x^{-1/2}$","$x^{-1/2}$","$\\frac{1}{2\\sqrt{x}}$","$\\frac{1}{2}x^{-1/2}$"],"correctAnswer":"$\\frac{1}{2}x^{-1/2}$","explanation":"Power rule with $n=\\frac{1}{2}$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'derivatives'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Derivatives — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Power rule: $\frac{d}{dx}(x^5)$?', 'multiple_choice', '["$5x^4$","$x^4$","$5x^5$","$4x^5$"]'::jsonb, '"$5x^4$"'::jsonb, 'easy', 'Standard rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='derivatives'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Power rule: $\frac{d}{dx}(x^5)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\frac{d}{dx}(7x^2)$ equals?', 'multiple_choice', '["$14x$","$7x$","$14x^2$","$7$"]'::jsonb, '"$14x$"'::jsonb, 'easy', '$7 \times 2x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='derivatives'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\frac{d}{dx}(7x^2)$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = 2x^3 - 4x$. $\frac{dy}{dx}$ at $x = 2$?', 'multiple_choice', '["$20$","$16$","$12$","$8$"]'::jsonb, '"$20$"'::jsonb, 'medium', '$6x^2-4$ at $x=2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='derivatives'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = 2x^3 - 4x$. $\frac{dy}{dx}$ at $x = 2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = x^2 - 1$. $\frac{dy}{dx}$ at $x = 4$?', 'multiple_choice', '["$8$","$16$","$15$","$4$"]'::jsonb, '"$8$"'::jsonb, 'medium', '$2x$ at $x=4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='derivatives'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = x^2 - 1$. $\frac{dy}{dx}$ at $x = 4$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = \frac{3}{x^2}$. $\frac{dy}{dx}$?', 'multiple_choice', '["$-6x^{-3}$","$6x^{-3}$","$-3x^{-1}$","$3x^{-2}$"]'::jsonb, '"$-6x^{-3}$"'::jsonb, 'medium', '$3x^{-2}$ differentiated.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='derivatives'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = \frac{3}{x^2}$. $\frac{dy}{dx}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = 5\sqrt{x}$. $\frac{dy}{dx}$?', 'multiple_choice', '["$\\frac{5}{2\\sqrt{x}}$","$5x^{-1/2}$","$\\frac{5}{2}x^{1/2}$","$10\\sqrt{x}$"]'::jsonb, '"$\\frac{5}{2\\sqrt{x}}$"'::jsonb, 'hard', '$5 \cdot \frac{1}{2}x^{-1/2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='derivatives'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = 5\sqrt{x}$. $\frac{dy}{dx}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = x^4 - 2x^2 + 1$. $\frac{dy}{dx} = 0$ when?', 'multiple_choice', '["$x = 0$ or $x = \\pm 1$","$x = 0$ only","$x = 2$ only","Never"]'::jsonb, '"$x = 0$ or $x = \\pm 1$"'::jsonb, 'hard', '$4x^3-4x=4x(x^2-1)=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='derivatives'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = x^4 - 2x^2 + 1$. $\frac{dy}{dx} = 0$ when?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applications — Concepts', '{"blocks":[{"type":"heading","content":"Rates, Maxima and Minima"},{"type":"paragraph","content":"Set $\\frac{dy}{dx} = 0$ to find **stationary points** (turning points). Use the sign of $\\frac{dy}{dx}$ or second derivative to classify max/min."},{"type":"math_block","latex":"\\frac{dy}{dx} = 0 \\Rightarrow \\text{stationary point}","caption":"Turning point condition"},{"type":"callout","variant":"key_point","content":"**Velocity** is rate of change of displacement; **acceleration** is rate of change of velocity."},{"type":"question","questionText":"Maximum or minimum often found when?","questionType":"multiple_choice","options":["$\\frac{dy}{dx} = 0$","$y = 0$","$x = 0$ only","$\\int y\\,dx = 0$"],"correctAnswer":"$\\frac{dy}{dx} = 0$","explanation":"Stationary point."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'applications_differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applications — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Optimisation Problems', '{"blocks":[{"type":"heading","content":"Worked Application"},{"type":"example","title":"A rectangle has perimeter $20$ cm. If width is $x$, length $10-x$, area $A = x(10-x)$. Maximise $A$.","steps":["$A = 10x - x^2$.","$\\frac{dA}{dx} = 10 - 2x = 0 \\Rightarrow x = 5$.","Maximum area when square: $25$ cm$^2$."],"answer":"$25$ cm$^2$ at $x = 5$"},{"type":"callout","variant":"warning","content":"Form $y$ or $A$ in one variable, differentiate, solve $\\frac{dy}{dx} = 0$, verify max/min."},{"type":"question","questionText":"If $\\frac{dy}{dx}$ changes from $+$ to $-$ at a point, the point is a?","questionType":"multiple_choice","options":["Maximum","Minimum","Inflection","Origin"],"correctAnswer":"Maximum","explanation":"Sign change test."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'applications_differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Optimisation Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Applications — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Applications"},{"type":"example","title":"$s = 2t^2 + 3t$. Velocity $v = \\frac{ds}{dt}$ at $t = 2$?","steps":["$v = 4t + 3$.","At $t = 2$: $v = 11$ m/s."],"answer":"$11$ m/s"},{"type":"callout","variant":"warning","content":"State units in motion problems; show differentiation step clearly."},{"type":"question","questionText":"$y = x^2 - 4x + 5$. Minimum value of $y$?","questionType":"multiple_choice","options":["$1$","$5$","$-4$","$0$"],"correctAnswer":"$1$","explanation":"Vertex at $x=2$, $y=1$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'differentiation' AND st.code = 'applications_differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Applications — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Stationary point satisfies?', 'multiple_choice', '["$\\frac{dy}{dx} = 0$","$y = 0$","$x = 0$","$\\frac{d^2y}{dx^2} = 0$ always"]'::jsonb, '"$\\frac{dy}{dx} = 0$"'::jsonb, 'easy', 'Zero gradient.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_differentiation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Stationary point satisfies?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Velocity is derivative of?', 'multiple_choice', '["Displacement","Time","Acceleration","Distance only"]'::jsonb, '"Displacement"'::jsonb, 'easy', '$v = ds/dt$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_differentiation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Velocity is derivative of?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = x^2 - 6x + 10$. $\frac{dy}{dx} = 0$ when $x$ equals?', 'multiple_choice', '["$3$","$6$","$0$","$-3$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$2x-6=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_differentiation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = x^2 - 6x + 10$. $\frac{dy}{dx} = 0$ when $x$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$A = 12x - x^2$. Maximum when $x$ equals?', 'multiple_choice', '["$6$","$12$","$0$","$3$"]'::jsonb, '"$6$"'::jsonb, 'medium', '$12-2x=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_differentiation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$A = 12x - x^2$. Maximum when $x$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = x^3 - 3x$. $\frac{dy}{dx} = 0$ at?', 'multiple_choice', '["$x = \\pm 1$","$x = 0$ only","$x = 3$","$x = -3$ only"]'::jsonb, '"$x = \\pm 1$"'::jsonb, 'hard', '$3x^2-3=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_differentiation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = x^3 - 3x$. $\frac{dy}{dx} = 0$ at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$s = t^3 - 6t$. Acceleration $\frac{d^2s}{dt^2}$ at $t = 2$?', 'multiple_choice', '["$12$","$8$","$6$","$4$"]'::jsonb, '"$12$"'::jsonb, 'hard', '$a=6t$ at $t=2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_differentiation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$s = t^3 - 6t$. Acceleration $\frac{d^2s}{dt^2}$ at $t = 2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y = 3x^2 - 12x + 7$. Minimum at $x$ equals?', 'multiple_choice', '["$2$","$4$","$0$","$-2$"]'::jsonb, '"$2$"'::jsonb, 'hard', '$6x-12=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='applications_differentiation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='differentiation'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y = 3x^2 - 12x + 7$. Minimum at $x$ equals?');
