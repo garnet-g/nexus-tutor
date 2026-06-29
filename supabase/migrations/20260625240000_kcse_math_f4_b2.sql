@@ -201,4 +201,203 @@ SELECT t.id, st.id, 'GMT 06:00. Time at $90^\circ\text{E}$?', 'multiple_choice',
 FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='time_longitude'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='longitudes_latitudes'
-AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='GMT 06:00. Time at $90^\circ\text{E}$?');
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='GMT 06:00. Time at $90^\circ\text{E}$?');-- ========== LINEAR PROGRAMMING ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Forming Inequalities — Concepts', '{"blocks":[{"type":"heading","content":"Constraints as Inequalities"},{"type":"paragraph","content":"In linear programming, restrictions are written as **linear inequalities** in variables $x$ and $y$, e.g. $2x + 3y \\leq 12$."},{"type":"math_block","latex":"ax + by \\leq c \\quad \\text{or} \\quad ax + by \\geq c","caption":"Linear constraint"},{"type":"callout","variant":"key_point","content":"**Non-negativity**: $x \\geq 0$, $y \\geq 0$ are standard in KCSE problems."},{"type":"question","questionText":"A constraint $x + y \\leq 10$ means?","questionType":"multiple_choice","options":["$x + y$ at most $10$","$x + y$ at least $10$","$x$ equals $10$","$y$ equals $10$"],"correctAnswer":"$x + y$ at most $10$","explanation":"Symbol $\\leq$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'forming_inequalities'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Forming Inequalities — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Translating Word Problems', '{"blocks":[{"type":"heading","content":"From Words to Inequalities"},{"type":"example","title":"A factory makes chairs ($x$) and tables ($y$). At most 20 chairs: inequality?","steps":["At most $\\Rightarrow \\leq$.","$x \\leq 20$."],"answer":"$x \\leq 20$"},{"type":"example","title":"Each chair needs 2 hours, each table 4 hours. Maximum 40 hours: $2x + 4y \\leq 40$.","steps":["Coefficients from hours per item.","Sum $\\leq$ total available."],"answer":"$2x + 4y \\leq 40$"},{"type":"callout","variant":"warning","content":"Identify **resource limits** (at most) and **minimum requirements** (at least) separately."},{"type":"question","questionText":"At least 5 tables means?","questionType":"multiple_choice","options":["$y \\geq 5$","$y \\leq 5$","$y = 5$","$x \\geq 5$"],"correctAnswer":"$y \\geq 5$","explanation":"At least $\\Rightarrow \\geq$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'forming_inequalities'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Translating Word Problems');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Forming Inequalities — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Forming Constraints"},{"type":"example","title":"Profit: KES 300 per unit of $x$, KES 500 per unit of $y$. This is the **objective**, not a constraint.","steps":["Constraints limit resources.","Objective $P = 300x + 500y$ to maximise."],"answer":"Objective function"},{"type":"callout","variant":"warning","content":"Do not confuse **constraints** (inequalities) with the **objective function** (expression to optimise)."},{"type":"question","questionText":"Non-negativity constraints are?","questionType":"multiple_choice","options":["$x \\geq 0$, $y \\geq 0$","$x \\leq 0$","$x = y$","$x + y = 0$"],"correctAnswer":"$x \\geq 0$, $y \\geq 0$","explanation":"Standard assumption."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'forming_inequalities'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Forming Inequalities — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Linear programming constraints are usually?', 'multiple_choice', '["Linear inequalities","Quadratic equations","Identities only","Logarithms"]'::jsonb, '"Linear inequalities"'::jsonb, 'easy', 'Linear in two variables.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_inequalities'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Linear programming constraints are usually?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x \geq 0$ is called?', 'multiple_choice', '["Non-negativity","Feasible region","Objective","Vertex"]'::jsonb, '"Non-negativity"'::jsonb, 'easy', 'Standard constraint.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_inequalities'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x \geq 0$ is called?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'At most 15 units of $x$ gives?', 'multiple_choice', '["$x \\leq 15$","$x \\geq 15$","$x = 15$","$y \\leq 15$"]'::jsonb, '"$x \\leq 15$"'::jsonb, 'easy', 'At most $\leq$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_inequalities'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='At most 15 units of $x$ gives?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$3x + 2y \leq 24$: if $x = 4$, maximum $y$?', 'multiple_choice', '["$6$","$12$","$8$","$4$"]'::jsonb, '"$6$"'::jsonb, 'medium', '$12 + 2y \leq 24$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_inequalities'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$3x + 2y \leq 24$: if $x = 4$, maximum $y$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two machines: $x + 2y \leq 10$, $2x + y \leq 12$. Point $(2,3)$ satisfies both?', 'multiple_choice', '["Yes","No, first only","No, second only","No, neither"]'::jsonb, '"Yes"'::jsonb, 'medium', '$2+6=8\leq10$; $4+3=7\leq12$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_inequalities'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two machines: $x + 2y \leq 10$, $2x + y \leq 12$. Point $(2,3)$ satisfies both?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Minimum 10 items total: $x$ chairs, $y$ tables?', 'multiple_choice', '["$x + y \\geq 10$","$x + y \\leq 10$","$xy \\geq 10$","$x - y \\geq 10$"]'::jsonb, '"$x + y \\geq 10$"'::jsonb, 'hard', 'At least 10 total.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_inequalities'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Minimum 10 items total: $x$ chairs, $y$ tables?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$4x + y \leq 20$ and $x \geq 2$. Smallest possible $x$?', 'multiple_choice', '["$2$","$0$","$5$","$20$"]'::jsonb, '"$2$"'::jsonb, 'hard', 'Lower bound from $x \geq 2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='forming_inequalities'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$4x + y \leq 20$ and $x \geq 2$. Smallest possible $x$?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Feasible Region — Concepts', '{"blocks":[{"type":"heading","content":"Graphing Linear Inequalities"},{"type":"paragraph","content":"To graph $ax + by \\leq c$: draw the line $ax + by = c$, then shade the side that satisfies the inequality (usually test $(0,0)$ if not on the line)."},{"type":"math_block","latex":"\\text{Feasible region} = \\text{intersection of all constraint half-planes}","caption":"Feasible set"},{"type":"callout","variant":"key_point","content":"The **feasible region** is the set of $(x,y)$ satisfying **all** constraints including $x \\geq 0$, $y \\geq 0$."},{"type":"question","questionText":"Feasible region is where?","questionType":"multiple_choice","options":["All constraints hold","Only one constraint holds","Objective is zero","Outside the axes"],"correctAnswer":"All constraints hold","explanation":"Intersection of half-planes."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'graphical_region_lp'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Feasible Region — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Drawing the Feasible Region', '{"blocks":[{"type":"heading","content":"Worked Graphical Method"},{"type":"example","title":"Constraints: $x + y \\leq 6$, $x \\geq 0$, $y \\geq 0$. Corner points?","steps":["Line $x+y=6$ meets axes at $(6,0)$ and $(0,6)$.","Origin $(0,0)$ also feasible.","Vertices: $(0,0)$, $(6,0)$, $(0,6)$."],"answer":"$(0,0)$, $(6,0)$, $(0,6)$"},{"type":"callout","variant":"warning","content":"Mark **corner points** (vertices) of the feasible polygon — optima occur at vertices in KCSE."},{"type":"question","questionText":"$x \\geq 0$, $y \\geq 0$ restricts to which quadrant?","questionType":"multiple_choice","options":["First quadrant","Second","Third","Fourth"],"correctAnswer":"First quadrant","explanation":"Non-negative axes."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'graphical_region_lp'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Drawing the Feasible Region');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Feasible Region — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Graphical LP"},{"type":"example","title":"$2x + y \\leq 8$, $x + y \\leq 5$, $x,y \\geq 0$. Is $(1,2)$ feasible?","steps":["$2(1)+2=4 \\leq 8$; $1+2=3 \\leq 5$; non-negativity OK."],"answer":"Yes, feasible"},{"type":"math_block","latex":"\\text{Vertices found by solving pairs of boundary lines}","caption":"Corner-point method"},{"type":"question","questionText":"Optimal point in KCSE graphical LP is usually at a?","questionType":"multiple_choice","options":["Vertex of feasible region","Midpoint of a side only","Origin always","Random interior point"],"correctAnswer":"Vertex of feasible region","explanation":"Corner-point theorem."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'graphical_region_lp'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Feasible Region — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Feasible region satisfies?', 'multiple_choice', '["All constraints","One constraint only","Objective function","No constraints"]'::jsonb, '"All constraints"'::jsonb, 'easy', 'Intersection of half-planes.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region_lp'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Feasible region satisfies?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'For $x \geq 0$, shade which side of $x = 0$?', 'multiple_choice', '["Right of $y$-axis","Left of $y$-axis","Above $x$-axis","Below"]'::jsonb, '"Right of $y$-axis"'::jsonb, 'easy', 'Positive $x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region_lp'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='For $x \geq 0$, shade which side of $x = 0$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x + y = 6$ meets $y$-axis at?', 'multiple_choice', '["$(0,6)$","$(6,0)$","$(3,3)$","$(0,0)$"]'::jsonb, '"$(0,6)$"'::jsonb, 'medium', 'Set $x=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region_lp'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x + y = 6$ meets $y$-axis at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(2,1)$ satisfies $2x + 3y \leq 9$?', 'multiple_choice', '["Yes","No","On boundary only","Undefined"]'::jsonb, '"Yes"'::jsonb, 'medium', '$4+3=7\leq9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region_lp'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(2,1)$ satisfies $2x + 3y \leq 9$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x + 2y \leq 8$ and $x = 2$. Maximum $y$?', 'multiple_choice', '["$3$","$4$","$2$","$6$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$2+2y\leq8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region_lp'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x + 2y \leq 8$ and $x = 2$. Maximum $y$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x+y\leq4$, $x\geq1$, $y\geq1$. Is $(1,1)$ feasible?', 'multiple_choice', '["Yes","No","Only if $x=0$","Only on boundary"]'::jsonb, '"Yes"'::jsonb, 'hard', '$2\leq4$; bounds met.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region_lp'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x+y\leq4$, $x\geq1$, $y\geq1$. Is $(1,1)$ feasible?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Three constraints in first quadrant: feasible region shape?', 'multiple_choice', '["Convex polygon","Circle","Hyperbola","Always unbounded"]'::jsonb, '"Convex polygon"'::jsonb, 'hard', 'Intersection of half-planes.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_region_lp'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Three constraints in first quadrant: feasible region shape?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Optimisation — Concepts', '{"blocks":[{"type":"heading","content":"Objective Function"},{"type":"paragraph","content":"The **objective function** $P = ax + by$ (or $C$ for cost) is the quantity to **maximise** or **minimise** subject to constraints."},{"type":"math_block","latex":"P = c_1 x + c_2 y","caption":"Linear objective"},{"type":"callout","variant":"key_point","content":"Evaluate $P$ at **each vertex** of the feasible region; the best value is the optimum."},{"type":"question","questionText":"To maximise profit $P = 200x + 300y$, evaluate $P$ at?","questionType":"multiple_choice","options":["Vertices of feasible region","Origin only","Midpoints only","Any point"],"correctAnswer":"Vertices of feasible region","explanation":"Corner-point method."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'optimisation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Optimisation — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding Maximum and Minimum', '{"blocks":[{"type":"heading","content":"Corner-Point Method"},{"type":"example","title":"$P = 3x + 2y$. Vertices $(0,0)$, $(4,0)$, $(0,5)$, $(2,3)$. Maximum?","steps":["$P(0,0)=0$; $P(4,0)=12$; $P(0,5)=10$; $P(2,3)=12$.","Maximum $P = 12$."],"answer":"$12$"},{"type":"callout","variant":"warning","content":"If two vertices give the same optimum, every point on that edge is optimal."},{"type":"question","questionText":"Minimising cost: pick vertex with?","questionType":"multiple_choice","options":["Smallest $P$","Largest $P$","Largest $x$","Smallest $y$ only"],"correctAnswer":"Smallest $P$","explanation":"Minimum objective value."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'optimisation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding Maximum and Minimum');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Optimisation — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Linear Programming"},{"type":"example","title":"Maximise $P = 5x + 4y$ subject to $x + y \\leq 8$, $2x + y \\leq 10$, $x,y \\geq 0$. At $(2,6)$: $P = 34$. Check other vertices for maximum.","steps":["Systematic vertex check required in exam."],"answer":"Compare all vertices"},{"type":"callout","variant":"warning","content":"State the objective, list vertices with working, then conclude max/min clearly."},{"type":"question","questionText":"Objective $P = 100x + 50y$. Slope of profit line increases if?","questionType":"multiple_choice","options":["$x$ coefficient increases","$y$ coefficient decreases only","Constraints change only","Feasible region empty"],"correctAnswer":"$x$ coefficient increases","explanation":"Steeper in $x$-direction."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'linear_programming' AND st.code = 'optimisation'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Optimisation — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Objective function is optimised at?', 'multiple_choice', '["Vertices of feasible region","Centre of region always","Outside region","Only at origin"]'::jsonb, '"Vertices of feasible region"'::jsonb, 'easy', 'Corner-point theorem.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='optimisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Objective function is optimised at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Maximise means find?', 'multiple_choice', '["Largest value of $P$","Smallest value of $P$","Zero","$x$ only"]'::jsonb, '"Largest value of $P$"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='optimisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Maximise means find?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Vertices $(0,0)$, $(5,0)$, $(0,4)$. Max $P=3x+4y$?', 'multiple_choice', '["$16$","$15$","$0$","$12$"]'::jsonb, '"$16$"'::jsonb, 'medium', '$P(0,4)=16$ is largest.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='optimisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Vertices $(0,0)$, $(5,0)$, $(0,4)$. Max $P=3x+4y$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Min $C = 5x + 2y$ at $(0,0)$, $(6,0)$, $(0,3)$?', 'multiple_choice', '["$0$","$30$","$6$","$12$"]'::jsonb, '"$0$"'::jsonb, 'medium', 'Origin gives minimum.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='optimisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Min $C = 5x + 2y$ at $(0,0)$, $(6,0)$, $(0,3)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$P=4x+6y$. $(2,2)$ and $(0,5)$ both give $P=30$. Conclusion?', 'multiple_choice', '["Multiple optimal points on edge","No solution","Error in graph","$P$ undefined"]'::jsonb, '"Multiple optimal points on edge"'::jsonb, 'hard', 'Equal objective on segment.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='optimisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$P=4x+6y$. $(2,2)$ and $(0,5)$ both give $P=30$. Conclusion?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Feasible region empty. LP problem has?', 'multiple_choice', '["No feasible solution","Infinite optimum","Optimum at origin","Unique vertex"]'::jsonb, '"No feasible solution"'::jsonb, 'hard', 'Conflicting constraints.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='optimisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Feasible region empty. LP problem has?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Max $P=2x+y$ at $(0,0)$, $(4,0)$, $(0,6)$. Maximum?', 'multiple_choice', '["$6$","$8$","$4$","$0$"]'::jsonb, '"$6$"'::jsonb, 'hard', '$P(0,6)=6$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='optimisation'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='linear_programming'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Max $P=2x+y$ at $(0,0)$, $(4,0)$, $(0,6)$. Maximum?');
