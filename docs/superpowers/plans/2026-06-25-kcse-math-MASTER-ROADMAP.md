@@ -74,11 +74,11 @@ add finer subtopics per topic as needed — additive only.)
 ✅ `probability` · ✅ `compound_proportions_rates_work` · ✅ `graphical_methods` — **Form 3 complete (15/15)**
 
 ### Form 4 — 10 topics
-▢ `matrices_transformations` · ▢ `statistics_ii` · ▢ `loci` · ▢ `trigonometry_iii`
-▢ `three_dimensional_geometry` · ▢ `longitudes_latitudes` · ▢ `linear_programming`
+✅ `matrices_transformations` · ✅ `statistics_ii` · ✅ `loci` · ✅ `trigonometry_iii`
+✅ `three_dimensional_geometry` · ▢ `longitudes_latitudes` · ▢ `linear_programming`
 ▢ `differentiation` · ▢ `area_approximation` · ▢ `integration`
 
-**Status: 56 done · 10 remaining (all Form 4).**
+**Status: 61 done · 5 remaining.**
 
 ## 5. Per-topic workflow (the repeatable recipe)
 
