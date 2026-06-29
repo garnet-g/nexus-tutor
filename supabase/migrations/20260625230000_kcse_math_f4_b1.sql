@@ -803,3 +803,203 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='amplitude_period'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=\sin x$ and $y=\cos x$ first intersect for $x>0$?');
+-- ========== THREE DIMENSIONAL GEOMETRY ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Properties of 3-D Solids', '{"blocks":[{"type":"heading","content":"Faces, Edges, Vertices"},{"type":"paragraph","content":"A **cuboid** has $6$ faces, $12$ edges, $8$ vertices. A **square-based pyramid** has $5$ faces, $8$ edges, $5$ vertices."},{"type":"math_block","latex":"F + V = E + 2","caption":"Euler''s formula (simple polyhedra)"},{"type":"callout","variant":"key_point","content":"Sketch solids with **hidden edges dashed**."},{"type":"question","questionText":"Cube is a special?","questionType":"multiple_choice","options":["Cuboid","Cylinder","Cone","Sphere"],"correctAnswer":"Cuboid","explanation":"All edges equal."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'geometric_properties_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Properties of 3-D Solids');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Plans and Elevations', '{"blocks":[{"type":"heading","content":"Describing 3-D from 2-D views"},{"type":"paragraph","content":"**Plan** — view from above. **Front elevation** — view from front. Match dimensions across views."},{"type":"example","title":"Cuboid $4\\times3\\times2$ cm. Plan shows?","steps":["Rectangle $4$ by $3$ cm."],"answer":"$4\\times3$ rectangle"},{"type":"question","questionText":"Hidden edge in sketch drawn?","questionType":"multiple_choice","options":["Dashed line","Bold only","Omitted always","Dotted randomly"],"correctAnswer":"Dashed line","explanation":"Convention."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'geometric_properties_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Plans and Elevations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, '3-D Properties — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Solids"},{"type":"example","title":"Cylinder radius $r$, height $h$. Curved surface when opened?","steps":["Rectangle width $2\\pi r$, height $h$."],"answer":"Rectangle $2\\pi r\\times h$"},{"type":"callout","variant":"warning","content":"Label diagrams: $ABCD$ base, apex $V$, etc."},{"type":"question","questionText":"Regular tetrahedron faces?","questionType":"multiple_choice","options":["$4$ equilateral triangles","$6$ squares","$8$ triangles","$5$ faces"],"correctAnswer":"$4$ equilateral triangles","explanation":"Four triangular faces."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'geometric_properties_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = '3-D Properties — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid vertices?', 'multiple_choice', '["$8$","$6$","$12$","$4$"]'::jsonb, '"$8$"'::jsonb, 'easy', 'Standard solid.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_properties_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid vertices?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square pyramid faces?', 'multiple_choice', '["$5$","$4$","$6$","$8$"]'::jsonb, '"$5$"'::jsonb, 'easy', 'Base + 4 sides.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_properties_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square pyramid faces?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Euler: cube $F=6,V=8$. $E$?', 'multiple_choice', '["$12$","$14$","$10$","$6$"]'::jsonb, '"$12$"'::jsonb, 'easy', '$6+8=E+2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_properties_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Euler: cube $F=6,V=8$. $E$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Plan view shows?', 'multiple_choice', '["Top view","Side only","Inside only","Diagonal only"]'::jsonb, '"Top view"'::jsonb, 'medium', 'From above.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_properties_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Plan view shows?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cylinder curved surface net width?', 'multiple_choice', '["$2\\pi r$","$\\pi r$","$r$","$h$ only"]'::jsonb, '"$2\\pi r$"'::jsonb, 'medium', 'Circumference.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_properties_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cylinder curved surface net width?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid $5\times4\times3$. Space diagonal length?', 'multiple_choice', '["$\\sqrt{50}$","$12$","$7$","$\\sqrt{12}$"]'::jsonb, '"$\\sqrt{50}$"'::jsonb, 'hard', '$\sqrt{25+16+9}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_properties_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid $5\times4\times3$. Space diagonal length?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Prism with triangular cross-section has how many faces if triangular prism?', 'multiple_choice', '["$5$","$3$","$6$","$4$"]'::jsonb, '"$5$"'::jsonb, 'hard', '2 triangles + 3 rectangles.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='geometric_properties_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Prism with triangular cross-section has how many faces if triangular prism?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angles Between Lines in 3-D', '{"blocks":[{"type":"heading","content":"Angle Between Skew Lines"},{"type":"paragraph","content":"To find angle between **skew** lines, translate one line parallel to itself until it intersects the other — then use triangle trigonometry."},{"type":"math_block","latex":"\\cos\\theta = \\frac{\\mathbf{u}\\cdot\\mathbf{v}}{|\\mathbf{u}||\\mathbf{v}|}","caption":"Angle between direction vectors"},{"type":"question","questionText":"Angle between line and plane often found via?","questionType":"multiple_choice","options":["Angle between line and its projection on plane","Sum of face angles","Euler formula","Area scale"],"correctAnswer":"Angle between line and its projection on plane","explanation":"Projection method."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'angles_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angles Between Lines in 3-D');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angles Between Line and Plane', '{"blocks":[{"type":"heading","content":"Diagram in Text"},{"type":"paragraph","content":"Cuboid $ABCD EFGH$ ($ABCD$ bottom, $EFGH$ top, $AE$, $BF$, $CG$, $DH$ vertical). Angle between diagonal $AG$ and base $ABCD$ uses projection $AC$ on base."},{"type":"example","title":"Right pyramid: slant edge makes angle with base at foot of perpendicular from apex.","steps":["Drop perpendicular to base centre.","Form right triangle with slant edge."],"answer":"Use $\\tan\\theta=h/\\text{half diagonal}$"},{"type":"callout","variant":"warning","content":"Draw separate right triangle showing the angle clearly."},{"type":"question","questionText":"Line perpendicular to plane makes angle?","questionType":"multiple_choice","options":["$90^\\circ$","$0^\\circ$","$45^\\circ$ always","$180^\\circ$"],"correctAnswer":"$90^\\circ$","explanation":"Perpendicular."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'angles_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angles Between Line and Plane');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Angles in 3-D — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Angles"},{"type":"example","title":"Cuboid $3\\times4\\times12$. Angle between space diagonal and longest face diagonal on base?","steps":["Identify triangle with known sides.","Use inverse tan."],"answer":"Compute from right triangle"},{"type":"callout","variant":"warning","content":"State which triangle contains the angle."},{"type":"question","questionText":"Angle between two faces of cube along common edge?","questionType":"multiple_choice","options":["$90^\\circ$","$45^\\circ$","$60^\\circ$","$120^\\circ$"],"correctAnswer":"$90^\\circ$","explanation":"Faces meet at right angles."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'angles_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Angles in 3-D — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angle line-plane found using?', 'multiple_choice', '["Projection on plane","Surface area","Volume only","Midpoint"]'::jsonb, '"Projection on plane"'::jsonb, 'easy', 'Standard method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle line-plane found using?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Perpendicular to plane: angle with plane?', 'multiple_choice', '["$90^\\circ$","$0^\\circ$","$45^\\circ$","$60^\\circ$"]'::jsonb, '"$90^\\circ$"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Perpendicular to plane: angle with plane?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid corner: angle between edge and face containing it?', 'multiple_choice', '["$90^\\circ$","$45^\\circ$","$60^\\circ$","$0^\\circ$"]'::jsonb, '"$90^\\circ$"'::jsonb, 'medium', 'Edge perpendicular to adjacent face.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid corner: angle between edge and face containing it?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Right triangle legs $3$, $4$. Angle opposite $3$?', 'multiple_choice', '["$\\tan^{-1}(3/4)$","$90^\\circ$","$45^\\circ$","$60^\\circ$"]'::jsonb, '"$\\tan^{-1}(3/4)$"'::jsonb, 'medium', 'Trig ratio.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Right triangle legs $3$, $4$. Angle opposite $3$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Line makes $30^\circ$ with plane. Angle with normal?', 'multiple_choice', '["$60^\\circ$","$30^\\circ$","$90^\\circ$","$120^\\circ$"]'::jsonb, '"$60^\\circ$"'::jsonb, 'medium', 'Complementary.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Line makes $30^\circ$ with plane. Angle with normal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square pyramid: slant height vs vertical height — slant?', 'multiple_choice', '["Longer than vertical height","Shorter always","Equal always","Zero"]'::jsonb, '"Longer than vertical height"'::jsonb, 'hard', 'Hypotenuse > leg.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square pyramid: slant height vs vertical height — slant?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Angle between diagonals of square base $90^\circ$. True for square?', 'multiple_choice', '["Yes","No, $45^\\circ$","No, $60^\\circ$","Undefined"]'::jsonb, '"Yes"'::jsonb, 'hard', 'Diagonals of square perpendicular.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='angles_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Angle between diagonals of square base $90^\circ$. True for square?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Distances in 3-D — Concepts', '{"blocks":[{"type":"heading","content":"Space Diagonal"},{"type":"math_block","latex":"d = \\sqrt{l^2+w^2+h^2}","caption":"Cuboid space diagonal"},{"type":"paragraph","content":"Picture cuboid: base diagonal $\\sqrt{l^2+w^2}$, then space diagonal with height $h$."},{"type":"question","questionText":"Shortest path on cuboid surface may be?","questionType":"multiple_choice","options":["Unfolded net straight line","Space diagonal always","Vertical edge only","Half perimeter only"],"correctAnswer":"Unfolded net straight line","explanation":"Net method."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'distances_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Distances in 3-D — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Calculating 3-D Distances', '{"blocks":[{"type":"heading","content":"Worked Distance"},{"type":"example","title":"Cuboid $6\\times8\\times x$. Space diagonal $17$. Find $x$.","steps":["$6^2+8^2+x^2=17^2$.","$100+x^2=289$, $x=\\sqrt{189}$."],"answer":"$x=3\\sqrt{21}$"},{"type":"callout","variant":"warning","content":"Distinguish **face diagonal**, **base diagonal**, **space diagonal**."},{"type":"question","questionText":"Base $3\\times4$, height $12$. Space diagonal?","questionType":"multiple_choice","options":["$13$","$5$","$12$","$17$"],"correctAnswer":"$13$","explanation":"$5$ and $12$ → $13$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'distances_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Calculating 3-D Distances');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, '3-D Distances — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Distances"},{"type":"example","title":"Point $A$ to plane: perpendicular distance is shortest.","steps":["Drop perpendicular; length is distance."],"answer":"Perpendicular length"},{"type":"math_block","latex":"AB = \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}","caption":"Distance in coordinates"},{"type":"question","questionText":"$A(0,0,0)$, $B(3,4,12)$. $AB$?","questionType":"multiple_choice","options":["$13$","$19$","$5$","$12$"],"correctAnswer":"$13$","explanation":"$\\sqrt{9+16+144}$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'three_dimensional_geometry' AND st.code = 'distances_3d'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = '3-D Distances — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid space diagonal uses?', 'multiple_choice', '["$\\sqrt{l^2+w^2+h^2}$","$l+w+h$","$lwh$","$2(l+w)$"]'::jsonb, '"$\\sqrt{l^2+w^2+h^2}$"'::jsonb, 'easy', 'Pythagoras twice.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distances_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid space diagonal uses?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Base $6\times8$. Base diagonal?', 'multiple_choice', '["$10$","$14$","$48$","$2$"]'::jsonb, '"$10$"'::jsonb, 'easy', '$6$-$8$-$10$ triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distances_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Base $6\times8$. Base diagonal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid $3,4,12$. Space diagonal?', 'multiple_choice', '["$13$","$19$","$5$","$12$"]'::jsonb, '"$13$"'::jsonb, 'medium', 'Classic triple.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distances_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid $3,4,12$. Space diagonal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$A(1,2,3)$, $B(4,6,3)$. $AB$?', 'multiple_choice', '["$5$","$7$","$3$","$\\sqrt{13}$"]'::jsonb, '"$5$"'::jsonb, 'medium', '$3$-$4$-$5$ in $xy$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distances_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$A(1,2,3)$, $B(4,6,3)$. $AB$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Cuboid $2\times3\times6$. Space diagonal?', 'multiple_choice', '["$7$","$11$","$\\sqrt{41}$","$6$"]'::jsonb, '"$7$"'::jsonb, 'hard', '$4+9+36=49$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distances_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Cuboid $2\times3\times6$. Space diagonal?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Square base side $a$, pyramid height $h$. Apex to base vertex slant?', 'multiple_choice', '["$\\sqrt{h^2+(a\\sqrt{2}/2)^2}$","$h+a$","$a/2$","$h$ only"]'::jsonb, '"$\\sqrt{h^2+(a\\sqrt{2}/2)^2}$"'::jsonb, 'hard', 'Half base diagonal.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distances_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Square base side $a$, pyramid height $h$. Apex to base vertex slant?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$P(1,2,2)$, $Q(4,6,2)$. Distance $PQ$?', 'multiple_choice', '["$5$","$7$","$3$","$\\sqrt{13}$"]'::jsonb, '"$5$"'::jsonb, 'hard', '$3$-$4$-$5$ triangle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='distances_3d'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='three_dimensional_geometry'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$P(1,2,2)$, $Q(4,6,2)$. Distance $PQ$?');
