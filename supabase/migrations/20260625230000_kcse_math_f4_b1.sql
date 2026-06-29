@@ -403,3 +403,203 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='quartiles_deviation'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='statistics_ii'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Variance doubles when all values multiplied by?');
+-- ========== LOCI ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Locus of Points — Concepts', '{"blocks":[{"type":"heading","content":"What is a Locus?"},{"type":"paragraph","content":"A **locus** is the set of all points satisfying a given condition (e.g. fixed distance from a point)."},{"type":"callout","variant":"key_point","content":"Distance $r$ from point $A$ → locus is a **circle** centre $A$, radius $r$."},{"type":"question","questionText":"Locus of points $3$ cm from $P$?","questionType":"multiple_choice","options":["Circle radius $3$ cm","Line through $P$","Square","Parallel line only"],"correctAnswer":"Circle radius $3$ cm","explanation":"Fixed distance."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'locus_points'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Locus of Points — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Standard Loci', '{"blocks":[{"type":"heading","content":"Common Loci"},{"type":"paragraph","content":"Equidistant from two points $A$, $B$ → **perpendicular bisector** of $AB$. Equidistant from two lines → **angle bisector** (or parallel line if lines are parallel)."},{"type":"example","title":"Describe locus equidistant from parallel lines $3$ cm apart.","steps":["Parallel line midway between them."],"answer":"Midline parallel to both"},{"type":"question","questionText":"Equidistant from $A$ and $B$?","questionType":"multiple_choice","options":["Perpendicular bisector of $AB$","Circle at $A$","Line through $A$ only","Arc only"],"correctAnswer":"Perpendicular bisector of $AB$","explanation":"Equal distance property."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'locus_points'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Standard Loci');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Locus of Points — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Describing Loci"},{"type":"example","title":"Locus of points $2$ cm from line $L$.","steps":["Two parallel lines, one each side of $L$, distance $2$ cm."],"answer":"Pair of parallel lines"},{"type":"callout","variant":"warning","content":"State **shape**, **centre/line**, and **measurement** in your answer."},{"type":"question","questionText":"Locus inside triangle equidistant from all sides?","questionType":"multiple_choice","options":["Incentre/incircle region","Circumcircle only","Median only","Altitude only"],"correctAnswer":"Incentre/incircle region","explanation":"Angle bisectors meet at incentre."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'locus_points'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Locus of Points — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Locus is a set of points satisfying?', 'multiple_choice', '["A given condition","Random points","Only integers","Area formula"]'::jsonb, '"A given condition"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='locus_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Locus is a set of points satisfying?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$4$ cm from fixed point $O$?', 'multiple_choice', '["Circle radius $4$ cm","Square side $4$","Line length $4$ only","No locus"]'::jsonb, '"Circle radius $4$ cm"'::jsonb, 'easy', 'Constant distance.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='locus_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$4$ cm from fixed point $O$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Equidistant from two points?', 'multiple_choice', '["Perpendicular bisector","Circle at one point","Random curve","Parallel to $x$-axis only"]'::jsonb, '"Perpendicular bisector"'::jsonb, 'easy', 'Classic locus.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='locus_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equidistant from two points?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2$ cm from a straight line?', 'multiple_choice', '["Two parallel lines","One line only","Circle","Point"]'::jsonb, '"Two parallel lines"'::jsonb, 'medium', 'Both sides.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='locus_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2$ cm from a straight line?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Equidistant from two intersecting lines?', 'multiple_choice', '["Angle bisectors","Perpendicular bisector of segment","Circle","Parabola"]'::jsonb, '"Angle bisectors"'::jsonb, 'medium', 'Bisect angles.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='locus_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equidistant from two intersecting lines?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Points closer to $A$ than $B$?', 'multiple_choice', '["Half-plane bounded by perp. bisector","Circle at $A$","Line $AB$","Empty set"]'::jsonb, '"Half-plane bounded by perp. bisector"'::jsonb, 'hard', 'One side of bisector.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='locus_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Points closer to $A$ than $B$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Locus equidistant from three non-collinear points (vertices)?', 'multiple_choice', '["Circumcentre (one point)","Infinite points always","Line only","Two circles"]'::jsonb, '"Circumcentre (one point)"'::jsonb, 'hard', 'Perp. bisectors meet once.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='locus_points'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Locus equidistant from three non-collinear points (vertices)?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Constructing Loci', '{"blocks":[{"type":"heading","content":"Compass and Straight Edge"},{"type":"paragraph","content":"To construct locus $2$ cm from point $P$: set compass to $2$ cm, draw full circle centre $P$."},{"type":"callout","variant":"key_point","content":"Perpendicular bisector: arcs of equal radius from $A$ and $B$, join intersection points."},{"type":"question","questionText":"First step for circle locus?","questionType":"multiple_choice","options":["Set compass to required radius","Draw diameter only","Measure angle","Plot origin"],"correctAnswer":"Set compass to required radius","explanation":"Radius defines circle."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'constructed_loci'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Constructing Loci');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Construction Steps', '{"blocks":[{"type":"heading","content":"Perpendicular Bisector Construction"},{"type":"paragraph","content":"1. Place compass at $A$, draw arcs crossing $AB$. 2. Repeat from $B$ with same radius. 3. Join the two arc intersections — this line is the perpendicular bisector."},{"type":"example","title":"Construct locus equidistant from $A$ and $B$.","steps":["Draw perpendicular bisector of $AB$ as above."],"answer":"Perpendicular bisector"},{"type":"callout","variant":"warning","content":"Leave construction arcs visible — examiners check method."},{"type":"question","questionText":"Angle bisector at $O$ uses?","questionType":"multiple_choice","options":["Arcs from $O$ cutting both arms","Only one arc","Parallel lines","Midpoint only"],"correctAnswer":"Arcs from $O$ cutting both arms","explanation":"Standard angle bisector."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'constructed_loci'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Construction Steps');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Constructed Loci — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Construction"},{"type":"example","title":"Construct circle centre $P$, radius $3$ cm; shade region inside.","steps":["Compass width $3$ cm at $P$, complete circle."],"answer":"Interior is locus $<3$ cm from $P$"},{"type":"callout","variant":"warning","content":"Label points and show all construction arcs clearly."},{"type":"question","questionText":"To copy distance $AB$ to line through $C$?","questionType":"multiple_choice","options":["Compass radius $AB$, arc from $C$","Protractor only","Guess and check","Erase $AB$"],"correctAnswer":"Compass radius $AB$, arc from $C$","explanation":"Transfer length."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'constructed_loci'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Constructed Loci — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Circle locus needs?', 'multiple_choice', '["Compass set to radius","Protractor only","Set square only","No tools"]'::jsonb, '"Compass set to radius"'::jsonb, 'easy', 'Draw arc/circle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='constructed_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Circle locus needs?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Perp. bisector uses arcs from?', 'multiple_choice', '["Both endpoints","Midpoint only","One endpoint","Origin only"]'::jsonb, '"Both endpoints"'::jsonb, 'easy', 'Equal radii.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='constructed_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Perp. bisector uses arcs from?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Steps for angle bisector at $O$ include?', 'multiple_choice', '["Arc from $O$ cutting arms","Circle at random centre","Only straight line","Measure $90^\\circ$ only"]'::jsonb, '"Arc from $O$ cutting arms"'::jsonb, 'medium', 'Standard method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='constructed_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Steps for angle bisector at $O$ include?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Locus $1.5$ cm from line $L$:', 'multiple_choice', '["Two parallel lines construct","One circle","Perp. bisector","Median"]'::jsonb, '"Two parallel lines construct"'::jsonb, 'medium', 'Offset each side.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='constructed_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Locus $1.5$ cm from line $L$:');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Equal chords from $A$, $B$ in bisector construction imply?', 'multiple_choice', '["Equidistant from $A$, $B$","Parallel lines","Right angle at $A$","Same circle area"]'::jsonb, '"Equidistant from $A$, $B$"'::jsonb, 'medium', 'Arc property.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='constructed_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Equal chords from $A$, $B$ in bisector construction imply?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Construct incircle of triangle: bisect?', 'multiple_choice', '["All three angles","One side only","External angles only","Medians only"]'::jsonb, '"All three angles"'::jsonb, 'hard', 'Incentre from bisectors.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='constructed_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Construct incircle of triangle: bisect?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Region inside triangle closer to side $AB$ than $AC$ bounded by?', 'multiple_choice', '["Angle bisector at $A$","Perp. bisector of $BC$","Circle at $A$","Parallel to $BC$"]'::jsonb, '"Angle bisector at $A$"'::jsonb, 'hard', 'Equidistant from two sides meeting at $A$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='constructed_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Region inside triangle closer to side $AB$ than $AC$ bounded by?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Intersecting Loci — Concepts', '{"blocks":[{"type":"heading","content":"Regions from Two Loci"},{"type":"paragraph","content":"The **intersection** of two loci satisfies **both** conditions simultaneously — often finitely many points."},{"type":"callout","variant":"key_point","content":"Example: $2$ cm from $A$ AND $3$ cm from $B$ → intersection points of two circles."},{"type":"question","questionText":"Intersection of two loci gives points satisfying?","questionType":"multiple_choice","options":["Both conditions","Either condition only","Neither","Area only"],"correctAnswer":"Both conditions","explanation":"Logical AND."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'intersecting_loci'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Intersecting Loci — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding Intersection Points', '{"blocks":[{"type":"heading","content":"Construction of Intersections"},{"type":"paragraph","content":"Draw both loci accurately. Mark points where they cross. Shade required region if asked (e.g. inside circle AND on one side of bisector)."},{"type":"example","title":"Circle centre $O$ radius $4$ cm and line perp. bisector of $OP$ — how many intersection points generally?","steps":["Typically $0$, $1$, or $2$ depending on geometry."],"answer":"Up to $2$ points"},{"type":"question","questionText":"Two circles radii $3$ and $5$, centres $4$ apart. How many intersections?","questionType":"multiple_choice","options":["$2$","$0$","Infinite","$4$"],"correctAnswer":"$2$","explanation":"Circles cross twice."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'intersecting_loci'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding Intersection Points');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Intersecting Loci — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Intersecting Loci"},{"type":"example","title":"Farm problem: pump equidistant from wells $A$, $B$ and $2$ km from road (line).","steps":["Draw perp. bisector of $AB$.","Draw parallel lines $2$ km from road.","Mark intersection points."],"answer":"Candidate sites at intersections"},{"type":"callout","variant":"warning","content":"Read whether region must be **inside** or **outside** each locus."},{"type":"question","questionText":"Shaded region: inside circle AND closer to $A$ than $B$ uses?","questionType":"multiple_choice","options":["Circle and half-plane by bisector","Two circles only","Angle bisector only","Median"],"correctAnswer":"Circle and half-plane by bisector","explanation":"Combine conditions."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'loci' AND st.code = 'intersecting_loci'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Intersecting Loci — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Intersecting loci satisfy?', 'multiple_choice', '["Both conditions","One condition","No condition","Area formula"]'::jsonb, '"Both conditions"'::jsonb, 'easy', 'AND region.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Intersecting loci satisfy?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two circles may intersect at?', 'multiple_choice', '["$0$, $1$, or $2$ points","Always $4$","Always infinite","Never"]'::jsonb, '"$0$, $1$, or $2$ points"'::jsonb, 'easy', 'Relative positions.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two circles may intersect at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Pump equidistant from $A$, $B$ lies on?', 'multiple_choice', '["Perp. bisector of $AB$","Circle at $A$","Line parallel to $AB$ only","Angle at $C$"]'::jsonb, '"Perp. bisector of $AB$"'::jsonb, 'medium', 'Equal distance.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Pump equidistant from $A$, $B$ lies on?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Region inside both circles centre $A$, $B$?', 'multiple_choice', '["Intersection of interiors","Union only","Outside both","Line segment $AB$"]'::jsonb, '"Intersection of interiors"'::jsonb, 'medium', 'Both radii.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Region inside both circles centre $A$, $B$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Garden: $3$ m from fence AND $5$ m from tap $T$. Number of possible beds generally?', 'multiple_choice', '["Up to $2$","Exactly $4$","Infinite on line","Zero always"]'::jsonb, '"Up to $2$"'::jsonb, 'hard', 'Circle-line/circle-circle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Garden: $3$ m from fence AND $5$ m from tap $T$. Number of possible beds generally?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Shade: closer to $A$ than $B$ AND within $4$ cm of $B$.', 'multiple_choice', '["Segment of circle near $A$ side","Whole circle","Outside circle","Perp. bisector only"]'::jsonb, '"Segment of circle near $A$ side"'::jsonb, 'hard', 'Combine half-plane and disc.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Shade: closer to $A$ than $B$ AND within $4$ cm of $B$.');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Locus points $5$ cm from $A$ AND $5$ cm from $B$ with $AB=10$ cm gives?', 'multiple_choice', '["Midpoint of $AB$ only","Two points always","Circle centre $A$","Infinite points"]'::jsonb, '"Midpoint of $AB$ only"'::jsonb, 'hard', 'Circles touch at midpoint.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_loci'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Locus points $5$ cm from $A$ AND $5$ cm from $B$ with $AB=10$ cm gives?');
