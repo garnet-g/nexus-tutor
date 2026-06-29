@@ -808,3 +808,204 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='rates_of_work'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='compound_proportions_rates_work'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Half job by A ($8$ days full) then B ($24$ days full) finishes. Total days?');
 
+-- ========== GRAPHICAL METHODS ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Plotting from Tables of Values', '{"blocks":[{"type":"heading","content":"Tables and Graphs"},{"type":"paragraph","content":"Build a **table** of $(x, y)$ pairs for an equation, plot points on Cartesian axes, and join with a **smooth curve** (or straight line if linear)."},{"type":"example","title":"Plot $y = x^2 - 1$ for $x = -2$ to $2$.","steps":["Points: $(-2,3),(-1,0),(0,-1),(1,0),(2,3)$.","Parabola symmetric about $y$-axis."],"answer":"Parabola through $(0,-1)$"},{"type":"question","questionText":"$y = 2x + 1$ graph is?","questionType":"multiple_choice","options":["Straight line","Circle","Parabola","Hyperbola only"],"correctAnswer":"Straight line","explanation":"Linear equation."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'tables_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Plotting from Tables of Values');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Choosing Scales and Axes', '{"blocks":[{"type":"heading","content":"Good Graph Practice"},{"type":"callout","variant":"key_point","content":"Label axes, use consistent scale, plot at least $3$ points (more for curves)."},{"type":"example","title":"$y = \\frac{12}{x}$ for $x = 1, 2, 3, 4, 6, 12$.","steps":["Hyperbola branches in quadrants I and III (for positive table)."],"answer":"Reciprocal curve"},{"type":"callout","variant":"warning","content":"Do not join plotted points with straight segments for nonlinear laws — use a smooth curve."},{"type":"question","questionText":"Table helps to?","questionType":"multiple_choice","options":["Calculate coordinates to plot","Find determinant","Expand binomial","Prove congruence"],"correctAnswer":"Calculate coordinates to plot","explanation":"Organises values."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'tables_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Choosing Scales and Axes');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tables & Graphs — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Plotting"},{"type":"example","title":"From graph of $y=x^2$, estimate $x$ when $y=5$.","steps":["$x \\approx \\pm 2.24$."],"answer":"$\\pm 2.24$"},{"type":"callout","variant":"warning","content":"Read graphs carefully — use grid lines and state if answer is approximate."},{"type":"question","questionText":"$y$-intercept of $y=3x-7$?","questionType":"multiple_choice","options":["$-7$","$3$","$7$","$0$"],"correctAnswer":"$-7$","explanation":"Set $x=0$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'tables_graphs'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tables & Graphs — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'First step in graphing an equation?', 'multiple_choice', '["Make a table of values","Differentiate","Factorise only","Integrate"]'::jsonb, '"Make a table of values"'::jsonb, 'easy', 'Standard method.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tables_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='First step in graphing an equation?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=5$ on graph is?', 'multiple_choice', '["Horizontal line","Vertical line","Parabola","Circle"]'::jsonb, '"Horizontal line"'::jsonb, 'easy', 'Constant $y$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tables_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=5$ on graph is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=x^2+2$ vertex at?', 'multiple_choice', '["$(0,2)$","$(2,0)$","$(0,0)$","$(1,3)$"]'::jsonb, '"$(0,2)$"'::jsonb, 'medium', 'Minimum at $x=0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tables_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=x^2+2$ vertex at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Points $(1,2)$ and $(3,6)$ lie on line. Gradient?', 'multiple_choice', '["$2$","$3$","$4$","$1$"]'::jsonb, '"$2$"'::jsonb, 'easy', '$(6-2)/(3-1)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tables_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Points $(1,2)$ and $(3,6)$ lie on line. Gradient?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=\frac{8}{x}$ passes through?', 'multiple_choice', '["$(2,4)$","$(4,4)$","$(2,8)$","$(0,8)$"]'::jsonb, '"$(2,4)$"'::jsonb, 'medium', '$xy=8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tables_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=\frac{8}{x}$ passes through?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Quadratic graph crosses $x$-axis twice means discriminant?', 'multiple_choice', '["Positive","Zero","Negative","Undefined"]'::jsonb, '"Positive"'::jsonb, 'hard', 'Two real roots.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tables_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Quadratic graph crosses $x$-axis twice means discriminant?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'From table, $x$: $-1,0,1$; $y$: $2,1,2$. Equation likely?', 'multiple_choice', '["$y=x^2+1$","$y=2x+1$","$y=-x+1$","$y=x+2$"]'::jsonb, '"$y=x^2+1$"'::jsonb, 'hard', 'Symmetric parabola.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tables_graphs'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='From table, $x$: $-1,0,1$; $y$: $2,1,2$. Equation likely?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Straight-Line Laws', '{"blocks":[{"type":"heading","content":"Linear Laws"},{"type":"paragraph","content":"Relationships $y = kx^n$ can be linearised: plot $\\log y$ against $\\log x$ (gradient $= n$) or $y$ against $x^n$ for a straight line through the origin if proportional."},{"type":"math_block","latex":"y = kx^n \\Rightarrow \\log y = \\log k + n\\log x","caption":"Log-log straight line"},{"type":"question","questionText":"$y \\propto x^2$ — plot $y$ against?","questionType":"multiple_choice","options":["$x^2$","$x$","$\\log x$ only","$1/x$"],"correctAnswer":"$x^2$","explanation":"Direct plot gives line through origin."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'linear_laws'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Straight-Line Laws');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Finding Constants from Graphs', '{"blocks":[{"type":"heading","content":"Gradient and Intercept"},{"type":"example","title":"$y = mx + c$ from graph: gradient $3$, crosses $y$-axis at $-2$.","steps":["$y = 3x - 2$."],"answer":"$y = 3x - 2$"},{"type":"example","title":"$T \\propto \\sqrt{L}$: plot $T$ vs $\\sqrt{L}$ gives line gradient $2$. Law?","steps":["$T = 2\\sqrt{L}$."],"answer":"$T = 2\\sqrt{L}$"},{"type":"callout","variant":"warning","content":"Check which variables to plot — wrong choice gives a curve, not a line."},{"type":"question","questionText":"Gradient on $y$ vs $x^2$ graph for $y=5x^2$?","questionType":"multiple_choice","options":["$5$","$2$","$25$","$1$"],"correctAnswer":"$5$","explanation":"Coefficient $k$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'linear_laws'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Finding Constants from Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Linear Laws — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Linear Laws"},{"type":"example","title":"$P$ vs $1/V$ is straight through origin, gradient $4$. Law?","steps":["$P = \\frac{4}{V}$ (Boyle-type proportionality)."],"answer":"$P \\propto \\frac{1}{V}$, $k=4$"},{"type":"callout","variant":"warning","content":"State the law in words and as an equation with the constant found."},{"type":"question","questionText":"Log-log graph gradient gives?","questionType":"multiple_choice","options":["Power $n$","Constant $k$ only","Intercept only","Area"],"correctAnswer":"Power $n$","explanation":"Slope $=n$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'linear_laws'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Linear Laws — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Linear law graph is?', 'multiple_choice', '["Straight line","Circle","Parabola always","Random points"]'::jsonb, '"Straight line"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_laws'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Linear law graph is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y \propto x$ — graph through origin?', 'multiple_choice', '["Yes","No","Only if $x=1$","Never"]'::jsonb, '"Yes"'::jsonb, 'easy', 'Direct proportion.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_laws'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y \propto x$ — graph through origin?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=kx^2$: plot $y$ vs $x^2$, gradient $4$. $k$?', 'multiple_choice', '["$4$","$2$","$16$","$8$"]'::jsonb, '"$4$"'::jsonb, 'medium', 'Gradient is $k$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_laws'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=kx^2$: plot $y$ vs $x^2$, gradient $4$. $k$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\log y = 2\log x + \log 5$ means $y$?', 'multiple_choice', '["$5x^2$","$2x+5$","$5^x$","$x^5$"]'::jsonb, '"$5x^2$"'::jsonb, 'medium', 'Antilog form.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_laws'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\log y = 2\log x + \log 5$ means $y$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Line through $(0,3)$ with gradient $-2$?', 'multiple_choice', '["$y=-2x+3$","$y=2x+3$","$y=-2x-3$","$y=3x-2$"]'::jsonb, '"$y=-2x+3$"'::jsonb, 'medium', '$c=3$, $m=-2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_laws'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Line through $(0,3)$ with gradient $-2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$T \propto \frac{1}{\sqrt{d}}$: plot $T$ vs?', 'multiple_choice', '["$1/\\sqrt{d}$","$d$","$\\sqrt{d}$","$T$"]'::jsonb, '"$1/\\sqrt{d}$"'::jsonb, 'hard', 'Linearise.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_laws'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$T \propto \frac{1}{\sqrt{d}}$: plot $T$ vs?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Log-log line: gradient $3$, intercept $\log 2$ on $\log y$ axis. $y$?', 'multiple_choice', '["$2x^3$","$3x+2$","$2^x$","$x^2+3$"]'::jsonb, '"$2x^3$"'::jsonb, 'hard', '$k=2$, $n=3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='linear_laws'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Log-log line: gradient $3$, intercept $\log 2$ on $\log y$ axis. $y$?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Equations by Graphs', '{"blocks":[{"type":"heading","content":"Graphical Solutions"},{"type":"paragraph","content":"Solutions of $f(x)=g(x)$ are **$x$-coordinates** where graphs of $y=f(x)$ and $y=g(x)$ **intersect**."},{"type":"example","title":"Solve $x^2 = 4$ graphically.","steps":["Plot $y=x^2$ and $y=4$.","Intersect at $x=\\pm 2$."],"answer":"$x = \\pm 2$"},{"type":"question","questionText":"Roots of $f(x)=0$ from graph of $y=f(x)$?","questionType":"multiple_choice","options":["$x$-intercepts","$y$-intercept","Gradient","Area"],"correctAnswer":"$x$-intercepts","explanation":"Where $y=0$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'graphical_solutions'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Equations by Graphs');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Simultaneous Equations Graphically', '{"blocks":[{"type":"heading","content":"Intersection Method"},{"type":"example","title":"Solve $y=x+1$ and $y=5-x$ graphically.","steps":["Lines meet at $(2,3)$."],"answer":"$(2, 3)$"},{"type":"callout","variant":"warning","content":"Read intersection to suitable accuracy — state approximate if using graph paper."},{"type":"example","title":"$y=2^x$ and $y=6$ — estimate $x$.","steps":["$x \\approx 2.58$."],"answer":"$x \\approx 2.6$"},{"type":"question","questionText":"Two parallel lines — simultaneous solution?","questionType":"multiple_choice","options":["No solution","Infinite solutions","One always","Two points"],"correctAnswer":"No solution","explanation":"Never meet."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'graphical_solutions'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Simultaneous Equations Graphically');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Graphical Solutions — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Graphical Solutions"},{"type":"example","title":"Use graph of $y=x^2-3x$ to solve $x^2-3x=4$.","steps":["Plot $y=4$; intersections at $x=-1$, $x=4$."],"answer":"$x=-1$ or $x=4$"},{"type":"callout","variant":"warning","content":"Rearrange to $f(x)=g(x)$ form before drawing second graph."},{"type":"question","questionText":"$f(x)=0$ has 1 solution — graph touches $x$-axis?","questionType":"multiple_choice","options":["Once (tangent)","Twice","Never","Three times"],"correctAnswer":"Once (tangent)","explanation":"Repeated root."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'graphical_methods' AND st.code = 'graphical_solutions'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Graphical Solutions — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Solve $f(x)=g(x)$ graphically by finding?', 'multiple_choice', '["Intersection $x$-values","$y$-intercept","Gradient","Midpoint"]'::jsonb, '"Intersection $x$-values"'::jsonb, 'easy', 'Equal heights.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_solutions'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Solve $f(x)=g(x)$ graphically by finding?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=0$ on graph of $y=f(x)$ gives?', 'multiple_choice', '["Roots","Maximum only","Area","Derivative"]'::jsonb, '"Roots"'::jsonb, 'easy', 'Zeros.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_solutions'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=0$ on graph of $y=f(x)$ gives?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=2x$ meets $y=8$ at $x$?', 'multiple_choice', '["$4$","$2$","$8$","$16$"]'::jsonb, '"$4$"'::jsonb, 'medium', '$2x=8$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_solutions'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=2x$ meets $y=8$ at $x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Parabola $y=x^2-5$ meets $y=4$ at?', 'multiple_choice', '["$x=\\pm 3$","$x=\\pm 2$","$x=0$","$x=5$"]'::jsonb, '"$x=\\pm 3$"'::jsonb, 'medium', '$x^2=9$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_solutions'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Parabola $y=x^2-5$ meets $y=4$ at?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Lines $y=3$ and $y=x^2$ intersection count?', 'multiple_choice', '["$2$","$0$","$1$","$3$"]'::jsonb, '"$2$"'::jsonb, 'hard', '$x=\pm\sqrt{3}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_solutions'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Lines $y=3$ and $y=x^2$ intersection count?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=2^x$ and $y=x+2$ — estimate one positive intersection near?', 'multiple_choice', '["$x=2$","$x=0$","$x=-2$","$x=5$"]'::jsonb, '"$x=2$"'::jsonb, 'hard', 'Graphical estimate.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_solutions'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=2^x$ and $y=x+2$ — estimate one positive intersection near?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$x^2-x-6=0$ from graph of $y=x^2-x$ and $y=$?', 'multiple_choice', '["$6$","$-6$","$0$","$x$"]'::jsonb, '"$6$"'::jsonb, 'hard', 'Rearrange equation.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='graphical_solutions'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='graphical_methods'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$x^2-x-6=0$ from graph of $y=x^2-x$ and $y=$?');
+
