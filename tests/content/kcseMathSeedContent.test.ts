@@ -44,6 +44,10 @@ const SEED_FILES = [
     path: "supabase/migrations/20260625200000_kcse_math_f3_b1.sql",
     expectedLessonCount: 45,
   },
+  {
+    path: "supabase/migrations/20260625210000_kcse_math_f3_b2.sql",
+    expectedLessonCount: 45,
+  },
 ] as const;
 
 // extract every lesson content JSON: , '{...}'::jsonb  (SQL doubles '' for apostrophes)
@@ -115,6 +119,15 @@ describe("KCSE math seed — lesson content validates against schema", () => {
 
       it(`extracts the expected number of lessons (${expectedLessonCount})`, () => {
         expect(blobs.length).toBe(expectedLessonCount);
+      });
+
+      it("file is clean UTF-8 (no BOM, no mojibake)", () => {
+        // A leading BOM makes Postgres reject the file ("syntax error at or near ...").
+        expect(sql.charCodeAt(0)).not.toBe(0xfeff);
+        // UTF-8 -> cp1252 -> UTF-8 double-encoding leaves Â/Ã/â lead chars (e.g. â€" for —,
+        // Ã— for ×). Clean KCSE math content (ASCII + math symbols like — × − ≤ √ π) has none.
+        const mojibake = sql.match(/[ÂÃâ]/g);
+        expect(mojibake ?? []).toEqual([]);
       });
 
       it("every lesson passes lessonContentSchema", () => {
