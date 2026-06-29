@@ -30,7 +30,8 @@ Completeness is enforced structurally, not by memory:
 
 ## 3. Completeness audit — round 1 (repo vs syllabus overview, 2026-06-25)
 
-- The repo skeleton (`curriculum_math_kcse.sql`) covers the full syllabus: **65 real topics**.
+- The repo skeleton (`curriculum_math_kcse.sql`) covers the full syllabus: **66 real topics**
+  (F1 21 + F2 20 + F3 15 + F4 10; verified against hosted DB 2026-06-29 — earlier "65" was an off-by-one).
 - **GCD/HCF** and **LCM** exist as **subtopics of `factors`** (the overview lists them as separate
   topics) — covered, nested.
 - **Pythagoras Theorem** is present (`pythagoras_theorem`, Form 2).
@@ -45,7 +46,7 @@ Completeness is enforced structurally, not by memory:
 - **Round-2 audit (deferred):** reconcile against owner-supplied past papers to confirm no examinable
   archetype is missing, and to calibrate difficulty.
 
-## 4. Master coverage matrix (65 topics)
+## 4. Master coverage matrix (66 topics)
 
 Legend: ✅ done · ⟳ re-instate+rebuild · ▢ todo. (Subtopic codes live in `curriculum_math_kcse.sql`;
 add finer subtopics per topic as needed — additive only.)
@@ -77,7 +78,7 @@ add finer subtopics per topic as needed — additive only.)
 ▢ `three_dimensional_geometry` · ▢ `longitudes_latitudes` · ▢ `linear_programming`
 ▢ `differentiation` · ▢ `area_approximation` · ▢ `integration`
 
-**Status: 56 done · 9 remaining.**
+**Status: 56 done · 10 remaining (all Form 4).**
 
 ## 5. Per-topic workflow (the repeatable recipe)
 
