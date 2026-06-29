@@ -205,3 +205,204 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='vector_geometry'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='vectors_ii'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Rhombus $OABC$: show $\overrightarrow{OB}$ bisects angle $AOC$. Uses?');
 
+-- ========== BINOMIAL EXPANSION ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Building Pascal''s Triangle', '{"blocks":[{"type":"heading","content":"Pascal''s Triangle"},{"type":"paragraph","content":"**Pascal''s triangle** lists binomial coefficients. Row $0$ is $1$; each edge is $1$; each interior entry is the **sum of the two above**."},{"type":"callout","variant":"key_point","content":"Row $n$ gives coefficients of $(a+b)^n$ from $a^n$ to $b^n$."},{"type":"example","title":"Row $4$ of Pascal''s triangle?","steps":["$1, 4, 6, 4, 1$."],"answer":"$1, 4, 6, 4, 1$"},{"type":"question","questionText":"Row $3$ begins with?","questionType":"multiple_choice","options":["$1, 3, 3, 1$","$1, 2, 1$","$1, 4, 6, 4, 1$","$1, 1$"],"correctAnswer":"$1, 3, 3, 1$","explanation":"Third row (starting row 0)."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'pascals_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Building Pascal''s Triangle');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Reading Coefficients from the Triangle', '{"blocks":[{"type":"heading","content":"Coefficients and Rows"},{"type":"math_block","latex":"(a+b)^n = \\sum_{r=0}^{n} \\binom{n}{r} a^{n-r} b^r","caption":"Binomial theorem"},{"type":"example","title":"Use row $5$ to write first three terms of $(a+b)^5$.","steps":["Coeffs: $1, 5, 10, 10, 5, 1$.","Terms: $a^5 + 5a^4b + 10a^3b^2 + \\ldots$"],"answer":"$a^5 + 5a^4b + 10a^3b^2$"},{"type":"callout","variant":"warning","content":"Count rows from $0$ at the top — row $n$ has $n+1$ entries."},{"type":"question","questionText":"Middle coefficient of row $6$?","questionType":"multiple_choice","options":["$20$","$15$","$6$","$1$"],"correctAnswer":"$20$","explanation":"Row $6$: $1,6,15,20,15,6,1$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'pascals_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Reading Coefficients from the Triangle');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Pascal''s Triangle — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Pascal''s Triangle"},{"type":"example","title":"Coefficient of $a^2b^3$ in $(a+b)^5$?","steps":["$\\binom{5}{3}=10$ (or read row $5$)."],"answer":"$10$"},{"type":"callout","variant":"warning","content":"Powers must sum to $n$: $2+3=5$."},{"type":"question","questionText":"Sum of row $4$ coefficients?","questionType":"multiple_choice","options":["$16$","$8$","$10$","$32$"],"correctAnswer":"$16$","explanation":"$2^4=16$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'pascals_triangle'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Pascal''s Triangle — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Each Pascal entry (not on edge) equals?', 'multiple_choice', '["Sum of two above","Product of above","Double above","Half above"]'::jsonb, '"Sum of two above"'::jsonb, 'easy', 'Construction rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pascals_triangle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Each Pascal entry (not on edge) equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Row $2$ is?', 'multiple_choice', '["$1,2,1$","$1,1$","$1,3,3,1$","$1,4,6,4,1$"]'::jsonb, '"$1,2,1$"'::jsonb, 'easy', 'Third row.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pascals_triangle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Row $2$ is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Coefficient of $b^3$ in $(a+b)^4$?', 'multiple_choice', '["$4$","$6$","$1$","$3$"]'::jsonb, '"$4$"'::jsonb, 'medium', 'Row $4$: $\binom{4}{3}=4$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pascals_triangle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Coefficient of $b^3$ in $(a+b)^4$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Row $5$ fourth entry (from left)?', 'multiple_choice', '["$10$","$5$","$15$","$20$"]'::jsonb, '"$10$"'::jsonb, 'easy', '$1,5,10,10,5,1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pascals_triangle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Row $5$ fourth entry (from left)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sum of coefficients in $(a+b)^6$?', 'multiple_choice', '["$64$","$36$","$32$","$128$"]'::jsonb, '"$64$"'::jsonb, 'medium', 'Set $a=b=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pascals_triangle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sum of coefficients in $(a+b)^6$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Coefficient of $a^4b^2$ in $(a+b)^6$?', 'multiple_choice', '["$15$","$20$","$6$","$12$"]'::jsonb, '"$15$"'::jsonb, 'hard', '$\binom{6}{2}=15$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pascals_triangle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Coefficient of $a^4b^2$ in $(a+b)^6$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Row $7$ has how many entries?', 'multiple_choice', '["$8$","$7$","$6$","$9$"]'::jsonb, '"$8$"'::jsonb, 'hard', '$n+1$ entries in row $n$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='pascals_triangle'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Row $7$ has how many entries?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Expanding $(a+b)^n$', '{"blocks":[{"type":"heading","content":"Binomial Expansion"},{"type":"paragraph","content":"Expand $(a+b)^n$ using coefficients from row $n$ of Pascal''s triangle. Powers of $a$ decrease while powers of $b$ increase."},{"type":"example","title":"Expand $(x+2)^3$.","steps":["Coeffs $1,3,3,1$: $(x+2)^3 = x^3 + 3x^2(2) + 3x(4) + 8$.","$= x^3 + 6x^2 + 12x + 8$."],"answer":"$x^3 + 6x^2 + 12x + 8$"},{"type":"question","questionText":"$(a+b)^2$ expands to?","questionType":"multiple_choice","options":["$a^2+2ab+b^2$","$a^2+b^2$","$a^2+ab+b^2$","$2a^2+2b^2$"],"correctAnswer":"$a^2+2ab+b^2$","explanation":"Row $2$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'expansion_binomial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Expanding $(a+b)^n$');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Expansions with Negative Terms', '{"blocks":[{"type":"heading","content":"$(a-b)^n$ and Signs"},{"type":"example","title":"Expand $(x-1)^4$.","steps":["$x^4 - 4x^3 + 6x^2 - 4x + 1$.","Signs alternate when second term is negative."],"answer":"$x^4 - 4x^3 + 6x^2 - 4x + 1$"},{"type":"callout","variant":"warning","content":"Track signs carefully: $(-b)^r$ alternates $+,-,+,-,\\ldots$"},{"type":"example","title":"Expand $(2x+3)^2$.","steps":["$4x^2 + 12x + 9$."],"answer":"$4x^2 + 12x + 9$"},{"type":"question","questionText":"Constant term of $(x-2)^3$?","questionType":"multiple_choice","options":["$-8$","$8$","$-6$","$6$"],"correctAnswer":"$-8$","explanation":"$(-2)^3$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'expansion_binomial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Expansions with Negative Terms');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Binomial Expansion — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Expansion"},{"type":"example","title":"First three terms of $(1+2x)^5$.","steps":["$1 + 5(2x) + 10(2x)^2 = 1 + 10x + 40x^2$."],"answer":"$1 + 10x + 40x^2$"},{"type":"callout","variant":"warning","content":"When $a$ is not $1$, powers of $a$ still appear in each term."},{"type":"question","questionText":"Coefficient of $x^2$ in $(x+3)^3$?","questionType":"multiple_choice","options":["$27$","$9$","$3$","$18$"],"correctAnswer":"$27$","explanation":"$3 \\cdot x^2 \\cdot 9$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'expansion_binomial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Binomial Expansion — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(x+1)^3$ constant term?', 'multiple_choice', '["$1$","$3$","$0$","$6$"]'::jsonb, '"$1$"'::jsonb, 'easy', '$1^3$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(x+1)^3$ constant term?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Expand $(a+b)^1$?', 'multiple_choice', '["$a+b$","$a^2+b^2$","$1$","$ab$"]'::jsonb, '"$a+b$"'::jsonb, 'easy', 'Row $1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Expand $(a+b)^1$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(x-3)^2$?', 'multiple_choice', '["$x^2-6x+9$","$x^2+6x+9$","$x^2-9$","$x^2+9$"]'::jsonb, '"$x^2-6x+9$"'::jsonb, 'medium', 'Perfect square.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(x-3)^2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Coefficient of $x^3$ in $(2+x)^4$?', 'multiple_choice', '["$32$","$8$","$16$","$6$"]'::jsonb, '"$32$"'::jsonb, 'medium', '$\binom{4}{1}2^3=32$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Coefficient of $x^3$ in $(2+x)^4$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(1-x)^5$ coefficient of $x^2$?', 'multiple_choice', '["$10$","$-10$","$5$","$-5$"]'::jsonb, '"$10$"'::jsonb, 'medium', '$\binom{5}{2}=10$; sign positive for $r=2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(1-x)^5$ coefficient of $x^2$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Term independent of $x$ in $(x+\frac{1}{x})^4$?', 'multiple_choice', '["$6$","$4$","$1$","$0$"]'::jsonb, '"$6$"'::jsonb, 'hard', 'Middle terms $x^0$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Term independent of $x$ in $(x+\frac{1}{x})^4$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(3-2x)^3$ coefficient of $x^2$?', 'multiple_choice', '["$36$","$-36$","$54$","$-54$"]'::jsonb, '"$-36$"'::jsonb, 'hard', '$3 \cdot 3 \cdot (-2)^2 \cdot 3 = -36$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='expansion_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(3-2x)^3$ coefficient of $x^2$?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Approximating with $(1+x)^n$', '{"blocks":[{"type":"heading","content":"Binomial Approximations"},{"type":"paragraph","content":"For **small** $x$, $(1+x)^n \\approx 1 + nx$ using the first two terms. More terms give better accuracy."},{"type":"math_block","latex":"(1+x)^n \\approx 1 + nx \\quad (|x| \\ll 1)","caption":"Linear approximation"},{"type":"example","title":"Approximate $(1.02)^5$.","steps":["$(1+0.02)^5 \\approx 1 + 5(0.02) = 1.10$."],"answer":"$1.10$"},{"type":"question","questionText":"Approximation valid when $x$ is?","questionType":"multiple_choice","options":["Small","Large","Negative only","Any value"],"correctAnswer":"Small","explanation":"First-term expansion."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'approximations_binomial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Approximating with $(1+x)^n$');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Using More Terms for Accuracy', '{"blocks":[{"type":"heading","content":"Second-Order Approximation"},{"type":"math_block","latex":"(1+x)^n \\approx 1 + nx + \\frac{n(n-1)}{2}x^2","caption":"Up to $x^2$"},{"type":"example","title":"Approximate $\\sqrt{1.04}$ using $(1+x)^{1/2}$, $x=0.04$.","steps":["$\\approx 1 + \\frac{1}{2}(0.04) = 1.02$."],"answer":"$1.02$"},{"type":"callout","variant":"warning","content":"Fractional $n$ still works — coefficients use $\\binom{n}{r}$ with formula."},{"type":"question","questionText":"$(0.99)^4 \\approx$ using $1-4(0.01)$?","questionType":"multiple_choice","options":["$0.96$","$0.99$","$1.04$","$0.94$"],"correctAnswer":"$0.96$","explanation":"$(1-0.01)^4 \\approx 1-0.04$."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'approximations_binomial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Using More Terms for Accuracy');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Approximations — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Approximations"},{"type":"example","title":"Estimate $(1.01)^{10}$.","steps":["$\\approx 1 + 10(0.01) = 1.10$."],"answer":"$1.10$"},{"type":"callout","variant":"warning","content":"State that the answer is an **approximation** in exam working."},{"type":"question","questionText":"$(1.005)^3 \\approx$?","questionType":"multiple_choice","options":["$1.015$","$1.005$","$1.05$","$1.5$"],"correctAnswer":"$1.015$","explanation":"$1+3(0.005)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'binomial_expansion' AND st.code = 'approximations_binomial'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Approximations — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(1+x)^n \approx 1+nx$ when $x$ is?', 'multiple_choice', '["Small","Equal to 1","Large negative only","Zero only"]'::jsonb, '"Small"'::jsonb, 'easy', 'Linear approx.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='approximations_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(1+x)^n \approx 1+nx$ when $x$ is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(1.03)^2 \approx$?', 'multiple_choice', '["$1.06$","$1.03$","$1.09$","$1.30$"]'::jsonb, '"$1.06$"'::jsonb, 'easy', '$1+2(0.03)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='approximations_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(1.03)^2 \approx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(0.98)^3 \approx$?', 'multiple_choice', '["$0.94$","$0.98$","$1.02$","$0.96$"]'::jsonb, '"$0.94$"'::jsonb, 'medium', '$1-3(0.02)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='approximations_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(0.98)^3 \approx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(1.02)^4 \approx$ to 2 d.p.?', 'multiple_choice', '["$1.08$","$1.04$","$1.02$","$1.16$"]'::jsonb, '"$1.08$"'::jsonb, 'medium', '$1+4(0.02)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='approximations_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(1.02)^4 \approx$ to 2 d.p.?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sqrt{0.96}$ using $(1-0.04)^{1/2}$?', 'multiple_choice', '["$0.98$","$0.96$","$1.02$","$0.94$"]'::jsonb, '"$0.98$"'::jsonb, 'hard', '$1-\frac{1}{2}(0.04)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='approximations_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sqrt{0.96}$ using $(1-0.04)^{1/2}$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$(1.01)^{20} \approx$?', 'multiple_choice', '["$1.20$","$1.10$","$1.21$","$2.00$"]'::jsonb, '"$1.20$"'::jsonb, 'hard', '$1+20(0.01)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='approximations_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$(1.01)^{20} \approx$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Why add $x^2$ term?', 'multiple_choice', '["Better accuracy","Exact value always","Only for negatives","Not needed"]'::jsonb, '"Better accuracy"'::jsonb, 'hard', 'Second-order correction.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='approximations_binomial'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Why add $x^2$ term?');
+
