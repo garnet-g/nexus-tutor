@@ -603,3 +603,203 @@ FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.cur
 JOIN public.subtopics st ON st.topic_id=t.id AND st.code='intersecting_loci'
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='loci'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Locus points $5$ cm from $A$ AND $5$ cm from $B$ with $AB=10$ cm gives?');
+-- ========== TRIGONOMETRY III ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Trig Ratios for General Angles', '{"blocks":[{"type":"heading","content":"ASTC Rule"},{"type":"paragraph","content":"Signs of $\\sin$, $\\cos$, $\\tan$ depend on quadrant: **A**ll positive in Q1, **S**in Q2, **T**an Q3, **C**os Q4."},{"type":"math_block","latex":"\\sin(180^\\circ-\\theta)=\\sin\\theta,\\quad \\cos(180^\\circ-\\theta)=-\\cos\\theta","caption":"Supplementary angles"},{"type":"callout","variant":"key_point","content":"Use reference acute angle in related quadrant."},{"type":"question","questionText":"$\\sin 150^\\circ$ equals?","questionType":"multiple_choice","options":["$\\frac{1}{2}$","$-\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$-1$"],"correctAnswer":"$\\frac{1}{2}$","explanation":"Q2, sin positive."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'trig_ratios_general'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Trig Ratios for General Angles');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Related Angles and Identities', '{"blocks":[{"type":"heading","content":"Identities"},{"type":"math_block","latex":"\\sin^2\\theta+\\cos^2\\theta=1","caption":"Pythagorean identity"},{"type":"example","title":"$\\cos\\theta=-\\frac{3}{5}$, $\\theta$ in Q2. Find $\\sin\\theta$.","steps":["$\\sin^2=1-9/25=16/25$.","Q2: $\\sin$ positive → $\\frac{4}{5}$."],"answer":"$\\frac{4}{5}$"},{"type":"question","questionText":"$\\tan\\theta$ in terms of $\\sin$, $\\cos$?","questionType":"multiple_choice","options":["$\\frac{\\sin\\theta}{\\cos\\theta}$","$\\sin\\theta\\cos\\theta$","$1-\\cos\\theta$","$\\cos\\theta/\\sin\\theta$ always"],"correctAnswer":"$\\frac{\\sin\\theta}{\\cos\\theta}$","explanation":"Definition."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'trig_ratios_general'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Related Angles and Identities');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'General Angles — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — General Angles"},{"type":"example","title":"Simplify $\\cos(360^\\circ-\\theta)$.","steps":["$\\cos\\theta$."],"answer":"$\\cos\\theta$"},{"type":"callout","variant":"warning","content":"State quadrant when finding sign of ratio."},{"type":"question","questionText":"$\\tan 225^\\circ$?","questionType":"multiple_choice","options":["$1$","$-1$","$0$","Undefined"],"correctAnswer":"$1$","explanation":"Q3, tan positive."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'trig_ratios_general'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'General Angles — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'ASTC: Q2 sin is?', 'multiple_choice', '["Positive","Negative always","Zero only","Undefined"]'::jsonb, '"Positive"'::jsonb, 'easy', 'S in Q2.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_ratios_general'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='ASTC: Q2 sin is?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin 30^\circ$?', 'multiple_choice', '["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$1$","$0$"]'::jsonb, '"$\\frac{1}{2}$"'::jsonb, 'easy', 'Special angle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_ratios_general'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin 30^\circ$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\cos 180^\circ$?', 'multiple_choice', '["$-1$","$1$","$0$","$\\frac{1}{2}$"]'::jsonb, '"$-1$"'::jsonb, 'easy', 'On negative $x$-axis.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_ratios_general'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\cos 180^\circ$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin 150^\circ$?', 'multiple_choice', '["$\\frac{1}{2}$","$-\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$0$"]'::jsonb, '"$\\frac{1}{2}$"'::jsonb, 'medium', 'Reference $30^\circ$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_ratios_general'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin 150^\circ$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\cos\theta=\frac{5}{13}$, acute. $\sin\theta$?', 'multiple_choice', '["$\\frac{12}{13}$","$-\\frac{12}{13}$","$\\frac{5}{12}$","$\\frac{13}{5}$"]'::jsonb, '"$\\frac{12}{13}$"'::jsonb, 'medium', 'Pythagorean identity.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_ratios_general'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\cos\theta=\frac{5}{13}$, acute. $\sin\theta$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin^2\theta+\cos^2\theta$ for any $\theta$?', 'multiple_choice', '["$1$","$0$","$\\sin 2\\theta$","$2$"]'::jsonb, '"$1$"'::jsonb, 'hard', 'Identity.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_ratios_general'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin^2\theta+\cos^2\theta$ for any $\theta$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\cos\theta=-0.6$, Q3. $\sin\theta$?', 'multiple_choice', '["$-0.8$","$0.8$","$-0.6$","$1$"]'::jsonb, '"$-0.8$"'::jsonb, 'hard', 'Q3 sin negative.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_ratios_general'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\cos\theta=-0.6$, Q3. $\sin\theta$?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Trigonometric Equations — Concepts', '{"blocks":[{"type":"heading","content":"Solving $\\sin x = k$"},{"type":"paragraph","content":"Find reference angle, use symmetry to list solutions in given interval (often $0^\\circ\\le x\\le 360^\\circ$)."},{"type":"example","title":"$\\sin x=\\frac{1}{2}$, $0^\\circ\\le x\\le 360^\\circ$.","steps":["Reference $30^\\circ$.","$x=30^\\circ$ or $150^\\circ$."],"answer":"$30^\\circ, 150^\\circ$"},{"type":"question","questionText":"$\\cos x=0$ in $[0,360]$?","questionType":"multiple_choice","options":["$90^\\circ, 270^\\circ$","$0^\\circ, 180^\\circ$","$45^\\circ$ only","No solution"],"correctAnswer":"$90^\\circ, 270^\\circ$","explanation":"On axes."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'trig_equations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Trigonometric Equations — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Solving Trig Equations', '{"blocks":[{"type":"heading","content":"Methods"},{"type":"math_block","latex":"a\\sin x + b\\cos x = 0 \\Rightarrow \\tan x = -\\frac{b}{a}","caption":"When $\\cos x \\neq 0$"},{"type":"example","title":"$2\\cos x-1=0$, $0\\le x\\le 360^\\circ$.","steps":["$\\cos x=\\frac{1}{2}$.","$x=60^\\circ, 300^\\circ$."],"answer":"$60^\\circ, 300^\\circ$"},{"type":"callout","variant":"warning","content":"Check **all** solutions in interval — trig is periodic."},{"type":"question","questionText":"$\\tan x=1$ in Q1 only?","questionType":"multiple_choice","options":["$45^\\circ$","$90^\\circ$","$30^\\circ$","$180^\\circ$"],"correctAnswer":"$45^\\circ$","explanation":"Standard angle."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'trig_equations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Solving Trig Equations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Trig Equations — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Trig Equations"},{"type":"example","title":"$\\sin(2x)=\\frac{\\sqrt{3}}{2}$, $0\\le x\\le 180^\\circ$.","steps":["$2x=60^\\circ, 120^\\circ, ...$","$x=30^\\circ, 60^\\circ$."],"answer":"$30^\\circ, 60^\\circ$"},{"type":"callout","variant":"warning","content":"Factorise before solving when possible: $\\sin x\\cos x=0$."},{"type":"question","questionText":"$\\sin x=\\cos x$, $0\\le x\\le 90^\\circ$?","questionType":"multiple_choice","options":["$45^\\circ$","$0^\\circ$","$90^\\circ$","$30^\\circ$"],"correctAnswer":"$45^\\circ$","explanation":"$\\tan x=1$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'trig_equations'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Trig Equations — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin x=1$ has solution?', 'multiple_choice', '["$90^\\circ$","$0^\\circ$","$180^\\circ$","$270^\\circ$"]'::jsonb, '"$90^\\circ$"'::jsonb, 'easy', 'Maximum sine.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin x=1$ has solution?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\cos x=\frac{1}{2}$ reference angle?', 'multiple_choice', '["$60^\\circ$","$30^\\circ$","$45^\\circ$","$90^\\circ$"]'::jsonb, '"$60^\\circ$"'::jsonb, 'easy', 'Special angle.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\cos x=\frac{1}{2}$ reference angle?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin x=\frac{1}{2}$, $0\le x\le 360^\circ$. Smallest positive?', 'multiple_choice', '["$30^\\circ$","$150^\\circ$","$210^\\circ$","$330^\\circ$"]'::jsonb, '"$30^\\circ$"'::jsonb, 'medium', 'Q1 solution.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin x=\frac{1}{2}$, $0\le x\le 360^\circ$. Smallest positive?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\cos x=-\frac{\sqrt{2}}{2}$ in $[0,360]$. One solution?', 'multiple_choice', '["$135^\\circ$","$45^\\circ$","$225^\\circ$ only listed","$315^\\circ$"]'::jsonb, '"$135^\\circ$"'::jsonb, 'medium', 'Q2/Q3 pair.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\cos x=-\frac{\sqrt{2}}{2}$ in $[0,360]$. One solution?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$2\sin x-1=0$. $x$ in $[0,360]$ includes?', 'multiple_choice', '["$30^\\circ$ and $150^\\circ$","$60^\\circ$ only","$90^\\circ$ only","None"]'::jsonb, '"$30^\\circ$ and $150^\\circ$"'::jsonb, 'medium', 'Two solutions.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$2\sin x-1=0$. $x$ in $[0,360]$ includes?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin x+\cos x=0$. $\tan x$?', 'multiple_choice', '["$-1$","$1$","$0$","Undefined always"]'::jsonb, '"$-1$"'::jsonb, 'hard', '$\sin x=-\cos x$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin x+\cos x=0$. $\tan x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$\sin 2x=0$, $0\le x\le 180^\circ$. Number of solutions?', 'multiple_choice', '["$4$","$2$","$1$","$0$"]'::jsonb, '"$4$"'::jsonb, 'hard', '$2x=0,180,360,540$...'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='trig_equations'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$\sin 2x=0$, $0\le x\le 180^\circ$. Number of solutions?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Amplitude and Period — Concepts', '{"blocks":[{"type":"heading","content":"Graphs of $y=a\\sin bx$"},{"type":"paragraph","content":"**Amplitude** $=|a|$. **Period** $=\\frac{360^\\circ}{b}$ for degrees (or $\\frac{2\\pi}{b}$ radians)."},{"type":"math_block","latex":"y = a\\sin(bx+c) + d","caption":"Transformed sine curve"},{"type":"question","questionText":"$y=3\\sin x$ amplitude?","questionType":"multiple_choice","options":["$3$","$1$","$360^\\circ$","$\\frac{1}{3}$"],"correctAnswer":"$3$","explanation":"$|a|=3$."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'amplitude_period'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Amplitude and Period — Concepts');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Graph Transformations', '{"blocks":[{"type":"heading","content":"Period and Phase"},{"type":"example","title":"$y=\\sin 2x$. Period?","steps":["$360/2=180^\\circ$."],"answer":"$180^\\circ$"},{"type":"callout","variant":"warning","content":"Larger $b$ → shorter period (more cycles)."},{"type":"question","questionText":"$y=-2\\cos x$ amplitude?","questionType":"multiple_choice","options":["$2$","$-2$","$1$","$0$"],"correctAnswer":"$2$","explanation":"Absolute value."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'amplitude_period'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Graph Transformations');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Amplitude & Period — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Graphs"},{"type":"example","title":"$y=\\sin(x-30^\\circ)$ shift?","steps":["Phase shift $+30^\\circ$ right."],"answer":"$30^\\circ$ right"},{"type":"callout","variant":"warning","content":"Sketch one full period and label max/min."},{"type":"question","questionText":"$y=\\cos 3x$ period (degrees)?","questionType":"multiple_choice","options":["$120^\\circ$","$360^\\circ$","$180^\\circ$","$60^\\circ$"],"correctAnswer":"$120^\\circ$","explanation":"$360/3$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'trigonometry_iii' AND st.code = 'amplitude_period'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Amplitude & Period — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Amplitude of $y=a\sin x$?', 'multiple_choice', '["$|a|$","$2a$","$360^\\circ$","$2\\pi$"]'::jsonb, '"$|a|$"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='amplitude_period'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Amplitude of $y=a\sin x$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=\sin x$ period (degrees)?', 'multiple_choice', '["$360^\\circ$","$180^\\circ$","$90^\\circ$","$720^\\circ$"]'::jsonb, '"$360^\\circ$"'::jsonb, 'easy', 'Standard.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='amplitude_period'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=\sin x$ period (degrees)?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=\sin 2x$ period?', 'multiple_choice', '["$180^\\circ$","$360^\\circ$","$90^\\circ$","$720^\\circ$"]'::jsonb, '"$180^\\circ$"'::jsonb, 'medium', '$360/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='amplitude_period'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=\sin 2x$ period?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=-3\cos x$ amplitude?', 'multiple_choice', '["$3$","$-3$","$1$","$0$"]'::jsonb, '"$3$"'::jsonb, 'medium', '$|{-3}|$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='amplitude_period'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=-3\cos x$ amplitude?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=\sin(x+90^\circ)$ is same as?', 'multiple_choice', '["$\\cos x$","$-\\cos x$","$\\sin x$","$-\\sin x$"]'::jsonb, '"$\\cos x$"'::jsonb, 'hard', 'Phase identity.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='amplitude_period'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=\sin(x+90^\circ)$ is same as?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=5\sin(2x-60^\circ)$ amplitude and period?', 'multiple_choice', '["$5$, $180^\\circ$","$2$, $360^\\circ$","$5$, $60^\\circ$","$3$, $180^\\circ$"]'::jsonb, '"$5$, $180^\\circ$"'::jsonb, 'hard', '$|5|$, $360/2$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='amplitude_period'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=5\sin(2x-60^\circ)$ amplitude and period?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$y=\sin x$ and $y=\cos x$ first intersect for $x>0$?', 'multiple_choice', '["$45^\\circ$","$90^\\circ$","$0^\\circ$","$180^\\circ$"]'::jsonb, '"$45^\\circ$"'::jsonb, 'hard', '$\tan x=1$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='amplitude_period'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='trigonometry_iii'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$y=\sin x$ and $y=\cos x$ first intersect for $x>0$?');
