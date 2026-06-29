@@ -4,6 +4,10 @@
 - **Scope:** Every authored question (~2,600 across Forms 1–4) read for math correctness, answer validity, and pedagogy. Lessons sampled per topic.
 - **Reviewer:** Claude (independent content read, not just structural audit).
 
+> **RESOLVED 2026-06-29** — all items below fixed in migration
+> `supabase/migrations/20260629120000_kcse_math_content_fixes.sql`, deployed to hosted and
+> verified (15/15 corrected via REST query).
+
 ## Verdict
 
 **The content is genuinely high quality, well-structured, and authentically KCSE-style.** Questions progress easy→medium→hard, use real Kenyan contexts (KES, matatu, kiosk, shamba), and explanations are concise and method-focused. Lessons follow concept → worked-methods → exam-application.
