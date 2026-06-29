@@ -406,3 +406,204 @@ JOIN public.subtopics st ON st.topic_id=t.id AND st.code='approximations_binomia
 WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='binomial_expansion'
 AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Why add $x^2$ term?');
 
+-- ========== PROBABILITY ==========
+
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Sample Space and Simple Events', '{"blocks":[{"type":"heading","content":"Probability Basics (Probability I)"},{"type":"paragraph","content":"The **sample space** $S$ is the set of all possible outcomes. An **event** is a subset of $S$. A **simple event** has one outcome only."},{"type":"math_block","latex":"P(A) = \\frac{\\text{favourable outcomes}}{\\text{total equally likely outcomes}}","caption":"Theoretical probability"},{"type":"example","title":"Fair die rolled once. $P(\\text{even})$?","steps":["Even: $\\{2,4,6\\}$ — $3$ outcomes.","$P = \\frac{3}{6} = \\frac{1}{2}$."],"answer":"$\\frac{1}{2}$"},{"type":"question","questionText":"Sample space of one coin toss?","questionType":"multiple_choice","options":["$\\{H, T\\}$","$\\{H\\}$","$\\{T\\}$","$\\{HH, TT\\}$"],"correctAnswer":"$\\{H, T\\}$","explanation":"Two outcomes."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'experimental_theoretical'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Sample Space and Simple Events');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Experimental vs Theoretical Probability', '{"blocks":[{"type":"heading","content":"Experimental Probability"},{"type":"paragraph","content":"**Experimental (relative frequency)** probability $= \\frac{\\text{times event occurred}}{\\text{total trials}}$. It approaches **theoretical** probability as trials increase (Probability I review + extension)."},{"type":"example","title":"Coin tossed $200$ times; heads $112$ times. Experimental $P(H)$?","steps":["$P(H) = \\frac{112}{200} = 0.56$."],"answer":"$0.56$"},{"type":"callout","variant":"warning","content":"Experimental results vary — theoretical $P(H)=0.5$ for a fair coin."},{"type":"example","title":"Bag: $40$ trials drawing a red ball $15$ times. Estimate $P(\\text{red})$.","steps":["$\\frac{15}{40} = 0.375$."],"answer":"$0.375$"},{"type":"question","questionText":"More trials generally make experimental probability?","questionType":"multiple_choice","options":["Closer to theoretical","Always exactly $0.5$","Always $1$","Unrelated"],"correctAnswer":"Closer to theoretical","explanation":"Law of large numbers idea."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'experimental_theoretical'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Experimental vs Theoretical Probability');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Probability I — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Sample Space & Probability"},{"type":"example","title":"Two coins tossed. List $S$ and find $P(\\text{at least one head})$.","steps":["$S=\\{HH,HT,TH,TT\\}$.","Favourable $3$.","$P=\\frac{3}{4}$."],"answer":"$\\frac{3}{4}$"},{"type":"callout","variant":"warning","content":"List the full sample space before counting — avoids missing outcomes."},{"type":"question","questionText":"Fair die: $P(\\text{prime})$?","questionType":"multiple_choice","options":["$\\frac{1}{2}$","$\\frac{1}{3}$","$\\frac{2}{3}$","$\\frac{1}{6}$"],"correctAnswer":"$\\frac{1}{2}$","explanation":"Primes $2,3,5$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'experimental_theoretical'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Probability I — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Sample space contains?', 'multiple_choice', '["All possible outcomes","Only winning outcomes","One outcome","Impossible events"]'::jsonb, '"All possible outcomes"'::jsonb, 'easy', 'Definition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='experimental_theoretical'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Sample space contains?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Fair die: $P(4)$?', 'multiple_choice', '["$\\frac{1}{6}$","$\\frac{1}{4}$","$\\frac{1}{3}$","$\\frac{1}{2}$"]'::jsonb, '"$\\frac{1}{6}$"'::jsonb, 'easy', 'One of six.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='experimental_theoretical'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Fair die: $P(4)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Spinner lands red $18$ of $60$ spins. Experimental $P(\text{red})$?', 'multiple_choice', '["$0.3$","$0.18$","$0.6$","$0.5$"]'::jsonb, '"$0.3$"'::jsonb, 'medium', '$18/60$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='experimental_theoretical'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Spinner lands red $18$ of $60$ spins. Experimental $P(\text{red})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bag has $3$ red, $5$ blue balls. $P(\text{red})$ if one drawn?', 'multiple_choice', '["$\\frac{3}{8}$","$\\frac{5}{8}$","$\\frac{1}{3}$","$\\frac{3}{5}$"]'::jsonb, '"$\\frac{3}{8}$"'::jsonb, 'medium', 'Favourable over total.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='experimental_theoretical'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bag has $3$ red, $5$ blue balls. $P(\text{red})$ if one drawn?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Letter from MATHEMATICS at random. $P(M)$?', 'multiple_choice', '["$\\frac{2}{11}$","$\\frac{1}{11}$","$\\frac{2}{9}$","$\\frac{1}{2}$"]'::jsonb, '"$\\frac{2}{11}$"'::jsonb, 'easy', 'Two M''s in 11 letters.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='experimental_theoretical'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Letter from MATHEMATICS at random. $P(M)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Die rolled twice. $P(\text{sum } 7)$?', 'multiple_choice', '["$\\frac{1}{6}$","$\\frac{1}{12}$","$\\frac{7}{36}$","$\\frac{1}{36}$"]'::jsonb, '"$\\frac{1}{6}$"'::jsonb, 'hard', 'Six favourable of 36.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='experimental_theoretical'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Die rolled twice. $P(\text{sum } 7)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Experimental $P$ after $10$ trials vs $1000$ trials — which is more reliable?', 'multiple_choice', '["$1000$ trials","$10$ trials","Same always","Neither"]'::jsonb, '"$1000$ trials"'::jsonb, 'hard', 'More data stabilises estimate.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='experimental_theoretical'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Experimental $P$ after $10$ trials vs $1000$ trials — which is more reliable?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Mutually Exclusive and Independent Events', '{"blocks":[{"type":"heading","content":"Combined Events (Probability II)"},{"type":"paragraph","content":"**Mutually exclusive** events cannot happen together: $P(A \\cup B) = P(A) + P(B)$. **Independent** events: outcome of one does not affect the other: $P(A \\cap B) = P(A) \\times P(B)$."},{"type":"callout","variant":"key_point","content":"OR rule for exclusive events; AND rule for independent events."},{"type":"question","questionText":"Toss coin and roll die — independent?","questionType":"multiple_choice","options":["Yes","No","Only if both heads","Only if die is 6"],"correctAnswer":"Yes","explanation":"No effect on each other."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'combined_events'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Mutually Exclusive and Independent Events');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'AND / OR Rules', '{"blocks":[{"type":"heading","content":"Combining Probabilities"},{"type":"example","title":"Die: $P(2 \\text{ or } 5)$?","steps":["Exclusive: $\\frac{1}{6}+\\frac{1}{6}=\\frac{1}{3}$."],"answer":"$\\frac{1}{3}$"},{"type":"example","title":"Two coins: $P(\\text{both heads})$?","steps":["Independent: $\\frac{1}{2} \\times \\frac{1}{2} = \\frac{1}{4}$."],"answer":"$\\frac{1}{4}$"},{"type":"callout","variant":"warning","content":"Do not add for AND or multiply for OR unless conditions match."},{"type":"question","questionText":"$P(A)=0.3$, $P(B)=0.4$, independent. $P(A \\cap B)$?","questionType":"multiple_choice","options":["$0.12$","$0.7$","$0.1$","$1.2$"],"correctAnswer":"$0.12$","explanation":"Multiply."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'combined_events'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'AND / OR Rules');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Combined Events — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Combined Events"},{"type":"example","title":"Bag: $4$ red, $6$ blue. Two draws **with replacement**. $P(\\text{both red})$?","steps":["$P = \\frac{4}{10} \\times \\frac{4}{10} = 0.16$."],"answer":"$0.16$"},{"type":"callout","variant":"warning","content":"With replacement keeps probabilities the same on second draw."},{"type":"question","questionText":"$P(\\text{not } A)$ if $P(A)=0.35$?","questionType":"multiple_choice","options":["$0.65$","$0.35$","$1.35$","$0$"],"correctAnswer":"$0.65$","explanation":"$1-P(A)$."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'combined_events'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Combined Events — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Mutually exclusive events can occur?', 'multiple_choice', '["Together never","Always together","Independently only","With probability 1"]'::jsonb, '"Together never"'::jsonb, 'easy', 'No overlap.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined_events'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Mutually exclusive events can occur?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Independent: $P(A\cap B)$ equals?', 'multiple_choice', '["$P(A)P(B)$","$P(A)+P(B)$","$P(A)-P(B)$","$1$"]'::jsonb, '"$P(A)P(B)$"'::jsonb, 'easy', 'AND rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined_events'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Independent: $P(A\cap B)$ equals?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Die: $P(1 \text{ or } 6)$?', 'multiple_choice', '["$\\frac{1}{3}$","$\\frac{1}{6}$","$\\frac{1}{36}$","$\\frac{1}{2}$"]'::jsonb, '"$\\frac{1}{3}$"'::jsonb, 'medium', 'Add $\frac{1}{6}+\frac{1}{6}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined_events'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Die: $P(1 \text{ or } 6)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two dice: $P(\text{both show } 3)$?', 'multiple_choice', '["$\\frac{1}{36}$","$\\frac{1}{6}$","$\\frac{1}{18}$","$\\frac{1}{12}$"]'::jsonb, '"$\\frac{1}{36}$"'::jsonb, 'medium', '$\frac{1}{6}\times\frac{1}{6}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined_events'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two dice: $P(\text{both show } 3)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, '$P(A)=0.5$, $P(B)=0.2$ exclusive. $P(A \cup B)$?', 'multiple_choice', '["$0.7$","$0.1$","$0.3$","$1$"]'::jsonb, '"$0.7$"'::jsonb, 'hard', 'Add when exclusive.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined_events'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='$P(A)=0.5$, $P(B)=0.2$ exclusive. $P(A \cup B)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Card from pack: $P(\text{heart or king})$? (not exclusive)', 'multiple_choice', '["$\\frac{4}{13}$","$\\frac{1}{4}$","$\\frac{1}{13}$","$\\frac{17}{52}$"]'::jsonb, '"$\\frac{4}{13}$"'::jsonb, 'hard', '$\frac{13}{52}+\frac{4}{52}-\frac{1}{52}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined_events'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Card from pack: $P(\text{heart or king})$? (not exclusive)');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Three fair coins: $P(\text{at least one tail})$?', 'multiple_choice', '["$\\frac{7}{8}$","$\\frac{1}{8}$","$\\frac{1}{2}$","$\\frac{3}{4}$"]'::jsonb, '"$\\frac{7}{8}$"'::jsonb, 'hard', '$1-P(HHH)$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='combined_events'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Three fair coins: $P(\text{at least one tail})$?');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Drawing Tree Diagrams', '{"blocks":[{"type":"heading","content":"Tree Diagrams"},{"type":"paragraph","content":"A **tree diagram** shows stages of combined events. Branches carry probabilities; **multiply along a path**, **add across paths** for final probabilities."},{"type":"callout","variant":"key_point","content":"Probabilities on branches from one node must sum to $1$."},{"type":"example","title":"Coin then die on tree — how many end branches?","steps":["Coin $2$ branches, each splits $6$ ways.","$12$ end branches."],"answer":"$12$"},{"type":"question","questionText":"Along one path on a tree, probabilities are?","questionType":"multiple_choice","options":["Multiplied","Added","Subtracted","Divided"],"correctAnswer":"Multiplied","explanation":"AND along path."}]}'::jsonb, 10, 1
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'tree_diagrams'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Drawing Tree Diagrams');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tree Diagrams for Combined Events', '{"blocks":[{"type":"heading","content":"Two-Stage Problems"},{"type":"example","title":"Bag: $3$ green, $2$ red. Draw twice **without replacement**. Tree for $P(\\text{GG})$.","steps":["First $G$: $\\frac{3}{5}$.","Second $G$: $\\frac{2}{4}$.","$P(GG)=\\frac{3}{5}\\times\\frac{2}{4}=\\frac{3}{10}$."],"answer":"$\\frac{3}{10}$"},{"type":"callout","variant":"warning","content":"Without replacement — second branch probabilities change."},{"type":"question","questionText":"Two paths ending in same event type — combine by?","questionType":"multiple_choice","options":["Adding path probabilities","Multiplying only","Subtracting","Ignoring"],"correctAnswer":"Adding path probabilities","explanation":"OR across paths."}]}'::jsonb, 12, 2
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'tree_diagrams'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tree Diagrams for Combined Events');
+INSERT INTO public.lessons (subtopic_id, title, content, estimated_minutes, sort_order)
+SELECT st.id, 'Tree Diagrams — Exam Practice', '{"blocks":[{"type":"heading","content":"KCSE — Tree Diagrams"},{"type":"example","title":"Spinner: $\\frac{1}{2}$ red, $\\frac{1}{2}$ blue. Two spins. $P(\\text{red then blue})$?","steps":["$\\frac{1}{2} \\times \\frac{1}{2} = \\frac{1}{4}$."],"answer":"$\\frac{1}{4}$"},{"type":"callout","variant":"warning","content":"Label each branch clearly — examiners award method marks for correct tree structure."},{"type":"question","questionText":"Best tool for two-stage probability with changing probabilities?","questionType":"multiple_choice","options":["Tree diagram","Pythagoras","Ratio theorem","Linear law graph"],"correctAnswer":"Tree diagram","explanation":"Visual combined events."}]}'::jsonb, 10, 3
+FROM public.subtopics st
+JOIN public.topics t ON t.id = st.topic_id
+JOIN public.subjects s ON s.id = t.subject_id
+JOIN public.curricula c ON c.id = s.curriculum_id
+WHERE c.code = 'KCSE' AND s.code = 'mathematics' AND t.code = 'probability' AND st.code = 'tree_diagrams'
+AND NOT EXISTS (SELECT 1 FROM public.lessons l WHERE l.subtopic_id = st.id AND l.title = 'Tree Diagrams — Exam Practice');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Tree diagram branches from one node sum to?', 'multiple_choice', '["$1$","$0$","$2$","$0.5$"]'::jsonb, '"$1$"'::jsonb, 'easy', 'Complete partition.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tree_diagrams'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Tree diagram branches from one node sum to?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Along a path, probabilities are?', 'multiple_choice', '["Multiplied","Added","Squared","Inverted"]'::jsonb, '"Multiplied"'::jsonb, 'easy', 'AND rule.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tree_diagrams'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Along a path, probabilities are?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Coin twice: $P(HT)$?', 'multiple_choice', '["$\\frac{1}{4}$","$\\frac{1}{2}$","$\\frac{1}{8}$","$\\frac{3}{4}$"]'::jsonb, '"$\\frac{1}{4}$"'::jsonb, 'medium', '$\frac{1}{2}\times\frac{1}{2}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tree_diagrams'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Coin twice: $P(HT)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bag $2$R $3$B, no replacement, $P(RB)$?', 'multiple_choice', '["$\\frac{3}{10}$","$\\frac{6}{25}$","$\\frac{1}{5}$","$\\frac{2}{5}$"]'::jsonb, '"$\\frac{3}{10}$"'::jsonb, 'medium', '$\frac{2}{5}\times\frac{3}{4}$.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tree_diagrams'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bag $2$R $3$B, no replacement, $P(RB)$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Two spinners each $P(\text{win})=0.2$. $P(\text{both win})$?', 'multiple_choice', '["$0.04$","$0.4$","$0.2$","$0.36$"]'::jsonb, '"$0.04$"'::jsonb, 'medium', 'Multiply.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tree_diagrams'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Two spinners each $P(\text{win})=0.2$. $P(\text{both win})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Three coins tree: $P(\text{exactly 2 heads})$?', 'multiple_choice', '["$\\frac{3}{8}$","$\\frac{1}{8}$","$\\frac{1}{2}$","$\\frac{5}{8}$"]'::jsonb, '"$\\frac{3}{8}$"'::jsonb, 'hard', 'HHT, HTH, THH.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tree_diagrams'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Three coins tree: $P(\text{exactly 2 heads})$?');
+INSERT INTO public.practice_questions (topic_id, subtopic_id, question_text, question_type, options, correct_answer, difficulty, explanation)
+SELECT t.id, st.id, 'Bag $4$W $6$B, two draws no replacement, $P(\text{different colours})$?', 'multiple_choice', '["$\\frac{8}{15}$","$\\frac{24}{100}$","$\\frac{4}{10}$","$\\frac{1}{2}$"]'::jsonb, '"$\\frac{8}{15}$"'::jsonb, 'hard', '$WB+BW$ paths.'
+FROM public.topics t JOIN public.subjects s ON s.id=t.subject_id JOIN public.curricula c ON c.id=s.curriculum_id
+JOIN public.subtopics st ON st.topic_id=t.id AND st.code='tree_diagrams'
+WHERE c.code='KCSE' AND s.code='mathematics' AND t.code='probability'
+AND NOT EXISTS (SELECT 1 FROM public.practice_questions pq WHERE pq.topic_id=t.id AND pq.question_text='Bag $4$W $6$B, two draws no replacement, $P(\text{different colours})$?');
+
