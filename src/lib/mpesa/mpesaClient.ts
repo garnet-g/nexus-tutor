@@ -1,24 +1,32 @@
+import {
+  assertMpesaConfiguredForLiveMode,
+  createMockAdapterMetadata,
+  isMpesaConfigured,
+  isMpesaMockAllowed,
+} from "@/lib/env/providerModes";
+
 export interface StkPushParams {
   phoneNumber: string;
   amountKes: number;
   accountReference: string;
   transactionDesc: string;
+  callbackUrl?: string;
+}
+
+export interface StkQueryResult {
+  resultCode: number;
+  resultDesc: string;
+  checkoutRequestId: string;
 }
 
 export interface StkPushResult {
   checkoutRequestId: string;
   merchantRequestId: string;
   isMock: boolean;
+  mockMetadata?: ReturnType<typeof createMockAdapterMetadata>;
 }
 
-function isMpesaConfigured(): boolean {
-  return Boolean(
-    process.env.MPESA_CONSUMER_KEY &&
-      process.env.MPESA_CONSUMER_SECRET &&
-      process.env.MPESA_PASSKEY &&
-      process.env.MPESA_SHORTCODE,
-  );
-}
+export { isMpesaConfigured };
 
 function formatPhoneForDaraja(phoneNumber: string): string {
   const digits = phoneNumber.replace(/\D/g, "");
@@ -68,12 +76,19 @@ async function getDarajaAccessToken(): Promise<string> {
 export async function initiateStkPush(
   params: StkPushParams,
 ): Promise<StkPushResult> {
-  if (!isMpesaConfigured()) {
+  assertMpesaConfiguredForLiveMode();
+
+  if (isMpesaMockAllowed() || !isMpesaConfigured()) {
+    if (!isMpesaMockAllowed()) {
+      assertMpesaConfiguredForLiveMode();
+    }
+
     const mockId = `MOCK-${Date.now()}`;
     return {
       checkoutRequestId: mockId,
       merchantRequestId: `MRQ-${mockId}`,
       isMock: true,
+      mockMetadata: createMockAdapterMetadata(),
     };
   }
 
@@ -91,9 +106,9 @@ export async function initiateStkPush(
       ? "https://api.safaricom.co.ke"
       : "https://sandbox.safaricom.co.ke";
 
-  const callbackUrl =
-    process.env.MPESA_CALLBACK_URL ??
-    `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/api/mpesa/callback`;
+  if (!params.callbackUrl?.trim()) {
+    throw new Error("Per-payment callback URL is required for STK push");
+  }
 
   const response = await fetch(
     `${baseUrl}/mpesa/stkpush/v1/processrequest`,
@@ -112,7 +127,7 @@ export async function initiateStkPush(
         PartyA: formatPhoneForDaraja(params.phoneNumber),
         PartyB: process.env.MPESA_SHORTCODE,
         PhoneNumber: formatPhoneForDaraja(params.phoneNumber),
-        CallBackURL: callbackUrl,
+        CallBackURL: params.callbackUrl,
         AccountReference: params.accountReference.slice(0, 12),
         TransactionDesc: params.transactionDesc.slice(0, 13),
       }),
@@ -136,17 +151,83 @@ export async function initiateStkPush(
   };
 }
 
+export async function queryStkPush(
+  checkoutRequestId: string,
+): Promise<StkQueryResult> {
+  assertMpesaConfiguredForLiveMode();
+
+  if (isMpesaMockAllowed() || !isMpesaConfigured()) {
+    if (!isMpesaMockAllowed()) {
+      assertMpesaConfiguredForLiveMode();
+    }
+
+    return {
+      resultCode: 0,
+      resultDesc: "The service request is processed successfully.",
+      checkoutRequestId,
+    };
+  }
+
+  const accessToken = await getDarajaAccessToken();
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[-:TZ.]/g, "")
+    .slice(0, 14);
+  const password = Buffer.from(
+    `${process.env.MPESA_SHORTCODE}${process.env.MPESA_PASSKEY}${timestamp}`,
+  ).toString("base64");
+
+  const baseUrl =
+    process.env.MPESA_ENV === "production"
+      ? "https://api.safaricom.co.ke"
+      : "https://sandbox.safaricom.co.ke";
+
+  const response = await fetch(
+    `${baseUrl}/mpesa/stkpushquery/v1/query`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        BusinessShortCode: process.env.MPESA_SHORTCODE,
+        Password: password,
+        Timestamp: timestamp,
+        CheckoutRequestID: checkoutRequestId,
+      }),
+    },
+  );
+
+  const payload = (await response.json()) as {
+    ResultCode?: number | string;
+    ResultDesc?: string;
+    CheckoutRequestID?: string;
+    errorMessage?: string;
+  };
+
+  if (!response.ok) {
+    throw new Error(payload.errorMessage ?? "M-Pesa STK query failed");
+  }
+
+  return {
+    resultCode: Number(payload.ResultCode ?? -1),
+    resultDesc: String(payload.ResultDesc ?? ""),
+    checkoutRequestId: String(payload.CheckoutRequestID ?? checkoutRequestId),
+  };
+}
+
 export function mapMpesaResultCodeToStatus(resultCode: number): string {
   if (resultCode === 0) {
-    return "paid";
+    return "provider-pending";
   }
   if (resultCode === 1032) {
-    return "cancelled";
+    return "verified-failed";
   }
   if (resultCode === 1037) {
     return "expired";
   }
-  return "failed";
+  return "verified-failed";
 }
 
 export interface ParsedMpesaCallback {

@@ -1,4 +1,13 @@
 export async function register() {
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    const { assertEnvironmentValid } = await import("@/lib/env/validateEnv");
+    const appEnv = process.env.APP_ENV ?? process.env.NODE_ENV;
+
+    if (appEnv === "production" || appEnv === "staging") {
+      assertEnvironmentValid();
+    }
+  }
+
   if (!process.env.SENTRY_DSN) {
     return;
   }

@@ -5,10 +5,12 @@ test.describe("Public smoke", () => {
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
-        name: /academic companion that grows with you/i,
+        name: /revise the one thing/i,
       }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: /start learning free/i })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /start your diagnosis/i }).first(),
+    ).toBeVisible();
   });
 
   test("pricing page shows plan information", async ({ page }) => {

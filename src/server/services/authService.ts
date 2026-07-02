@@ -15,7 +15,12 @@ function getRoleFromAppMetadata(
 ): UserRole | null {
   const role = appMetadata?.userRole;
 
-  if (role === "student" || role === "parent" || role === "super_admin") {
+  if (
+    role === "student" ||
+    role === "parent" ||
+    role === "super_admin" ||
+    role === "support"
+  ) {
     return role;
   }
 
@@ -25,6 +30,7 @@ function getRoleFromAppMetadata(
 export async function getSessionUser(): Promise<SessionUser | null> {
   try {
     const supabase = await createClient();
+    const sessionResult = await supabase.auth.getSession();
     const authResult = await Promise.race([
       supabase.auth.getUser(),
       new Promise<{ data: { user: null }; error: Error }>((resolve) => {
@@ -46,6 +52,21 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 
     if (error || !user) {
       return null;
+    }
+
+    const accessToken = sessionResult.data.session?.access_token;
+    if (accessToken) {
+      const { validateSessionFreshness } = await import(
+        "@/server/services/sessionFreshnessService"
+      );
+      const freshness = await validateSessionFreshness({
+        userId: user.id,
+        accessToken,
+      });
+
+      if (!freshness.ok) {
+        return null;
+      }
     }
 
   const role = getRoleFromAppMetadata(user.app_metadata);
@@ -94,12 +115,41 @@ export async function setUserRole(
   role: Exclude<UserRole, "super_admin">,
 ): Promise<void> {
   const admin = createAdminClient();
+  const { data: existingUser, error: readError } =
+    await admin.auth.admin.getUserById(userId);
+
+  if (readError) {
+    throw new Error(readError.message);
+  }
+
+  const previousRole = getRoleFromAppMetadata(
+    existingUser.user?.app_metadata as Record<string, unknown> | undefined,
+  );
+  const existingMetadata =
+    (existingUser.user?.app_metadata as Record<string, unknown> | undefined) ??
+    {};
+  const sessionVersion =
+    typeof existingMetadata.sessionVersion === "number"
+      ? existingMetadata.sessionVersion
+      : 1;
+
   const { error } = await admin.auth.admin.updateUserById(userId, {
-    app_metadata: { userRole: role },
+    app_metadata: {
+      ...existingMetadata,
+      userRole: role,
+      sessionVersion,
+    },
   });
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  if (previousRole && previousRole !== role) {
+    const { revokeAllSessions } = await import(
+      "@/server/services/sessionRevocationService"
+    );
+    await revokeAllSessions(userId, `role_changed:${previousRole}->${role}`);
   }
 }
 
@@ -171,7 +221,9 @@ export function isStudentOnboardingComplete(
 export function getPostAuthRedirectPath(sessionUser: SessionUser): string {
   switch (sessionUser.role) {
     case "super_admin":
-      return "/admin/platform-settings";
+      return "/admin";
+    case "support":
+      return "/admin/support";
     case "parent":
       return "/parent";
     case "student":

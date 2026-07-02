@@ -19,6 +19,10 @@ export type BetaInviteValidationResult =
   | { valid: true; invite: BetaInvite }
   | { valid: false; reason: string };
 
+export type BetaInviteReservationResult =
+  | { valid: true; reserved: true; invite: BetaInvite; alreadyReserved?: boolean }
+  | { valid: false; reason: string };
+
 function normalizeInviteCode(code: string): string {
   return code.trim().toUpperCase();
 }
@@ -72,6 +76,83 @@ export async function validateInviteCode(
   }
 
   return evaluateInvite(data as BetaInvite);
+}
+
+async function loadInviteByCode(code: string): Promise<BetaInvite | null> {
+  const admin = createAdminClient();
+  const normalizedCode = normalizeInviteCode(code);
+  const { data, error } = await admin
+    .from("beta_invites")
+    .select("*")
+    .eq("invite_code", normalizedCode)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data as BetaInvite | null) ?? null;
+}
+
+export async function reserveBetaInvite(
+  code: string,
+  userId: string,
+): Promise<BetaInviteReservationResult> {
+  const validation = await validateInviteCode(code);
+
+  if (!validation.valid) {
+    return validation;
+  }
+
+  const admin = createAdminClient();
+  const normalizedCode = normalizeInviteCode(code);
+
+  const { data, error } = await admin.rpc("reserve_beta_invite", {
+    p_code: normalizedCode,
+    p_user_id: userId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const result = data as { ok?: boolean; reason?: string } | null;
+
+  if (!result?.ok) {
+    return {
+      valid: false,
+      reason: result?.reason ?? "Could not reserve invite code.",
+    };
+  }
+
+  const invite = await loadInviteByCode(normalizedCode);
+
+  if (!invite) {
+    return { valid: false, reason: "Invalid invite code." };
+  }
+
+  return {
+    valid: true,
+    reserved: true,
+    invite,
+    ...(result.reason === "already_reserved" ? { alreadyReserved: true } : {}),
+  };
+}
+
+export async function releaseBetaInvite(
+  code: string,
+  userId: string,
+): Promise<void> {
+  const admin = createAdminClient();
+  const normalizedCode = normalizeInviteCode(code);
+  const { error } = await admin.rpc("release_beta_invite", {
+    p_code: normalizedCode,
+    p_user_id: userId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
 }
 
 export async function consumeInvite(code: string): Promise<BetaInviteValidationResult> {

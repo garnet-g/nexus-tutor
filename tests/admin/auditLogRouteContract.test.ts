@@ -5,9 +5,14 @@ import { GET } from "@/app/api/admin/audit-log/route";
 vi.mock("server-only", () => ({}));
 
 const getUser = vi.fn();
+const getSession = vi.fn();
 
 vi.mock("@/lib/supabase/server", () => ({
-  createClient: vi.fn(async () => ({ auth: { getUser } })),
+  createClient: vi.fn(async () => ({ auth: { getUser, getSession } })),
+}));
+
+vi.mock("@/server/services/sessionFreshnessService", () => ({
+  validateSessionFreshness: vi.fn(async () => ({ ok: true })),
 }));
 
 // admin_audit_log query builder used by listAdminAuditLog.
@@ -47,6 +52,14 @@ function authedAs(role: string | undefined, userId = "user-1") {
     },
     error: null,
   });
+  getSession.mockResolvedValue({
+    data: {
+      session: {
+        access_token: "header.payload.signature",
+      },
+    },
+    error: null,
+  });
 }
 
 function makeRequest(query = ""): Request {
@@ -55,6 +68,7 @@ function makeRequest(query = ""): Request {
 
 beforeEach(() => {
   getUser.mockReset();
+  getSession.mockReset();
 
   const builder = {
     select: select.mockImplementation(() => builder),
@@ -80,6 +94,7 @@ afterEach(() => {
 describe("GET /api/admin/audit-log", () => {
   it("returns 401 UNAUTHORIZED when there is no session", async () => {
     getUser.mockResolvedValue({ data: { user: null }, error: null });
+    getSession.mockResolvedValue({ data: { session: null }, error: null });
 
     const response = await GET(makeRequest());
     const body = await response.json();

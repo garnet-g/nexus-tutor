@@ -142,7 +142,7 @@ Risk: signup/profile/invite consumption is not transactional. A race or late inv
 3. Callback exchanges the code, preserves an existing role if present, otherwise applies the requested student/parent role.
 4. Missing profiles are created, then the user is routed by role and onboarding state.
 
-The beta invite requirement is enforced in the email signup action/UI, not independently in the OAuth callback.
+The beta invite requirement is enforced in email signup **and** OAuth (`signInWithGoogleAction` + `/auth/callback` with `invite` query param) when `BETA_INVITE_REQUIRED=true` (DEC-003 fail-closed parity, Phase 04).
 
 ### 5.4 Student onboarding and diagnostic gate
 
@@ -225,10 +225,10 @@ Performance note: the student layout loads `getStudentChromeData()` and many pag
 1. `/profile` shows account details, plan, daily Nex/practice usage, editable profile/preferences, parent invite code, family membership, and join-family form.
 2. `/pricing` for a student offers a once-per-student 7-day Premium trial and M-Pesa checkout.
 3. Trial starts through `/api/subscriptions/trial`.
-4. Checkout resolves the selected plan and live configured amount, writes a pending payment, requests Daraja STK push, then waits for `/api/mpesa/callback` to activate the subscription.
+4. Checkout resolves the selected plan and live configured amount, writes a pending payment, requests Daraja STK push with a **per-payment callback secret URL** (`/api/mpesa/callback/{secret}`), then activates subscription only after **STK Query verification** (`verified-paid` state). Student polls `GET /api/mpesa/status?mpesaPaymentId=`.
 5. A Family owner receives an invite code; another student joins through `/api/family/join` and receives an active Family subscription.
 
-This journey is not safe for real money yet; see the P0 findings.
+Payment trust (Phase 03 remediation): forged flat callbacks removed; mock-paid production path removed; idempotent callback events; Celcom webhook secret required. Staging/sandbox provider evidence still required before final release (Phase 12).
 
 ### 5.13 Parent journey
 
@@ -338,7 +338,7 @@ Important truth: several admin modules are control-plane ledgers, not execution 
 | `/admin/approvals` | Approval request states | Support + super admin | Ledger only |
 | `/admin/saved-views` | Saved route/filter records | Support + super admin | Partial |
 | `/admin/health` | Derived operational summary | Support + super admin | Partial/misleading health checks |
-| `/admin/usage-stats` | Nex cost/usage and raw flagged review | **Proxy only; support is admitted** | Authorization defect |
+| `/admin/usage-stats` | Nex cost/usage and raw flagged review | Super admin only (page guard + API) | Operational |
 | `/admin/nex-ops` | Nex usage, cost, modes, top students, flags | Support + super admin | Operational |
 | `/admin/platform-settings` | Pricing, limits, promotions, content auto-approve | Super admin | Operational |
 | `/admin/audit-log` | Privileged action history | Support + super admin | Operational but audit writes fail open |
@@ -383,7 +383,7 @@ Important truth: several admin modules are control-plane ledgers, not execution 
 | Endpoint | Methods | Access | Purpose |
 |---|---|---|---|
 | `/api/waitlist/teacher` | POST | Public | Store teacher waitlist entry |
-| `/api/mpesa/callback` | POST | **Public/unverified** | Update payment and activate subscription |
+| `/api/mpesa/callback/[secret]` | POST | **Per-payment secret URL** | Daraja STK notification; triggers STK Query verification only |
 | `/api/celcom/webhook` | POST | **Public/unverified** | Update SMS delivery report |
 | `/api/cron/weekly-reports` | GET, POST | Bearer `CRON_SECRET` | Generate/send linked-student weekly reports |
 
@@ -574,19 +574,15 @@ The learning core is a credible pre-release system: the recorded production buil
 
 ### P0 — must fix before any paid/public production launch
 
-#### P0.1 Any caller can forge a successful M-Pesa callback
+#### P0.1 M-Pesa callback trust — **REMEDIATED (Phase 03)**
 
-`/api/mpesa/callback` accepts unauthenticated JSON. If a payload contains a known `checkoutRequestId`, result code `0`, and receipt, the route marks the payment paid and activates the subscription. The checkout request ID is returned to the initiating student by `/api/mpesa/stk-push`, so a user can initiate a payment and forge success without paying.
+Former flat `/api/mpesa/callback` accepted unauthenticated forged success. Replaced with per-payment secret URL `/api/mpesa/callback/[secret]`, mandatory STK Query before `verified-paid`, and adversarial tests (`tests/mpesa/`). Evidence: `phases/phase-03/QA-REPORT.md`.
 
-Required correction: implement a provider-supported callback trust strategy (verified callback channel/signature/secret and strict replay controls), never treat checkout ID as proof, and add forged/replayed callback tests.
+#### P0.2 Missing M-Pesa configuration granting paid access — **REMEDIATED (Phase 02–03)**
 
-#### P0.2 Missing M-Pesa configuration grants paid access
+Production/staging fail-closed via `APP_ENV` + provider modes; stk-push no longer auto-marks mock paid. Evidence: `tests/env/productionFailClosed.test.ts`, Phase 03 stk-push route.
 
-When Daraja credentials are missing, the client returns `isMock=true`; the STK route marks the payment paid, activates the subscription, and sends success notifications. There is no production-only fail-closed guard.
-
-Required correction: mock payment must be impossible in production, and production environment validation must fail deployment/startup when paid checkout is enabled without complete credentials.
-
-#### P0.3 AI and notification providers also silently mock
+#### P0.3 AI and notification providers also silently mock — **REMEDIATED (Phase 02)**
 
 Text, camera, voice, Celcom, and Resend can return/record mock success when keys are absent. A misconfigured production deployment can appear healthy while tutoring, OCR, speech, SMS, and email are fake.
 
@@ -598,9 +594,9 @@ Required correction: central environment preflight; explicit environment policy;
 
 `tsconfig.json` targets ES2017, while `tests/content/kcseMathSeedContent.test.ts` uses dotAll regex flags at lines 68 and 115. The same test currently references an absent `20260625240000_kcse_math_f4_b2.sql` file. Standalone typecheck fails, and the focused suite fails during import even though the recorded Next build completed before this concurrent edit.
 
-#### P1.2 Support can load the super-admin Usage Stats page data
+#### P1.2 Support can load the super-admin Usage Stats page data — **REMEDIATED (Phase 04)**
 
-The proxy admits support users to `/admin/**`. Most sensitive pages add an explicit role guard, but `/admin/usage-stats/page.tsx` directly calls the service-role-backed `loadNexOpsSnapshot()` without one. The API is super-admin-only, but server rendering bypasses that API and can expose flagged message content/cost data to support.
+`/admin/usage-stats` now calls `requireSuperAdmin()` before service-role `loadNexOpsSnapshot()`. Support retains access to other admin surfaces per `canAdminAccessRoute`. Evidence: `phases/phase-04/QA-REPORT.md`.
 
 #### P1.3 Daily limits and family seats are race-prone
 

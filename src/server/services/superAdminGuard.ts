@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { validateSessionFreshness } from "@/server/services/sessionFreshnessService";
 
 function getRoleFromAppMetadata(
   appMetadata: Record<string, unknown> | undefined,
@@ -29,6 +30,9 @@ export async function requireAdminRole(
 ): Promise<AdminRoleAuthResult> {
   const supabase = await createClient();
   const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
@@ -39,6 +43,21 @@ export async function requireAdminRole(
       status: 401,
       message: "Missing or invalid session.",
     };
+  }
+
+  if (session?.access_token) {
+    const freshness = await validateSessionFreshness({
+      userId: user.id,
+      accessToken: session.access_token,
+    });
+
+    if (!freshness.ok) {
+      return {
+        ok: false,
+        status: 401,
+        message: "Session has been revoked.",
+      };
+    }
   }
 
   const role = getRoleFromAppMetadata(user.app_metadata);

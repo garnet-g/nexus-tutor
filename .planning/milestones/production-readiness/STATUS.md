@@ -14,11 +14,11 @@ outputs:
 
 # Production Readiness — Program Status
 
-**Orchestrator state:** `PHASE_01_CODER_COMPLETE`
+**Orchestrator state:** `PHASE_04_FIX_CYCLE_1`
 
-**Active branch:** `feat/kcse-math-f4-b2` (QA re-run observed `main` — verify branch at Phase 01 start)
+**Active branch:** `main` (`feat/kcse-math-f4-b2` was merged and is an ancestor)
 
-**Program verdict:** `NOT_READY` (baseline not yet verified through Phase 12)
+**Program verdict:** `NOT_READY` (Phase 04 FIX_REQUIRED; 05–12 not started)
 
 ## Worktree capture (2026-06-29)
 
@@ -77,13 +77,13 @@ c03d026 docs(roadmap): mark Form 4 Batch 1 complete
 | `npm run orchestrator:status` | PASS | v2-tier-1 `PHASE_2_5_CODE_COMPLETE` |
 | `npm run lint` | PASS (4 warnings) | unused vars in scripts + kcseMathSeedContent.test.ts |
 | `npm run typecheck` | **PASS** | dotAll regex rewritten (DEC-012) |
-| `npm test` | PASS | 85 files, 464 tests |
+| `npm test` | PASS | 497 passed, 14 skipped (2026-06-29 Phase 04) |
 | `npm run test:scope-check` | PASS | |
 | `npm run build` | PASS | Next 16.2.9 production build, all routes emitted |
 | `npm audit --audit-level=moderate` | **PASS** | undici fix + postcss override (DEC-004) |
 | `npm run env:check` | PASS (stub) | exits 0; strict validation Phase 02 |
 | `npm run deploy:check` | PASS | lint + typecheck + test + scope-check + build + audit |
-| `npm run test:e2e:ci` | NOT_RUN | QA matrix (Playwright harness ready) |
+| `npm run test:e2e:ci` | PASS | 8 passed, 10 skipped; prod server :3000 |
 | `npx lhci autorun` | NOT_PRESENT | Phase 11 |
 | `npm run db:reset` | NOT_RUN | Phase 01+ |
 | `npx supabase migration list` | NOT_RUN | Phase 00 rescan |
@@ -102,11 +102,11 @@ c03d026 docs(roadmap): mark Form 4 Batch 1 complete
 
 | Phase | Title | Coder | QA | Ledger rows owned |
 |-------|-------|-------|-----|-------------------|
-| 00 | Ground truth, ledger, authority reset | DONE | QA retry after ledger fix | PR-121, PR-122 closed |
-| 01 | Green baseline and release harness | DONE | — | P1.1, P1.4, Tier-2.5 verify |
-| 02 | Production environment policy | — | — | P0.3, P1.10 env half |
-| 03 | Payment trust | — | — | P0.1, P0.2 |
-| 04 | AuthZ and account consistency | — | — | P1.2, signup/OAuth |
+| 00 | Ground truth, ledger, authority reset | DONE | PASS | PR-121, PR-122 closed |
+| 01 | Green baseline and release harness | DONE | PASS (fix cycle 1) | PR-011–PR-012, PR-017–PR-020, PR-116–PR-120 |
+| 02 | Production environment policy | DONE | PASS (fix cycle 1) | PR-005–PR-010, PR-044, PR-110, PR-120 |
+| 03 | Payment trust, callbacks, reconciliation | DONE | PASS (production repair v4) | PR-001–004, PR-056, PR-094–096, PR-111–115, PR-124, … |
+| 04 | AuthZ and account consistency | DONE | **FIX_REQUIRED** (fix cycle 1) | PR-013 PASS; PR-054–055, PR-088, PR-127, PR-142 **IN_QA** |
 | 05 | Atomic DB + rate limiting | — | — | P1.3, P1.11 |
 | 06 | Admin authZ, rollouts, audit | — | — | P1.6, P1.7 |
 | 07 | Student utilities | — | — | P1.8 utilities |
@@ -118,4 +118,13 @@ c03d026 docs(roadmap): mark Form 4 Batch 1 complete
 
 ## Next action
 
-QA verifies Phase 01 (`CODER-CHANGELOG.md`, full gate matrix including `test:e2e:ci`).
+**Phase 04 fix cycle 2** — provision `support@nexus.local` (`npm run db:seed-dev-users`), restart dev server, re-run `e2e/support-admin-login.spec.ts` to clear FIX_REQUIRED. **Do not start Phase 05.**
+
+## Phase 04 evidence (2026-06-30 fix cycle 1)
+
+- `npx vitest run tests/auth/` → 29 passed, 0 skipped
+- `npm test` → 513 passed; `deploy:check` PASS
+- Session freshness: JWT `sessionVersion` + `auth.sessions` via `is_auth_session_active`
+- Support routing: `/admin/support` (support), `/admin` (super_admin)
+- Role matrix: committed `role-matrix.contract.json` (143 routes) + server-action contract
+- E2E `support-admin-login.spec.ts` → **FAIL** (redirect timeout; seed + server restart required)

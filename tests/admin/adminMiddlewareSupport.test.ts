@@ -39,9 +39,9 @@ describe("admin support role middleware contract", () => {
       middlewareSource.indexOf("if (isStudentRoute)"),
     );
 
-    expect(publicAuthBlock).toContain(
-      'role === "super_admin" || role === "support"',
-    );
-    expect(publicAuthBlock).toContain('"/admin/platform-settings"');
+    expect(publicAuthBlock).toContain('role === "support"');
+    expect(publicAuthBlock).toContain('"/admin/support"');
+    expect(publicAuthBlock).toContain('role === "super_admin"');
+    expect(publicAuthBlock).toContain('"/admin"');
   });
 });

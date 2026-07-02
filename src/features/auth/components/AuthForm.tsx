@@ -104,10 +104,34 @@ export function AuthForm({
     if (isGooglePending) {
       return;
     }
+
+    if (mode === "signup" && betaInviteRequired) {
+      const inviteInput = document.getElementById("inviteCode") as HTMLInputElement | null;
+      const inviteValue = inviteInput?.value.trim() ?? "";
+      if (!inviteValue) {
+        setFieldErrors((current) => ({
+          ...current,
+          inviteCode: "Invite code is required.",
+        }));
+        return;
+      }
+    }
+
     setIsGooglePending(true);
     track("cta_clicked", { location: "auth_form", action: "google_sign_in", role });
     try {
-      await signInWithGoogleAction(role);
+      const inviteInput = document.getElementById("inviteCode") as HTMLInputElement | null;
+      const inviteValue = inviteInput?.value.trim();
+      const result = await signInWithGoogleAction(
+        role,
+        betaInviteRequired ? inviteValue : undefined,
+      );
+      if (result?.error) {
+        setFieldErrors((current) => ({
+          ...current,
+          inviteCode: result.error,
+        }));
+      }
     } finally {
       setIsGooglePending(false);
     }
@@ -247,7 +271,7 @@ export function AuthForm({
           />
         </form>
 
-        {mode === "signup" && !betaInviteRequired ? (
+        {mode === "signup" ? (
           <>
             <div className="relative">
               <Separator />

@@ -1,4 +1,10 @@
 import { getGeminiTtsModel } from "./modelConfig";
+import {
+  assertNexConfiguredForLiveMode,
+  ConfigurationError,
+  createMockAdapterMetadata,
+  isNexMockAllowed,
+} from "@/lib/env/providerModes";
 
 const OPENAI_TTS_MODEL = "tts-1";
 const OPENAI_TTS_VOICE = "alloy";
@@ -145,15 +151,22 @@ export async function synthesizeVoiceResponse(
     };
   }
 
-  const hasGemini = Boolean(process.env.GEMINI_API_KEY);
-  const hasOpenAI = Boolean(process.env.OPENAI_API_KEY);
-
-  if (!hasGemini && !hasOpenAI) {
+  if (isNexMockAllowed()) {
+    void createMockAdapterMetadata();
     return {
       audioBase64: buildMockWavBase64(),
       mimeType: "audio/wav",
       provider: "mock",
     };
+  }
+
+  assertNexConfiguredForLiveMode();
+
+  const hasGemini = Boolean(process.env.GEMINI_API_KEY);
+  const hasOpenAI = Boolean(process.env.OPENAI_API_KEY);
+
+  if (!hasGemini && !hasOpenAI) {
+    throw new ConfigurationError("Voice synthesis providers are not configured");
   }
 
   if (hasGemini) {
@@ -185,9 +198,5 @@ export async function synthesizeVoiceResponse(
     };
   }
 
-  return {
-    audioBase64: buildMockWavBase64(),
-    mimeType: "audio/wav",
-    provider: "mock",
-  };
+  throw new ConfigurationError("Voice synthesis providers are not configured");
 }

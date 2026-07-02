@@ -6,7 +6,6 @@
  * Usage:
  *   DATABASE_URL="postgresql://..." npx tsx --tsconfig tsconfig.scripts.json scripts/applySkeletonSeeds.ts
  */
-import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { spawnSync } from "child_process";
 

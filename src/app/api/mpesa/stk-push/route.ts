@@ -3,11 +3,19 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import { initiateStkPush } from "@/lib/mpesa/mpesaClient";
+import {
+  buildCallbackUrl,
+  generateCallbackSecret,
+  hashCallbackSecret,
+} from "@/lib/mpesa/paymentProof";
 import { getEffectiveSubscriptionConfig } from "@/lib/platform/getPlatformSettings";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { mpesaStkPushSchema } from "@/schemas/mpesaSchemas";
-import { resolvePlanAmountKes } from "@/server/services/subscriptionService";
+import {
+  findActivePendingPayment,
+  resolvePlanAmountKes,
+} from "@/server/services/subscriptionService";
 
 export async function POST(request: Request) {
   try {
@@ -86,9 +94,27 @@ export async function POST(request: Request) {
       );
     }
 
+    const existingPending = await findActivePendingPayment(
+      studentProfile.id,
+      plan.id,
+    );
+
+    if (existingPending) {
+      return NextResponse.json({
+        success: true,
+        data: {
+          mpesaPaymentId: existingPending.id,
+          amountKes: existingPending.amount_kes,
+          expiresAt: existingPending.expires_at,
+        },
+      });
+    }
+
     await getEffectiveSubscriptionConfig();
     const amountKes = await resolvePlanAmountKes(plan.plan_code);
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+    const callbackSecret = generateCallbackSecret();
+    const callbackSecretHash = hashCallbackSecret(callbackSecret);
 
     const { data: payment, error: paymentError } = await admin
       .from("mpesa_payments")
@@ -99,11 +125,28 @@ export async function POST(request: Request) {
         amount_kes: amountKes,
         payment_status: "pending",
         expires_at: expiresAt,
+        callback_secret_hash: callbackSecretHash,
       })
       .select("id")
       .single();
 
     if (paymentError || !payment) {
+      const duplicatePending = await findActivePendingPayment(
+        studentProfile.id,
+        plan.id,
+      );
+
+      if (duplicatePending) {
+        return NextResponse.json({
+          success: true,
+          data: {
+            mpesaPaymentId: duplicatePending.id,
+            amountKes: duplicatePending.amount_kes,
+            expiresAt: duplicatePending.expires_at,
+          },
+        });
+      }
+
       return NextResponse.json(
         {
           success: false,
@@ -124,11 +167,12 @@ export async function POST(request: Request) {
         amountKes,
         accountReference: payment.id.slice(0, 12),
         transactionDesc: `${plan.plan_code} plan`,
+        callbackUrl: buildCallbackUrl(callbackSecret),
       });
     } catch (error) {
       await admin
         .from("mpesa_payments")
-        .update({ payment_status: "failed" })
+        .update({ payment_status: "verified-failed" })
         .eq("id", payment.id);
 
       return NextResponse.json(
@@ -153,41 +197,12 @@ export async function POST(request: Request) {
       })
       .eq("id", payment.id);
 
-    if (stkResult.isMock) {
-      await admin
-        .from("mpesa_payments")
-        .update({
-          payment_status: "paid",
-          mpesa_receipt_number: `MOCK-${stkResult.checkoutRequestId}`,
-          paid_at: new Date().toISOString(),
-        })
-        .eq("id", payment.id);
-
-      const { activateSubscriptionFromPayment } = await import(
-        "@/server/services/subscriptionService"
-      );
-      const { sendPaymentSuccessNotifications } = await import(
-        "@/server/services/notificationService"
-      );
-
-      await activateSubscriptionFromPayment(payment.id);
-      await sendPaymentSuccessNotifications({
-        studentId: studentProfile.id,
-        phoneNumber: parsed.data.phoneNumber,
-        recipientEmail: studentProfile.email,
-        amountKes,
-        mpesaReceiptNumber: `MOCK-${stkResult.checkoutRequestId}`,
-        planName: plan.name,
-      });
-    }
-
     return NextResponse.json({
       success: true,
       data: {
         mpesaPaymentId: payment.id,
-        checkoutRequestId: stkResult.checkoutRequestId,
         amountKes,
-        isMock: stkResult.isMock,
+        expiresAt,
       },
     });
   } catch (error) {

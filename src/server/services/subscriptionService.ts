@@ -2,9 +2,13 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getEffectiveSubscriptionConfig } from "@/lib/platform/getPlatformSettings";
+import { canTransition } from "@/lib/mpesa/paymentStateMachine";
+import {
+  buildCallbackIdempotencyKey,
+  hashCallbackSecret,
+} from "@/lib/mpesa/paymentProof";
 
 const TRIAL_DAYS = 7;
-const SUBSCRIPTION_PERIOD_DAYS = 30;
 
 export async function getStudentPlanCode(studentId: string): Promise<string> {
   const supabase = createAdminClient();
@@ -163,29 +167,6 @@ export async function startFreeTrial(studentId: string): Promise<{
   return { trialEndsAt: trialEndsAt.toISOString() };
 }
 
-async function billingEventExists(
-  mpesaPaymentId: string,
-  eventType: string,
-): Promise<boolean> {
-  const supabase = createAdminClient();
-
-  const { data } = await supabase
-    .from("billing_events")
-    .select("id, event_payload")
-    .eq("event_type", eventType);
-
-  return (
-    data?.some(
-      (event) =>
-        event.event_payload &&
-        typeof event.event_payload === "object" &&
-        "mpesaPaymentId" in (event.event_payload as Record<string, unknown>) &&
-        (event.event_payload as Record<string, unknown>).mpesaPaymentId ===
-          mpesaPaymentId,
-    ) ?? false
-  );
-}
-
 export async function resolvePlanAmountKes(planCode: string): Promise<number> {
   const config = await getEffectiveSubscriptionConfig();
 
@@ -200,142 +181,55 @@ export async function resolvePlanAmountKes(planCode: string): Promise<number> {
   return 0;
 }
 
-export async function activateSubscriptionFromPayment(
-  mpesaPaymentId: string,
-): Promise<{ activated: boolean; subscriptionId?: string }> {
+export interface ProcessVerifiedMpesaPaymentInput {
+  mpesaPaymentId: string;
+  mpesaReceiptNumber: string;
+  queryResultCode: number;
+  queryPayload: unknown;
+  verifiedAmountKes: number;
+}
+
+export interface ProcessVerifiedMpesaPaymentResult {
+  activated: boolean;
+  subscriptionId?: string;
+  familyGroupId?: string;
+  familyInviteCode?: string;
+}
+
+export async function processVerifiedMpesaPayment(
+  input: ProcessVerifiedMpesaPaymentInput,
+): Promise<ProcessVerifiedMpesaPaymentResult> {
   const supabase = createAdminClient();
-
-  if (await billingEventExists(mpesaPaymentId, "payment_received")) {
-    return { activated: false };
-  }
-
-  const { data: payment, error: paymentError } = await supabase
-    .from("mpesa_payments")
-    .select(
-      "id, student_id, subscription_plan_id, amount_kes, payment_status, mpesa_receipt_number, subscription_plans(plan_code)",
-    )
-    .eq("id", mpesaPaymentId)
-    .maybeSingle();
-
-  if (paymentError || !payment) {
-    throw new Error("M-Pesa payment not found");
-  }
-
-  if (!payment.mpesa_receipt_number) {
-    throw new Error("M-Pesa receipt number required for activation");
-  }
-
-  const planCode =
-    payment.subscription_plans &&
-    typeof payment.subscription_plans === "object" &&
-    "plan_code" in payment.subscription_plans
-      ? String((payment.subscription_plans as { plan_code?: string }).plan_code)
-      : "premium";
-
-  const expectedAmount = await resolvePlanAmountKes(planCode);
-  if (payment.amount_kes !== expectedAmount) {
-    throw new Error("Payment amount does not match plan price");
-  }
-
-  const periodStart = new Date();
-  const periodEnd = new Date(
-    periodStart.getTime() + SUBSCRIPTION_PERIOD_DAYS * 24 * 60 * 60 * 1000,
-  );
-
-  await supabase
-    .from("mpesa_payments")
-    .update({
-      payment_status: "paid",
-      paid_at: periodStart.toISOString(),
-    })
-    .eq("id", mpesaPaymentId);
-
-  const { data: trial } = await supabase
-    .from("subscription_trials")
-    .select("id")
-    .eq("student_id", payment.student_id)
-    .eq("is_trial_active", true)
-    .maybeSingle();
-
-  if (trial) {
-    await supabase
-      .from("subscription_trials")
-      .update({
-        is_trial_active: false,
-        converted_at: periodStart.toISOString(),
-      })
-      .eq("id", trial.id);
-  }
-
-  await supabase
-    .from("student_subscriptions")
-    .update({
-      subscription_status: "cancelled",
-      cancelled_at: periodStart.toISOString(),
-    })
-    .eq("student_id", payment.student_id)
-    .in("subscription_status", ["trialing", "active"]);
-
-  const { data: subscription, error: subscriptionError } = await supabase
-    .from("student_subscriptions")
-    .insert({
-      student_id: payment.student_id,
-      subscription_plan_id: payment.subscription_plan_id,
-      subscription_status: "active",
-      current_period_start: periodStart.toISOString(),
-      current_period_end: periodEnd.toISOString(),
-    })
-    .select("id")
-    .single();
-
-  if (subscriptionError || !subscription) {
-    throw new Error(subscriptionError?.message ?? "Could not activate subscription");
-  }
-
-  await supabase.from("payment_transactions").insert({
-    mpesa_payment_id: mpesaPaymentId,
-    student_subscription_id: subscription.id,
-    transaction_type: "subscription_payment",
-    amount_kes: payment.amount_kes,
+  const config = await getEffectiveSubscriptionConfig();
+  const { data, error } = await supabase.rpc("process_verified_mpesa_payment", {
+    p_payment_id: input.mpesaPaymentId,
+    p_receipt: input.mpesaReceiptNumber,
+    p_query_result_code: input.queryResultCode,
+    p_query_payload: input.queryPayload,
+    p_expected_amount: input.verifiedAmountKes,
+    p_family_max_seats: config.limits.familyMaxStudents,
   });
 
-  await supabase.from("billing_events").insert({
-    student_subscription_id: subscription.id,
-    event_type: "payment_received",
-    event_payload: {
-      mpesaPaymentId,
-      mpesaReceiptNumber: payment.mpesa_receipt_number,
-      planCode,
-    },
-  });
-
-  await supabase.from("invoices").insert({
-    student_id: payment.student_id,
-    mpesa_payment_id: mpesaPaymentId,
-    amount_kes: payment.amount_kes,
-    invoice_status: "paid",
-  });
-
-  if (planCode === "family") {
-    const { data: ownerProfile } = await supabase
-      .from("student_profiles")
-      .select("user_id")
-      .eq("id", payment.student_id)
-      .maybeSingle();
-
-    if (ownerProfile?.user_id) {
-      const { createFamilyGroupForPayment } = await import(
-        "@/server/services/familySubscriptionService"
-      );
-      await createFamilyGroupForPayment({
-        ownerUserId: ownerProfile.user_id,
-        ownerStudentId: payment.student_id,
-        studentSubscriptionId: subscription.id,
-      }).catch(() => undefined);
-    }
+  if (error) {
+    throw new Error(error.message);
   }
 
-  return { activated: true, subscriptionId: subscription.id };
+  if (!data || typeof data !== "object") {
+    throw new Error("Payment activation returned an invalid result");
+  }
+
+  const result = data as Record<string, unknown>;
+  return {
+    activated: result.activated === true,
+    subscriptionId:
+      typeof result.subscriptionId === "string" ? result.subscriptionId : undefined,
+    familyGroupId:
+      typeof result.familyGroupId === "string" ? result.familyGroupId : undefined,
+    familyInviteCode:
+      typeof result.familyInviteCode === "string"
+        ? result.familyInviteCode
+        : undefined,
+  };
 }
 
 export async function updatePaymentStatus(
@@ -344,10 +238,119 @@ export async function updatePaymentStatus(
 ): Promise<void> {
   const supabase = createAdminClient();
 
+  const { data: payment } = await supabase
+    .from("mpesa_payments")
+    .select("payment_status")
+    .eq("id", mpesaPaymentId)
+    .maybeSingle();
+
+  if (!payment) {
+    throw new Error("M-Pesa payment not found");
+  }
+
+  if (!canTransition(payment.payment_status, paymentStatus)) {
+    return;
+  }
+
   await supabase
     .from("mpesa_payments")
     .update({ payment_status: paymentStatus })
     .eq("id", mpesaPaymentId);
+}
+
+export async function transitionMpesaPayment(input: {
+  mpesaPaymentId: string;
+  toStatus: string;
+  expectedFrom: string[];
+}): Promise<boolean> {
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase.rpc("transition_mpesa_payment", {
+    p_payment_id: input.mpesaPaymentId,
+    p_to_status: input.toStatus,
+    p_expected_from: input.expectedFrom,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return Boolean(data);
+}
+
+export async function verifyAndMarkMpesaPaid(input: {
+  mpesaPaymentId: string;
+  mpesaReceiptNumber: string;
+  queryResultCode: number;
+  queryPayload?: unknown;
+}): Promise<boolean> {
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase.rpc("verify_and_mark_mpesa_paid", {
+    p_payment_id: input.mpesaPaymentId,
+    p_receipt: input.mpesaReceiptNumber,
+    p_query_result_code: input.queryResultCode,
+    p_query_payload: input.queryPayload ?? {},
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return Boolean(data);
+}
+
+export async function findActivePendingPayment(
+  studentId: string,
+  subscriptionPlanId: string,
+): Promise<{
+  id: string;
+  amount_kes: number;
+  expires_at: string | null;
+} | null> {
+  const supabase = createAdminClient();
+
+  const { data } = await supabase
+    .from("mpesa_payments")
+    .select("id, amount_kes, expires_at")
+    .eq("student_id", studentId)
+    .eq("subscription_plan_id", subscriptionPlanId)
+    .in("payment_status", ["pending", "processing", "provider-pending"])
+    .maybeSingle();
+
+  if (!data) {
+    return null;
+  }
+
+  if (data.expires_at && new Date(data.expires_at).getTime() < Date.now()) {
+    return null;
+  }
+
+  return data;
+}
+
+export async function findPaymentByCallbackSecret(secret: string): Promise<{
+  id: string;
+  payment_status: string;
+  checkout_request_id: string | null;
+  amount_kes: number;
+  phone_number: string;
+  student_id: string;
+  subscription_plan_id: string;
+  mpesa_receipt_number: string | null;
+} | null> {
+  const supabase = createAdminClient();
+  const secretHash = hashCallbackSecret(secret);
+
+  const { data } = await supabase
+    .from("mpesa_payments")
+    .select(
+      "id, payment_status, checkout_request_id, amount_kes, phone_number, student_id, subscription_plan_id, mpesa_receipt_number",
+    )
+    .eq("callback_secret_hash", secretHash)
+    .maybeSingle();
+
+  return data;
 }
 
 export async function findPaymentByCheckoutRequestId(
@@ -370,55 +373,63 @@ export async function findPaymentByCheckoutRequestId(
 export async function isCallbackAlreadyProcessed(
   checkoutRequestId: string,
   resultCode: number,
+  mpesaReceiptNumber: string | null = null,
 ): Promise<boolean> {
   const supabase = createAdminClient();
+  const idempotencyKey = buildCallbackIdempotencyKey({
+    checkoutRequestId,
+    resultCode,
+    mpesaReceiptNumber,
+  });
 
   const { data } = await supabase
-    .from("mpesa_callbacks")
+    .from("mpesa_callback_events")
     .select("id")
-    .eq("checkout_request_id", checkoutRequestId)
-    .eq("result_code", resultCode)
-    .eq("is_processed", true)
+    .eq("idempotency_key", idempotencyKey)
     .limit(1)
     .maybeSingle();
 
   return Boolean(data);
 }
 
-export async function logMpesaCallback(input: {
-  mpesaPaymentId: string | null;
+export async function recordMpesaCallbackEvent(input: {
+  mpesaPaymentId: string;
   checkoutRequestId: string;
   callbackPayload: unknown;
   resultCode: number;
   resultDescription: string;
-}): Promise<string> {
+  mpesaReceiptNumber?: string | null;
+  eventSource?: "daraja_callback" | "stk_query" | "reconciliation";
+}): Promise<string | null> {
   const supabase = createAdminClient();
+  const idempotencyKey = buildCallbackIdempotencyKey({
+    checkoutRequestId: input.checkoutRequestId,
+    resultCode: input.resultCode,
+    mpesaReceiptNumber: input.mpesaReceiptNumber ?? null,
+  });
 
-  const { data, error } = await supabase
-    .from("mpesa_callbacks")
-    .insert({
-      mpesa_payment_id: input.mpesaPaymentId,
-      checkout_request_id: input.checkoutRequestId,
-      callback_payload: input.callbackPayload,
-      result_code: input.resultCode,
-      result_description: input.resultDescription,
-      is_processed: false,
-    })
-    .select("id")
-    .single();
+  const { data, error } = await supabase.rpc("record_mpesa_callback_event", {
+    p_idempotency_key: idempotencyKey,
+    p_mpesa_payment_id: input.mpesaPaymentId,
+    p_checkout_request_id: input.checkoutRequestId,
+    p_callback_payload: input.callbackPayload,
+    p_result_code: input.resultCode,
+    p_result_description: input.resultDescription,
+    p_event_source: input.eventSource ?? "daraja_callback",
+  });
 
-  if (error || !data) {
-    throw new Error(error?.message ?? "Could not log M-Pesa callback");
+  if (error) {
+    throw new Error(error.message);
   }
 
-  return data.id;
+  return data ? String(data) : null;
 }
 
 export async function markCallbackProcessed(callbackId: string): Promise<void> {
   const supabase = createAdminClient();
 
   await supabase
-    .from("mpesa_callbacks")
+    .from("mpesa_callback_events")
     .update({
       is_processed: true,
       processed_at: new Date().toISOString(),
@@ -426,18 +437,37 @@ export async function markCallbackProcessed(callbackId: string): Promise<void> {
     .eq("id", callbackId);
 }
 
-export async function markPaymentPaidFromCallback(input: {
-  mpesaPaymentId: string;
-  mpesaReceiptNumber: string;
-}): Promise<void> {
-  const supabase = createAdminClient();
+/** @deprecated Use recordMpesaCallbackEvent — kept for transitional imports */
+export async function logMpesaCallback(input: {
+  mpesaPaymentId: string | null;
+  checkoutRequestId: string;
+  callbackPayload: unknown;
+  resultCode: number;
+  resultDescription: string;
+}): Promise<string> {
+  if (!input.mpesaPaymentId) {
+    throw new Error("mpesaPaymentId required");
+  }
 
-  await supabase
-    .from("mpesa_payments")
-    .update({
-      payment_status: "paid",
-      mpesa_receipt_number: input.mpesaReceiptNumber,
-      paid_at: new Date().toISOString(),
-    })
-    .eq("id", input.mpesaPaymentId);
+  const eventId = await recordMpesaCallbackEvent({
+    mpesaPaymentId: input.mpesaPaymentId,
+    checkoutRequestId: input.checkoutRequestId,
+    callbackPayload: input.callbackPayload,
+    resultCode: input.resultCode,
+    resultDescription: input.resultDescription,
+  });
+
+  if (!eventId) {
+    throw new Error("Duplicate callback event");
+  }
+
+  return eventId;
+}
+
+export async function markPaymentVerifiedFailed(mpesaPaymentId: string): Promise<void> {
+  await transitionMpesaPayment({
+    mpesaPaymentId,
+    toStatus: "verified-failed",
+    expectedFrom: ["processing", "provider-pending"],
+  });
 }

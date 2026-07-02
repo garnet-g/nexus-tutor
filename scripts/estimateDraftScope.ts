@@ -9,25 +9,6 @@ import { join } from "path";
 const ROOT = join(import.meta.dirname, "..");
 const SEED = join(ROOT, "supabase", "seed");
 
-const ENGLISH_LOW_RISK = new Set([
-  "reading_comprehension",
-  "study_skills",
-  "grammar",
-  "nouns_pronouns",
-  "verbs_tenses",
-  "phrases_clauses",
-  "voice_speech",
-  "prepositions_phrasal_verbs",
-  "question_tags_agreement",
-  "punctuation_mechanics",
-  "word_formation",
-  "writing_skills",
-  "functional_writing",
-  "official_documents",
-  "short_functional_texts",
-  "summary_writing",
-]);
-
 const DEPRECATED_MATH = new Set(["algebra", "geometry", "trigonometry", "statistics"]);
 
 function countMatches(file: string, pattern: RegExp): number {

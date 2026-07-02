@@ -1,0 +1,967 @@
+[
+  {
+    "path": "/parent",
+    "tier": "parent",
+    "filePath": "src/app/(parent)/parent/page.tsx"
+  },
+  {
+    "path": "/login",
+    "tier": "public",
+    "filePath": "src/app/(public)/(auth)/login/page.tsx"
+  },
+  {
+    "path": "/signup",
+    "tier": "public",
+    "filePath": "src/app/(public)/(auth)/signup/page.tsx"
+  },
+  {
+    "path": "/about",
+    "tier": "public",
+    "filePath": "src/app/(public)/about/page.tsx"
+  },
+  {
+    "path": "/",
+    "tier": "public",
+    "filePath": "src/app/(public)/page.tsx"
+  },
+  {
+    "path": "/pricing",
+    "tier": "public",
+    "filePath": "src/app/(public)/pricing/page.tsx"
+  },
+  {
+    "path": "/waitlist/teacher",
+    "tier": "public",
+    "filePath": "src/app/(public)/waitlist/teacher/page.tsx"
+  },
+  {
+    "path": "/assignment-help",
+    "tier": "student",
+    "filePath": "src/app/(student)/assignment-help/page.tsx"
+  },
+  {
+    "path": "/continue",
+    "tier": "student",
+    "filePath": "src/app/(student)/continue/page.tsx"
+  },
+  {
+    "path": "/dashboard",
+    "tier": "student",
+    "filePath": "src/app/(student)/dashboard/page.tsx"
+  },
+  {
+    "path": "/diagnostic",
+    "tier": "student",
+    "filePath": "src/app/(student)/diagnostic/page.tsx"
+  },
+  {
+    "path": "/exam-prep",
+    "tier": "student",
+    "filePath": "src/app/(student)/exam-prep/page.tsx"
+  },
+  {
+    "path": "/exam-simulator",
+    "tier": "student",
+    "filePath": "src/app/(student)/exam-simulator/page.tsx"
+  },
+  {
+    "path": "/focus",
+    "tier": "student",
+    "filePath": "src/app/(student)/focus/page.tsx"
+  },
+  {
+    "path": "/learn/:topicId/:lessonId",
+    "tier": "student",
+    "filePath": "src/app/(student)/learn/[topicId]/[lessonId]/page.tsx"
+  },
+  {
+    "path": "/learn/:topicId",
+    "tier": "student",
+    "filePath": "src/app/(student)/learn/[topicId]/page.tsx"
+  },
+  {
+    "path": "/learn",
+    "tier": "student",
+    "filePath": "src/app/(student)/learn/page.tsx"
+  },
+  {
+    "path": "/library",
+    "tier": "student",
+    "filePath": "src/app/(student)/library/page.tsx"
+  },
+  {
+    "path": "/mistakes",
+    "tier": "student",
+    "filePath": "src/app/(student)/mistakes/page.tsx"
+  },
+  {
+    "path": "/mock-exams",
+    "tier": "student",
+    "filePath": "src/app/(student)/mock-exams/page.tsx"
+  },
+  {
+    "path": "/nex-memory",
+    "tier": "student",
+    "filePath": "src/app/(student)/nex-memory/page.tsx"
+  },
+  {
+    "path": "/nex",
+    "tier": "student",
+    "filePath": "src/app/(student)/nex/page.tsx"
+  },
+  {
+    "path": "/offline",
+    "tier": "student",
+    "filePath": "src/app/(student)/offline/page.tsx"
+  },
+  {
+    "path": "/onboarding",
+    "tier": "student",
+    "filePath": "src/app/(student)/onboarding/page.tsx"
+  },
+  {
+    "path": "/practice",
+    "tier": "student",
+    "filePath": "src/app/(student)/practice/page.tsx"
+  },
+  {
+    "path": "/profile",
+    "tier": "student",
+    "filePath": "src/app/(student)/profile/page.tsx"
+  },
+  {
+    "path": "/progress",
+    "tier": "student",
+    "filePath": "src/app/(student)/progress/page.tsx"
+  },
+  {
+    "path": "/readiness",
+    "tier": "student",
+    "filePath": "src/app/(student)/readiness/page.tsx"
+  },
+  {
+    "path": "/revision",
+    "tier": "student",
+    "filePath": "src/app/(student)/revision/page.tsx"
+  },
+  {
+    "path": "/saved",
+    "tier": "student",
+    "filePath": "src/app/(student)/saved/page.tsx"
+  },
+  {
+    "path": "/study-plan",
+    "tier": "student",
+    "filePath": "src/app/(student)/study-plan/page.tsx"
+  },
+  {
+    "path": "/study-search",
+    "tier": "student",
+    "filePath": "src/app/(student)/study-search/page.tsx"
+  },
+  {
+    "path": "/tasks",
+    "tier": "student",
+    "filePath": "src/app/(student)/tasks/page.tsx"
+  },
+  {
+    "path": "/weak-areas",
+    "tier": "student",
+    "filePath": "src/app/(student)/weak-areas/page.tsx"
+  },
+  {
+    "path": "/weekly-goal",
+    "tier": "student",
+    "filePath": "src/app/(student)/weekly-goal/page.tsx"
+  },
+  {
+    "path": "/admin/ai-quality",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/ai-quality/page.tsx"
+  },
+  {
+    "path": "/admin/alerts",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/alerts/page.tsx"
+  },
+  {
+    "path": "/admin/approvals",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/approvals/page.tsx"
+  },
+  {
+    "path": "/admin/assessment",
+    "tier": "super_admin",
+    "filePath": "src/app/(super-admin)/admin/assessment/page.tsx"
+  },
+  {
+    "path": "/admin/audit-log",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/audit-log/page.tsx"
+  },
+  {
+    "path": "/admin/beta-invites",
+    "tier": "super_admin",
+    "filePath": "src/app/(super-admin)/admin/beta-invites/page.tsx"
+  },
+  {
+    "path": "/admin/bulk-actions",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/bulk-actions/page.tsx"
+  },
+  {
+    "path": "/admin/campaigns",
+    "tier": "super_admin",
+    "filePath": "src/app/(super-admin)/admin/campaigns/page.tsx"
+  },
+  {
+    "path": "/admin/communications",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/communications/page.tsx"
+  },
+  {
+    "path": "/admin/content-calendar",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/content-calendar/page.tsx"
+  },
+  {
+    "path": "/admin/content",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/content/page.tsx"
+  },
+  {
+    "path": "/admin/experiments",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/experiments/page.tsx"
+  },
+  {
+    "path": "/admin/health",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/health/page.tsx"
+  },
+  {
+    "path": "/admin/inbox",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/inbox/page.tsx"
+  },
+  {
+    "path": "/admin/nex-ops",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/nex-ops/page.tsx"
+  },
+  {
+    "path": "/admin/outcomes",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/outcomes/page.tsx"
+  },
+  {
+    "path": "/admin",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/page.tsx"
+  },
+  {
+    "path": "/admin/payments",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/payments/page.tsx"
+  },
+  {
+    "path": "/admin/platform-settings",
+    "tier": "super_admin",
+    "filePath": "src/app/(super-admin)/admin/platform-settings/page.tsx"
+  },
+  {
+    "path": "/admin/reports",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/reports/page.tsx"
+  },
+  {
+    "path": "/admin/revenue-ops",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/revenue-ops/page.tsx"
+  },
+  {
+    "path": "/admin/roles",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/roles/page.tsx"
+  },
+  {
+    "path": "/admin/rollouts",
+    "tier": "super_admin",
+    "filePath": "src/app/(super-admin)/admin/rollouts/page.tsx"
+  },
+  {
+    "path": "/admin/saved-views",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/saved-views/page.tsx"
+  },
+  {
+    "path": "/admin/search",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/search/page.tsx"
+  },
+  {
+    "path": "/admin/studio/:lessonId",
+    "tier": "content_author",
+    "filePath": "src/app/(super-admin)/admin/studio/[lessonId]/page.tsx"
+  },
+  {
+    "path": "/admin/studio/new",
+    "tier": "content_author",
+    "filePath": "src/app/(super-admin)/admin/studio/new/page.tsx"
+  },
+  {
+    "path": "/admin/studio",
+    "tier": "content_author",
+    "filePath": "src/app/(super-admin)/admin/studio/page.tsx"
+  },
+  {
+    "path": "/admin/studio/review",
+    "tier": "content_author",
+    "filePath": "src/app/(super-admin)/admin/studio/review/page.tsx"
+  },
+  {
+    "path": "/admin/support",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/support/page.tsx"
+  },
+  {
+    "path": "/admin/usage-stats",
+    "tier": "super_admin",
+    "filePath": "src/app/(super-admin)/admin/usage-stats/page.tsx"
+  },
+  {
+    "path": "/admin/users/:id",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/users/[id]/page.tsx"
+  },
+  {
+    "path": "/admin/users/:id/view",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/users/[id]/view/page.tsx"
+  },
+  {
+    "path": "/admin/users",
+    "tier": "admin",
+    "filePath": "src/app/(super-admin)/admin/users/page.tsx"
+  },
+  {
+    "path": "/api/admin/alerts",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/alerts/route.ts",
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/approvals",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/approvals/route.ts",
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/assessment/calibrations",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/assessment/calibrations/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/audit-log",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/audit-log/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/beta-invites",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/beta-invites/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/communications",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/communications/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/assist",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/assist/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/drafts/lesson/[id]",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/drafts/lesson/[id]/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/content/drafts/lesson/create",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/drafts/lesson/create/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/drafts/lesson",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/drafts/lesson/route.ts",
+    "methods": [
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/content/media/upload",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/media/upload/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/review/approve",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/review/approve/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/review/archive",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/review/archive/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/review/lessons/[lessonId]/versions/restore",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/review/lessons/[lessonId]/versions/restore/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/review/lessons/[lessonId]/versions",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/review/lessons/[lessonId]/versions/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/content/review/queue",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/review/queue/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/content/review/request-changes",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/review/request-changes/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/review/submit",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/review/submit/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/content/studio/subtopics/[subtopicId]/lessons/reorder",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/studio/subtopics/[subtopicId]/lessons/reorder/route.ts",
+    "methods": [
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/content/studio/subtopics/[subtopicId]/lessons",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/studio/subtopics/[subtopicId]/lessons/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/content/studio/topics/[topicId]/questions/bulk",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/studio/topics/[topicId]/questions/bulk/route.ts",
+    "methods": [
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/content/studio/topics/[topicId]/questions",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/studio/topics/[topicId]/questions/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/experiments",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/experiments/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/feature-rollouts",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/feature-rollouts/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/nex-ops/flags/[id]",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/nex-ops/flags/[id]/route.ts",
+    "methods": [
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/nex-ops/flags",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/nex-ops/flags/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/nex-ops",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/nex-ops/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/outcomes/parent-sms",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/outcomes/parent-sms/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/outcomes",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/outcomes/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/payments/coupons/[id]",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/payments/coupons/[id]/route.ts",
+    "methods": [
+      "PATCH",
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/admin/payments/coupons",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/payments/coupons/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/payments",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/payments/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/admin/platform-settings",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/platform-settings/route.ts",
+    "methods": [
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/roles",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/roles/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/saved-views",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/saved-views/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/support-cases",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/support-cases/route.ts",
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/usage-stats",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/usage-stats/route.ts",
+    "methods": [
+      "GET",
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/users/[id]/comp",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/users/[id]/comp/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/users/[id]/impersonate",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/users/[id]/impersonate/route.ts",
+    "methods": [
+      "POST",
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/admin/users/[id]/profile",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/users/[id]/profile/route.ts",
+    "methods": [
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/admin/users",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/users/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/celcom/webhook",
+    "tier": "webhook",
+    "filePath": "src/app/api/celcom/webhook/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/cron/weekly-reports",
+    "tier": "cron_secret",
+    "filePath": "src/app/api/cron/weekly-reports/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/diagnostic-assessments/[id]/start",
+    "tier": "student",
+    "filePath": "src/app/api/diagnostic-assessments/[id]/start/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/diagnostic-assessments/[id]/submit",
+    "tier": "student",
+    "filePath": "src/app/api/diagnostic-assessments/[id]/submit/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/diagnostic-assessments",
+    "tier": "student",
+    "filePath": "src/app/api/diagnostic-assessments/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/exam-simulator/[id]/submit",
+    "tier": "student",
+    "filePath": "src/app/api/exam-simulator/[id]/submit/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/exam-simulator/start",
+    "tier": "student",
+    "filePath": "src/app/api/exam-simulator/start/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/family/invite-code",
+    "tier": "student",
+    "filePath": "src/app/api/family/invite-code/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/family/join",
+    "tier": "student",
+    "filePath": "src/app/api/family/join/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/lessons/[id]/complete",
+    "tier": "student",
+    "filePath": "src/app/api/lessons/[id]/complete/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/lessons/[id]/viewed",
+    "tier": "student",
+    "filePath": "src/app/api/lessons/[id]/viewed/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/mock-exams/[id]/submit",
+    "tier": "student",
+    "filePath": "src/app/api/mock-exams/[id]/submit/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/mock-exams/generate",
+    "tier": "student",
+    "filePath": "src/app/api/mock-exams/generate/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/mpesa/callback/[secret]",
+    "tier": "webhook",
+    "filePath": "src/app/api/mpesa/callback/[secret]/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/mpesa/status",
+    "tier": "student",
+    "filePath": "src/app/api/mpesa/status/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/mpesa/stk-push",
+    "tier": "student",
+    "filePath": "src/app/api/mpesa/stk-push/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/nex/camera",
+    "tier": "student",
+    "filePath": "src/app/api/nex/camera/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/nex/chat",
+    "tier": "student",
+    "filePath": "src/app/api/nex/chat/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/nex/voice",
+    "tier": "student",
+    "filePath": "src/app/api/nex/voice/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/parents/link",
+    "tier": "parent",
+    "filePath": "src/app/api/parents/link/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/practice-sessions/[id]/answer",
+    "tier": "student",
+    "filePath": "src/app/api/practice-sessions/[id]/answer/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/practice-sessions/[id]/complete",
+    "tier": "student",
+    "filePath": "src/app/api/practice-sessions/[id]/complete/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/practice-sessions",
+    "tier": "student",
+    "filePath": "src/app/api/practice-sessions/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/students/focus-sessions",
+    "tier": "student",
+    "filePath": "src/app/api/students/focus-sessions/route.ts",
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/students/invite-code",
+    "tier": "student",
+    "filePath": "src/app/api/students/invite-code/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/students/mistakes",
+    "tier": "student",
+    "filePath": "src/app/api/students/mistakes/route.ts",
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/students/offline-packs",
+    "tier": "student",
+    "filePath": "src/app/api/students/offline-packs/route.ts",
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/students/saved-items",
+    "tier": "student",
+    "filePath": "src/app/api/students/saved-items/route.ts",
+    "methods": [
+      "GET",
+      "POST",
+      "DELETE"
+    ]
+  },
+  {
+    "path": "/api/students/weekly-goal",
+    "tier": "student",
+    "filePath": "src/app/api/students/weekly-goal/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/study-plans",
+    "tier": "student",
+    "filePath": "src/app/api/study-plans/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/study-plans/tasks/[id]",
+    "tier": "student",
+    "filePath": "src/app/api/study-plans/tasks/[id]/route.ts",
+    "methods": [
+      "PATCH"
+    ]
+  },
+  {
+    "path": "/api/subscriptions/trial",
+    "tier": "student",
+    "filePath": "src/app/api/subscriptions/trial/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/waitlist/teacher",
+    "tier": "public",
+    "filePath": "src/app/api/waitlist/teacher/route.ts",
+    "methods": [
+      "POST"
+    ]
+  }
+]

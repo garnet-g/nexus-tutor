@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import { NexOpsReviewPanel } from "@/features/admin/components/NexOpsReviewPanel";
 import {
   EmptyState,
@@ -10,6 +12,7 @@ import {
   type NexOpsModeSummary,
   type NexOpsProviderSummary,
 } from "@/server/services/nexOpsService";
+import { requireSuperAdmin } from "@/server/services/superAdminGuard";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +107,11 @@ function ModeGrid({ rows }: { rows: NexOpsModeSummary[] }) {
 }
 
 export default async function UsageStatsPage() {
+  const auth = await requireSuperAdmin();
+  if (!auth.ok) {
+    redirect("/login");
+  }
+
   const snapshot = await loadNexOpsSnapshot();
 
   return (

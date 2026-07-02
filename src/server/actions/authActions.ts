@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import { loginSchema, signupSchema } from "@/schemas/authSchemas";
 import { createClient } from "@/lib/supabase/server";
 import {
-  consumeInvite,
   isBetaInviteRequired,
+  reserveBetaInvite,
   validateInviteCode,
 } from "@/server/services/betaInviteService";
 import {
@@ -16,6 +16,7 @@ import {
   getSessionUser,
   setUserRole,
 } from "@/server/services/authService";
+import { rollbackFailedSignup } from "@/server/services/signupCompensation";
 
 export type AuthActionState = {
   error?: string;
@@ -71,30 +72,41 @@ export async function signupAction(
     return { error: "Signup failed. Please try again." };
   }
 
+  const userId = data.user.id;
+  let inviteReserved = false;
+
   try {
-    await setUserRole(data.user.id, role);
+    if (isBetaInviteRequired() && inviteCode) {
+      const reserved = await reserveBetaInvite(inviteCode, userId);
+      if (!reserved.valid) {
+        await rollbackFailedSignup({ userId, role, inviteCode });
+        return { error: reserved.reason };
+      }
+      inviteReserved = true;
+    }
+
+    await setUserRole(userId, role);
 
     if (role === "student") {
       await createStudentProfile({
-        userId: data.user.id,
+        userId,
         fullName,
         email,
       });
     } else {
       await createParentProfile({
-        userId: data.user.id,
+        userId,
         fullName,
         email,
       });
     }
-
-    if (isBetaInviteRequired() && inviteCode) {
-      const consumed = await consumeInvite(inviteCode);
-      if (!consumed.valid) {
-        return { error: consumed.reason };
-      }
-    }
   } catch (profileError) {
+    if (inviteReserved && inviteCode) {
+      await rollbackFailedSignup({ userId, role, inviteCode });
+    } else {
+      await rollbackFailedSignup({ userId, role });
+    }
+
     return {
       error:
         profileError instanceof Error
@@ -147,14 +159,32 @@ export async function signOutAction(): Promise<void> {
   redirect("/login");
 }
 
-export async function signInWithGoogleAction(role: "student" | "parent") {
+export async function signInWithGoogleAction(
+  role: "student" | "parent",
+  inviteCode?: string,
+) {
+  if (isBetaInviteRequired()) {
+    if (!inviteCode?.trim()) {
+      return { error: "A beta invite code is required to sign up." };
+    }
+
+    const inviteValidation = await validateInviteCode(inviteCode);
+    if (!inviteValidation.valid) {
+      return { error: inviteValidation.reason };
+    }
+  }
+
   const supabase = await createClient();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const inviteQuery =
+    isBetaInviteRequired() && inviteCode
+      ? `&invite=${encodeURIComponent(inviteCode.trim())}`
+      : "";
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${appUrl}/auth/callback?role=${role}`,
+      redirectTo: `${appUrl}/auth/callback?role=${role}${inviteQuery}`,
       queryParams: {
         access_type: "offline",
         prompt: "consent",

@@ -1,4 +1,10 @@
 import { getGeminiTextModel, getGeminiThinkingLevel } from "./modelConfig";
+import {
+  assertNexConfiguredForLiveMode,
+  ConfigurationError,
+  createMockAdapterMetadata,
+  isNexMockAllowed,
+} from "@/lib/env/providerModes";
 
 const KENYA_ENGLISH_LOCALE_HINT =
   "The speaker is a Kenyan student using English (en-KE). Transcribe clearly.";
@@ -134,14 +140,21 @@ async function transcribeWithWhisper(
 export async function transcribeVoiceAudio(
   input: VoiceTranscribeInput,
 ): Promise<VoiceTranscribeResult> {
-  const hasGemini = Boolean(process.env.GEMINI_API_KEY);
-  const hasOpenAI = Boolean(process.env.OPENAI_API_KEY);
-
-  if (!hasGemini && !hasOpenAI) {
+  if (isNexMockAllowed()) {
+    void createMockAdapterMetadata();
     return {
       transcript: getMockTranscript(),
       provider: "mock",
     };
+  }
+
+  assertNexConfiguredForLiveMode();
+
+  const hasGemini = Boolean(process.env.GEMINI_API_KEY);
+  const hasOpenAI = Boolean(process.env.OPENAI_API_KEY);
+
+  if (!hasGemini && !hasOpenAI) {
+    throw new ConfigurationError("Voice transcription providers are not configured");
   }
 
   if (hasGemini) {
@@ -167,8 +180,5 @@ export async function transcribeVoiceAudio(
     };
   }
 
-  return {
-    transcript: getMockTranscript(),
-    provider: "mock",
-  };
+  throw new ConfigurationError("Voice transcription providers are not configured");
 }

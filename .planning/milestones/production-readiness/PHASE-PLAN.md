@@ -148,7 +148,7 @@ Get-ChildItem e2e/*.spec.ts | Measure-Object
 
 ## Phase 01 — Green baseline and deterministic release harness
 
-**Status:** `APPROVED_TO_BUILD`  
+**Status:** `APPROVED_TO_BUILD`
 **Depends on:** Phase 00 QA PASS ✓
 
 ### Goal
@@ -180,6 +180,7 @@ tsconfig.json
 tsconfig.scripts.json
 .github/workflows/ci.yml
 playwright.config.ts
+e2e/smoke.spec.ts
 scripts/orchestrator-status.ts
 scripts/scope-check.ts
 tests/content/kcseMathSeedContent.test.ts
@@ -246,8 +247,8 @@ npx vitest run tests/nex/voicePipeline.test.ts tests/nex/voiceGolden.test.ts tes
 
 ## Phase 02 — Production environment policy and provider truth
 
-**Status:** `PENDING`  
-**Depends on:** Phase 01
+**Status:** `APPROVED_TO_BUILD`
+**Depends on:** Phase 01 QA PASS ✓
 
 ### Goal
 
@@ -333,8 +334,9 @@ npm run build
 
 ## Phase 03 — Payment trust, callbacks, and reconciliation
 
-**Status:** `PENDING`  
-**Depends on:** Phase 02
+**Status:** `APPROVED_TO_BUILD`
+**Depends on:** Phase 02 QA PASS ✓
+**Amendment:** [PLAN-AMENDMENT.md](./phases/phase-03/PLAN-AMENDMENT.md) (DEC-010 resolved per [ARCHITECT-AMENDMENT.md](./phases/phase-03/ARCHITECT-AMENDMENT.md))
 
 ### Goal
 
@@ -346,18 +348,22 @@ PR-001, PR-002, PR-003, PR-004, PR-056, PR-094, PR-095, PR-096, PR-111, PR-113, 
 
 ### Tasks
 
-1. Architect cites Daraja contract (DEC-010); implement callback token + STK Query reconciliation.
-2. Atomic payment state machine and idempotent callback ledger migration.
-3. Harden `/api/mpesa/callback` and `/api/mpesa/stk-push`.
-4. Add student payment status polling endpoint.
-5. Pending expiry + duplicate suppression + reconciliation job stubs.
-6. Harden `/api/celcom/webhook` with verified secret/idempotency.
-7. Adversarial test suite (forgery, replay, race, mismatch).
-8. Payment UI recovery states.
+1. **DEC-010 (A):** Per-payment opaque callback secret in `CallBackURL` path (`/api/mpesa/callback/[secret]`); hash at rest; constant-time verify.
+2. **STK Query proof:** Add `queryStkPush()`; callbacks trigger verification only; activation requires `verified-paid` + `stk_query_verified_at`.
+3. **Migration:** `20260701090000_payment_idempotency.sql` — state machine statuses, `callback_secret_hash`, receipt uniqueness, callback event idempotency, Celcom webhook events, atomic RPCs.
+4. **Relocate callback route:** Create `[secret]` dynamic segment; delete flat `src/app/api/mpesa/callback/route.ts`.
+5. **Harden stk-push:** Remove mock-paid branch; suppress duplicate pending; response `{ mpesaPaymentId, amountKes, expiresAt }` only (no `checkoutRequestId`, no `isMock`).
+6. **Status poll:** `GET /api/mpesa/status?mpesaPaymentId=` with session auth + student ownership.
+7. **State machine + proof modules:** `paymentProof.ts`, `paymentStateMachine.ts`; gate `activateSubscriptionFromPayment()` on `verified-paid`.
+8. **Reconciliation stub:** `paymentReconciliationService.ts` — expire stale, STK Query sweep, replay stub (PR-077).
+9. **Celcom webhook:** `X-Celcom-Webhook-Secret` + `celcom_webhook_events` idempotency.
+10. **Pricing UI:** `PricingCheckout.tsx` polls status until terminal; PR-140 recovery copy.
+11. **RED adversarial tests first, then GREEN full `tests/mpesa/` suite.**
 
 ### File allowlist
 
 ```
+src/app/api/mpesa/callback/[secret]/route.ts
 src/app/api/mpesa/callback/route.ts
 src/app/api/mpesa/stk-push/route.ts
 src/app/api/mpesa/status/route.ts
@@ -367,28 +373,64 @@ src/lib/mpesa/paymentProof.ts
 src/lib/mpesa/paymentStateMachine.ts
 src/server/services/subscriptionService.ts
 src/server/services/paymentReconciliationService.ts
-src/features/pricing/CheckoutPanel.tsx
-src/app/pricing/page.tsx
-src/schemas/mpesa.ts
+src/features/pricing/components/PricingCheckout.tsx
+src/schemas/mpesaSchemas.ts
 supabase/migrations/20260701090000_payment_idempotency.sql
 tests/mpesa/callbackForgery.test.ts
 tests/mpesa/callbackReplay.test.ts
 tests/mpesa/paymentConcurrency.test.ts
 tests/mpesa/stkQueryProof.test.ts
+tests/mpesa/stkPushResponse.test.ts
 tests/mpesa/celcomWebhook.test.ts
+tests/mpesa/paymentExpiry.test.ts
+tests/mpesa/duplicatePending.test.ts
 .planning/milestones/production-readiness/phases/phase-03/CODER-CHANGELOG.md
 ```
 
+**Allowlist notes:**
+
+- `src/app/api/mpesa/callback/route.ts` — **delete** (or 410) after `[secret]` route ships; listed so Coder may remove it.
+- `src/app/api/mpesa/callback/[secret]/route.ts` — **create**; sole Daraja callback entrypoint.
+
+### Out of scope
+
+- Durable rate-limit table (Phase 05; interim in-memory acceptable if documented per architect)
+- Full admin reconciliation UI (Phase 09 read-only ops)
+- Deepening `activate_subscription_from_payment` RPC beyond Phase 03 minimum (Phase 05 may extend)
+
 ### Migration order
 
-1. `20260701090000_payment_idempotency.sql` (unique receipt/checkout, callback events)
-2. Local `npm run db:reset` before tests
+1. `supabase/migrations/20260701090000_payment_idempotency.sql`
+2. `npm run db:reset` before mpesa tests
 
 ### RED tests
 
+Run before implementation; must fail against current code:
+
 ```powershell
 npx vitest run tests/mpesa/callbackForgery.test.ts
-# RED: forged callback currently activates — must fail test before fix
+# RED: unsigned POST to old /callback path; wrong secret; forged success → no activation
+
+npx vitest run tests/mpesa/callbackReplay.test.ts
+# RED: duplicate idempotency key must not double-activate
+
+npx vitest run tests/mpesa/paymentConcurrency.test.ts
+# RED: parallel callbacks → single verified-paid + single activation
+
+npx vitest run tests/mpesa/stkQueryProof.test.ts
+# RED: callback success + query ResultCode != 0 → no activation
+
+npx vitest run tests/mpesa/stkPushResponse.test.ts
+# RED: response must exclude checkoutRequestId; prod rejects mock-paid
+
+npx vitest run tests/mpesa/celcomWebhook.test.ts
+# RED: missing secret / replay → no false delivery
+
+npx vitest run tests/mpesa/paymentExpiry.test.ts
+# RED: stale processing → expired via reconciliation
+
+npx vitest run tests/mpesa/duplicatePending.test.ts
+# RED: double STK click → single active pending row
 ```
 
 ### Verification commands
@@ -397,58 +439,78 @@ npx vitest run tests/mpesa/callbackForgery.test.ts
 npm run db:reset
 npx vitest run tests/mpesa/
 npm test
+npm run build
 ```
 
 ### Acceptance criteria
 
-- [ ] Forgery/replay/race adversarial tests green.
-- [ ] No production mock-paid path.
+- [ ] DEC-010 (A): per-payment URL secret + mandatory STK Query before `verified-paid`.
+- [ ] Forgery/replay/race/mismatch adversarial tests green.
+- [ ] No production mock-paid path; stk-push response omits `checkoutRequestId`.
+- [ ] Celcom webhook secret + idempotency enforced.
+- [ ] Pricing poll shows terminal states with PR-140 recovery copy.
 - [ ] Real charge/callback only with explicit user authorization (staging evidence in Phase 12).
 
 ### Planner verdict
 
-`PENDING` — blocked on DEC-010 Architect cite before Coder start.
+`APPROVED_TO_BUILD` — DEC-010 SELECTED (A) per Architect amendment (2026-06-29); unblocked after Phase 02 QA PASS.
 
 ---
 
 ## Phase 04 — Authentication, authorization, and account consistency
 
-**Status:** `PENDING`  
-**Depends on:** Phase 02
+**Status:** `APPROVED_TO_BUILD`
+**Depends on:** Phase 02 (Phase 03 QA PASS unblocks Coder)
+**Plan amendment:** [phases/phase-04/PLAN-AMENDMENT.md](./phases/phase-04/PLAN-AMENDMENT.md)
 
 ### Goal
 
-Prove every role boundary; fix support login; transactional signup/OAuth.
+Prove every role boundary; fix support login; transactional signup/OAuth with fail-closed beta parity.
 
 ### Criterion IDs
 
 PR-013, PR-054, PR-055, PR-088, PR-099, PR-100, PR-127, PR-142
 
+### Decisions
+
+| ID | Outcome |
+|----|---------|
+| DEC-003 | **SELECTED: (A)** — identical beta invite policy on email signup and OAuth (server-enforced) |
+
 ### Tasks
 
-1. Guard `/admin/usage-stats/page.tsx` before service-role reads.
-2. Build executable role matrix tests for all protected pages/APIs.
-3. Fix support post-auth routing in `authService.ts`.
-4. Transactional/compensating signup + invite consumption.
-5. OAuth beta policy per DEC-003.
-6. Session revocation hooks on privilege change.
-7. Cron error sanitization; stable API error codes.
-8. Audit render-path vs API guard parity.
+1. Add `support` to `getRoleFromAppMetadata` / `getSessionUser` / `getPostAuthRedirectPath` (PR-088).
+2. Guard `src/app/(super-admin)/admin/usage-stats/page.tsx` with `requireSuperAdmin()` before `loadNexOpsSnapshot()` (PR-013).
+3. Build golden `roleMatrix.manifest.ts` (69 pages + 74 APIs) + `extractRouteGuards.ts` + negative matrix tests (PR-142).
+4. Migration `20260701100000_beta_invite_reservation.sql` + `signupCompensation.ts`; reserve-then-commit signup (PR-054).
+5. OAuth invite in `signInWithGoogleAction` + `/auth/callback` + `AuthForm` per DEC-003 (A) (PR-055).
+6. `sessionRevocationService.ts` — `revokeAllSessions` on `setUserRole` change (PR-127).
+7. Cron error sanitization in `weekly-reports/route.ts`; stable API error codes on touched admin routes (PR-099, PR-100).
+8. Proxy matcher audit — document layout-gated vs proxy-gated student routes in manifest (PR-142).
 
 ### File allowlist
 
 ```
-src/app/admin/usage-stats/page.tsx
+src/app/(super-admin)/admin/usage-stats/page.tsx
+src/app/(public)/(auth)/signup/page.tsx
+src/app/(public)/(auth)/login/page.tsx
 src/server/services/authService.ts
 src/server/actions/authActions.ts
 src/app/auth/callback/route.ts
-src/app/signup/page.tsx
-src/app/login/page.tsx
+src/server/services/superAdminGuard.ts
+src/server/services/requireAdminApi.ts
+src/features/student/server/requireStudentExperience.ts
+src/server/services/nexOpsService.ts
+src/server/services/betaInviteService.ts
+src/server/services/sessionRevocationService.ts
+src/server/services/signupCompensation.ts
+src/server/services/contentAuthorGuard.ts
+src/features/auth/components/AuthForm.tsx
 src/proxy.ts
-src/server/guards/superAdminGuard.ts
-src/server/guards/requireAdminApi.ts
-src/server/guards/requireStudentExperience.ts
 src/app/api/cron/weekly-reports/route.ts
+scripts/extractRouteGuards.ts
+supabase/migrations/20260701100000_beta_invite_reservation.sql
+tests/auth/roleMatrix.manifest.ts
 tests/auth/roleMatrix.test.ts
 tests/auth/signupConcurrency.test.ts
 tests/auth/oauthBetaPolicy.test.ts
@@ -460,13 +522,16 @@ e2e/support-admin-login.spec.ts
 ### Out of scope
 
 - Atomic quotas (Phase 05)
-- Admin roles metadata sync (Phase 06)
+- `admin_role_assignments` → Auth metadata sync (Phase 06 / DEC-008)
+- Repo-wide API error refactor beyond touched routes
 
 ### RED tests
 
 ```powershell
 npx vitest run tests/auth/supportLoginRouting.test.ts
 npx vitest run tests/auth/roleMatrix.test.ts
+npx vitest run tests/auth/signupConcurrency.test.ts
+npx vitest run tests/auth/oauthBetaPolicy.test.ts
 ```
 
 ### Verification commands
@@ -474,17 +539,22 @@ npx vitest run tests/auth/roleMatrix.test.ts
 ```powershell
 npx vitest run tests/auth/
 npm test
+npx playwright test e2e/support-admin-login.spec.ts
 ```
 
 ### Acceptance criteria
 
-- [ ] Support reaches `/admin` with tested permission subset.
-- [ ] Usage Stats SSR blocked for support.
-- [ ] Role matrix covers 69 pages + 73 API routes (negative cases).
+- [ ] Support password/OAuth login → `/admin/platform-settings`; `getSessionUser` non-null for `support` role.
+- [ ] Support GET `/admin/usage-stats` → redirect/deny; super-admin → 200 with snapshot.
+- [ ] Role matrix manifest covers 69 pages + 74 API routes with negative cases for wrong roles.
+- [ ] `BETA_INVITE_REQUIRED=true`: OAuth without invite → blocked; with valid invite → profile + consumed invite.
+- [ ] Parallel signup with one invite → exactly one success; compensating rollback on failure.
+- [ ] Role demote → subsequent session invalid (PR-127).
+- [ ] Cron failure returns stable error code; no stack/message leak.
 
 ### Planner verdict
 
-`PENDING` — DEC-003 before OAuth changes.
+`APPROVED_TO_BUILD` — DEC-003 (A) recorded; allowlist corrected per [ARCHITECT-AMENDMENT.md](./phases/phase-04/ARCHITECT-AMENDMENT.md).
 
 ---
 
@@ -1019,6 +1089,6 @@ Record exact paths during Phase 00 QA from `node_modules/next/dist/docs/`:
 
 **Phase 00 `APPROVED_TO_BUILD`** because planning artifacts are complete, ledger reconciled (139 rows, 0 duplicates, 0 missing owners), and phases 01–12 are dependency-specified with explicit allowlists.
 
-**Phases 01–12 remain `PENDING`** until sequential QA PASS unlocks the next phase. Phases 03, 06, 08, 10, 11 have decision-register blockers noted above.
+**Phases 01–12 remain `PENDING`** until sequential QA PASS unlocks the next phase. **Phase 03 `APPROVED_TO_BUILD`** after DEC-010 SELECTED (A). Phases 06, 08, 10, 11 have decision-register blockers noted above.
 
 **No product code** in Phase 00. Phase 01 unlocks only after independent Phase 00 QA PASS.

@@ -20,6 +20,13 @@ const DEV_STUDENT = {
   schoolName: "Nexus Dev School",
 };
 
+const DEV_SUPPORT = {
+  id: "a0000000-0000-4000-8000-000000000003",
+  email: "support@nexus.local",
+  password: "NexusDev1",
+  fullName: "Dev Support",
+};
+
 const DEV_ADMIN = {
   id: "a0000000-0000-4000-8000-000000000002",
   email: "admin@nexus.local",
@@ -99,7 +106,7 @@ async function ensureAuthUser(
     email: string;
     password: string;
     fullName: string;
-    role: "student" | "super_admin";
+    role: "student" | "super_admin" | "support";
   },
 ) {
   const existingId = await findUserIdByEmail(admin, input.email);
@@ -270,13 +277,23 @@ async function main() {
   });
   await ensureSuperAdminProfile(admin, adminUserId);
 
+  const supportUserId = await ensureAuthUser(admin, {
+    ...DEV_SUPPORT,
+    role: "support",
+  });
+
   console.log("\nDev accounts ready:\n");
   console.log(`  Student:     ${DEV_STUDENT.email} / ${DEV_STUDENT.password}`);
   console.log(`  Super admin: ${DEV_ADMIN.email} / ${DEV_ADMIN.password}`);
+  console.log(`  Support:     ${DEV_SUPPORT.email} / ${DEV_SUPPORT.password}`);
   console.log("\nLogin at http://localhost:3000/login");
   console.log(
     "Student lands on /dashboard (onboarding + diagnostic already complete).\n",
   );
+
+  if (!supportUserId) {
+    throw new Error("Support dev user was not created.");
+  }
 }
 
 main().catch((error) => {

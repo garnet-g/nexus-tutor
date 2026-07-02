@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CreditCard, Sparkles } from "lucide-react";
 
@@ -28,6 +28,15 @@ interface PricingCheckoutProps {
   currentPlanCode: string;
 }
 
+const TERMINAL_STATUSES = new Set([
+  "verified-paid",
+  "verified-failed",
+  "expired",
+  "refunded",
+]);
+
+const POLL_INTERVAL_MS = 2500;
+
 export function PricingCheckout({
   config,
   plans,
@@ -40,8 +49,86 @@ export function PricingCheckout({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const selectedPlan = paidPlans.find((plan) => plan.id === selectedPlanId);
+
+  useEffect(() => {
+    return () => {
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current);
+      }
+    };
+  }, []);
+
+  function stopPolling() {
+    if (pollTimerRef.current) {
+      clearInterval(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+  }
+
+  async function pollPaymentStatus(mpesaPaymentId: string) {
+    try {
+      const response = await fetch(
+        `/api/mpesa/status?mpesaPaymentId=${encodeURIComponent(mpesaPaymentId)}`,
+      );
+      const payload = (await response.json()) as {
+        success: boolean;
+        data?: {
+          status: string;
+          statusLabel: string;
+          isTerminal: boolean;
+          failureHint: string | null;
+          planName: string;
+        };
+        error?: { message: string };
+      };
+
+      if (!response.ok || !payload.success || !payload.data) {
+        setError(payload.error?.message ?? "Could not check payment status.");
+        stopPolling();
+        setIsSubmitting(false);
+        return;
+      }
+
+      setPaymentStatus(payload.data.status);
+
+      if (payload.data.status === "verified-paid") {
+        stopPolling();
+        setIsSubmitting(false);
+        setSuccess(
+          `${payload.data.planName} is now active. Thank you for your payment.`,
+        );
+        return;
+      }
+
+      if (TERMINAL_STATUSES.has(payload.data.status)) {
+        stopPolling();
+        setIsSubmitting(false);
+        setError(
+          payload.data.failureHint ??
+            "Payment did not complete. You can try again — no charge was applied.",
+        );
+      }
+    } catch {
+      stopPolling();
+      setIsSubmitting(false);
+      setError(
+        "We could not confirm your payment. If M-Pesa shows a charge, contact support with your receipt.",
+      );
+    }
+  }
+
+  function startPolling(mpesaPaymentId: string) {
+    setPaymentStatus("processing");
+    void pollPaymentStatus(mpesaPaymentId);
+
+    pollTimerRef.current = setInterval(() => {
+      void pollPaymentStatus(mpesaPaymentId);
+    }, POLL_INTERVAL_MS);
+  }
 
   async function handleStartTrial() {
     setIsSubmitting(true);
@@ -78,6 +165,10 @@ export function PricingCheckout({
     setIsSubmitting(true);
     setError(null);
     setSuccess(null);
+    setPaymentStatus(null);
+    stopPolling();
+
+    let pollingStarted = false;
 
     try {
       const response = await fetch("/api/mpesa/stk-push", {
@@ -91,24 +182,24 @@ export function PricingCheckout({
 
       const payload = (await response.json()) as {
         success: boolean;
-        data?: { mpesaPaymentId: string; isMock?: boolean };
+        data?: { mpesaPaymentId: string; amountKes: number; expiresAt: string };
         error?: { message: string };
       };
 
-      if (!response.ok || !payload.success) {
+      if (!response.ok || !payload.success || !payload.data?.mpesaPaymentId) {
         setError(payload.error?.message ?? "Payment could not be initiated.");
         return;
       }
 
-      setSuccess(
-        payload.data?.isMock
-          ? "Mock payment completed. Your plan is now active."
-          : "STK push sent. Complete payment on your phone.",
-      );
+      setSuccess("STK push sent. Complete payment on your phone.");
+      startPolling(payload.data.mpesaPaymentId);
+      pollingStarted = true;
     } catch {
       setError("Network error. Please try again.");
     } finally {
-      setIsSubmitting(false);
+      if (!pollingStarted) {
+        setIsSubmitting(false);
+      }
     }
   }
 
@@ -201,6 +292,13 @@ export function PricingCheckout({
           {success ? (
             <p className="text-sm text-nexus-success" role="status">
               {success}
+            </p>
+          ) : null}
+          {paymentStatus && !success && !error ? (
+            <p className="text-sm text-muted-foreground" role="status">
+              {paymentStatus === "provider-pending"
+                ? "Confirming payment with M-Pesa…"
+                : "Waiting for payment on your phone…"}
             </p>
           ) : null}
           <Button

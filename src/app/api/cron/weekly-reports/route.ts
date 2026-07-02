@@ -21,9 +21,15 @@ export async function GET(request: Request): Promise<NextResponse> {
     const result = await runWeeklyReportsForAllLinkedStudents();
     return NextResponse.json({ success: true, ...result });
   } catch (error) {
+    console.error("CRON_WEEKLY_REPORTS_FAILED", error);
+
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Weekly report job failed",
+        success: false,
+        error: {
+          code: "CRON_JOB_FAILED",
+          message: "Weekly report job failed.",
+        },
       },
       { status: 500 },
     );

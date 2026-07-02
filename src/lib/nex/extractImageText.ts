@@ -1,4 +1,10 @@
 import { getGeminiThinkingLevel, getGeminiVisionModel } from "./modelConfig";
+import {
+  assertNexConfiguredForLiveMode,
+  ConfigurationError,
+  createMockAdapterMetadata,
+  isNexMockAllowed,
+} from "@/lib/env/providerModes";
 
 export const NEX_UPLOADS_BUCKET = "nex-uploads";
 
@@ -59,14 +65,20 @@ export function buildCameraStudentMessage(extractedText: string): string {
 export async function extractImageText(
   input: ExtractImageTextInput,
 ): Promise<ExtractImageTextResult> {
-  const apiKey = process.env.GEMINI_API_KEY;
-
-  if (!apiKey || process.env.NEX_MOCK_AI === "true") {
+  if (isNexMockAllowed()) {
+    void createMockAdapterMetadata();
     return {
       extractedText: "Solve 3x + 5 = 20",
       provider: "mock",
       inCurriculumScope: true,
     };
+  }
+
+  assertNexConfiguredForLiveMode();
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new ConfigurationError("Gemini vision is not configured for live mode");
   }
 
   const response = await fetch(

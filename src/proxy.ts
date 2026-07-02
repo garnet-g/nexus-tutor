@@ -48,9 +48,55 @@ async function getAuthContext(request: NextRequest, response: NextResponse) {
 
   const {
 
+    data: { session },
+
+  } = await supabase.auth.getSession();
+
+
+
+  const {
+
     data: { user },
 
   } = await supabase.auth.getUser();
+
+
+
+  if (user && session?.access_token) {
+
+    const { validateSessionFreshness } = await import(
+
+      "@/server/services/sessionFreshnessService"
+
+    );
+
+    const freshness = await validateSessionFreshness({
+
+      userId: user.id,
+
+      accessToken: session.access_token,
+
+    });
+
+
+
+    if (!freshness.ok) {
+
+      return {
+
+        user: null,
+
+        role: null,
+
+        studentOnboardingComplete: true,
+
+        hasCompletedDiagnostic: true,
+
+      };
+
+    }
+
+  }
 
 
 
@@ -208,11 +254,15 @@ export async function proxy(request: NextRequest) {
 
     const redirectPath =
 
-      role === "super_admin" || role === "support"
+      role === "super_admin"
 
-        ? "/admin/platform-settings"
+        ? "/admin"
 
-        : role === "parent"
+        : role === "support"
+
+          ? "/admin/support"
+
+          : role === "parent"
 
           ? "/parent"
 

@@ -11,13 +11,19 @@ import {
 vi.mock("server-only", () => ({}));
 
 const getUser = vi.fn();
+const getSession = vi.fn();
 
 vi.mock("@/lib/supabase/server", () => ({
   createClient: vi.fn(async () => ({
     auth: {
       getUser,
+      getSession,
     },
   })),
+}));
+
+vi.mock("@/server/services/sessionFreshnessService", () => ({
+  validateSessionFreshness: vi.fn(async () => ({ ok: true })),
 }));
 
 function authedAs(role: string | undefined, userId = "user-123") {
@@ -30,10 +36,20 @@ function authedAs(role: string | undefined, userId = "user-123") {
     },
     error: null,
   });
+  getSession.mockResolvedValue({
+    data: {
+      session: {
+        id: "session-123",
+        access_token: "header.payload.signature",
+      },
+    },
+    error: null,
+  });
 }
 
 beforeEach(() => {
   getUser.mockReset();
+  getSession.mockReset();
 });
 
 afterEach(() => {
@@ -43,6 +59,7 @@ afterEach(() => {
 describe("requireAdminRole", () => {
   it("returns 401 when there is no session", async () => {
     getUser.mockResolvedValue({ data: { user: null }, error: null });
+    getSession.mockResolvedValue({ data: { session: null }, error: null });
 
     const result = await requireAdminRole(ADMIN_ROLES);
 
@@ -58,6 +75,7 @@ describe("requireAdminRole", () => {
       data: { user: null },
       error: { message: "jwt expired" },
     });
+    getSession.mockResolvedValue({ data: { session: null }, error: null });
 
     const result = await requireAdminRole(ADMIN_ROLES);
 
@@ -121,6 +139,10 @@ describe("requireAdminRole", () => {
       data: { user: { id: "x", app_metadata: { userRole: 42 } } },
       error: null,
     });
+    getSession.mockResolvedValue({
+      data: { session: { access_token: "header.payload.signature" } },
+      error: null,
+    });
 
     const result = await requireAdminRole(ADMIN_ROLES);
 
@@ -152,6 +174,7 @@ describe("requireSuperAdmin (backward compatibility)", () => {
 
   it("returns 401 when unauthenticated", async () => {
     getUser.mockResolvedValue({ data: { user: null }, error: null });
+    getSession.mockResolvedValue({ data: { session: null }, error: null });
 
     const result = await requireSuperAdmin();
 
