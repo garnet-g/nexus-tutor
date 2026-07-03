@@ -1,4 +1,21 @@
-﻿# QA Report — Phase 04 Fix Cycle 1
+﻿# QA Report — Phase 04 Fix Cycle 2
+
+**Date:** 2026-07-03  
+**Agent:** QA (independent)  
+**Verdict:** `PASS`  
+**Phase 05:** cleared to start
+
+## Fix cycle 2 (2026-07-03)
+
+- Environment: remote Supabase (Docker unavailable — Docker Desktop backend crash, stale `dockerInference` socket; user directive: run against remote). Migration `20260701100000_beta_invite_reservation.sql` pushed via `supabase db push --linked`; local/remote migration lists now identical (43/43).
+- `support@nexus.local` provisioned on remote via `npm run db:seed-dev-users` (was absent — confirmed root cause of fix-cycle-1 E2E failure; login redirect to `/admin/support` now works).
+- Second assertion corrected: SSR guard `redirect("/login")` is a server-side 307 that the proxy immediately chains to `/admin/support` for an authenticated support user — `/login` is never a committed navigation, so `waitForURL(/\/login/)` was unreachable by construction. Spec now asserts the user lands on `/admin/support` and never remains on `/admin/usage-stats` (same security contract, reachable assertion).
+- `npx playwright test e2e/support-admin-login.spec.ts` → **1 passed** (fresh dev server, remote Supabase).
+- `npm run lint` PASS · `npm run typecheck` PASS (test-only change).
+
+---
+
+# QA Report — Phase 04 Fix Cycle 1 (superseded)
 
 **Date:** 2026-06-30  
 **Agent:** QA (independent)  

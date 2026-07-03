@@ -14,11 +14,11 @@ outputs:
 
 # Production Readiness — Program Status
 
-**Orchestrator state:** `PHASE_04_FIX_CYCLE_1`
+**Orchestrator state:** `PHASE_05_PLANNING`
 
 **Active branch:** `main` (`feat/kcse-math-f4-b2` was merged and is an ancestor)
 
-**Program verdict:** `NOT_READY` (Phase 04 FIX_REQUIRED; 05–12 not started)
+**Program verdict:** `NOT_READY` (Phases 00–04 PASS; 05–12 not started)
 
 ## Worktree capture (2026-06-29)
 
@@ -106,7 +106,7 @@ c03d026 docs(roadmap): mark Form 4 Batch 1 complete
 | 01 | Green baseline and release harness | DONE | PASS (fix cycle 1) | PR-011–PR-012, PR-017–PR-020, PR-116–PR-120 |
 | 02 | Production environment policy | DONE | PASS (fix cycle 1) | PR-005–PR-010, PR-044, PR-110, PR-120 |
 | 03 | Payment trust, callbacks, reconciliation | DONE | PASS (production repair v4) | PR-001–004, PR-056, PR-094–096, PR-111–115, PR-124, … |
-| 04 | AuthZ and account consistency | DONE | **FIX_REQUIRED** (fix cycle 1) | PR-013 PASS; PR-054–055, PR-088, PR-127, PR-142 **IN_QA** |
+| 04 | AuthZ and account consistency | DONE | PASS (fix cycle 2) | PR-013, PR-054–055, PR-088, PR-127, PR-142 VERIFIED_COMPLETE |
 | 05 | Atomic DB + rate limiting | — | — | P1.3, P1.11 |
 | 06 | Admin authZ, rollouts, audit | — | — | P1.6, P1.7 |
 | 07 | Student utilities | — | — | P1.8 utilities |
@@ -118,7 +118,14 @@ c03d026 docs(roadmap): mark Form 4 Batch 1 complete
 
 ## Next action
 
-**Phase 04 fix cycle 2** — provision `support@nexus.local` (`npm run db:seed-dev-users`), restart dev server, re-run `e2e/support-admin-login.spec.ts` to clear FIX_REQUIRED. **Do not start Phase 05.**
+**Phase 05 — atomic database operations and durable rate limiting.** Plan section exists in PHASE-PLAN.md (verdict `PENDING`); Planner approval, then Coder per file allowlist. Environment note: local Docker unavailable — work runs against the linked remote Supabase project (migrations via `supabase db push --linked`; remote in sync 43/43 as of 2026-07-03).
+
+## Phase 04 evidence (2026-07-03 fix cycle 2)
+
+- Remote migration push: `20260701100000_beta_invite_reservation.sql` applied; `supabase migration list --linked` fully in sync.
+- `support@nexus.local` seeded on remote (`npm run db:seed-dev-users`).
+- `e2e/support-admin-login.spec.ts` → **PASS** (assertion corrected: authenticated support user is 307-chained `/admin/usage-stats` → `/login` → `/admin/support`, so the spec now asserts landing on `/admin/support`, not the uncommittable `/login` hop).
+- `npm run lint` PASS · `npm run typecheck` PASS.
 
 ## Phase 04 evidence (2026-06-30 fix cycle 1)
 

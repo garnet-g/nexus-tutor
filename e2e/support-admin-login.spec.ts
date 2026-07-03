@@ -17,7 +17,10 @@ test.describe("support admin login", () => {
     await page.waitForURL(/\/admin\/support/, { timeout: 30_000 });
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
+    // SSR guard redirects to /login; proxy bounces the still-authenticated
+    // support user straight to /admin/support, so that is the only committed URL.
     await page.goto("/admin/usage-stats");
-    await page.waitForURL(/\/login/, { timeout: 30_000 });
+    await page.waitForURL(/\/admin\/support/, { timeout: 30_000 });
+    await expect(page).not.toHaveURL(/usage-stats/);
   });
 });

@@ -91,8 +91,8 @@ outputs:
 | PR-051 | §12 P1.12 | P1 | Agents/docs | Docs claim Next.js 15 | Architecture docs say Next 16.2.9 | 10 | Doc grep + link to map | PLANNED | governance docs |
 | PR-052 | §12 P1.12 | P1 | Agents/docs | Screen inventory omits routes | Inventory matches 69-page scan | 10 | Route count reconciliation test/doc | PLANNED | screen inventory |
 | PR-053 | §12 P1.12 | P1 | Agents/docs | User flows omit student/admin utilities | Flows cover map journeys | 10 | QA doc review checklist | PLANNED | user-flow docs |
-| PR-054 | §5.2; §12 P2 | P2 | Visitor signup | Signup/profile/invite not transactional | Compensating/idempotent signup flow | 04 | Concurrent signup + invite → one profile, no orphan | **IN_QA** | Fix cycle 1: explicit `reserved` result; migration hardened; concurrency tests green |
-| PR-055 | §5.3; §12 P2 | P2 | Visitor OAuth | Beta invite not enforced in OAuth callback | OAuth obeys DEC-003 beta policy | 04 | OAuth without invite when required → blocked | **IN_QA** | `oauthBetaPolicy.test.ts` 3/3; callback routing aligned |
+| PR-054 | §5.2; §12 P2 | P2 | Visitor signup | Signup/profile/invite not transactional | Compensating/idempotent signup flow | 04 | Concurrent signup + invite → one profile, no orphan | VERIFIED_COMPLETE | Fix cycle 2 (2026-07-03): E2E green vs remote; migration pushed |
+| PR-055 | §5.3; §12 P2 | P2 | Visitor OAuth | Beta invite not enforced in OAuth callback | OAuth obeys DEC-003 beta policy | 04 | OAuth without invite when required → blocked | VERIFIED_COMPLETE | Fix cycle 2 (2026-07-03): E2E green vs remote |
 | PR-056 | §12 P2; catalog idempotency | P2 | Billing | Callback dedupe check-then-insert | DB uniqueness + atomic idempotency | 03 | Parallel identical callbacks → one row | VERIFIED_COMPLETE | callback event unique index; atomic production rollback probe |
 | PR-057 | §12 P2; catalog retention | P2 | Privacy/ops | Notification retention policy unverified | Documented retention per DEC-006 | 08 | Retention job test + policy doc | PLANNED | notification migrations |
 | PR-058 | §12 P2 | P2 | Privacy | Message body/phone PII handling unclear | Redaction in logs/exports per policy | 08 | Log snapshot test: no raw phone/body | PLANNED | notification service |
@@ -125,7 +125,7 @@ outputs:
 | PR-085 | §11 | P1 | QA | No concurrency tests | Parallel invariants suite | 12 | Concurrency package in CI | PLANNED | `tests/concurrency/` |
 | PR-086 | §11 | P1 | QA | No real-provider staging checks | Sandbox evidence for Daraja/Celcom/Resend/AI | 12 | Redacted staging log in RELEASE-EVIDENCE | PLANNED | staging checklist |
 | PR-087 | §11 | P1 | QA | No Lighthouse/perf budgets | LHCI + DEC-005 thresholds | 11 | `npx lhci autorun` PASS | PLANNED | `lighthouserc.js` |
-| PR-088 | §12 P2; catalog support login | P1 | Support | Support login → "Unable to load account" | Support routed to `/admin` with correct role | 04 | Support OAuth/password → admin shell | **IN_QA** | Routes to `/admin/support`; E2E pending seed |
+| PR-088 | §12 P2; catalog support login | P1 | Support | Support login → "Unable to load account" | Support routed to `/admin` with correct role | 04 | Support OAuth/password → admin shell | VERIFIED_COMPLETE | Fix cycle 2 (2026-07-03): support seeded on remote; E2E support-admin-login PASS |
 | PR-089 | catalog CSRF | P1 | Security | Cookie mutations lack Origin enforcement | Same-origin check on session cookie POST/PUT/PATCH/DELETE | 05 | Cross-origin POST with cookie → 403 | PLANNED | route middleware helper |
 | PR-090 | catalog body limits | P1 | Security | No centralized request body size limits | Limits before parse on public/AI/admin routes | 05 | Oversize payload → 413 | PLANNED | body limit middleware |
 | PR-091 | catalog atomic trial | P1 | Student billing | Trial creation not atomic | Trial + subscription rows atomic/compensating | 05 | Failed mid-trial → no partial premium | PLANNED | `/api/subscriptions/trial` |
@@ -161,7 +161,7 @@ outputs:
 | PR-123 | catalog payment polling | P1 | Student billing | Reload during pending payment unclear | Recoverable pending UI + poll endpoint | 03 | (with PR-113) | PLANNED | pricing UI |
 | PR-125 | Phase 09 | P2 | Admin | Bulk/campaign lacks four-eyes separation | Requester cannot approve own bulk job | 09 | Same actor approve → 403 | PLANNED | approvals + bulk |
 | PR-126 | Phase 09 | P2 | Admin | CSV export formula injection risk | Escape/formula-safe CSV | 09 | Cell `=cmd` exported safely | PLANNED | report export |
-| PR-127 | catalog session revoke | P1 | Security | No session revocation on privilege change | Revoke sessions on role/plan change | 04 | Role demote → old JWT rejected | **IN_QA** | `sessionFreshnessService` + `sessionRevocation.test.ts` |
+| PR-127 | catalog session revoke | P1 | Security | No session revocation on privilege change | Revoke sessions on role/plan change | 04 | Role demote → old JWT rejected | VERIFIED_COMPLETE | Fix cycle 2 (2026-07-03): unit suite green; E2E shell access PASS |
 | PR-128 | §9 privacy | P2 | Admin/privacy | View-as impersonation retention unclear | Retention/redaction for view-as evidence | 08 | Policy test + audit rows | PLANNED | impersonation sessions |
 | PR-129 | catalog notification retry | P1 | Parent | No bounded retry/backoff for notifications | Retry with idempotency | 08 | Provider fail → retries then exhausted | PLANNED | notification outbox |
 | PR-130 | catalog dead-letter | P1 | Parent | No notification dead-letter path | Operator recovery for exhausted sends | 08 | DLQ row visible in admin health | PLANNED | notification service |
@@ -176,7 +176,7 @@ outputs:
 | PR-139 | Phase 11 | P1 | Nex | CSP may break camera/mic | CSP verified with multimodal smoke | 11 | Camera E2E under CSP headers | PLANNED | nex-camera e2e |
 | PR-140 | Phase 03 | P1 | Student billing | Provider-down checkout UX weak | Pending/error/recover states in UI | 03 | Playwright: provider down → recoverable message | PLANNED | `/pricing` |
 | PR-141 | §10 | P2 | Ops | Platform settings 60s cache undocumented | Staleness documented for operators | 10 | Ops doc mentions cache window | PLANNED | platform settings doc |
-| PR-142 | §3 | P2 | Security | Proxy matcher may omit newer student routes | Role matrix includes all 28 student pages | 04 | Matrix test every student `page.tsx` | **IN_QA** | Committed `role-matrix.contract.json` + negative tests |
+| PR-142 | §3 | P2 | Security | Proxy matcher may omit newer student routes | Role matrix includes all 28 student pages | 04 | Matrix test every student `page.tsx` | VERIFIED_COMPLETE | Fix cycle 2 (2026-07-03): contract committed; E2E negative path PASS |
 
 ## Phase 00 discovery notes
 
