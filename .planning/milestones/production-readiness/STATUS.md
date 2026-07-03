@@ -20,6 +20,8 @@ outputs:
 
 **Program verdict:** `NOT_READY` (Phases 00–05 PASS; Auth/Account Phase A `READY_FOR_QA`; 06–12 not started)
 
+> **Two active tracks.** Program spine (numbered phases, this branch) + Auth & Account Hardening (`codex/auth-account-hardening`). Ownership, concern split, and integration protocol: **[COORDINATION.md](./COORDINATION.md)**. Shared program-spine files (this file, RELEASE-EVIDENCE, LEDGER) are authored only on `main`.
+
 ## Worktree capture (2026-06-29)
 
 Captured at program start. Preserve dirty worktree; do not reset/stash/discard.

@@ -13,7 +13,9 @@ outputs:
 
 # Release Evidence — Production Readiness
 
-**Program verdict:** `NOT_READY` (Phases 00–04 complete; Auth/Account Phase A awaits independent QA; 05–12 remain)
+**Program verdict:** `NOT_READY` (Phases 00–**05** complete; Auth/Account Phase A `READY_FOR_QA`; 06–12 remain)
+
+> Track split and shared-file ownership: see [COORDINATION.md](./COORDINATION.md).
 
 ## Verification matrix (2026-06-29, Phase 04 gate)
 
@@ -39,14 +41,15 @@ outputs:
 | 02 | PASS | `phases/phase-02/QA-REPORT.md` v2 |
 | 03 | PASS | `phases/phase-03/QA-REPORT.md` v4 |
 | 04 | PASS | `phases/phase-04/QA-REPORT.md` |
-| 05–12 | — | |
+| 05 | PASS | `phases/phase-05/QA-REPORT.md` (migration `20260702090000` pushed + smoke-verified) |
+| 06–12 | — | |
 
 ## Ledger closure summary (approximate)
 
 | Status | Count |
 |--------|------:|
-| VERIFIED_COMPLETE | ~45 (Phases 00–04 closed rows) |
-| PLANNED / DISCOVERED | ~94 |
+| VERIFIED_COMPLETE | 52 (Phases 00–05 closed rows) |
+| PLANNED / DISCOVERED | ~88 (incl. new PR-049b) |
 | EXTERNAL_BLOCKER | 1 (staging provider proof Phase 12) |
 
 ## External blockers
