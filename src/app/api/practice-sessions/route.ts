@@ -2,6 +2,9 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
+import { checkRateLimit } from "@/lib/rateLimit/durableLimiter";
+import { enforceSameOrigin } from "@/lib/security/originCheck";
+import { readJsonWithLimit } from "@/lib/security/bodySizeLimit";
 import {
   getEffectiveSubscriptionConfigWithFallback,
   getPracticeDailyLimit,
@@ -21,6 +24,15 @@ import {
 
 export async function POST(request: Request) {
   try {
+    const originError = enforceSameOrigin(request);
+    if (originError) {
+      return apiErrorResponse(
+        "ORIGIN_FORBIDDEN",
+        "Cross-origin request rejected.",
+        403,
+      );
+    }
+
     const studentContext = await requireStudentProfile();
 
     if (!studentContext.ok) {
@@ -39,8 +51,27 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
-    const parsed = practiceStartSchema.safeParse(body);
+    const burst = await checkRateLimit({
+      key: `practice:start:${studentContext.profile.id}`,
+      windowSeconds: 60,
+      max: 30,
+    });
+
+    if (!burst.allowed) {
+      return apiErrorResponse(
+        "RATE_LIMITED",
+        "Too many requests. Please slow down.",
+        429,
+        { retryAfterSeconds: burst.retryAfterSeconds },
+      );
+    }
+
+    const bodyResult = await readJsonWithLimit(request);
+    if (!bodyResult.ok) {
+      return bodyResult.response;
+    }
+
+    const parsed = practiceStartSchema.safeParse(bodyResult.body);
 
     if (!parsed.success) {
       return apiErrorResponse(
@@ -79,7 +110,7 @@ export async function POST(request: Request) {
 
     const data = await startPracticeSession(studentContext.profile, parsed.data);
 
-    await incrementPracticeDailyUsage(studentContext.profile.id);
+    await incrementPracticeDailyUsage(studentContext.profile.id, practiceLimit);
 
     return NextResponse.json(
       {

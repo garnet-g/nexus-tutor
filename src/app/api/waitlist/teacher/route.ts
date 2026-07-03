@@ -2,12 +2,14 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
+import { checkRateLimit } from "@/lib/rateLimit/durableLimiter";
+import { enforceSameOrigin } from "@/lib/security/originCheck";
+import { readJsonWithLimit } from "@/lib/security/bodySizeLimit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { teacherWaitlistSchema } from "@/schemas/waitlistSchemas";
 
-const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_WINDOW_SECONDS = 60;
 const RATE_LIMIT_MAX = 5;
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 
 function getClientKey(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -17,42 +19,43 @@ function getClientKey(request: Request): string {
   return request.headers.get("x-real-ip") ?? "unknown";
 }
 
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitStore.get(key);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitStore.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  if (entry.count >= RATE_LIMIT_MAX) {
-    return true;
-  }
-
-  entry.count += 1;
-  return false;
-}
-
 export async function POST(request: Request) {
   try {
+    const originError = enforceSameOrigin(request);
+    if (originError) {
+      return originError;
+    }
+
     const clientKey = getClientKey(request);
 
-    if (isRateLimited(clientKey)) {
+    // Durable, multi-instance limiter (replaces the per-process Map that reset
+    // on every cold start and never shared state across instances — PR-046).
+    const limit = await checkRateLimit({
+      key: `waitlist:teacher:${clientKey}`,
+      windowSeconds: RATE_LIMIT_WINDOW_SECONDS,
+      max: RATE_LIMIT_MAX,
+    });
+
+    if (!limit.allowed) {
       return NextResponse.json(
         {
           success: false,
           error: {
             code: "RATE_LIMITED",
             message: "Too many requests. Please try again shortly.",
+            details: { retryAfterSeconds: limit.retryAfterSeconds },
           },
         },
         { status: 429 },
       );
     }
 
-    const body = await request.json();
-    const parsed = teacherWaitlistSchema.safeParse(body);
+    const bodyResult = await readJsonWithLimit(request);
+    if (!bodyResult.ok) {
+      return bodyResult.response;
+    }
+
+    const parsed = teacherWaitlistSchema.safeParse(bodyResult.body);
 
     if (!parsed.success) {
       return NextResponse.json(

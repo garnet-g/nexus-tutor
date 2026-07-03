@@ -2,6 +2,9 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
+import { checkRateLimit } from "@/lib/rateLimit/durableLimiter";
+import { enforceSameOrigin } from "@/lib/security/originCheck";
+import { readJsonWithLimit } from "@/lib/security/bodySizeLimit";
 import { generateNexResponse } from "@/lib/nex/generateNexResponse";
 import { detectNexMode } from "@/lib/nex/detectNexMode";
 import { encodeNexChatSseEvent } from "@/lib/nex/nexChatSse";
@@ -28,8 +31,16 @@ import {
   shouldPersistMisconception,
 } from "@/server/services/misconceptionService";
 
+/** Per-student burst ceiling above the daily quota (PR-048). */
+const NEX_CHAT_BURST_PER_MINUTE = 20;
+
 export async function POST(request: Request) {
   try {
+    const originError = enforceSameOrigin(request);
+    if (originError) {
+      return originError;
+    }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -68,8 +79,32 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
-    const parsed = nexChatRequestSchema.safeParse(body);
+    const burst = await checkRateLimit({
+      key: `nex:chat:${studentProfile.id}`,
+      windowSeconds: 60,
+      max: NEX_CHAT_BURST_PER_MINUTE,
+    });
+
+    if (!burst.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "RATE_LIMITED",
+            message: "Too many requests. Please slow down.",
+            details: { retryAfterSeconds: burst.retryAfterSeconds },
+          },
+        },
+        { status: 429 },
+      );
+    }
+
+    const bodyResult = await readJsonWithLimit(request);
+    if (!bodyResult.ok) {
+      return bodyResult.response;
+    }
+
+    const parsed = nexChatRequestSchema.safeParse(bodyResult.body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -332,7 +367,7 @@ export async function POST(request: Request) {
                 })
                 .eq("id", sessionId);
 
-              await incrementNexDailyUsage(studentProfile.id);
+              await incrementNexDailyUsage(studentProfile.id, dailyLimit);
 
               enqueue("done", {
                 nexSessionId: sessionId,
@@ -434,7 +469,7 @@ export async function POST(request: Request) {
       })
       .eq("id", sessionId);
 
-    await incrementNexDailyUsage(studentProfile.id);
+    await incrementNexDailyUsage(studentProfile.id, dailyLimit);
 
     return NextResponse.json({
       success: true,

@@ -14,11 +14,11 @@ outputs:
 
 # Production Readiness — Program Status
 
-**Orchestrator state:** `PHASE_05_PLANNING`
+**Orchestrator state:** `PHASE_05_VERIFIED`
 
 **Active branch:** `main` (`feat/kcse-math-f4-b2` was merged and is an ancestor)
 
-**Program verdict:** `NOT_READY` (Phases 00–04 PASS; Auth/Account Phase A `READY_FOR_QA`; 05–12 not started)
+**Program verdict:** `NOT_READY` (Phases 00–05 PASS; Auth/Account Phase A `READY_FOR_QA`; 06–12 not started)
 
 ## Worktree capture (2026-06-29)
 
@@ -107,7 +107,7 @@ c03d026 docs(roadmap): mark Form 4 Batch 1 complete
 | 02 | Production environment policy | DONE | PASS (fix cycle 1) | PR-005–PR-010, PR-044, PR-110, PR-120 |
 | 03 | Payment trust, callbacks, reconciliation | DONE | PASS (production repair v4) | PR-001–004, PR-056, PR-094–096, PR-111–115, PR-124, … |
 | 04 | AuthZ and account consistency | DONE | PASS (fix cycle 2) | PR-013, PR-054–055, PR-088, PR-127, PR-142 VERIFIED_COMPLETE |
-| 05 | Atomic DB + rate limiting | — | — | P1.3, P1.11 |
+| 05 | Atomic DB + rate limiting | DONE | PASS | PR-014–016, PR-046, PR-048–049, PR-089–093 VERIFIED_COMPLETE (PR-049b follow-up) |
 | 06 | Admin authZ, rollouts, audit | — | — | P1.6, P1.7 |
 | 07 | Student utilities | — | — | P1.8 utilities |
 | 08 | Parent, family, notifications | — | — | parent/privacy |
@@ -118,7 +118,15 @@ c03d026 docs(roadmap): mark Form 4 Batch 1 complete
 
 ## Next action
 
-**Phase 05 — atomic database operations and durable rate limiting.** Plan section exists in PHASE-PLAN.md (verdict `PENDING`); Planner approval, then Coder per file allowlist. Environment note: local Docker unavailable — work runs against the linked remote Supabase project (migrations via `supabase db push --linked`; remote in sync 43/43 as of 2026-07-03).
+**Phase 06 — real admin authorization, rollout control, and durable audit** (depends on Phase 05 ✓). Environment note: local Docker unavailable — DB work runs against the linked remote Supabase project (migrations via `supabase db push --linked`; remote in sync 44/44 as of 2026-07-03, Phase 05 migration `20260702090000` applied and smoke-verified).
+
+## Phase 05 evidence (2026-07-03)
+
+- Migration `20260702090000_atomic_usage_and_seats.sql` pushed to remote; 6 SECURITY DEFINER functions + `rate_limit_buckets`. Live RPC smoke: `consume_rate_limit` allow→deny with `retry_after`, `increment_nex_daily_usage` service-role callable → SMOKE_PASS.
+- Gates: typecheck PASS · lint PASS (0 warnings) · `vitest run` **551 passed** (+38 new across 6 suites) · scope-check PASS · build PASS.
+- Acceptance: 20-way parallel exact-cap (nex/practice/family), cross-origin cookie 403, multi-instance limiter sim — all green.
+- Ledger: PR-014/015/016/046/048/049/089/090/091/092/093 → VERIFIED_COMPLETE (52 total). PR-049b opened for the deferred content-author/raw-getUser admin surface.
+- Details: [phases/phase-05/QA-REPORT.md](phases/phase-05/QA-REPORT.md) · [phases/phase-05/CODER-CHANGELOG.md](phases/phase-05/CODER-CHANGELOG.md).
 
 ## Phase 04 evidence (2026-07-03 fix cycle 2)
 

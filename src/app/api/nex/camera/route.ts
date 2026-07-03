@@ -4,6 +4,12 @@ import { randomUUID } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import { checkRateLimit } from "@/lib/rateLimit/durableLimiter";
+import { enforceSameOrigin } from "@/lib/security/originCheck";
+import {
+  checkContentLength,
+  MEDIA_UPLOAD_LIMIT_BYTES,
+} from "@/lib/security/bodySizeLimit";
 import {
   buildCameraStudentMessage,
   extractImageText,
@@ -41,6 +47,16 @@ const SIGNED_URL_TTL_SECONDS = 3600;
 
 export async function POST(request: Request) {
   try {
+    const originError = enforceSameOrigin(request);
+    if (originError) {
+      return originError;
+    }
+
+    const sizeError = checkContentLength(request, MEDIA_UPLOAD_LIMIT_BYTES);
+    if (sizeError) {
+      return sizeError;
+    }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -104,6 +120,26 @@ export async function POST(request: Request) {
               dailyLimit,
               currentUsage,
             },
+          },
+        },
+        { status: 429 },
+      );
+    }
+
+    const burst = await checkRateLimit({
+      key: `nex:camera:${studentProfile.id}`,
+      windowSeconds: 60,
+      max: 10,
+    });
+
+    if (!burst.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "RATE_LIMITED",
+            message: "Too many requests. Please slow down.",
+            details: { retryAfterSeconds: burst.retryAfterSeconds },
           },
         },
         { status: 429 },
@@ -382,7 +418,7 @@ export async function POST(request: Request) {
       })
       .eq("id", sessionId);
 
-    await incrementNexDailyUsage(studentProfile.id);
+    await incrementNexDailyUsage(studentProfile.id, dailyLimit);
 
     return NextResponse.json({
       success: true,

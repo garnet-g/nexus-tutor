@@ -93,16 +93,6 @@ export async function startFreeTrial(studentId: string): Promise<{
 }> {
   const supabase = createAdminClient();
 
-  const { data: existingTrial } = await supabase
-    .from("subscription_trials")
-    .select("id")
-    .eq("student_id", studentId)
-    .maybeSingle();
-
-  if (existingTrial) {
-    throw new Error("Trial already used for this student");
-  }
-
   const { data: premiumPlan } = await supabase
     .from("subscription_plans")
     .select("id")
@@ -113,41 +103,30 @@ export async function startFreeTrial(studentId: string): Promise<{
     throw new Error("Premium subscription plan not found");
   }
 
-  const trialStartedAt = new Date();
-  const trialEndsAt = new Date(
-    trialStartedAt.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000,
-  );
-
-  await supabase.from("subscription_trials").insert({
-    student_id: studentId,
-    trial_started_at: trialStartedAt.toISOString(),
-    trial_ends_at: trialEndsAt.toISOString(),
-    is_trial_active: true,
+  // Trial row (unique per student), trialing subscription, and billing event are
+  // inserted in one transaction (start_trial_atomic). ON CONFLICT DO NOTHING on
+  // subscription_trials makes concurrent trial starts race-safe: only the first
+  // succeeds, the rest raise TRIAL_ALREADY_USED (PR-091).
+  const { data, error } = await supabase.rpc("start_trial_atomic", {
+    p_student_id: studentId,
+    p_premium_plan_id: premiumPlan.id,
+    p_trial_days: TRIAL_DAYS,
   });
 
-  const { data: subscription, error: subscriptionError } = await supabase
-    .from("student_subscriptions")
-    .insert({
-      student_id: studentId,
-      subscription_plan_id: premiumPlan.id,
-      subscription_status: "trialing",
-      trial_started_at: trialStartedAt.toISOString(),
-      trial_ends_at: trialEndsAt.toISOString(),
-      current_period_start: trialStartedAt.toISOString(),
-      current_period_end: trialEndsAt.toISOString(),
-    })
-    .select("id")
-    .single();
-
-  if (subscriptionError || !subscription) {
-    throw new Error(subscriptionError?.message ?? "Could not start trial subscription");
+  if (error) {
+    if (error.message.includes("TRIAL_ALREADY_USED")) {
+      throw new Error("Trial already used for this student");
+    }
+    throw new Error(error.message || "Could not start trial subscription");
   }
 
-  await supabase.from("billing_events").insert({
-    student_subscription_id: subscription.id,
-    event_type: "trial_started",
-    event_payload: { trialDays: TRIAL_DAYS },
-  });
+  if (!data || typeof data !== "object") {
+    throw new Error("Could not start trial subscription");
+  }
+
+  const trialEndsAt = new Date(
+    String((data as Record<string, unknown>).trial_ends_at),
+  );
 
   const { data: studentProfile } = await supabase
     .from("student_profiles")

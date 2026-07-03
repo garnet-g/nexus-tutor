@@ -18,29 +18,27 @@ export async function createFamilyGroupForPayment(input: {
   const config = await getEffectiveSubscriptionConfig();
   const inviteCode = generateFamilyInviteCode();
 
-  const { data: group, error } = await admin
-    .from("family_groups")
-    .insert({
-      owner_user_id: input.ownerUserId,
-      owner_student_id: input.ownerStudentId,
-      student_subscription_id: input.studentSubscriptionId,
-      invite_code: inviteCode,
-      max_seats: config.limits.familyMaxStudents,
-      seat_count: 1,
-    })
-    .select("id, invite_code")
-    .single();
+  // Group row + owner membership are created in a single transaction
+  // (create_family_group_atomic) so a failure never leaves an orphan group
+  // without its owner member (PR-093).
+  const { data, error } = await admin.rpc("create_family_group_atomic", {
+    p_owner_user_id: input.ownerUserId,
+    p_owner_student_id: input.ownerStudentId,
+    p_student_subscription_id: input.studentSubscriptionId,
+    p_invite_code: inviteCode,
+    p_max_seats: config.limits.familyMaxStudents,
+  });
 
-  if (error || !group) {
+  if (error || !data || typeof data !== "object") {
     throw new Error(error?.message ?? "Could not create family group");
   }
 
-  await admin.from("family_group_members").insert({
-    family_group_id: group.id,
-    student_id: input.ownerStudentId,
-  });
+  const result = data as Record<string, unknown>;
 
-  return { familyGroupId: group.id, inviteCode: group.invite_code };
+  return {
+    familyGroupId: String(result.family_group_id),
+    inviteCode: String(result.invite_code ?? inviteCode),
+  };
 }
 
 export async function getFamilyInviteCodeForStudent(
@@ -63,96 +61,48 @@ export async function getFamilyInviteCodeForStudent(
   return group.invite_code;
 }
 
+/** Maps join_family_group RAISE tokens to the established user-facing strings. */
+function mapFamilyJoinError(message: string): string {
+  if (message.includes("NO_SEATS")) {
+    return "Family plan has no seats remaining";
+  }
+  if (message.includes("ALREADY_MEMBER")) {
+    return "Student is already on a family plan";
+  }
+  if (message.includes("INVALID_CODE")) {
+    return "Invalid or expired family invite code";
+  }
+  return "Could not join family plan";
+}
+
 export async function joinFamilyGroupWithCode(input: {
   studentId: string;
   inviteCode: string;
 }): Promise<{ familyGroupId: string; seatsRemaining: number }> {
   const admin = createAdminClient();
-  const normalizedCode = input.inviteCode.trim().toUpperCase();
 
-  const { data: group, error: groupError } = await admin
-    .from("family_groups")
-    .select("id, max_seats, seat_count, is_active")
-    .eq("invite_code", normalizedCode)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (groupError || !group) {
-    throw new Error("Invalid or expired family invite code");
-  }
-
-  if (group.seat_count >= group.max_seats) {
-    throw new Error("Family plan has no seats remaining");
-  }
-
-  const { data: existingMember } = await admin
-    .from("family_group_members")
-    .select("id")
-    .eq("student_id", input.studentId)
-    .maybeSingle();
-
-  if (existingMember) {
-    throw new Error("Student is already on a family plan");
-  }
-
-  await admin.from("family_group_members").insert({
-    family_group_id: group.id,
-    student_id: input.studentId,
+  // Seat check, membership check, seat bump, prior-subscription cancellation and
+  // family-subscription insert all run inside one FOR UPDATE transaction
+  // (join_family_group) so concurrent joins can never oversell seats (PR-016).
+  const { data, error } = await admin.rpc("join_family_group", {
+    p_invite_code: input.inviteCode,
+    p_student_id: input.studentId,
   });
 
-  const newSeatCount = group.seat_count + 1;
-  await admin
-    .from("family_groups")
-    .update({ seat_count: newSeatCount })
-    .eq("id", group.id);
-
-  const familyPlan = await admin
-    .from("subscription_plans")
-    .select("id")
-    .eq("plan_code", "family")
-    .maybeSingle();
-
-  if (familyPlan.data) {
-    await admin
-      .from("student_subscriptions")
-      .update({ subscription_status: "cancelled" })
-      .eq("student_id", input.studentId)
-      .in("subscription_status", ["active", "trialing"]);
-
-    const { data: groupWithSub } = await admin
-      .from("family_groups")
-      .select("student_subscription_id")
-      .eq("id", group.id)
-      .single();
-
-    let periodStart = new Date().toISOString();
-    let periodEnd: string | null = null;
-
-    if (groupWithSub?.student_subscription_id) {
-      const { data: sub } = await admin
-        .from("student_subscriptions")
-        .select("current_period_start, current_period_end")
-        .eq("id", groupWithSub.student_subscription_id)
-        .maybeSingle();
-
-      if (sub) {
-        periodStart = sub.current_period_start ?? periodStart;
-        periodEnd = sub.current_period_end;
-      }
-    }
-
-    await admin.from("student_subscriptions").insert({
-      student_id: input.studentId,
-      subscription_plan_id: familyPlan.data.id,
-      subscription_status: "active",
-      current_period_start: periodStart,
-      current_period_end: periodEnd,
-    });
+  if (error) {
+    throw new Error(mapFamilyJoinError(error.message));
   }
 
+  if (!data || typeof data !== "object") {
+    throw new Error("Could not join family plan");
+  }
+
+  const result = data as Record<string, unknown>;
+
   return {
-    familyGroupId: group.id,
-    seatsRemaining: group.max_seats - newSeatCount,
+    familyGroupId: String(result.family_group_id),
+    seatsRemaining:
+      typeof result.seats_remaining === "number" ? result.seats_remaining : 0,
   };
 }
 

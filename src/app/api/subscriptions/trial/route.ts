@@ -2,11 +2,18 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
+import { checkRateLimit } from "@/lib/rateLimit/durableLimiter";
+import { enforceSameOrigin } from "@/lib/security/originCheck";
 import { createClient } from "@/lib/supabase/server";
 import { startFreeTrial } from "@/server/services/subscriptionService";
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
+    const originError = enforceSameOrigin(request);
+    if (originError) {
+      return originError;
+    }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -42,6 +49,26 @@ export async function POST() {
           },
         },
         { status: 403 },
+      );
+    }
+
+    const burst = await checkRateLimit({
+      key: `subscriptions:trial:${studentProfile.id}`,
+      windowSeconds: 60,
+      max: 5,
+    });
+
+    if (!burst.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "RATE_LIMITED",
+            message: "Too many requests. Please slow down.",
+            details: { retryAfterSeconds: burst.retryAfterSeconds },
+          },
+        },
+        { status: 429 },
       );
     }
 

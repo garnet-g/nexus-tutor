@@ -29,48 +29,42 @@ export async function getNexDailyUsageCount(studentId: string): Promise<number> 
   return data?.nex_message_count ?? 0;
 }
 
-export async function incrementNexDailyUsage(studentId: string): Promise<number> {
+export interface DailyUsageIncrementResult {
+  /** False when the atomic increment was refused because the cap was reached. */
+  allowed: boolean;
+  /** Authoritative post-increment count from Postgres. */
+  newCount: number;
+}
+
+/**
+ * Atomically increments the Nex daily counter, enforcing `dailyLimit` inside a
+ * single Postgres statement (increment_nex_daily_usage). Concurrent callers can
+ * never push the stored count past the cap — the pre-check in the route is only
+ * a fast path; this is the authoritative gate (PR-014).
+ */
+export async function incrementNexDailyUsage(
+  studentId: string,
+  dailyLimit: number,
+): Promise<DailyUsageIncrementResult> {
   const supabase = createAdminClient();
   const usageDate = getNairobiDateString();
 
-  const { data: existing, error: readError } = await supabase
-    .from("nex_daily_usage")
-    .select("id, nex_message_count")
-    .eq("student_id", studentId)
-    .eq("usage_date", usageDate)
-    .maybeSingle();
-
-  if (readError) {
-    throw readError;
-  }
-
-  const nextCount = (existing?.nex_message_count ?? 0) + 1;
-
-  if (existing?.id) {
-    const { error } = await supabase
-      .from("nex_daily_usage")
-      .update({ nex_message_count: nextCount })
-      .eq("id", existing.id);
-
-    if (error) {
-      throw error;
-    }
-
-    return nextCount;
-  }
-
-  const { error } = await supabase.from("nex_daily_usage").insert({
-    student_id: studentId,
-    usage_date: usageDate,
-    nex_message_count: nextCount,
-    practice_session_count: 0,
+  const { data, error } = await supabase.rpc("increment_nex_daily_usage", {
+    p_student_id: studentId,
+    p_usage_date: usageDate,
+    p_daily_limit: dailyLimit,
   });
 
   if (error) {
-    throw error;
+    throw new Error(error.message);
   }
 
-  return nextCount;
+  const result = (data ?? {}) as Record<string, unknown>;
+
+  return {
+    allowed: result.allowed === true,
+    newCount: typeof result.new_count === "number" ? result.new_count : 0,
+  };
 }
 
 export function getSecondsUntilNairobiMidnight(now = new Date()): number {
@@ -111,48 +105,34 @@ export async function getPracticeDailyUsageCount(studentId: string): Promise<num
   return data?.practice_session_count ?? 0;
 }
 
-export async function incrementPracticeDailyUsage(studentId: string): Promise<number> {
+/**
+ * Atomically increments the practice daily counter, enforcing `dailyLimit`
+ * inside a single Postgres statement (increment_practice_daily_usage). See
+ * incrementNexDailyUsage for the concurrency contract (PR-015).
+ */
+export async function incrementPracticeDailyUsage(
+  studentId: string,
+  dailyLimit: number,
+): Promise<DailyUsageIncrementResult> {
   const supabase = createAdminClient();
   const usageDate = getNairobiDateString();
 
-  const { data: existing, error: readError } = await supabase
-    .from("nex_daily_usage")
-    .select("id, practice_session_count")
-    .eq("student_id", studentId)
-    .eq("usage_date", usageDate)
-    .maybeSingle();
-
-  if (readError) {
-    throw readError;
-  }
-
-  const nextCount = (existing?.practice_session_count ?? 0) + 1;
-
-  if (existing?.id) {
-    const { error } = await supabase
-      .from("nex_daily_usage")
-      .update({ practice_session_count: nextCount })
-      .eq("id", existing.id);
-
-    if (error) {
-      throw error;
-    }
-
-    return nextCount;
-  }
-
-  const { error } = await supabase.from("nex_daily_usage").insert({
-    student_id: studentId,
-    usage_date: usageDate,
-    nex_message_count: 0,
-    practice_session_count: nextCount,
+  const { data, error } = await supabase.rpc("increment_practice_daily_usage", {
+    p_student_id: studentId,
+    p_usage_date: usageDate,
+    p_daily_limit: dailyLimit,
   });
 
   if (error) {
-    throw error;
+    throw new Error(error.message);
   }
 
-  return nextCount;
+  const result = (data ?? {}) as Record<string, unknown>;
+
+  return {
+    allowed: result.allowed === true,
+    newCount: typeof result.new_count === "number" ? result.new_count : 0,
+  };
 }
 
 export async function getStudentPlanCode(studentId: string): Promise<string> {
