@@ -18,7 +18,7 @@ outputs:
 
 **Active branch:** `main` (`feat/kcse-math-f4-b2` was merged and is an ancestor)
 
-**Program verdict:** `NOT_READY` (Phases 00–04 PASS; 05–12 not started)
+**Program verdict:** `NOT_READY` (Phases 00–04 PASS; Auth/Account Phase A `READY_FOR_QA`; 05–12 not started)
 
 ## Worktree capture (2026-06-29)
 
@@ -135,3 +135,10 @@ c03d026 docs(roadmap): mark Form 4 Batch 1 complete
 - Support routing: `/admin/support` (support), `/admin` (super_admin)
 - Role matrix: committed `role-matrix.contract.json` (143 routes) + server-action contract
 - E2E `support-admin-login.spec.ts` → **FAIL** (redirect timeout; seed + server restart required)
+
+## Auth/account Phase A gate evidence (2026-07-03)
+
+- The earlier Docker-blocked reset and Supabase-unreachable CI run are superseded.
+- `npm run db:reset` → **PASS** (exit 0); all migrations and seed files applied and the development support fixture was created.
+- CI-mode `npx playwright test e2e/support-admin-login.spec.ts` → **PASS** (exit 0; 1 passed); support reached `/admin/support` against the fresh production server. Test body: 9.9s; suite: 17.3s.
+- Phase 04 remains `PASS`. Auth/Account Phase A is `READY_FOR_QA`, not PASS; Phase B remains locked pending independent QA and Planner approval.

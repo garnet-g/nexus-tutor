@@ -13,6 +13,17 @@
 - `npx playwright test e2e/support-admin-login.spec.ts` → **1 passed** (fresh dev server, remote Supabase).
 - `npm run lint` PASS · `npm run typecheck` PASS (test-only change).
 
+## Auth/account Phase A gate replay (2026-07-03)
+
+The prior environment-blocked Phase A attempt is superseded by fresh Orchestrator evidence:
+
+| Gate | Result | Notes |
+|------|--------|-------|
+| `npm run db:reset` | **PASS** | Exit 0; all migrations and seed files applied; development users including the support fixture were created |
+| CI-mode `npx playwright test e2e/support-admin-login.spec.ts` | **PASS** | Exit 0; 1 passed; support reached `/admin/support` against a fresh production server; test body 9.9s, suite 17.3s |
+
+Phase 04 remains `PASS`. Auth/Account Phase A advances to `READY_FOR_QA`, not PASS. Phase B remains locked pending independent Phase A QA and Planner approval.
+
 ---
 
 # QA Report — Phase 04 Fix Cycle 1 (superseded)

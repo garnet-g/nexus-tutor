@@ -23,60 +23,47 @@ waiting for navigation until "load"
 ```yaml
 - generic [active] [ref=e1]:
   - generic [ref=e2]:
-    - navigation "Main navigation" [ref=e3]:
+    - banner [ref=e3]:
       - generic [ref=e4]:
-        - link "HomeSpot home" [ref=e5] [cursor=pointer]:
+        - link "Nexus" [ref=e5] [cursor=pointer]:
           - /url: /
-          - img [ref=e6]
-          - generic [ref=e7]: HomeSpot
-        - button "Open menu" [ref=e8] [cursor=pointer]:
-          - img [ref=e10]
-    - generic [ref=e13]:
-      - generic [ref=e15]:
-        - link "HomeSpot home" [ref=e17] [cursor=pointer]:
-          - /url: /
-          - img [ref=e18]
-          - generic [ref=e19]: HomeSpot
-        - generic [ref=e20]:
-          - heading "Welcome back" [level=1] [ref=e21]
-          - paragraph [ref=e22]: Sign in to your account to continue
-          - generic [ref=e23]:
-            - generic [ref=e24]:
-              - generic [ref=e25]: Email address
-              - textbox "Email address" [ref=e26]:
-                - /placeholder: you@example.co.ke
-                - text: support@nexus.local
-            - generic [ref=e27]:
-              - generic [ref=e28]:
-                - generic [ref=e29]: Password
-                - link "Forgot password?" [ref=e30] [cursor=pointer]:
-                  - /url: /forgot-password
-              - generic [ref=e31]:
-                - textbox "Password" [ref=e32]:
-                  - /placeholder: Enter your password
-                  - text: NexusDev1
-                - button "Show password" [ref=e33] [cursor=pointer]:
-                  - img [ref=e34]
-            - paragraph [ref=e38]: Database connection failed. Check DATABASE_URL and DIRECT_URL on the server.
-            - button "Sign in" [ref=e39] [cursor=pointer]
-          - paragraph [ref=e40]: Need access? Contact your building manager.
-        - paragraph [ref=e41]:
-          - text: No account?
-          - link "Register" [ref=e42] [cursor=pointer]:
-            - /url: /register
-      - contentinfo [ref=e43]:
-        - navigation [ref=e44]:
-          - link "Privacy" [ref=e45] [cursor=pointer]:
-            - /url: /privacy
-          - generic [ref=e46]: ·
-          - link "Terms" [ref=e47] [cursor=pointer]:
-            - /url: /terms
-          - generic [ref=e48]: ·
-          - link "Support" [ref=e49] [cursor=pointer]:
-            - /url: /help
-  - region "Notifications (F8)":
-    - list
-  - alert [ref=e50]
+        - generic [ref=e6]:
+          - link "Sign in" [ref=e7] [cursor=pointer]:
+            - /url: /login
+          - button "Get started" [ref=e8] [cursor=pointer]
+    - main [ref=e9]:
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: "N"
+          - generic [ref=e15]: Welcome back
+          - generic [ref=e16]: Sign in to continue your learning journey.
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - generic [ref=e19]:
+              - generic [ref=e20]: Email
+              - textbox "Email" [ref=e21]:
+                - /placeholder: you@example.com
+            - generic [ref=e22]:
+              - generic [ref=e23]: Password
+              - textbox "Password" [ref=e24]:
+                - /placeholder: ••••••••
+            - alert [ref=e25]: fetch failed
+            - button "Sign in" [ref=e26] [cursor=pointer]
+          - paragraph [ref=e27]:
+            - text: Don't have an account?
+            - link "Sign up" [ref=e28] [cursor=pointer]:
+              - /url: /signup
+    - contentinfo [ref=e29]:
+      - generic [ref=e30]:
+        - paragraph [ref=e31]: © 2026 Nexus · Garnet Labs
+        - generic [ref=e32]:
+          - link "Pricing" [ref=e33] [cursor=pointer]:
+            - /url: /pricing
+          - link "About" [ref=e34] [cursor=pointer]:
+            - /url: /about
+          - link "Sign up" [ref=e35] [cursor=pointer]:
+            - /url: /signup
+  - alert [ref=e36]
 ```
 
 # Test source
@@ -102,9 +89,12 @@ waiting for navigation until "load"
      |                ^ TimeoutError: page.waitForURL: Timeout 30000ms exceeded.
   18 |     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   19 | 
-  20 |     await page.goto("/admin/usage-stats");
-  21 |     await page.waitForURL(/\/login/, { timeout: 30_000 });
-  22 |   });
-  23 | });
-  24 | 
+  20 |     // SSR guard redirects to /login; proxy bounces the still-authenticated
+  21 |     // support user straight to /admin/support, so that is the only committed URL.
+  22 |     await page.goto("/admin/usage-stats");
+  23 |     await page.waitForURL(/\/admin\/support/, { timeout: 30_000 });
+  24 |     await expect(page).not.toHaveURL(/usage-stats/);
+  25 |   });
+  26 | });
+  27 | 
 ```

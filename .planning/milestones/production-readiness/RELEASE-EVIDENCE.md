@@ -13,7 +13,7 @@ outputs:
 
 # Release Evidence — Production Readiness
 
-**Program verdict:** `NOT_READY` (Phases 00–04 complete; 05–12 remain)
+**Program verdict:** `NOT_READY` (Phases 00–04 complete; Auth/Account Phase A awaits independent QA; 05–12 remain)
 
 ## Verification matrix (2026-06-29, Phase 04 gate)
 
@@ -27,7 +27,7 @@ outputs:
 | `npm run deploy:check` | 0 | lint + env:check + test + scope + build + audit |
 | `npm audit --audit-level=moderate` | 0 | 0 vulnerabilities |
 | `git diff --check` | 0 | CRLF warnings only |
-| `npm run db:reset` | — | EXTERNAL: Docker unavailable locally |
+| `npm run db:reset` | 0 | 2026-07-03 Auth/Account Phase A rerun; all migrations and seed files applied |
 | `npx vitest run tests/mpesa/` | 0 | Phase 03 — 13/13 |
 
 ## Phase evidence index
@@ -47,10 +47,17 @@ outputs:
 |--------|------:|
 | VERIFIED_COMPLETE | ~45 (Phases 00–04 closed rows) |
 | PLANNED / DISCOVERED | ~94 |
-| EXTERNAL_BLOCKER | 1 (`db:reset` local Docker; staging provider proof Phase 12) |
+| EXTERNAL_BLOCKER | 1 (staging provider proof Phase 12) |
 
 ## External blockers
 
-1. **Local `npm run db:reset`** — Docker Desktop unavailable; migration `20260701100000_beta_invite_reservation.sql` not proven from clean local reset (file exists in repo).
-2. **Staging provider E2E** — Phase 12 gate.
-3. **`E2E_SUPPORT_*` credentials** — `e2e/support-admin-login.spec.ts` skipped in CI.
+1. **Staging provider E2E** — Phase 12 gate.
+
+The earlier local reset and support-login blockers are superseded by the following fresh evidence:
+
+| Command | Result | Evidence |
+|---------|--------|----------|
+| `npm run db:reset` | PASS | Exit 0; all migrations and seed files applied; development users including the support fixture were created |
+| CI-mode `npx playwright test e2e/support-admin-login.spec.ts` | PASS | Exit 0; 1 passed; support reached `/admin/support`; test body 9.9s, suite 17.3s |
+
+Auth/Account Phase A is `READY_FOR_QA`, not PASS. Phase B remains locked pending independent QA and Planner approval.
