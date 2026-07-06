@@ -7,6 +7,10 @@ import {
   focusSessionUpdateSchema,
 } from "@/schemas/studentExperienceSchemas";
 import {
+  FocusSessionConflictError,
+  FocusSessionInsufficientElapsedError,
+} from "@/server/services/focusSessionService";
+import {
   apiErrorResponse,
   requireStudentProfile,
 } from "@/server/services/studentContext";
@@ -14,7 +18,7 @@ import {
   createFocusSession,
   listFocusSessions,
   updateFocusSessionStatus,
-} from "@/server/services/studentExperienceService";
+} from "@/server/services/focusSessionService";
 
 export async function GET() {
   try {
@@ -61,6 +65,10 @@ export async function POST(request: Request) {
     const session = await createFocusSession(studentContext.profile.id, parsed.data);
     return NextResponse.json({ success: true, data: { session } }, { status: 201 });
   } catch (error) {
+    if (error instanceof FocusSessionConflictError) {
+      return apiErrorResponse("FOCUS_SESSION_CONFLICT", error.message, 409);
+    }
+
     console.error("STUDENT_FOCUS_SESSIONS_POST_FAILED", error);
     return apiErrorResponse("INTERNAL_ERROR", "Could not create focus session.", 500);
   }
@@ -96,6 +104,14 @@ export async function PATCH(request: Request) {
     );
     return NextResponse.json({ success: true, data: { session } });
   } catch (error) {
+    if (error instanceof FocusSessionConflictError) {
+      return apiErrorResponse("FOCUS_SESSION_CONFLICT", error.message, 409);
+    }
+
+    if (error instanceof FocusSessionInsufficientElapsedError) {
+      return apiErrorResponse("FOCUS_INSUFFICIENT_ELAPSED", error.message, 400);
+    }
+
     console.error("STUDENT_FOCUS_SESSIONS_PATCH_FAILED", error);
     return apiErrorResponse("INTERNAL_ERROR", "Could not update focus session.", 500);
   }

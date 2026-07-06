@@ -12,6 +12,11 @@ import { getProgressSummary } from "@/server/services/practiceService";
 import { getActiveStudyPlan } from "@/server/services/studyPlanService";
 import { getStudentPlanCode } from "@/server/services/subscriptionService";
 import { getStudentWeeklySummary } from "@/server/services/weeklyReportService";
+import {
+  createFocusSession,
+  listFocusSessions,
+  updateFocusSessionStatus,
+} from "@/server/services/focusSessionService";
 import type { StudentProfile } from "@/types/database";
 
 type SavedItemInput = {
@@ -141,7 +146,7 @@ export async function getStudentExperienceData(profile: StudentProfile) {
       if (session.status !== "completed" || !session.completedAt) return false;
       return session.completedAt.startsWith(getNairobiDateString());
     })
-    .reduce((sum, session) => sum + session.durationMinutes, 0);
+    .reduce((sum, session) => sum + (session.creditedMinutes ?? 0), 0);
   const dueTasks = (studyPlan?.tasks ?? []).filter((task) => !task.isCompleted).length;
   const mistakesToReview = mistakes.filter((mistake) => mistake.status !== "mastered").length;
   const offlinePacksReady = offlinePacks.filter((pack) => pack.status !== "expired").length;
@@ -216,7 +221,7 @@ export async function getStudentChromeData(profile: StudentProfile) {
         session.status === "completed" &&
         Boolean(session.completedAt?.startsWith(today)),
     )
-    .reduce((sum, session) => sum + session.durationMinutes, 0);
+    .reduce((sum, session) => sum + (session.creditedMinutes ?? 0), 0);
   const badgeInput: StudentActionBadgeInput = {
     dueTasks: (studyPlan?.tasks ?? []).filter((task) => !task.isCompleted).length,
     weakAreas: weakAreas.length,
@@ -476,85 +481,7 @@ export async function upsertWeeklyGoal(studentId: string, input: WeeklyGoalInput
   return data;
 }
 
-export async function listFocusSessions(studentId: string) {
-  const admin = createAdminClient();
-  const { data, error } = await admin
-    .from("student_focus_sessions")
-    .select("*, topics(title)")
-    .eq("student_id", studentId)
-    .order("created_at", { ascending: false })
-    .limit(50);
-
-  if (error) return [];
-  return (data ?? []).map((row) => {
-    const topic = unwrapSupabaseRelation(
-      row.topics as { title?: string } | Array<{ title?: string }> | null,
-    );
-    return {
-      id: row.id as string,
-      subject: row.subject as string | null,
-      topicId: row.topic_id as string | null,
-      topicTitle: topic?.title ?? null,
-      durationMinutes: row.duration_minutes as number,
-      status: row.status as "planned" | "in_progress" | "completed" | "cancelled",
-      startedAt: row.started_at as string | null,
-      completedAt: row.completed_at as string | null,
-      createdAt: row.created_at as string,
-      updatedAt: row.updated_at as string,
-    };
-  });
-}
-
-export async function createFocusSession(studentId: string, input: FocusSessionInput) {
-  const now = new Date().toISOString();
-  const admin = createAdminClient();
-  const { data, error } = await admin
-    .from("student_focus_sessions")
-    .insert({
-      student_id: studentId,
-      subject: input.subject ?? null,
-      topic_id: input.topicId ?? null,
-      duration_minutes: input.durationMinutes,
-      status: input.status,
-      started_at: input.status === "in_progress" ? now : null,
-      completed_at: input.status === "completed" ? now : null,
-    })
-    .select("*")
-    .single();
-
-  if (error || !data) {
-    throw new Error(error?.message ?? "Could not create focus session.");
-  }
-
-  return data;
-}
-
-export async function updateFocusSessionStatus(
-  studentId: string,
-  id: string,
-  status: "planned" | "in_progress" | "completed" | "cancelled",
-) {
-  const now = new Date().toISOString();
-  const patch = {
-    status,
-    ...(status === "in_progress" ? { started_at: now } : {}),
-    ...(status === "completed" ? { completed_at: now } : {}),
-  };
-  const admin = createAdminClient();
-  const { data, error } = await admin
-    .from("student_focus_sessions")
-    .update(patch)
-    .eq("id", id)
-    .eq("student_id", studentId)
-    .select("*")
-    .single();
-
-  if (error || !data) {
-    throw new Error(error?.message ?? "Could not update focus session.");
-  }
-
-  return data;
-}
+export { createFocusSession, listFocusSessions, updateFocusSessionStatus };
 
 export async function listOfflinePacks(studentId: string) {
   const admin = createAdminClient();
