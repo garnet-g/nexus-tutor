@@ -28,7 +28,7 @@ export default async function AdminContentCalendarPage() {
         description="Review queue planning surface for lessons and questions awaiting publication."
         actions={<Button render={<Link href="/admin/studio/review" />} variant="outline">Review queue</Button>}
       />
-      <Panel title="Due this week" description={`${data.dueThisWeek.length} queued review item${data.dueThisWeek.length === 1 ? "" : "s"}`}>
+      <Panel title="Due this week" description={`${data.dueThisWeek.length} review item${data.dueThisWeek.length === 1 ? "" : "s"} with submission dates in the current UTC week`}>
         <div className="space-y-3">
           {data.dueThisWeek.length === 0 ? (
             <p className="text-sm text-muted-foreground">No review items due right now.</p>

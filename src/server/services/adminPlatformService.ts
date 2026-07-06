@@ -763,10 +763,42 @@ export async function getAiQualityDashboard() {
 
 export async function getContentCalendarDashboard() {
   const reviewQueue = await getContentReviewQueue().catch(() => []);
+  const now = new Date();
+  const weekStart = startOfUtcWeek(now);
+  const weekEnd = endOfUtcWeek(now);
+
+  const dueThisWeek = reviewQueue.filter((item) => {
+    const submittedAt = item.submittedAt ?? null;
+    if (!submittedAt) {
+      return false;
+    }
+    const date = new Date(submittedAt);
+    return date >= weekStart && date <= weekEnd;
+  });
+
   return {
     reviewQueue,
-    dueThisWeek: reviewQueue.slice(0, 12),
+    dueThisWeek,
+    weekStart: weekStart.toISOString(),
+    weekEnd: weekEnd.toISOString(),
   };
+}
+
+function startOfUtcWeek(date: Date): Date {
+  const copy = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  const day = copy.getUTCDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  copy.setUTCDate(copy.getUTCDate() + diff);
+  copy.setUTCHours(0, 0, 0, 0);
+  return copy;
+}
+
+function endOfUtcWeek(date: Date): Date {
+  const start = startOfUtcWeek(date);
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 6);
+  end.setUTCHours(23, 59, 59, 999);
+  return end;
 }
 
 export async function getRevenueOpsDashboard() {
