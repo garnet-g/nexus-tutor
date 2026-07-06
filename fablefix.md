@@ -387,30 +387,175 @@ Started: 2026-07-06T10:30:00+03:00
 - **build:** green
 - **route reconciliation:** green (`npm run test:route-reconciliation`)
 
-- **Status:** DONE_VERIFIED
-- **What was done:** `adminExperimentsService` deterministic variant + `admin_experiment_exposures`; `POST /api/admin/experiments/assign`; `isExperimentFeatureEnabled` evaluates rollout before experiment (DEC-001).
-- **Acceptance evidence:** `tests/admin/adminExperimentsService.test.ts`, `tests/admin/adminExperimentsRolloutPrecedence.test.ts`
-- **Commit:** 17301ce
+## Phase F7 — Browser security, observability, performance, a11y
 
-### PR-071 — Saved views reapply filters
+### PR-019 — Environment-aware CSP (headers block)
 - **Status:** DONE_VERIFIED
-- **What was done:** `buildSavedViewHref` appends saved `filters` as query string; saved view cards link with filters (e.g. `/admin/payments?status=failed`).
-- **Acceptance evidence:** `tests/admin/savedViewsApply.test.ts`
-- **Commit:** 29d13f2
+- **What was done:** `src/lib/security/securityHeaders.ts` (`buildContentSecurityPolicy`) + coherent `headers()` in `next.config.ts` (env-aware Supabase/Sentry connect-src, `unsafe-eval` dev-only).
+- **Acceptance evidence:** `tests/security/securityHeaders.test.ts`; `npm run test:e2e:ci` with `E2E_STUDENT_EMAIL=student@nexus.local` — `e2e/nex-camera.spec.ts` **6/6 passed** on production server (camera button visible under shipped CSP).
 
-### PR-072 — Admin entity search with role filter
+### PR-020 — Frame protection
 - **Status:** DONE_VERIFIED
-- **What was done:** `GET /api/admin/search?q=` + `/admin/search` form; `searchAdminEntities` filters indexed types for `support` role.
-- **Commit:** efeef16
+- **What was done:** `X-Frame-Options: DENY` + CSP `frame-ancestors 'none'` in base header set.
+- **Acceptance evidence:** `tests/security/securityHeaders.test.ts`
 
-### PR-073 — Content calendar review dates
+### PR-021 — X-Content-Type-Options
 - **Status:** DONE_VERIFIED
-- **What was done:** `getContentCalendarDashboard` filters `dueThisWeek` by `submittedAt` within current UTC week from review queue.
-- **Commit:** 55a72fe
+- **Acceptance evidence:** `tests/security/securityHeaders.test.ts`
 
-## Phase F5 gate status
-- **Status:** DONE_VERIFIED — all ledger items PR-066 through PR-073 + PR-125 + PR-126 complete for Phase 09 admin workflows scope.
+### PR-022 — Referrer-Policy
+- **Status:** DONE_VERIFIED
+- **Acceptance evidence:** `tests/security/securityHeaders.test.ts`
+
+### PR-023 — Permissions-Policy (camera/mic scoped to Nex)
+- **Status:** DONE_VERIFIED
+- **What was done:** Default `camera=(), microphone=()`; `/nex` uses `buildNexPrivateHeaders()` with `camera=(self), microphone=(self)` (removed `/nex` from `AUTHENTICATED_ROUTE_PREFIXES` to prevent policy clobber).
+- **Acceptance evidence:** `tests/security/securityHeaders.test.ts`; `e2e/nex-camera.spec.ts` — login denies camera; authenticated `/nex` allows `camera=(self)` under production headers.
+
+### PR-024 — HSTS (HTTPS production/staging only)
+- **Status:** DONE_VERIFIED
+- **Acceptance evidence:** `tests/security/securityHeaders.test.ts` (production on, development off)
+
+### PR-139 — Nex multimodal smoke under new headers
+- **Status:** DONE_VERIFIED
+- **Acceptance evidence:** `npm run test:e2e:ci` (production server) — `e2e/nex-camera.spec.ts` 6/6 passed including homework camera button + Permissions-Policy + private cache on `/dashboard`. Dev student seeded **premium** (`scripts/seed-dev-users.ts`) for camera entitlement.
+
+### PR-103 — Private Cache-Control on authenticated routes
+- **Status:** DONE_VERIFIED
+- **What was done:** `Cache-Control: private, no-store, max-age=0` on `AUTHENTICATED_ROUTE_PREFIXES` + `/parent` in `next.config.ts`.
+- **Acceptance evidence:** `tests/security/securityHeaders.test.ts`; `e2e/nex-camera.spec.ts` dashboard `Cache-Control: private, no-store` under production server.
+
+### PR-025 — robots.ts
+- **Status:** DONE_VERIFIED
+- **What was done:** `src/app/robots.ts` disallows `/admin`, `/dashboard`, `/parent`, `/nex`, `/api/`.
+- **Acceptance evidence:** `tests/seo/robots.test.ts`
+
+### PR-026 — sitemap.ts (public only)
+- **Status:** DONE_VERIFIED
+- **What was done:** `src/app/sitemap.ts` — `/`, `/about`, `/pricing`, `/login`, `/signup`, `/waitlist/teacher` only.
+- **Acceptance evidence:** `tests/seo/sitemap.test.ts`
+
+### PR-027 — Manifest + OG + canonical
+- **Status:** DONE_VERIFIED
+- **What was done:** `src/app/manifest.ts`; `src/app/layout.tsx` metadata (`metadataBase`, `alternates.canonical`, Open Graph, Twitter, manifest link).
+- **Acceptance evidence:** `tests/seo/manifest.test.ts`, `tests/seo/rootMetadata.test.ts`; Lighthouse SEO **1.00** on `/` (see PR-087).
+
+### PR-097 — Client Sentry on Next 16 (`instrumentation-client.ts`)
+- **Status:** CONFIG_COMPLETE — staging event verification **BLOCKED (human gate)**
+- **What was done:** `src/instrumentation-client.ts` with `onRouterTransitionStart`; `src/instrumentation.ts` loads server config when DSN present.
+- **Human/staging check:** Deploy with DSN → trigger deliberate client error → confirm event in Sentry with env tag.
+
+### PR-098 — Release tags, PII redaction, source maps policy
+- **Status:** CONFIG_COMPLETE — staging event verification **BLOCKED (human gate)**
+- **Human/staging check:** Confirm Sentry event shows `release` from `VERCEL_GIT_COMMIT_SHA` or `SENTRY_RELEASE`.
+
+### PR-045 — Provider probe matrix with timeouts
+- **Status:** DONE_VERIFIED
+- **What was done:** `src/lib/health/probeTimeout.ts`, expanded `src/lib/health/probes.ts` (database reachability, AI/M-Pesa/notifications latency probes, cron, migrations); surfaced on `/admin/health` via existing `getDeploymentHealthSummary({ checkReachability: true })`.
+- **Acceptance evidence:** `tests/health/probes.test.ts`, `tests/health/probeTimeout.test.ts`
+
+### PR-064 — Request-scoped session memoization
+- **Status:** DONE_VERIFIED
+- **What was done:** `getSessionUser` wrapped with React `cache()` in `authService.ts`.
+- **Acceptance evidence:** `tests/perf/requestScopedAuth.test.ts`
+
+### PR-065 — Server timing + budgets (DEC-005)
+- **Status:** PARTIAL — lab instrumentation only
+- **Environment:** Windows 11 local dev (`NODE_ENV=development`), session lookup recorded in `(student)/layout.tsx` via `recordServerTiming`; budget constant 800ms (`SERVER_TIMING_BUDGET_MS`).
+- **Acceptance evidence:** `tests/perf/requestScopedAuth.test.ts` (budget helper); console warn when session lookup exceeds budget in dev.
+- **Human:** p95 dashboard ≤800ms needs staging RUM or production Server-Timing sampling.
+
+### PR-087 — Lighthouse CI (`lighthouserc.js`)
+- **Status:** DONE_VERIFIED (scores recorded; Windows post-run cleanup EPERM non-blocking)
+- **What was done:** `lighthouserc.js` with `startServerCommand: "npm run start"` + `startServerReadyPattern: "Ready"`; DEC-005 thresholds.
+- **Lab scores (`/` mobile, local production server, 2026-07-06):** performance **0.81** (warn threshold 0.85), accessibility **1.00**, best-practices **1.00**, SEO **1.00**.
+- **Note:** `npx lhci autorun` exits 1 on Windows after successful audit due to `EPERM` removing `%TEMP%/lighthouse.*` — Chrome launches and audits complete; not a Chrome launch failure.
+
+### PR-074 — Route-group error boundaries + recovery
+- **Status:** DONE_VERIFIED
+- **What was done:** `error.tsx` for `(student)` (existing), `(parent)`, `(super-admin)`, `(public)`; `src/app/(public)/e2e-force-error/page.tsx` for forced client error.
+- **Acceptance evidence:** `e2e/error-recovery.spec.ts` green
+
+### PR-138 — axe + keyboard checklist
+- **Status:** DONE_VERIFIED (automated); keyboard contrast paths remain human checklist in PR-137
+- **Acceptance evidence:** `e2e/a11y-student-utilities.spec.ts` — axe serious/critical = 0 on `/` and `/login` under `test:e2e:ci`.
+
+### PR-137 — Narrator + Edge screen-reader gate (DEC-011)
+- **Status:** BLOCKED (human gate)
+- **Journey checklist (Windows Narrator + Edge):**
+  1. Landing → pricing → login: announce headings and primary CTA in order.
+  2. Student login → dashboard: Today view landmarks (`main`, nav) announced.
+  3. `/nex` homework mode: mode toggle state announced; camera button label readable.
+  4. `/study-search`, `/saved`, `/mistakes`: search input label + results list count announced.
+  5. Error recovery (`/e2e-force-error?forceError=1`): error title + Try again button announced.
+- **Automated evidence supplied:** axe serious/critical = 0 on landing/login (`e2e/a11y-student-utilities.spec.ts`).
+
+## Phase F7 gate status
+- **Status:** DONE_VERIFIED — all implementable items complete; **PR-097/098** CONFIG_COMPLETE (staging DSN event); **PR-137** BLOCKED (human gate); **PR-065** lab instrumentation only.
+- **db:reset:** not required (no migrations)
 - **typecheck:** green
-- **tests:** 625 passed (639 total)
+- **tests:** 647 passed (661 total)
 - **build:** green
-- **Role matrix:** 88 API routes, 70 pages
+- **E2E (`npm run test:e2e:ci`, seeded creds):** 30 passed, 1 failed (`form-reliability` profile validation — pre-existing), 1 skipped
+- **nex-camera (F7 acceptance):** 6/6 passed on production server
+- **LHCI:** audits complete; SEO 1.00; performance 0.81 (warn)
+
+## Phase F8 — Release proof
+
+### PR-079 — Parent journey E2E
+- **Status:** DONE_VERIFIED
+- **What was done:** `e2e/parent-journey.spec.ts`; `parent@nexus.local` seeded with active link to Dev Student (`scripts/seed-dev-users.ts`).
+- **Acceptance evidence:** `test:e2e:ci` — parent journey passed.
+
+### PR-080 — Admin journey E2E
+- **Status:** DONE_VERIFIED
+- **What was done:** `e2e/admin-journey.spec.ts` (support shell + super-admin health).
+- **Acceptance evidence:** `test:e2e:ci` — 2/2 admin-journey tests passed.
+
+### PR-081 — Studio publish path smoke
+- **Status:** DONE_VERIFIED
+- **What was done:** `e2e/studio.spec.ts` — curriculum workspace + review queue for super-admin.
+- **Acceptance evidence:** `test:e2e:ci` — studio spec passed.
+
+### PR-082 — Student utilities journeys
+- **Status:** DONE_VERIFIED
+- **What was done:** `e2e/student-utilities.spec.ts`; student-scoped feature rollouts enabled in seed for `student.study_search` etc.
+- **Acceptance evidence:** student-utilities spec passed after seed (`study-search`, `saved`, `mistakes`, `focus`).
+
+### PR-083 — Billing + multimodal smoke
+- **Status:** DONE_VERIFIED
+- **What was done:** `e2e/pricing-checkout.spec.ts` (mock STK failure recovery); `e2e/nex-camera.spec.ts` expanded under production headers.
+- **Acceptance evidence:** `test:e2e:ci` — pricing-checkout + nex-camera 6/6 passed.
+
+### PR-084 — RLS tests on reset DB
+- **Status:** DONE_VERIFIED
+- **Acceptance evidence:** `npm run db:reset` then `npm test -- tests/rls` — 2 files, all passed.
+
+### PR-085 — Concurrency suite
+- **Status:** DONE_VERIFIED
+- **Acceptance evidence:** `npm test -- tests/concurrency` — 3 files (nexQuota, practiceQuota, familySeats), 23 tests passed in combined rls+concurrency run.
+
+### PR-086 — Real-provider staging checks
+- **Status:** BLOCKED (human gate)
+- **Staging checklist:**
+  1. Set `NEX_PROVIDER_MODE=live`, `GEMINI_API_KEY` / `OPENAI_API_KEY` on staging → `curl -sf $STAGING_URL/api/nex/chat` smoke with session cookie.
+  2. Set `MPESA_PROVIDER_MODE=sandbox` + Daraja creds → STK push on `/pricing` with test MSISDN.
+  3. `CRON_SECRET` → `curl -H "Authorization: Bearer $CRON_SECRET" $STAGING_URL/api/cron/notification-outbox`.
+  4. Celcom/Resend sandbox webhook dry-send.
+
+### PR-076 — Payment reconciliation runbook + dry-run
+- **Status:** DONE_VERIFIED
+- **Dry-run:** `npm test` includes `tests/mpesa/paymentExpiry.test.ts` + `tests/mpesa/paymentReplayTool.test.ts` (isolated DB suite; runs in full `npm test` after `db:reset`). Tabletop: `expireStalePayments()` marks stale pending rows; `replayCallbackEvent()` idempotent on callback events.
+
+### PR-078 — Provider outage runbooks + tabletop
+- **Status:** DONE_VERIFIED
+- **Tabletop dry-run (local mock modes):**
+  - **AI outage:** `NEX_PROVIDER_MODE=mock` — Nex chat returns mock adapter responses; admin `/admin/health` shows Nex probe configured.
+  - **Payment outage:** `e2e/pricing-checkout.spec.ts` routes STK 502 → user sees recoverable checkout error.
+  - **Cron outage:** missing `CRON_SECRET` in staging/prod → health probe `misconfigured`; dev optional.
+
+## Phase F8 gate status
+- **Status:** DONE_VERIFIED except PR-086 (human gate) and pre-existing `form-reliability` E2E failure (out of F8 scope).
+- **db:reset:** green (seed includes parent, premium student, utility rollouts)
+- **test:e2e:ci:** 30 passed / 32 total (1 pre-existing failure)
+
