@@ -23,7 +23,7 @@ const CONSTELLATION = [
 
 export function SceneHero() {
   return (
-    <ScrollScene length={2} lengthSm={1.6} className="relative">
+    <ScrollScene length={2} lengthSm={0} className="relative">
       {(p) => {
         const collapse = phase(p, 0, 0.55);
         const focus = phase(p, 0.3, 0.7);

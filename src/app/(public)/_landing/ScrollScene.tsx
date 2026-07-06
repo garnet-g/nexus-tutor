@@ -13,7 +13,11 @@ import { cn } from "@/lib/utils";
 interface ScrollSceneProps {
   /** Scene scroll length in viewport heights (3 renders a 300vh section). */
   length: number;
-  /** Shorter length used below the 640px breakpoint. */
+  /**
+   * Shorter length used below the 640px breakpoint. Pass 0 to disable
+   * pinning entirely on small screens (scene renders its final state at
+   * natural height instead).
+   */
   lengthSm?: number;
   className?: string;
   /** Stage content, driven by scene progress 0..1. */
@@ -49,7 +53,9 @@ export function ScrollScene({
     // does not trigger a cascading render during mount.
     const raf = requestAnimationFrame(() => {
       const small = window.innerWidth < 640;
-      setVhLength(small && lengthSm ? lengthSm : length);
+      const resolved = small && lengthSm !== undefined ? lengthSm : length;
+      // Pinning only makes sense when the section outgrows the viewport.
+      if (resolved > 1) setVhLength(resolved);
     });
     return () => cancelAnimationFrame(raf);
   }, [length, lengthSm]);

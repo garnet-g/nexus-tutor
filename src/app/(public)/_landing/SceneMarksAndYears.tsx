@@ -75,7 +75,7 @@ export function SceneMarksAndYears() {
               }}
             >
               <h2
-                className="mb-10 font-heading text-[clamp(2rem,4.6vw,3.6rem)] font-medium leading-[0.95] tracking-[-0.05em] text-[#fbf8f3]"
+                className="mb-6 font-heading text-[clamp(2rem,4.6vw,3.6rem)] font-medium leading-[0.95] tracking-[-0.05em] text-[#fbf8f3] sm:mb-10"
                 style={{ opacity: phase(p, 0, 0.06) }}
               >
                 Every session fixes something.
@@ -83,17 +83,17 @@ export function SceneMarksAndYears() {
 
               <div className="grid gap-px overflow-hidden border border-[#d8cab4] bg-[#d8cab4] text-[#171814] shadow-[0_40px_120px_rgba(0,0,0,0.5)] md:grid-cols-[0.82fr_1.18fr]">
                 <div
-                  className="flex flex-col justify-between gap-8 bg-[#171814] p-6 text-[#fbf8f3] sm:p-8"
+                  className="flex flex-col justify-between gap-5 bg-[#171814] p-5 text-[#fbf8f3] sm:gap-8 sm:p-8"
                   style={{ opacity: 0.25 + 0.75 * grade }}
                 >
                   <div>
                     <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#e0883b]">
                       Predicted grade
                     </p>
-                    <p className="mt-4 font-mono text-6xl leading-none sm:text-7xl">
+                    <p className="mt-4 font-mono text-5xl leading-none sm:text-7xl">
                       B-
                     </p>
-                    <p className="mt-4 text-sm leading-6 text-white/55">
+                    <p className="mt-4 hidden text-sm leading-6 text-white/55 sm:block">
                       Two topics are all that hold the score below a B.
                     </p>
                   </div>
@@ -102,7 +102,7 @@ export function SceneMarksAndYears() {
                       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
                         Marks won back
                       </p>
-                      <p className="mt-3 font-heading text-4xl leading-none text-[#e0883b]">
+                      <p className="mt-3 font-heading text-3xl leading-none text-[#e0883b] sm:text-4xl">
                         +{wonBack}
                       </p>
                     </div>
@@ -110,14 +110,14 @@ export function SceneMarksAndYears() {
                       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
                         Today&apos;s session
                       </p>
-                      <p className="mt-3 font-heading text-4xl leading-none">
+                      <p className="mt-3 font-heading text-3xl leading-none sm:text-4xl">
                         28m
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-[#fffaf0] p-6 sm:p-8">
+                <div className="bg-[#fffaf0] p-5 sm:p-8">
                   <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#8b5b2e]">
                     Topics still costing you marks
                   </p>
@@ -160,7 +160,7 @@ export function SceneMarksAndYears() {
                                 </span>
                               ) : null}
                             </p>
-                            <p className="mt-1 text-sm text-[#61594d]">
+                            <p className="mt-1 hidden text-sm text-[#61594d] sm:block">
                               {topic.detail}
                             </p>
                           </div>
