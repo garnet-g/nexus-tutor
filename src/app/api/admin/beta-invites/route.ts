@@ -3,6 +3,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { enforceAdminMutationGuards } from "@/lib/security/originCheck";
 import { createClient } from "@/lib/supabase/server";
 import {
   createBetaInvite,
@@ -91,6 +92,11 @@ export async function POST(request: Request) {
         },
         { status: 403 },
       );
+    }
+
+    const guardError = await enforceAdminMutationGuards(request, user.id);
+    if (guardError) {
+      return guardError;
     }
 
     const body = await request.json();

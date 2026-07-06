@@ -3,9 +3,10 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import {
-  clearPlatformSettingsCache,
   getEffectiveSubscriptionConfig,
+  clearPlatformSettingsCache,
 } from "@/lib/platform/getPlatformSettings";
+import { enforceAdminMutationGuards } from "@/lib/security/originCheck";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { platformSettingsPatchSchema } from "@/schemas/adminSchemas";
@@ -114,6 +115,11 @@ export async function PATCH(request: Request) {
         },
         { status: 403 },
       );
+    }
+
+    const guardError = await enforceAdminMutationGuards(request, user.id);
+    if (guardError) {
+      return guardError;
     }
 
     const body = await request.json();

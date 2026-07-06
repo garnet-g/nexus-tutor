@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { POST as assistPOST } from "@/app/api/admin/content/assist/route";
 
-const requireContentAuthor = vi.fn();
+const requireContentAuthorApi = vi.fn();
 vi.mock("@/server/services/contentAuthorGuard", () => ({
-  requireContentAuthor: (...args: unknown[]) => requireContentAuthor(...args),
+  requireContentAuthorApi: (...args: unknown[]) => requireContentAuthorApi(...args),
 }));
 
 const runContentAssist = vi.fn();
@@ -20,7 +20,7 @@ vi.mock("@/server/services/adminAuditService", () => ({
 const subtopicId = "00000000-0000-4000-8000-000000000501";
 
 beforeEach(() => {
-  requireContentAuthor.mockReset().mockResolvedValue({
+  requireContentAuthorApi.mockReset().mockResolvedValue({
     ok: true,
     userId: "super-1",
     role: "super_admin",

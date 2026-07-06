@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { contentAssistRequestSchema } from "@/schemas/contentAssistSchemas";
 import { recordAdminAudit } from "@/server/services/adminAuditService";
 import { runContentAssist } from "@/server/services/contentAssistService";
-import { requireContentAuthor } from "@/server/services/contentAuthorGuard";
+import { requireContentAuthorApi } from "@/server/services/contentAuthorGuard";
 
 function mapAssistError(error: unknown): { status: number; code: string; message: string } {
   const message = error instanceof Error ? error.message : "Unexpected error.";
@@ -50,15 +50,9 @@ const ASSIST_AUDIT_ACTIONS = {
 } as const;
 
 export async function POST(request: Request) {
-  const auth = await requireContentAuthor();
+  const auth = await requireContentAuthorApi(request);
   if (!auth.ok) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: { code: auth.status === 401 ? "UNAUTHORIZED" : "FORBIDDEN", message: auth.message },
-      },
-      { status: auth.status },
-    );
+    return auth.response;
   }
 
   let body: unknown;
