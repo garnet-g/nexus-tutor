@@ -1,5 +1,6 @@
-import { BookOpen, BookMarked, Search, Target } from "lucide-react";
+import { Search } from "lucide-react";
 
+import { StudySearchPanel } from "@/features/student/components/StudySearchPanel";
 import {
   EmptyStudentState,
   LinkedPanel,
@@ -15,21 +16,18 @@ export default async function StudySearchPage() {
       title: topic.title,
       description: `${topic.masteryPercentage}% mastery`,
       eyebrow: "Topic",
-      icon: Target,
     })),
     ...experience.savedItems.slice(0, 4).map((item) => ({
       href: item.href,
       title: item.title,
       description: item.description ?? `Saved ${item.itemType}`,
       eyebrow: "Saved",
-      icon: BookMarked,
     })),
     ...experience.recentLessons.slice(0, 4).map((lesson) => ({
       href: lesson.href,
       title: lesson.lessonTitle,
       description: lesson.topicTitle,
       eyebrow: "Lesson",
-      icon: BookOpen,
     })),
   ];
 
@@ -38,29 +36,30 @@ export default async function StudySearchPage() {
       <StudentPageHeader
         eyebrow="Study"
         title="Study search"
-        description="A useful starting point for lessons, weak topics, saved items, and recent study activity."
+        description="Search published lessons and practice questions in your curriculum."
       />
 
-      <div className="rounded-2xl border border-nexus-border bg-nexus-surface p-4">
-        <div className="flex items-center gap-3 rounded-xl bg-nexus-sunken px-3 py-3 text-muted-foreground">
-          <Search className="size-5" />
-          <span className="text-sm">Use Ctrl K anywhere to find pages and study actions.</span>
-        </div>
-      </div>
+      <StudySearchPanel />
 
-      <section className="grid gap-4 lg:grid-cols-2">
-        {items.length > 0 ? (
-          items.map((item) => (
-            <LinkedPanel key={`${item.eyebrow}-${item.href}-${item.title}`} {...item} />
-          ))
-        ) : (
-          <EmptyStudentState
-            title="Search has nothing personal yet"
-            description="Complete lessons, save questions, or do practice and this page will fill with useful shortcuts."
-            href="/learn"
-            label="Browse lessons"
-          />
-        )}
+      <section className="space-y-3">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Search className="size-4" />
+          Shortcuts from your recent activity
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          {items.length > 0 ? (
+            items.map((item) => (
+              <LinkedPanel key={`${item.eyebrow}-${item.href}-${item.title}`} {...item} />
+            ))
+          ) : (
+            <EmptyStudentState
+              title="Search has nothing personal yet"
+              description="Complete lessons, save questions, or do practice and this page will fill with useful shortcuts."
+              href="/learn"
+              label="Browse lessons"
+            />
+          )}
+        </div>
       </section>
     </div>
   );
