@@ -2,6 +2,7 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
+import { enforcePaymentBurstLimits } from "@/lib/rateLimit/paymentBurstLimit";
 import { initiateStkPush } from "@/lib/mpesa/mpesaClient";
 import {
   buildCallbackUrl,
@@ -72,6 +73,17 @@ export async function POST(request: Request) {
         },
         { status: 400 },
       );
+    }
+
+    const burstError = await enforcePaymentBurstLimits({
+      request,
+      studentId: studentProfile.id,
+      phoneNumber: parsed.data.phoneNumber,
+      action: "stk-push",
+    });
+
+    if (burstError) {
+      return burstError;
     }
 
     const admin = createAdminClient();

@@ -3,6 +3,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import { clientStatusLabel, isTerminal, mapDarajaResultToHint } from "@/lib/mpesa/paymentStateMachine";
+import { enforcePaymentBurstLimits } from "@/lib/rateLimit/paymentBurstLimit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { mpesaStatusQuerySchema } from "@/schemas/mpesaSchemas";
@@ -45,6 +46,16 @@ export async function GET(request: Request) {
         },
         { status: 403 },
       );
+    }
+
+    const burstError = await enforcePaymentBurstLimits({
+      request,
+      studentId: studentProfile.id,
+      action: "status",
+    });
+
+    if (burstError) {
+      return burstError;
     }
 
     const url = new URL(request.url);
