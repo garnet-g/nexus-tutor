@@ -9,6 +9,8 @@ import {
 import { recordAdminAudit } from "@/server/services/adminAuditService";
 import {
   createApproval,
+  getApprovalById,
+  isBulkActionRequestType,
   listApprovals,
   updateApproval,
 } from "@/server/services/adminPlatformService";
@@ -120,6 +122,34 @@ export async function PATCH(request: Request) {
           },
         },
         { status: 400 },
+      );
+    }
+
+    const existing = await getApprovalById(parsed.data.approvalId);
+    if (!existing) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "NOT_FOUND", message: "Approval not found." },
+        },
+        { status: 404 },
+      );
+    }
+
+    if (
+      parsed.data.status === "approved" &&
+      isBulkActionRequestType(existing.requestType) &&
+      existing.requestedBy === auth.userId
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "FOUR_EYES_VIOLATION",
+            message: "Requester cannot approve their own bulk action.",
+          },
+        },
+        { status: 403 },
       );
     }
 

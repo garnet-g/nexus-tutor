@@ -111,6 +111,7 @@ export type AdminApprovalRequest = {
   requestedBy: string | null;
   reviewedBy: string | null;
   createdAt: string;
+  metadata?: Record<string, unknown>;
 };
 
 export type AdminSystemHealthItem = {
@@ -236,7 +237,12 @@ function mapApproval(row: unknown): AdminApprovalRequest {
     requestedBy: (data.requested_by as string | null) ?? null,
     reviewedBy: (data.reviewed_by as string | null) ?? null,
     createdAt: data.created_at as string,
+    metadata: asRecord(data.metadata),
   };
+}
+
+export function isBulkActionRequestType(requestType: string): boolean {
+  return requestType.startsWith("bulk_");
 }
 
 export async function listAdminAlerts(status?: AdminAlert["status"]) {
@@ -427,6 +433,21 @@ export async function createSavedView(input: {
   return mapSavedView(data);
 }
 
+export async function getApprovalById(
+  approvalId: string,
+): Promise<AdminApprovalRequest | null> {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("admin_approval_requests")
+    .select(
+      "id, request_type, title, description, target_type, target_id, status, requested_by, reviewed_by, created_at, metadata",
+    )
+    .eq("id", approvalId)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data ? mapApproval(data) : null;
+}
+
 export async function listApprovals(status?: AdminApprovalRequest["status"]) {
   const admin = createAdminClient();
   let query = admin
@@ -462,6 +483,34 @@ export async function createApproval(input: {
     .single();
   if (error) throw new Error(error.message);
   return mapApproval(data);
+}
+
+export async function markApprovalExecuted(input: {
+  approvalId: string;
+  executionSummary: Record<string, unknown>;
+}) {
+  const admin = createAdminClient();
+  const existing = await getApprovalById(input.approvalId);
+  if (!existing) {
+    return null;
+  }
+
+  const metadata = {
+    ...(existing.metadata ?? {}),
+    executedAt: new Date().toISOString(),
+    executionSummary: input.executionSummary,
+  };
+
+  const { data, error } = await admin
+    .from("admin_approval_requests")
+    .update({ metadata })
+    .eq("id", input.approvalId)
+    .select(
+      "id, request_type, title, description, target_type, target_id, status, requested_by, reviewed_by, created_at, metadata",
+    )
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data ? mapApproval(data) : null;
 }
 
 export async function updateApproval(input: {

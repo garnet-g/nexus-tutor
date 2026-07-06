@@ -61,6 +61,7 @@ export type AdminAuditAction =
   | "admin_saved_view.create"
   | "admin_approval.create"
   | "admin_approval.update"
+  | "admin_bulk_action.execute"
   | "admin_report_export";
 
 /** Mutations that must abort when audit persistence fails (DEC-009 assumption A). */

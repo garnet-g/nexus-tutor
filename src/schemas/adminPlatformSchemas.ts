@@ -114,6 +114,14 @@ export type AdminApprovalCreateInput = z.infer<
   typeof adminApprovalCreateSchema
 >;
 
+export const adminBulkActionExecuteSchema = z.object({
+  approvalId: z.string().uuid(),
+});
+
+export type AdminBulkActionExecuteInput = z.infer<
+  typeof adminBulkActionExecuteSchema
+>;
+
 export const adminApprovalUpdateSchema = z.object({
   approvalId: z.string().uuid(),
   status: z.enum(["approved", "rejected", "cancelled"]),

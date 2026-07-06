@@ -403,6 +403,14 @@
     ]
   },
   {
+    "path": "/api/admin/bulk-actions/execute",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/bulk-actions/execute/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
     "path": "/api/admin/communications",
     "tier": "admin",
     "filePath": "src/app/api/admin/communications/route.ts",
