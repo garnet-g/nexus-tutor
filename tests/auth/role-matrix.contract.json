@@ -20,6 +20,12 @@
     "filePath": "src/app/(public)/(auth)/signup/page.tsx"
   },
   {
+    "path": "/e2e-force-error",
+    "tier": "public",
+    "filePath": "src/app/(public)/e2e-force-error/page.tsx",
+    "notes": "Playwright-only forced error probe for error.tsx recovery tests."
+  },
+  {
     "path": "/about",
     "tier": "public",
     "filePath": "src/app/(public)/about/page.tsx"

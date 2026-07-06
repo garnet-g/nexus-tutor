@@ -1,7 +1,7 @@
 # Screen Inventory
 
 **Version:** 2.0 (production reconciliation)  
-**Total screens:** 70 (verified by `npm run test:route-reconciliation`)
+**Total screens:** 71 (verified by `npm run test:route-reconciliation`)
 
 Reconciliation command: glob `src/app/**/page.tsx` and compare against this total.
 
@@ -17,6 +17,7 @@ Reconciliation command: glob `src/app/**/page.tsx` and compare against this tota
 | `/login` | Login |
 | `/signup` | Signup |
 | `/waitlist/teacher` | Teacher waitlist |
+| `/e2e-force-error` | E2E error-boundary probe (test harness) |
 
 ---
 
