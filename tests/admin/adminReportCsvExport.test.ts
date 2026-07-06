@@ -11,6 +11,8 @@ describe("PR-126 CSV formula injection escaping", () => {
     expect(escapeCsvCell("+1234")).toBe("'+1234");
     expect(escapeCsvCell("-10")).toBe("'-10");
     expect(escapeCsvCell("@sum(A1)")).toBe("'@sum(A1)");
+    expect(escapeCsvCell("\tleak")).toBe("'\tleak");
+    expect(escapeCsvCell("\rleak")).toBe('"\'\rleak"');
   });
 
   it("buildCsv exports formula cells safely", () => {

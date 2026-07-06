@@ -1,4 +1,4 @@
-const FORMULA_INJECTION_PATTERN = /^[=+\-@]/;
+const FORMULA_INJECTION_PATTERN = /^[=+\-@\t\r]/;
 
 export function escapeCsvCell(value: string | number | null | undefined): string {
   let text = String(value ?? "");

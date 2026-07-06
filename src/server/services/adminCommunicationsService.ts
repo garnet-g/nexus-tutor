@@ -23,6 +23,55 @@ export type AdminCommunicationSendInput = z.infer<
   typeof adminCommunicationSendSchema
 >;
 
+type SendBatchMetadata = {
+  templateKey: string;
+  studentIds: string[];
+  sent: number;
+  failed: number;
+  recipientCount: number;
+  completedAt?: string;
+};
+
+function isUniqueViolation(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code: string }).code === "23505"
+  );
+}
+
+function asSendBatchMetadata(value: unknown): SendBatchMetadata | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const data = value as Record<string, unknown>;
+  if (!Array.isArray(data.studentIds)) {
+    return null;
+  }
+  return {
+    templateKey: String(data.templateKey ?? ""),
+    studentIds: data.studentIds.map(String),
+    sent: Number(data.sent ?? 0),
+    failed: Number(data.failed ?? 0),
+    recipientCount: Number(data.recipientCount ?? data.studentIds.length),
+    completedAt:
+      typeof data.completedAt === "string" ? data.completedAt : undefined,
+  };
+}
+
+function sendResultFromMetadata(
+  metadata: SendBatchMetadata,
+  idempotentReplay: boolean,
+) {
+  return {
+    idempotentReplay,
+    sent: metadata.sent,
+    failed: metadata.failed,
+    recipientCount: metadata.recipientCount,
+  };
+}
+
 async function getActiveTemplate(templateKey: string) {
   const admin = createAdminClient();
   const { data, error } = await admin
@@ -54,6 +103,30 @@ async function resolveTargetStudentIds(studentIds?: string[]): Promise<string[]>
   return (data ?? []).map((row) => String(row.id));
 }
 
+async function loadExistingSendResult(
+  idempotencyKey: string,
+): Promise<ReturnType<typeof sendResultFromMetadata> | null> {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("admin_communication_logs")
+    .select("metadata, status")
+    .eq("idempotency_key", idempotencyKey)
+    .maybeSingle();
+  if (error) {
+    throw new Error(error.message);
+  }
+  if (!data) {
+    return null;
+  }
+
+  const metadata = asSendBatchMetadata(data.metadata);
+  if (!metadata) {
+    return null;
+  }
+
+  return sendResultFromMetadata(metadata, true);
+}
+
 export async function previewOperationalTemplateSend(
   input: AdminCommunicationPreviewInput,
 ): Promise<{ templateKey: string; channel: string; recipientCount: number }> {
@@ -80,32 +153,37 @@ export async function sendOperationalTemplate(input: {
   recipientCount: number;
 }> {
   const admin = createAdminClient();
-
-  const { data: existingLog } = await admin
-    .from("admin_communication_logs")
-    .select("id, status")
-    .eq("idempotency_key", input.send.idempotencyKey)
-    .maybeSingle();
-
-  if (existingLog) {
-    const { data: batchRows } = await admin
-      .from("admin_communication_logs")
-      .select("status")
-      .eq("idempotency_key", input.send.idempotencyKey);
-    const rows = batchRows ?? [];
-    const sent = rows.filter((row) => row.status === "sent" || row.status === "mocked").length;
-    const failed = rows.filter((row) => row.status === "failed").length;
-    return {
-      idempotentReplay: true,
-      sent,
-      failed,
-      recipientCount: rows.length,
-    };
-  }
-
   const template = await getActiveTemplate(input.send.templateKey);
   if (!template) {
     throw new Error("Template not found.");
+  }
+
+  const batchMetadata: SendBatchMetadata = {
+    templateKey: input.send.templateKey,
+    studentIds: input.send.studentIds,
+    sent: 0,
+    failed: 0,
+    recipientCount: input.send.studentIds.length,
+  };
+
+  const { error: claimError } = await admin.from("admin_communication_logs").insert({
+    template_id: template.id,
+    channel: template.channel,
+    message_body: template.body,
+    status: "queued",
+    idempotency_key: input.send.idempotencyKey,
+    created_by: input.actorUserId,
+    metadata: batchMetadata,
+  });
+
+  if (claimError) {
+    if (isUniqueViolation(claimError)) {
+      const existing = await loadExistingSendResult(input.send.idempotencyKey);
+      if (existing) {
+        return existing;
+      }
+    }
+    throw new Error(claimError.message);
   }
 
   let sent = 0;
@@ -119,40 +197,34 @@ export async function sendOperationalTemplate(input: {
         adminUserId: input.actorUserId,
       });
 
-      const status = result.ok ? "sent" : "failed";
       if (result.ok) {
         sent += 1;
       } else {
         failed += 1;
       }
-
-      await admin.from("admin_communication_logs").insert({
-        template_id: template.id,
-        channel: template.channel,
-        target_student_id: studentId,
-        message_body: template.body,
-        status,
-        idempotency_key: input.send.idempotencyKey,
-        created_by: input.actorUserId,
-      });
     } else {
-      await admin.from("admin_communication_logs").insert({
-        template_id: template.id,
-        channel: template.channel,
-        target_student_id: studentId,
-        message_body: template.body,
-        status: "mocked",
-        idempotency_key: input.send.idempotencyKey,
-        created_by: input.actorUserId,
-      });
       sent += 1;
     }
   }
 
-  return {
-    idempotentReplay: false,
+  const completedMetadata: SendBatchMetadata = {
+    ...batchMetadata,
     sent,
     failed,
-    recipientCount: input.send.studentIds.length,
+    completedAt: new Date().toISOString(),
   };
+
+  const { error: updateError } = await admin
+    .from("admin_communication_logs")
+    .update({
+      status: failed > 0 && sent === 0 ? "failed" : template.channel === "email" ? "mocked" : "sent",
+      metadata: completedMetadata,
+    })
+    .eq("idempotency_key", input.send.idempotencyKey);
+
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
+
+  return sendResultFromMetadata(completedMetadata, false);
 }
