@@ -5,9 +5,17 @@ import { randomBytes } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { getKcseMathRevisionHubForStudent } from "@/server/services/kcseMathRevisionService";
+import { getWeekStartDate } from "@/server/services/studentExperienceService";
 
 const INVITE_CODE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const WEAK_MASTERY_THRESHOLD = 60;
+
+export type ParentVisibleWeeklyGoal = {
+  targetMinutes: number;
+  targetTasks: number;
+  note: string | null;
+  weekStartDate: string;
+};
 
 export interface LinkedStudentOverview {
   studentId: string;
@@ -15,6 +23,7 @@ export interface LinkedStudentOverview {
   gradeLevel: string;
   curriculum: string;
   weeklyStudyMinutes: number;
+  weeklyGoal: ParentVisibleWeeklyGoal | null;
   healthScore: number | null;
   weakTopics: string[];
   mathReadinessScore: number | null;
@@ -199,6 +208,32 @@ export async function linkParentToStudent(
   };
 }
 
+export async function getParentVisibleWeeklyGoal(
+  studentId: string,
+): Promise<ParentVisibleWeeklyGoal | null> {
+  const admin = createAdminClient();
+  const weekStart = getWeekStartDate();
+
+  const { data, error } = await admin
+    .from("student_weekly_goals")
+    .select("target_minutes, target_tasks, note, week_start_date")
+    .eq("student_id", studentId)
+    .eq("week_start_date", weekStart)
+    .eq("parent_visible", true)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return {
+    targetMinutes: Number(data.target_minutes),
+    targetTasks: Number(data.target_tasks),
+    note: (data.note as string | null) ?? null,
+    weekStartDate: String(data.week_start_date),
+  };
+}
+
 async function getWeeklyStudyMinutes(studentId: string): Promise<number> {
   const admin = createAdminClient();
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
@@ -293,8 +328,9 @@ export async function getLinkedStudentsOverview(
     const gradeLevel = String((profile as { grade_level?: string }).grade_level ?? "");
     const curriculum = String((profile as { curriculum?: string }).curriculum ?? "");
 
-    const [weeklyStudyMinutes, healthScore, weakTopics, revisionHub] = await Promise.all([
+    const [weeklyStudyMinutes, weeklyGoal, healthScore, weakTopics, revisionHub] = await Promise.all([
       getWeeklyStudyMinutes(studentId),
+      getParentVisibleWeeklyGoal(studentId),
       getLatestHealthScore(studentId),
       getWeakTopics(studentId),
       getKcseMathRevisionHubForStudent({
@@ -311,6 +347,7 @@ export async function getLinkedStudentsOverview(
       gradeLevel,
       curriculum,
       weeklyStudyMinutes,
+      weeklyGoal,
       healthScore,
       weakTopics,
       mathReadinessScore: revisionHub?.readiness.score ?? null,

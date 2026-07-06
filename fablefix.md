@@ -193,3 +193,12 @@ Started: 2026-07-06T10:30:00+03:00
 
 ### Auth-track coordination (F3 API routes)
 - **Note for merge with `codex/auth-account-hardening`:** This track added two API routes (`/api/students/search`, `/api/admin/content/concept-references/publish`) reflected in `tests/auth/role-matrix.contract.json` (API count 74→76) and `tests/auth/roleMatrix.test.ts`. Reconcile with auth track's contract if it also touched the matrix — no functional auth code changed here.
+
+---
+
+## Phase F4 — Parent, family, notifications (in progress)
+
+### PR-037 — Parent-visible weekly goal on dashboard
+- **Status:** IN_PROGRESS
+- **What was done:** `getParentVisibleWeeklyGoal` in `parentLinkService.ts` filters `parent_visible = true` for current week; `ParentDashboard` renders shared goal card for linked students only when visible.
+- **Acceptance evidence:** `tests/parent/parentWeeklyGoal.test.ts`; RLS policy `student_weekly_goals_parent_linked` already enforces link + visibility at DB layer.

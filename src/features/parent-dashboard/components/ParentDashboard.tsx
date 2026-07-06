@@ -144,6 +144,24 @@ export function ParentDashboard({ linkedStudents }: ParentDashboardProps) {
                 </div>
               </dl>
 
+              {student.weeklyGoal ? (
+                <div className="mt-4 rounded-xl border border-border bg-muted/30 p-4">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Weekly goal (shared by student)
+                  </p>
+                  <p className="mt-1 text-sm text-foreground">
+                    {student.weeklyGoal.targetMinutes} study minutes and{" "}
+                    {student.weeklyGoal.targetTasks} tasks this week.
+                  </p>
+                  {student.weeklyGoal.note ? (
+                    <p className="mt-2 text-sm text-muted-foreground">{student.weeklyGoal.note}</p>
+                  ) : null}
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Logged study so far: {student.weeklyStudyMinutes} min
+                  </p>
+                </div>
+              ) : null}
+
               <div className="mt-4 rounded-xl border border-border bg-muted/40 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
