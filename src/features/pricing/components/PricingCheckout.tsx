@@ -53,6 +53,7 @@ export function PricingCheckout({
   const [phoneNumber, setPhoneNumber] = useState("+254");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [checkoutRecoverable, setCheckoutRecoverable] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [isResumingPayment, setIsResumingPayment] = useState(false);
@@ -149,10 +150,39 @@ export function PricingCheckout({
     }, POLL_INTERVAL_MS);
   }
 
+  function clearCheckoutFeedback() {
+    setError(null);
+    setCheckoutRecoverable(false);
+    setSuccess(null);
+  }
+
+  function setCheckoutFailure(message: string, options?: { recoverable?: boolean; code?: string }) {
+    const recoverable =
+      options?.recoverable ??
+      (options?.code === "MPESA_PAYMENT_FAILED" ||
+        options?.code === "RATE_LIMITED");
+
+    if (recoverable) {
+      if (options?.code === "MPESA_PAYMENT_FAILED") {
+        setError(
+          "M-Pesa is temporarily unavailable. No charge was made — you can try again.",
+        );
+      } else if (options?.code === "RATE_LIMITED") {
+        setError(message);
+      } else {
+        setError(message);
+      }
+      setCheckoutRecoverable(true);
+      return;
+    }
+
+    setError(message);
+    setCheckoutRecoverable(false);
+  }
+
   async function handleStartTrial() {
     setIsSubmitting(true);
-    setError(null);
-    setSuccess(null);
+    clearCheckoutFeedback();
 
     try {
       const response = await fetch("/api/subscriptions/trial", {
@@ -182,9 +212,9 @@ export function PricingCheckout({
   async function handleCheckout(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
-    setError(null);
-    setSuccess(null);
+    clearCheckoutFeedback();
     setPaymentStatus(null);
+    setIsResumingPayment(false);
     stopPolling();
 
     let pollingStarted = false;
@@ -202,11 +232,18 @@ export function PricingCheckout({
       const payload = (await response.json()) as {
         success: boolean;
         data?: { mpesaPaymentId: string; amountKes: number; expiresAt: string };
-        error?: { message: string };
+        error?: { code?: string; message: string };
       };
 
       if (!response.ok || !payload.success || !payload.data?.mpesaPaymentId) {
-        setError(payload.error?.message ?? "Payment could not be initiated.");
+        setCheckoutFailure(payload.error?.message ?? "Payment could not be initiated.", {
+          code: payload.error?.code,
+          recoverable:
+            response.status === 502 ||
+            response.status === 429 ||
+            payload.error?.code === "MPESA_PAYMENT_FAILED" ||
+            payload.error?.code === "RATE_LIMITED",
+        });
         return;
       }
 
@@ -215,7 +252,10 @@ export function PricingCheckout({
       startPolling(payload.data.mpesaPaymentId);
       pollingStarted = true;
     } catch {
-      setError("Network error. Please try again.");
+      setCheckoutFailure(
+        "Network error while reaching M-Pesa. No charge was made — you can try again.",
+        { recoverable: true },
+      );
     } finally {
       if (!pollingStarted) {
         setIsSubmitting(false);
@@ -305,7 +345,11 @@ export function PricingCheckout({
             />
           </label>
           {error ? (
-            <p className="text-sm text-nexus-danger" role="alert">
+            <p
+              className="text-sm text-nexus-danger"
+              role="alert"
+              data-testid={checkoutRecoverable ? "checkout-provider-error" : undefined}
+            >
               {error}
             </p>
           ) : null}
