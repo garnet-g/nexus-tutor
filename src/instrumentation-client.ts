@@ -5,9 +5,9 @@ const release =
   process.env.VERCEL_GIT_COMMIT_SHA ??
   process.env.npm_package_version;
 
-if (process.env.SENTRY_DSN) {
+if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
-    dsn: process.env.SENTRY_DSN,
+    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
     tracesSampleRate: 0.1,
     environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
     release,
@@ -21,3 +21,5 @@ if (process.env.SENTRY_DSN) {
     },
   });
 }
+
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

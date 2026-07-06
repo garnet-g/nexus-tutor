@@ -8,7 +8,8 @@ export async function register() {
     }
   }
 
-  if (!process.env.SENTRY_DSN) {
+  const dsn = process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN;
+  if (!dsn) {
     return;
   }
 
@@ -34,7 +35,7 @@ export async function onRequestError(
     routeType: "render" | "route" | "action" | "middleware";
   },
 ) {
-  if (!process.env.SENTRY_DSN) {
+  if (!process.env.SENTRY_DSN && !process.env.NEXT_PUBLIC_SENTRY_DSN) {
     return;
   }
 
