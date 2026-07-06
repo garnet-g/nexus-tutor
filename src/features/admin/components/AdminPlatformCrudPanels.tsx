@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+
+import { buildSavedViewHref } from "@/lib/admin/savedViews";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -488,7 +490,7 @@ export function AdminSavedViewsPanel({
       <Panel title="Saved views" description={`${views.length} saved admin view${views.length === 1 ? "" : "s"}`}>
         <div className="grid gap-3 md:grid-cols-2">
           {views.length === 0 ? <p className="text-sm text-muted-foreground">No saved views yet.</p> : views.map((view) => (
-            <Link key={view.id} href={view.route} className="rounded-xl border border-nexus-border bg-nexus-sunken p-4 transition-colors hover:border-primary/60">
+            <Link key={view.id} href={buildSavedViewHref(view)} className="rounded-xl border border-nexus-border bg-nexus-sunken p-4 transition-colors hover:border-primary/60">
               <div className="flex items-start justify-between gap-3">
                 <div><p className="font-medium text-foreground">{view.title}</p><p className="text-xs text-muted-foreground">{view.viewKey}</p></div>
                 <StatusBadge tone={view.isShared ? "info" : "neutral"}>{view.isShared ? "shared" : "private"}</StatusBadge>
