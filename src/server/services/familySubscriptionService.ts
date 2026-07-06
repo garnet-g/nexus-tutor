@@ -136,3 +136,93 @@ export async function getFamilyGroupMembers(studentId: string): Promise<
     })) ?? []
   );
 }
+
+export async function reclaimFamilyGroupOnLapse(
+  studentSubscriptionId: string,
+): Promise<{ reclaimed: boolean; removedMembers: number }> {
+  const admin = createAdminClient();
+  const { data, error } = await admin.rpc("reclaim_family_group_on_lapse", {
+    p_student_subscription_id: studentSubscriptionId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const result = (data ?? {}) as Record<string, unknown>;
+
+  return {
+    reclaimed: Boolean(result.reclaimed),
+    removedMembers:
+      typeof result.removed_members === "number" ? result.removed_members : 0,
+  };
+}
+
+export async function reactivateFamilyGroupOnResubscribe(input: {
+  studentSubscriptionId: string;
+  ownerStudentId: string;
+}): Promise<{ familyGroupId: string; inviteCode: string }> {
+  const admin = createAdminClient();
+  const config = await getEffectiveSubscriptionConfig();
+
+  const { data, error } = await admin.rpc("reactivate_family_group_on_resubscribe", {
+    p_student_subscription_id: input.studentSubscriptionId,
+    p_owner_student_id: input.ownerStudentId,
+    p_max_seats: config.limits.familyMaxStudents,
+  });
+
+  if (error || !data || typeof data !== "object") {
+    throw new Error(error?.message ?? "Could not reactivate family group");
+  }
+
+  const result = data as Record<string, unknown>;
+
+  return {
+    familyGroupId: String(result.family_group_id),
+    inviteCode: String(result.invite_code),
+  };
+}
+
+export async function processExpiredFamilySubscriptions(): Promise<{
+  processed: number;
+  reclaimed: number;
+  removedMembers: number;
+}> {
+  const admin = createAdminClient();
+
+  const { data: expiredFamilySubs, error } = await admin
+    .from("student_subscriptions")
+    .select("id, student_id, subscription_plans(plan_code)")
+    .in("subscription_status", ["expired", "cancelled", "past_due"])
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  let processed = 0;
+  let reclaimed = 0;
+  let removedMembers = 0;
+
+  for (const row of expiredFamilySubs ?? []) {
+    const planCode =
+      row.subscription_plans &&
+      typeof row.subscription_plans === "object" &&
+      "plan_code" in row.subscription_plans
+        ? String((row.subscription_plans as { plan_code?: string }).plan_code ?? "")
+        : "";
+
+    if (planCode !== "family") {
+      continue;
+    }
+
+    processed += 1;
+    const result = await reclaimFamilyGroupOnLapse(row.id);
+    if (result.reclaimed) {
+      reclaimed += 1;
+      removedMembers += result.removedMembers;
+    }
+  }
+
+  return { processed, reclaimed, removedMembers };
+}
