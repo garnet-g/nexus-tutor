@@ -35,6 +35,15 @@ export default async function AdminReportsPage() {
                   <p className="mt-2 font-mono text-xs text-muted-foreground">export:{report.exportKey}</p>
                 </div>
                 <Button render={<Link href={report.href} />} variant="outline" size="sm">Open</Button>
+                <Button
+                  render={
+                    <Link href={`/api/admin/reports/export?key=${report.exportKey}`} />
+                  }
+                  variant="outline"
+                  size="sm"
+                >
+                  Download CSV
+                </Button>
               </div>
             </div>
           ))}

@@ -60,7 +60,8 @@ export type AdminAuditAction =
   | "admin_experiment.create"
   | "admin_saved_view.create"
   | "admin_approval.create"
-  | "admin_approval.update";
+  | "admin_approval.update"
+  | "admin_report_export";
 
 /** Mutations that must abort when audit persistence fails (DEC-009 assumption A). */
 export const CRITICAL_ADMIN_AUDIT_ACTIONS = new Set<AdminAuditAction>([

@@ -291,7 +291,7 @@ Started: 2026-07-06T10:30:00+03:00
   6. Member entitlements — **not auto-restored**; former members regain family plan only via `POST /api/family/join` → `join_family_group` RPC (`familySubscriptionService.ts:87`) which updates `student_subscriptions` per member
 - **Product decision (explicit):** **Must-rejoin** — resubscribe reactivates the owner's group and preserves invite code, but removed members do **not** auto-restore; they must submit the invite code again. Rationale: lapse is treated as consent reset for linked students.
 - **Acceptance evidence:** `tests/family/familyResubscribePaymentPath.test.ts` (payment activation reactivates owner group); `tests/family/familyLifecycle.test.ts` (member rejoin after payment path).
-- **Commit:** _(pending)_
+- **Commit:** 70d3250 fix(PR-134): wire family reactivation into M-Pesa payment activation path
 
 ## Phase F4 gate status
 - **Status:** DONE_VERIFIED — all ledger items PR-037 through PR-134 complete for Phase 08 family/notifications scope.
@@ -300,3 +300,12 @@ Started: 2026-07-06T10:30:00+03:00
 - **tests:** 612 passed (626 total)
 - **build:** green
 - **Role matrix:** 83 API routes, 70 pages
+
+## Phase F5 — Admin operational workflows
+
+### PR-066 + PR-126 — Reports CSV export + formula escaping
+- **Status:** DONE_VERIFIED
+- **What was done:** `GET /api/admin/reports/export?key=` returns CSV attachment; `escapeCsvCell` in `src/lib/admin/csvExport.ts` prefixes `=`, `+`, `-`, `@`; `buildAdminReportCsv` in `adminReportExportService.ts`; Download CSV buttons on `/admin/reports`.
+- **Tracer chain:** UI `src/app/(super-admin)/admin/reports/page.tsx:38` → `GET /api/admin/reports/export` (`route.ts:15`) → `buildAdminReportCsv` → `recordAdminAudit` (`admin_report_export`).
+- **Acceptance evidence:** `tests/admin/adminReportCsvExport.test.ts`, `tests/admin/adminReportExportRoute.test.ts`.
+- **Commit:** (pending)

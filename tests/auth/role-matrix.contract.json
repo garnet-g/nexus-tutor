@@ -386,6 +386,14 @@
     ]
   },
   {
+    "path": "/api/admin/reports/export",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/reports/export/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
     "path": "/api/admin/beta-invites",
     "tier": "admin",
     "filePath": "src/app/api/admin/beta-invites/route.ts",
