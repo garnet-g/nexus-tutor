@@ -308,4 +308,42 @@ Started: 2026-07-06T10:30:00+03:00
 - **What was done:** `GET /api/admin/reports/export?key=` returns CSV attachment; `escapeCsvCell` in `src/lib/admin/csvExport.ts` prefixes `=`, `+`, `-`, `@`; `buildAdminReportCsv` in `adminReportExportService.ts`; Download CSV buttons on `/admin/reports`.
 - **Tracer chain:** UI `src/app/(super-admin)/admin/reports/page.tsx:38` → `GET /api/admin/reports/export` (`route.ts:15`) → `buildAdminReportCsv` → `recordAdminAudit` (`admin_report_export`).
 - **Acceptance evidence:** `tests/admin/adminReportCsvExport.test.ts`, `tests/admin/adminReportExportRoute.test.ts`.
+- **Commit:** 9d0d753
+
+### PR-069 + PR-070 + PR-125 — Bulk action executor + four-eyes approval
+- **Status:** DONE_VERIFIED
+- **Tracer chain:** `POST /api/admin/approvals` (create) → second admin `PATCH` approve (`approvals/route.ts`) → `POST /api/admin/bulk-actions/execute` → `executeApprovedBulkAction` → `admin_bulk_action.execute` audit.
+- **Four-eyes:** requester `PATCH` approve on `bulk_*` request types ⇒ `403 FOUR_EYES_VIOLATION`.
+- **Acceptance evidence:** `tests/admin/bulkActionsFourEyes.test.ts`
+- **Commit:** b10a6b6
+
+### PR-067 — Communications (DEC-013 option B: templates + operational send)
+- **Status:** DONE_VERIFIED
+- **Decision:** DEC-013 **option B** — UI remains templates/logs; added controlled `POST /api/admin/communications/send` with `mode=preview` recipient count + idempotent send (`idempotencyKey` on logs). Not a full campaign builder.
+- **Tracer chain:** `/admin/communications` → `POST /api/admin/communications/send` → `sendOperationalTemplate` → `admin_communication_logs` + `admin_communication.send` audit.
 - **Commit:** (pending)
+
+### PR-068 — Experiment assignment + rollout precedence
+- **Status:** DONE_VERIFIED
+- **What was done:** `adminExperimentsService` deterministic variant + `admin_experiment_exposures`; `POST /api/admin/experiments/assign`; `isExperimentFeatureEnabled` evaluates rollout before experiment (DEC-001).
+- **Acceptance evidence:** `tests/admin/adminExperimentsService.test.ts`, `tests/admin/adminExperimentsRolloutPrecedence.test.ts`
+- **Commit:** (pending)
+
+### PR-071 — Saved views reapply filters
+- **Status:** DONE_VERIFIED
+- **What was done:** `buildSavedViewHref` appends saved `filters` as query string; saved view cards link with filters (e.g. `/admin/payments?status=failed`).
+- **Acceptance evidence:** `tests/admin/savedViewsApply.test.ts`
+- **Commit:** (pending)
+
+### PR-072 — Admin entity search with role filter
+- **Status:** DONE_VERIFIED
+- **What was done:** `GET /api/admin/search?q=` + `/admin/search` form; `searchAdminEntities` filters indexed types for `support` role.
+- **Commit:** (pending)
+
+### PR-073 — Content calendar review dates
+- **Status:** DONE_VERIFIED
+- **What was done:** `getContentCalendarDashboard` filters `dueThisWeek` by `submittedAt` within current UTC week from review queue.
+- **Commit:** (pending)
+
+## Phase F5 gate status
+- **Status:** IN_PROGRESS
