@@ -16,7 +16,7 @@ const NAV_LINKS = [
 
 export function PublicShell({ children }: PublicShellProps) {
   return (
-    <div className="nexus-grain flex min-h-full flex-col overflow-x-hidden bg-background">
+    <div className="nexus-grain flex min-h-full flex-col overflow-x-clip bg-background">
       <header className="sticky top-0 z-20 border-b border-border/80 bg-card/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
