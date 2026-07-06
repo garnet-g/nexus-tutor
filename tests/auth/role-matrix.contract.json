@@ -729,6 +729,15 @@
     ]
   },
   {
+    "path": "/api/cron/data-retention",
+    "tier": "cron_secret",
+    "filePath": "src/app/api/cron/data-retention/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
     "path": "/api/diagnostic-assessments/[id]/start",
     "tier": "student",
     "filePath": "src/app/api/diagnostic-assessments/[id]/start/route.ts",
