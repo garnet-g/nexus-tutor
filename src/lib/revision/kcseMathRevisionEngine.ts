@@ -134,7 +134,7 @@ function descriptionFromReadiness(
     return "Focus on weak-topic repair before timed KCSE practice.";
   }
   if (label === "Exam ready") {
-    return "You are ready for timed KCSE-style practice and past-paper pacing.";
+    return "You are ready for timed KCSE-style practice and exam-style pacing.";
   }
   return "You are building toward exam-ready work.";
 }
