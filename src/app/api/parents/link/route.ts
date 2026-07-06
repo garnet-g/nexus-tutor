@@ -71,6 +71,7 @@ export async function POST(request: Request) {
 
     await sendParentLinkSuccessNotification({
       parentId: parentProfile.id,
+      studentId: linkResult.studentId,
       parentPhone: parentProfile.phone_number,
       studentName: linkResult.studentName,
     });

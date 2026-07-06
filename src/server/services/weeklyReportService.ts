@@ -149,6 +149,8 @@ export async function generateWeeklyReportForLink(input: {
   if (isPremiumLinked && parentProfile.data?.email) {
     await sendWeeklyParentReportEmail({
       parentId: input.parentId,
+      studentId: input.studentId,
+      weekStart,
       recipientEmail: parentProfile.data.email,
       studentName,
       studyMinutes,

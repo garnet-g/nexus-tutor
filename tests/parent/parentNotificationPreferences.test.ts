@@ -89,6 +89,47 @@ vi.mock("@/lib/supabase/server", () => ({
   })),
 }));
 
+vi.mock("@/server/services/notificationOutboxService", () => ({
+  enqueueAndTrySendNotification: vi.fn(
+    async (input: {
+      payload:
+        | {
+            type: "email";
+            recipientEmail: string;
+            emailSubject: string;
+            emailBody: string;
+            templateCode?: string;
+          }
+        | {
+            type: "sms";
+            phoneNumber: string;
+            smsBody: string;
+            templateCode?: string;
+            parentId?: string;
+          };
+    }) => {
+      if (input.payload.type === "email") {
+        const { sendResendEmail } = await import("@/lib/resend/resendClient");
+        await sendResendEmail({
+          recipientEmail: input.payload.recipientEmail,
+          emailSubject: input.payload.emailSubject,
+          emailBody: input.payload.emailBody,
+          templateCode: input.payload.templateCode,
+        });
+        return;
+      }
+
+      const { sendCelcomSms } = await import("@/lib/celcom/celcomClient");
+      await sendCelcomSms({
+        phoneNumber: input.payload.phoneNumber,
+        smsBody: input.payload.smsBody,
+        templateCode: input.payload.templateCode,
+        parentId: input.payload.parentId,
+      });
+    },
+  ),
+}));
+
 vi.mock("@/lib/supabase/admin", () => ({
   createAdminClient: vi.fn(() => ({
     from: () => {
@@ -145,6 +186,7 @@ describe("PR-061 parent notification preferences", () => {
 
     await sendParentLinkSuccessNotification({
       parentId: PARENT_A,
+      studentId: "student-a",
       parentPhone: "+254700000001",
       studentName: "Student A",
     });
@@ -167,6 +209,8 @@ describe("PR-061 parent notification preferences", () => {
 
     await sendWeeklyParentReportEmail({
       parentId: PARENT_A,
+      studentId: "student-a",
+      weekStart: "2026-07-01",
       recipientEmail: "parent@example.com",
       studentName: "Student A",
       studyMinutes: 120,
@@ -192,6 +236,8 @@ describe("PR-061 parent notification preferences", () => {
 
     await sendWeeklyParentReportEmail({
       parentId: PARENT_A,
+      studentId: "student-a",
+      weekStart: "2026-07-01",
       recipientEmail: "parent@example.com",
       studentName: "Student A",
       studyMinutes: 120,

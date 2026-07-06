@@ -3,6 +3,7 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendCelcomSms } from "@/lib/celcom/celcomClient";
 import { sendResendEmail } from "@/lib/resend/resendClient";
+import { enqueueAndTrySendNotification } from "@/server/services/notificationOutboxService";
 import { isParentNotificationEnabled } from "@/server/services/parentPreferencesService";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
@@ -53,6 +54,7 @@ async function loadEmailTemplate(
 
 export async function sendParentLinkSuccessNotification(input: {
   parentId: string;
+  studentId: string;
   parentPhone: string | null;
   studentName: string;
 }): Promise<void> {
@@ -75,11 +77,16 @@ export async function sendParentLinkSuccessNotification(input: {
         })
       : `Nexus: You are now linked to ${input.studentName}'s progress. View dashboard: ${APP_URL}/parent`;
 
-  await sendCelcomSms({
-    phoneNumber: input.parentPhone,
-    smsBody,
-    templateCode: "parent_link_success",
-    parentId: input.parentId,
+  await enqueueAndTrySendNotification({
+    idempotencyKey: `parent_link_sms:${input.parentId}:${input.studentId}`,
+    channel: "sms",
+    payload: {
+      type: "sms",
+      phoneNumber: input.parentPhone,
+      smsBody,
+      templateCode: "parent_link_success",
+      parentId: input.parentId,
+    },
   });
 }
 
@@ -236,6 +243,8 @@ export async function sendWeeklyStreakNotification(input: {
 
 export async function sendWeeklyParentReportEmail(input: {
   parentId: string;
+  studentId: string;
+  weekStart: string;
   recipientEmail: string;
   studentName: string;
   studyMinutes: number;
@@ -267,11 +276,17 @@ export async function sendWeeklyParentReportEmail(input: {
         })
       : `Study time: ${input.studyMinutes} min. Health score: ${Math.round(input.healthScore)}%.`;
 
-  await sendResendEmail({
-    recipientEmail: input.recipientEmail,
-    emailSubject: subject,
-    emailBody: body,
-    templateCode: "weekly_parent_report",
+  await enqueueAndTrySendNotification({
+    idempotencyKey: `weekly_report_email:${input.parentId}:${input.studentId}:${input.weekStart}`,
+    channel: "email",
+    payload: {
+      type: "email",
+      recipientEmail: input.recipientEmail,
+      emailSubject: subject,
+      emailBody: body,
+      templateCode: "weekly_parent_report",
+      parentId: input.parentId,
+    },
   });
 }
 

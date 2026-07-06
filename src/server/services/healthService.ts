@@ -6,6 +6,7 @@ import type {
   AdminHealthPresentationStatus,
   ProbeStatus,
 } from "@/lib/health/types";
+import { getNotificationOutboxHealthItem } from "@/server/services/notificationOutboxService";
 
 function mapProbeToPresentationStatus(
   status: ProbeStatus,
@@ -26,10 +27,14 @@ export async function getDeploymentHealthSummary(options?: {
 }): Promise<AdminHealthPresentationItem[]> {
   const probes = await runHealthProbes(options);
 
-  return probes.map((probe) => ({
+  const probeItems = probes.map((probe) => ({
     name: probe.name,
     status: mapProbeToPresentationStatus(probe.status),
     detail: probe.detail,
     probeStatus: probe.status,
   }));
+
+  const outboxHealth = await getNotificationOutboxHealthItem();
+
+  return [...probeItems, outboxHealth];
 }

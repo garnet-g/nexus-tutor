@@ -229,7 +229,14 @@ Started: 2026-07-06T10:30:00+03:00
 - **What was done:** `parent_notification_preferences` table with RLS (migration in PR-060); `GET/PATCH /api/parents/notification-preferences`; `ParentNotificationPreferencesForm` on settings page; `isParentNotificationEnabled` gates `sendParentLinkSuccessNotification` (SMS/link_updates) and `sendWeeklyParentReportEmail` (email/weekly_report).
 - **Acceptance evidence:** `tests/parent/parentNotificationPreferences.test.ts` — disabled `link_updates` ⇒ no Celcom SMS; disabled `weekly_report` ⇒ no Resend email; enabled weekly report sends once.
 - **Assumptions made:** Default-all-true when no preference row exists (opt-out model). Outbox work (PR-129+) will reuse this preference model for suppression tests.
-- **Commit:** _(pending)_
+- **Commit:** 04beb89 fix(PR-061): parent notification preferences with send suppression
 
 ### Auth track seam (account identity)
 - Parent settings and notification prefs are **product-layer only**. Account email, password, and `account_deletion_requests` belong to the fenced auth track — do not implement here.
+
+### PR-129 + PR-130 — Notification outbox state machine (retry + DLQ)
+- **Status:** DONE_VERIFIED
+- **What was done:** `notification_outbox` table with unified state machine (`pending` → `retry_scheduled` → `sent` | `dead_letter`); `notificationOutboxService.ts` with idempotency keys, bounded backoff (30s→1h), `enqueueAndTrySendNotification`, `processNotificationOutboxBatch`; parent link SMS + weekly report email routed through outbox; `GET/POST /api/cron/notification-outbox`; DLQ count on `/admin/health` via `getNotificationOutboxHealthItem`.
+- **Acceptance evidence:** `tests/parent/notificationRetry.test.ts` — duplicate idempotency key ⇒ one row; provider failure ⇒ 5 attempts then `dead_letter`; successful send ⇒ no duplicate dispatch; DLQ surfaces in health summary.
+- **Assumptions made:** `max_attempts=5` with backoff `[30s, 2m, 10m, 30m, 1h]`; immediate send attempt on enqueue via `enqueueAndTrySendNotification`; cron drains retry-scheduled rows.
+- **Commit:** c024672 fix(PR-129,PR-130): notification outbox retry state machine and DLQ health
