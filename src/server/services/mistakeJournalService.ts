@@ -36,6 +36,74 @@ function formatStoredAnswer(value: unknown): string | null {
   }
 }
 
+function isUniqueViolation(error: { code?: string; message?: string }): boolean {
+  return error.code === "23505" || Boolean(error.message?.includes("duplicate key"));
+}
+
+function buildMistakeRowPayload(
+  studentId: string,
+  input: MistakeJournalUpsertInput,
+  status: "open" | "retried" | "mastered" = "open",
+) {
+  return {
+    student_id: studentId,
+    question_id: input.questionId ?? null,
+    topic_id: input.topicId ?? null,
+    question_text: input.questionText,
+    chosen_answer: input.chosenAnswer ?? null,
+    correct_answer: input.correctAnswer ?? null,
+    explanation: input.explanation ?? null,
+    source: input.source,
+    status,
+  };
+}
+
+async function updateMistakeByQuestionId(
+  studentId: string,
+  input: MistakeJournalUpsertInput,
+) {
+  const admin = createAdminClient();
+  const { data: existing, error: lookupError } = await admin
+    .from("student_mistake_journal")
+    .select("id, status")
+    .eq("student_id", studentId)
+    .eq("question_id", input.questionId!)
+    .maybeSingle();
+
+  if (lookupError) {
+    throw new Error(lookupError.message);
+  }
+
+  if (!existing) {
+    throw new Error("Could not resolve duplicate mistake journal row.");
+  }
+
+  const nextStatus =
+    existing.status === "mastered" ? "open" : (existing.status as string);
+
+  const { data, error } = await admin
+    .from("student_mistake_journal")
+    .update({
+      topic_id: input.topicId ?? null,
+      question_text: input.questionText,
+      chosen_answer: input.chosenAnswer ?? null,
+      correct_answer: input.correctAnswer ?? null,
+      explanation: input.explanation ?? null,
+      source: input.source,
+      status: nextStatus,
+    })
+    .eq("id", existing.id)
+    .eq("student_id", studentId)
+    .select("*")
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message ?? "Could not update mistake.");
+  }
+
+  return mapMistakeRow(data as Record<string, unknown>);
+}
+
 function mapMistakeRow(row: Record<string, unknown>) {
   return {
     id: String(row.id),
@@ -59,63 +127,42 @@ export async function upsertMistakeJournalEntry(
   const admin = createAdminClient();
 
   if (input.questionId) {
-    const { data: existing, error: lookupError } = await admin
+    const { data, error } = await admin
       .from("student_mistake_journal")
-      .select("id, status")
-      .eq("student_id", studentId)
-      .eq("question_id", input.questionId)
-      .maybeSingle();
+      .upsert(buildMistakeRowPayload(studentId, input), {
+        onConflict: "student_id,question_id",
+      })
+      .select("*")
+      .single();
 
-    if (lookupError) {
-      throw new Error(lookupError.message);
+    if (!error && data) {
+      return mapMistakeRow(data as Record<string, unknown>);
     }
 
-    if (existing) {
-      const nextStatus =
-        existing.status === "mastered" ? "open" : (existing.status as string);
+    if (error && isUniqueViolation(error)) {
+      return updateMistakeByQuestionId(studentId, input);
+    }
 
-      const { data, error } = await admin
-        .from("student_mistake_journal")
-        .update({
-          topic_id: input.topicId ?? null,
-          question_text: input.questionText,
-          chosen_answer: input.chosenAnswer ?? null,
-          correct_answer: input.correctAnswer ?? null,
-          explanation: input.explanation ?? null,
-          source: input.source,
-          status: nextStatus,
-        })
-        .eq("id", existing.id)
-        .eq("student_id", studentId)
-        .select("*")
-        .single();
-
-      if (error || !data) {
-        throw new Error(error?.message ?? "Could not update mistake.");
-      }
-
-      return mapMistakeRow(data as Record<string, unknown>);
+    if (error) {
+      throw new Error(error.message);
     }
   }
 
   const { data, error } = await admin
     .from("student_mistake_journal")
-    .insert({
-      student_id: studentId,
-      question_id: input.questionId ?? null,
-      topic_id: input.topicId ?? null,
-      question_text: input.questionText,
-      chosen_answer: input.chosenAnswer ?? null,
-      correct_answer: input.correctAnswer ?? null,
-      explanation: input.explanation ?? null,
-      source: input.source,
-      status: "open",
-    })
+    .insert(buildMistakeRowPayload(studentId, input))
     .select("*")
     .single();
 
-  if (error || !data) {
-    throw new Error(error?.message ?? "Could not save mistake.");
+  if (error) {
+    if (input.questionId && isUniqueViolation(error)) {
+      return updateMistakeByQuestionId(studentId, input);
+    }
+    throw new Error(error.message ?? "Could not save mistake.");
+  }
+
+  if (!data) {
+    throw new Error("Could not save mistake.");
   }
 
   return mapMistakeRow(data as Record<string, unknown>);
@@ -200,4 +247,39 @@ export async function recordMockExamMistakes(
       source: "mock_exam",
     });
   }
+}
+
+export async function recordPracticeSessionMistakesNonFatal(
+  studentId: string,
+  sessionId: string,
+): Promise<void> {
+  await recordPracticeSessionMistakes(studentId, sessionId).catch((error) => {
+    console.error("MISTAKE_JOURNAL_WRITE_FAILED", {
+      studentId,
+      sessionId,
+      error,
+    });
+  });
+}
+
+export async function recordMockExamMistakesNonFatal(
+  studentId: string,
+  mockExamSessionId: string,
+  questions: Array<{
+    id: string;
+    topic_id: string;
+    practice_question_id: string | null;
+    question_text: string;
+    correct_answer: unknown;
+    explanation: string | null;
+  }>,
+  marked: MarkedAnswer[],
+): Promise<void> {
+  await recordMockExamMistakes(studentId, questions, marked).catch((error) => {
+    console.error("MISTAKE_JOURNAL_WRITE_FAILED", {
+      studentId,
+      mockExamSessionId,
+      error,
+    });
+  });
 }

@@ -45,7 +45,7 @@ function toOptionStrings(value: unknown): string[] | null {
 import type { MockExamStyle } from "@/schemas/mockExamSchemas";
 import { studentHasMockExamAccess } from "@/schemas/mockExamSchemas";
 import { getStudentPlanCode } from "@/server/services/nexUsageService";
-import { recordMockExamMistakes } from "@/server/services/mistakeJournalService";
+import { recordMockExamMistakesNonFatal } from "@/server/services/mistakeJournalService";
 
 async function loadPracticePool(
   curriculum: string,
@@ -396,8 +396,9 @@ export async function submitMockExamSession(
 
   await applyMockExamProgressUpdates(profile, scored.marked);
 
-  await recordMockExamMistakes(
+  await recordMockExamMistakesNonFatal(
     profile.id,
+    mockExamSessionId,
     questions.map((question) => ({
       id: question.id,
       topic_id: question.topic_id,
