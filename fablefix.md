@@ -199,6 +199,7 @@ Started: 2026-07-06T10:30:00+03:00
 ## Phase F4 — Parent, family, notifications (in progress)
 
 ### PR-037 — Parent-visible weekly goal on dashboard
-- **Status:** IN_PROGRESS
+- **Status:** DONE_VERIFIED
 - **What was done:** `getParentVisibleWeeklyGoal` in `parentLinkService.ts` filters `parent_visible = true` for current week; `ParentDashboard` renders shared goal card for linked students only when visible.
 - **Acceptance evidence:** `tests/parent/parentWeeklyGoal.test.ts`; RLS policy `student_weekly_goals_parent_linked` already enforces link + visibility at DB layer.
+- **Commit:** c612e45 fix(PR-037): show parent-visible weekly goals on linked student dashboard
