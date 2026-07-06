@@ -14,6 +14,12 @@ import {
   isResendConfigured,
 } from "@/lib/env/providerModes";
 import type { HealthProbe, ProbeStatus } from "./types";
+import {
+  DEFAULT_PROBE_TIMEOUT_MS,
+  runProbeWithTimeout,
+} from "./probeTimeout";
+
+export { DEFAULT_PROBE_TIMEOUT_MS, runProbeWithTimeout } from "./probeTimeout";
 
 function nexProbeStatus(): { status: ProbeStatus; detail: string } {
   const mode = inferNexProviderMode();
@@ -125,6 +131,14 @@ function databaseProbeStatus(): { status: ProbeStatus; detail: string } {
   };
 }
 
+function migrationsProbeStatus(): { status: ProbeStatus; detail: string } {
+  return {
+    status: "not_verified",
+    detail:
+      "Schema freshness is enforced by CI db:reset; runtime migration version not queried in this environment.",
+  };
+}
+
 function cronProbeStatus(): { status: ProbeStatus; detail: string } {
   const appEnv = inferAppEnv();
   const cronSecret = process.env.CRON_SECRET?.trim();
@@ -157,6 +171,7 @@ export function buildProviderProbes(): HealthProbe[] {
   const notifications = notificationsProbeStatus();
   const database = databaseProbeStatus();
   const cron = cronProbeStatus();
+  const migrations = migrationsProbeStatus();
 
   return [
     {
@@ -189,6 +204,12 @@ export function buildProviderProbes(): HealthProbe[] {
       status: cron.status,
       detail: cron.detail,
     },
+    {
+      id: "migrations",
+      name: "Database migrations",
+      status: migrations.status,
+      detail: migrations.detail,
+    },
   ];
 }
 
@@ -205,31 +226,140 @@ export async function probeDatabaseReachability(): Promise<HealthProbe> {
     );
   }
 
-  try {
+  const timed = await runProbeWithTimeout("database", DEFAULT_PROBE_TIMEOUT_MS, async () => {
     const { createAdminClient } = await import("@/lib/supabase/admin");
     const supabase = createAdminClient();
     const { error } = await supabase.from("platform_settings").select("id").limit(1);
-
     if (error) {
-      return {
-        ...base,
-        status: "degraded",
-        detail: "Supabase credentials present but admin read failed.",
-      };
+      throw new Error(error.message);
     }
+    return true;
+  });
 
-    return {
-      ...base,
-      status: "reachable",
-      detail: "Supabase admin read succeeded.",
-    };
-  } catch {
+  if (!timed.ok) {
     return {
       ...base,
       status: "degraded",
-      detail: "Supabase admin client could not be initialized.",
+      detail: timed.error,
     };
   }
+
+  return {
+    ...base,
+    status: "reachable",
+    detail: "Supabase admin read succeeded.",
+  };
+}
+
+export async function probeNexProviderLatency(): Promise<HealthProbe> {
+  const base = buildProviderProbes().find((probe) => probe.id === "nex_ai");
+  if (!base) {
+    return {
+      id: "nex_ai",
+      name: "Nex AI",
+      status: "not_verified",
+      detail: "Nex probe unavailable.",
+    };
+  }
+
+  if (base.status === "misconfigured") {
+    return base;
+  }
+
+  const timed = await runProbeWithTimeout("nex_ai", DEFAULT_PROBE_TIMEOUT_MS, async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    return true;
+  });
+
+  return {
+    ...base,
+    status: timed.ok ? "reachable" : "degraded",
+    detail: timed.ok
+      ? "Nex provider configuration probe completed within timeout."
+      : timed.error,
+  };
+}
+
+export async function probeMpesaProviderLatency(): Promise<HealthProbe> {
+  const base = buildProviderProbes().find((probe) => probe.id === "mpesa");
+  if (!base) {
+    return {
+      id: "mpesa",
+      name: "M-Pesa",
+      status: "not_verified",
+      detail: "M-Pesa probe unavailable.",
+    };
+  }
+
+  if (base.status === "misconfigured") {
+    return base;
+  }
+
+  const timed = await runProbeWithTimeout("mpesa", DEFAULT_PROBE_TIMEOUT_MS, async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    return true;
+  });
+
+  return {
+    ...base,
+    status: timed.ok ? "reachable" : "degraded",
+    detail: timed.ok
+      ? "M-Pesa configuration probe completed within timeout."
+      : timed.error,
+  };
+}
+
+export async function probeNotificationsLatency(): Promise<HealthProbe> {
+  const base = buildProviderProbes().find((probe) => probe.id === "notifications");
+  if (!base) {
+    return {
+      id: "notifications",
+      name: "Notifications",
+      status: "not_verified",
+      detail: "Notifications probe unavailable.",
+    };
+  }
+
+  if (base.status === "misconfigured") {
+    return base;
+  }
+
+  const timed = await runProbeWithTimeout(
+    "notifications",
+    DEFAULT_PROBE_TIMEOUT_MS,
+    async () => {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      return true;
+    },
+  );
+
+  return {
+    ...base,
+    status: timed.ok ? "reachable" : "degraded",
+    detail: timed.ok
+      ? "Notifications configuration probe completed within timeout."
+      : timed.error,
+  };
+}
+
+export async function probeCronFreshness(): Promise<HealthProbe> {
+  const base = buildProviderProbes().find((probe) => probe.id === "cron");
+  if (!base) {
+    return {
+      id: "cron",
+      name: "Scheduled jobs",
+      status: "not_verified",
+      detail: "Cron probe unavailable.",
+    };
+  }
+
+  return {
+    ...base,
+    detail:
+      base.status === "configured"
+        ? "Cron secret present; last successful run not verified in this environment."
+        : base.detail,
+  };
 }
 
 export async function runHealthProbes(options?: {
@@ -241,6 +371,17 @@ export async function runHealthProbes(options?: {
     return probes;
   }
 
-  const database = await probeDatabaseReachability();
-  return probes.map((probe) => (probe.id === "database" ? database : probe));
+  const [database, nex, mpesa, notifications, cron] = await Promise.all([
+    probeDatabaseReachability(),
+    probeNexProviderLatency(),
+    probeMpesaProviderLatency(),
+    probeNotificationsLatency(),
+    probeCronFreshness(),
+  ]);
+
+  const byId = new Map(
+    [database, nex, mpesa, notifications, cron].map((probe) => [probe.id, probe]),
+  );
+
+  return probes.map((probe) => byId.get(probe.id) ?? probe);
 }

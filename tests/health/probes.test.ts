@@ -15,6 +15,25 @@ describe("health probes", () => {
     delete process.env.RESEND_API_KEY;
   });
 
+  it("includes database, providers, cron, and migrations probes", () => {
+    process.env.APP_ENV = "test";
+    process.env.NEX_PROVIDER_MODE = "mock";
+
+    const probes = buildProviderProbes();
+    const ids = probes.map((probe) => probe.id);
+
+    expect(ids).toEqual(
+      expect.arrayContaining([
+        "database",
+        "nex_ai",
+        "mpesa",
+        "notifications",
+        "cron",
+        "migrations",
+      ]),
+    );
+  });
+
   it("marks Nex misconfigured in production live mode without keys", () => {
     process.env.APP_ENV = "production";
     process.env.NEX_PROVIDER_MODE = "live";
