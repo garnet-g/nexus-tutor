@@ -5,10 +5,10 @@ import {
   LinkedPanel,
   StudentPageHeader,
 } from "@/features/student/components/StudentExperienceBlocks";
-import { requireStudentExperience } from "@/features/student/server/requireStudentExperience";
+import { requireStudentFeature } from "@/features/student/server/requireStudentFeature";
 
 export default async function StudySearchPage() {
-  const experience = await requireStudentExperience();
+  const experience = await requireStudentFeature("student.study_search");
   const items = [
     ...experience.weakAreas.slice(0, 4).map((topic) => ({
       href: `/practice?topicId=${topic.topicId}`,

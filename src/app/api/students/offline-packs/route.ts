@@ -10,6 +10,7 @@ import {
   apiErrorResponse,
   requireStudentProfile,
 } from "@/server/services/studentContext";
+import { requireStudentFeatureApi } from "@/server/services/studentFeatureGuard";
 import {
   listOfflinePacks,
   updateOfflinePackStatus,
@@ -25,6 +26,14 @@ export async function GET() {
         studentContext.message,
         studentContext.status,
       );
+    }
+
+    const featureError = await requireStudentFeatureApi(
+      studentContext.profile,
+      "student.offline_packs",
+    );
+    if (featureError) {
+      return featureError;
     }
 
     const packs = await listOfflinePacks(studentContext.profile.id);
@@ -44,6 +53,14 @@ export async function POST(request: Request) {
         studentContext.message,
         studentContext.status,
       );
+    }
+
+    const featureError = await requireStudentFeatureApi(
+      studentContext.profile,
+      "student.offline_packs",
+    );
+    if (featureError) {
+      return featureError;
     }
 
     const parsed = offlinePackSchema.safeParse(await request.json().catch(() => ({})));
@@ -73,6 +90,14 @@ export async function PATCH(request: Request) {
         studentContext.message,
         studentContext.status,
       );
+    }
+
+    const featureError = await requireStudentFeatureApi(
+      studentContext.profile,
+      "student.offline_packs",
+    );
+    if (featureError) {
+      return featureError;
     }
 
     const parsed = offlinePackUpdateSchema.safeParse(

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { clearFeatureRolloutCache } from "@/server/services/featureRolloutService";
 import type { AdminCoupon } from "@/server/services/adminCouponService";
 import { listCoupons } from "@/server/services/adminCouponService";
 import { listFlags, type NexFlag } from "@/server/services/adminNexReviewService";
@@ -529,6 +530,7 @@ export async function upsertFeatureRollout(input: {
     throw new Error(error.message);
   }
 
+  clearFeatureRolloutCache();
   return mapRollout(data as Record<string, unknown>);
 }
 
