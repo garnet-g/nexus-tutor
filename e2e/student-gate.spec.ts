@@ -3,14 +3,11 @@ import { test, expect } from "@playwright/test";
 import { hasE2eStudentCredentials, loginAsStudent } from "./fixtures/auth";
 
 test.describe("Student auth gate", () => {
-  test.skip(
-    !hasE2eStudentCredentials(),
-    "Set E2E_STUDENT_EMAIL and E2E_STUDENT_PASSWORD in env",
-  );
-
   test("login redirects to onboarding, diagnostic, or dashboard", async ({
     page,
   }) => {
+    test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
+
     await loginAsStudent(page);
 
     await expect(page).toHaveURL(/\/(onboarding|dashboard|diagnostic)/);
@@ -19,6 +16,8 @@ test.describe("Student auth gate", () => {
   test("incomplete onboarding cannot access dashboard directly", async ({
     page,
   }) => {
+    test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
+
     await loginAsStudent(page);
 
     if (page.url().includes("/onboarding")) {

@@ -3,9 +3,9 @@ import { test, expect } from "@playwright/test";
 import { hasE2eStudentCredentials, loginAsStudent } from "./fixtures/auth";
 
 test.describe("Pricing checkout — provider down", () => {
-  test.skip(!hasE2eStudentCredentials(), "Requires E2E_STUDENT_EMAIL/PASSWORD");
-
   test("shows recoverable message when M-Pesa STK push fails", async ({ page }) => {
+    test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
+
     await loginAsStudent(page);
 
     await page.route("**/api/mpesa/stk-push", async (route) => {

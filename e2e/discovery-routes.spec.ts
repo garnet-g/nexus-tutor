@@ -16,20 +16,19 @@ test.describe("Discovery routes — public", () => {
 });
 
 test.describe("Discovery routes — student", () => {
-  test.skip(
-    !hasE2eStudentCredentials(),
-    "Set E2E_STUDENT_EMAIL and E2E_STUDENT_PASSWORD in env",
-  );
-
   test("mock-exams redirects to exam-prep", async ({ page }) => {
+    test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
+
     await loginAsStudent(page);
     await page.goto("/mock-exams");
     await expect(page).toHaveURL(/\/exam-prep/);
   });
 
   test("assignment-help loads with homework mode", async ({ page }) => {
+    test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
+
     await loginAsStudent(page);
-    await page.goto("/assignment-help");
+    await page.goto("/assignment-help?mode=homework");
 
     if (page.url().includes("/diagnostic")) {
       test.skip(true, "Student has not completed diagnostic");
@@ -46,6 +45,8 @@ test.describe("Discovery routes — student", () => {
   });
 
   test("exam-prep page renders wizard", async ({ page }) => {
+    test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
+
     await loginAsStudent(page);
     await page.goto("/exam-prep");
 
