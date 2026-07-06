@@ -247,32 +247,41 @@ Started: 2026-07-06T10:30:00+03:00
 - **Acceptance evidence:** `tests/parent/weeklyReportCronIdempotency.test.ts` — double invoke ⇒ one email; `tests/parent/weeklyReportTimezone.test.ts` — Sunday/Monday Nairobi cutover.
 - **Assumptions made:** **Africa/Nairobi** timezone; weeks start **Monday** (Sunday belongs to the week that began the prior Monday).
 - **Commit:** 0ea13f6 fix(PR-131,PR-132): idempotent weekly report cron and Nairobi week boundaries
+
+### PR-057 — Notification log retention (DEC-006)
 - **Status:** DONE_VERIFIED
 - **What was done:** `src/lib/privacy/retentionPolicy.ts` (90-day notification logs per DEC-006 option A); `retentionEnforcementService.ts` deletes aged `celcom_sms_logs`, `resend_email_logs`, completed `notification_outbox` rows; `GET|POST /api/cron/data-retention` (Bearer `CRON_SECRET`, fail-closed).
 - **Acceptance evidence:** `tests/privacy/retentionEnforcement.test.ts`.
 - **Assumptions made:** DEC-006 unresolved in register — implemented repository-standard **90 days** (notification-spec + security-standards).
 - **Commit:** 5b87d69 fix(PR-057): enforce DEC-006 notification log retention via cron job
+
+### PR-058 — Notification log export redaction
 - **Status:** DONE_VERIFIED
 - **What was done:** `src/lib/privacy/redaction.ts` + `notificationLogSerializer.ts` redact phone/body/subject for operator exports.
 - **Acceptance evidence:** `tests/privacy/notificationRedaction.test.ts` — snapshot contains no raw phone or message body.
 - **Commit:** 99e45ec fix(PR-058): redact phone and message body in notification log exports
+
+### PR-128 — View-as impersonation retention
 - **Status:** DONE_VERIFIED
 - **What was done:** `admin_impersonation_sessions` purged 90 days after `expires_at` in retention cron.
 - **Acceptance evidence:** `tests/privacy/impersonationRetention.test.ts`.
 - **Commit:** 0e72cab fix(PR-128): purge expired view-as impersonation sessions in retention cron
+
+### PR-107 — Unified retention policy (notification/learning only)
 - **Status:** DONE_VERIFIED
 - **What was done:** `docs/product-governance/data-retention-policy.md`; parent learning reports (`parent_reports`, `weekly_reports`) enforced at **365 days**; auth-track seam for `account_deletion_requests` documented, not built.
 - **Acceptance evidence:** policy doc + retention cron deletes learning summaries; auth deletion explicitly out of scope.
-- **Commit:** _(pending)_
+- **Commit:** dbd3467 docs(PR-107): unified retention policy for notification and learning data
 
 ### PR-133 + PR-134 — Family lifecycle on lapse and resubscribe
 - **Status:** DONE_VERIFIED
 - **What was done:** RPCs `reclaim_family_group_on_lapse` + `reactivate_family_group_on_resubscribe` (Phase 05 `FOR UPDATE` seat pattern); `processExpiredFamilySubscriptions` in cron; members lose family entitlements on owner lapse; resubscribe + `join_family_group` relink path.
 - **Acceptance evidence:** `tests/family/familyLifecycle.test.ts`.
 - **Assumptions made:** Owner retains group row (inactive) on lapse; members must rejoin after resubscribe (no auto-relink).
-- **Commit:** _(pending)_
+- **Commit:** df2d42d fix(PR-133,PR-134): family seat reclaim on lapse and resubscribe relink
 
 ## Phase F4 gate status
+- **Status:** DONE_VERIFIED — all ledger items PR-037 through PR-134 complete for Phase 08 family/notifications scope.
 - **db:reset:** green (migrations through `20260706170000_family_lapse_reclaim.sql`)
 - **typecheck:** green
 - **tests:** 612 passed (626 total)
