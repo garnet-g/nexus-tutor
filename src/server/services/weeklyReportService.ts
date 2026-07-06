@@ -4,17 +4,53 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { sendWeeklyParentReportEmail } from "@/server/services/notificationService";
 import { getStudentPlanCode } from "@/server/services/subscriptionService";
 
-function getWeekStartDate(date: Date = new Date()): string {
-  const nairobi = new Date(
-    date.toLocaleString("en-US", { timeZone: "Africa/Nairobi" }),
-  );
-  const day = nairobi.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  nairobi.setDate(nairobi.getDate() + diff);
-  return nairobi.toISOString().slice(0, 10);
+/** Monday-based week start in Africa/Nairobi (see tests/parent/weeklyReportTimezone.test.ts). */
+function getNairobiDateParts(date: Date): {
+  year: number;
+  month: number;
+  day: number;
+  weekday: number;
+} {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Africa/Nairobi",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short",
+  }).formatToParts(date);
+
+  const lookup = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  const weekdayMap: Record<string, number> = {
+    Sun: 0,
+    Mon: 1,
+    Tue: 2,
+    Wed: 3,
+    Thu: 4,
+    Fri: 5,
+    Sat: 6,
+  };
+
+  return {
+    year: Number(lookup.year),
+    month: Number(lookup.month),
+    day: Number(lookup.day),
+    weekday: weekdayMap[lookup.weekday ?? "Mon"] ?? 1,
+  };
 }
 
-function getWeekEndDate(weekStart: string): string {
+function addCalendarDays(year: number, month: number, day: number, delta: number): string {
+  const shifted = new Date(Date.UTC(year, month - 1, day));
+  shifted.setUTCDate(shifted.getUTCDate() + delta);
+  return shifted.toISOString().slice(0, 10);
+}
+
+export function getWeekStartDate(date: Date = new Date()): string {
+  const nairobi = getNairobiDateParts(date);
+  const diff = nairobi.weekday === 0 ? -6 : 1 - nairobi.weekday;
+  return addCalendarDays(nairobi.year, nairobi.month, nairobi.day, diff);
+}
+
+export function getWeekEndDate(weekStart: string): string {
   const start = new Date(`${weekStart}T00:00:00`);
   start.setDate(start.getDate() + 6);
   return start.toISOString().slice(0, 10);
@@ -76,7 +112,7 @@ export async function generateWeeklyReportForLink(input: {
   parentId: string;
   studentId: string;
   weekStartDate?: string;
-}): Promise<{ reportId: string; emailed: boolean }> {
+}): Promise<{ reportId: string; emailed: boolean; skipped?: boolean }> {
   const admin = createAdminClient();
   const weekStart = input.weekStartDate ?? getWeekStartDate();
 
@@ -90,6 +126,19 @@ export async function generateWeeklyReportForLink(input: {
 
   if (!link) {
     throw new Error("Parent is not linked to this student");
+  }
+
+  const { data: existingReport } = await admin
+    .from("parent_reports")
+    .select("id")
+    .eq("parent_id", input.parentId)
+    .eq("student_id", input.studentId)
+    .eq("report_type", "weekly")
+    .eq("week_start_date", weekStart)
+    .maybeSingle();
+
+  if (existingReport) {
+    return { reportId: existingReport.id, emailed: false, skipped: true };
   }
 
   const planCode = await getStudentPlanCode(input.studentId);
@@ -127,13 +176,33 @@ export async function generateWeeklyReportForLink(input: {
       parent_id: input.parentId,
       student_id: input.studentId,
       report_type: "weekly",
+      week_start_date: weekStart,
       report_payload: reportPayload,
     })
     .select("id")
     .single();
 
-  if (reportError || !parentReport) {
-    throw new Error(reportError?.message ?? "Could not create parent report");
+  if (reportError) {
+    if (reportError.code === "23505") {
+      const { data: racedReport } = await admin
+        .from("parent_reports")
+        .select("id")
+        .eq("parent_id", input.parentId)
+        .eq("student_id", input.studentId)
+        .eq("report_type", "weekly")
+        .eq("week_start_date", weekStart)
+        .maybeSingle();
+
+      if (racedReport) {
+        return { reportId: racedReport.id, emailed: false, skipped: true };
+      }
+    }
+
+    throw new Error(reportError.message ?? "Could not create parent report");
+  }
+
+  if (!parentReport) {
+    throw new Error("Could not create parent report");
   }
 
   await admin.from("weekly_reports").insert({
@@ -166,6 +235,7 @@ export async function generateWeeklyReportForLink(input: {
 export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
   processed: number;
   emailed: number;
+  skipped: number;
   errors: string[];
 }> {
   const admin = createAdminClient();
@@ -178,6 +248,7 @@ export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
 
   let processed = 0;
   let emailed = 0;
+  let skipped = 0;
   const errors: string[] = [];
 
   for (const link of links ?? []) {
@@ -188,7 +259,9 @@ export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
         weekStartDate: weekStart,
       });
       processed += 1;
-      if (result.emailed) {
+      if (result.skipped) {
+        skipped += 1;
+      } else if (result.emailed) {
         emailed += 1;
       }
     } catch (error) {
@@ -200,7 +273,7 @@ export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
     }
   }
 
-  return { processed, emailed, errors };
+  return { processed, emailed, skipped, errors };
 }
 
 export interface StudentWeeklySummary {
