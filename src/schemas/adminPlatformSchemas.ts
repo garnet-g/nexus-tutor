@@ -39,6 +39,12 @@ export const adminRoleKeySchema = z.enum([
 export const adminRoleAssignmentSchema = z.object({
   userId: z.string().uuid(),
   roleKey: adminRoleKeySchema,
+  mode: z.enum(["assign", "replace_runtime"]).optional(),
+});
+
+export const adminRoleRevokeSchema = z.object({
+  userId: z.string().uuid(),
+  roleKey: adminRoleKeySchema,
 });
 
 export type AdminRoleAssignmentInput = z.infer<typeof adminRoleAssignmentSchema>;

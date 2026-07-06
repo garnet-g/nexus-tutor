@@ -3,11 +3,13 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import { adminRoleAssignmentSchema } from "@/schemas/adminPlatformSchemas";
-import { recordAdminAudit } from "@/server/services/adminAuditService";
+import { recordAdminAudit, AdminAuditWriteError } from "@/server/services/adminAuditService";
 import {
   assignAdminRole,
-  listAdminRoleAssignments,
-} from "@/server/services/adminPlatformService";
+  LastSuperAdminError,
+  SelfDemotionError,
+} from "@/server/services/adminRoleService";
+import { listAdminRoleAssignments } from "@/server/services/adminPlatformService";
 import { requireAdminApi } from "@/server/services/requireAdminApi";
 
 export async function GET(request: Request) {
@@ -76,6 +78,32 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
+    if (error instanceof AdminAuditWriteError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "AUDIT_WRITE_FAILED",
+            message: "Role assignment could not be audited.",
+          },
+        },
+        { status: 503 },
+      );
+    }
+
+    if (error instanceof LastSuperAdminError || error instanceof SelfDemotionError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+          },
+        },
+        { status: 403 },
+      );
+    }
+
     console.error("ADMIN_ROLES_POST_FAILED", error);
     return NextResponse.json(
       {

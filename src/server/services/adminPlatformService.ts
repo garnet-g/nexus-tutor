@@ -5,6 +5,14 @@ import { listCoupons } from "@/server/services/adminCouponService";
 import { listFlags } from "@/server/services/adminNexReviewService";
 import { getNexOpsDashboard } from "@/server/services/adminNexOpsReadService";
 import { getPaymentsDashboard } from "@/server/services/adminPaymentsReadService";
+import { isFeatureEnabled } from "@/server/services/featureRolloutService";
+import {
+  getEffectiveSubscriptionConfigWithFallback,
+  getNexDailyLimit,
+} from "@/lib/platform/getPlatformSettings";
+import {
+  getStudentPlanCode,
+} from "@/server/services/subscriptionService";
 import { listSupportCases } from "@/server/services/adminOpsService";
 import {
   ADMIN_PLATFORM_NAV,
@@ -25,7 +33,6 @@ import type {
   AdminApprovalUpdateInput,
   AdminCommunicationTemplateCreateInput,
   AdminExperimentCreateInput,
-  AdminRoleAssignmentInput,
   AdminSavedViewCreateInput,
 } from "@/schemas/adminPlatformSchemas";
 
@@ -303,24 +310,13 @@ export async function listAdminRoleAssignments() {
 }
 
 export async function assignAdminRole(input: {
-  assignment: AdminRoleAssignmentInput;
+  assignment: import("@/schemas/adminPlatformSchemas").AdminRoleAssignmentInput;
   actorUserId: string;
 }) {
-  const admin = createAdminClient();
-  const { data, error } = await admin
-    .from("admin_role_assignments")
-    .upsert(
-      {
-        user_id: input.assignment.userId,
-        role_key: input.assignment.roleKey,
-        assigned_by: input.actorUserId,
-      },
-      { onConflict: "user_id,role_key" },
-    )
-    .select("id, user_id, role_key, assigned_by, created_at")
-    .single();
-  if (error) throw new Error(error.message);
-  return mapRole(data);
+  const { assignAdminRole: assignRole } = await import(
+    "@/server/services/adminRoleService"
+  );
+  return assignRole(input);
 }
 
 export async function listCommunicationTemplates() {
@@ -734,7 +730,16 @@ export async function getRevenueOpsDashboard() {
 
 export async function getStudent360Data(studentId: string): Promise<Student360Data> {
   const admin = createAdminClient();
-  const [supportCases, usageRows, healthRows, paymentRows] = await Promise.all([
+  const [
+    supportCases,
+    usageRows,
+    healthRows,
+    paymentRows,
+    planCode,
+    config,
+    studentProfileRow,
+    subscriptionRow,
+  ] = await Promise.all([
     listSupportCases({ limit: 100 }).catch(() => []),
     admin
       .from("nex_daily_usage")
@@ -754,7 +759,37 @@ export async function getStudent360Data(studentId: string): Promise<Student360Da
       .eq("student_id", studentId)
       .order("created_at", { ascending: false })
       .limit(5),
+    getStudentPlanCode(studentId).catch(() => "free"),
+    getEffectiveSubscriptionConfigWithFallback(),
+    admin
+      .from("student_profiles")
+      .select("curriculum, grade_level")
+      .eq("id", studentId)
+      .maybeSingle(),
+    admin
+      .from("student_subscriptions")
+      .select("subscription_status")
+      .eq("student_id", studentId)
+      .in("subscription_status", ["trialing", "active"])
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
+
+  const subscriptionStatus =
+    (subscriptionRow.data?.subscription_status as string | null) ??
+    (planCode === "free" ? "active" : "active");
+  const trialActive = subscriptionStatus === "trialing";
+
+  const dailyUsage =
+    ((usageRows.data ?? [])[0]?.nex_message_count as number | null) ?? 0;
+  const dailyLimit = getNexDailyLimit(config, planCode);
+  const featureEnabled = await isFeatureEnabled("student.study_search", {
+    studentId,
+    curriculum: studentProfileRow.data?.curriculum ?? null,
+    gradeLevel: studentProfileRow.data?.grade_level ?? null,
+    role: "student",
+  });
 
   const events: StudentTimelineEvent[] = [
     ...((usageRows.data ?? []) as Array<{
@@ -801,12 +836,12 @@ export async function getStudent360Data(studentId: string): Promise<Student360Da
   return {
     timeline: buildStudentTimeline(events),
     entitlement: buildEntitlementDebug({
-      planCode: "free",
-      subscriptionStatus: "active",
-      trialActive: false,
-      featureEnabled: true,
-      dailyLimit: 10,
-      dailyUsage: ((usageRows.data ?? [])[0]?.nex_message_count as number | null) ?? 0,
+      planCode,
+      subscriptionStatus,
+      trialActive,
+      featureEnabled,
+      dailyLimit,
+      dailyUsage,
     }),
     supportCaseCount: supportCases.filter((item) => item.targetStudentId === studentId)
       .length,
