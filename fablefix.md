@@ -222,6 +222,13 @@ Started: 2026-07-06T10:30:00+03:00
 - **What was done:** `product_preferences` JSONB on `parent_profiles`; `GET/PATCH /api/parents/settings`; `/parent/settings` page with `ParentSettingsForm` (display name, contact phone, dashboard layout). No email/password/identity — auth track seam documented below.
 - **Acceptance evidence:** `tests/parent/parentSettings.test.ts` — PATCH persists preferences to `product_preferences` + profile columns.
 - **Assumptions made:** Product prefs mirror `full_name` / `phone_number` when display name or contact phone are edited; preferred language defaults to `en` until UI exposes it.
+- **Commit:** 99ce68d fix(PR-060): parent settings page with product preferences API
+
+### PR-061 — Parent notification preferences + suppression
+- **Status:** DONE_VERIFIED
+- **What was done:** `parent_notification_preferences` table with RLS (migration in PR-060); `GET/PATCH /api/parents/notification-preferences`; `ParentNotificationPreferencesForm` on settings page; `isParentNotificationEnabled` gates `sendParentLinkSuccessNotification` (SMS/link_updates) and `sendWeeklyParentReportEmail` (email/weekly_report).
+- **Acceptance evidence:** `tests/parent/parentNotificationPreferences.test.ts` — disabled `link_updates` ⇒ no Celcom SMS; disabled `weekly_report` ⇒ no Resend email; enabled weekly report sends once.
+- **Assumptions made:** Default-all-true when no preference row exists (opt-out model). Outbox work (PR-129+) will reuse this preference model for suppression tests.
 - **Commit:** _(pending)_
 
 ### Auth track seam (account identity)

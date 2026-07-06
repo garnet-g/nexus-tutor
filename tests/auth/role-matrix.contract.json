@@ -897,6 +897,15 @@
     ]
   },
   {
+    "path": "/api/parents/notification-preferences",
+    "tier": "parent",
+    "filePath": "src/app/api/parents/notification-preferences/route.ts",
+    "methods": [
+      "GET",
+      "PATCH"
+    ]
+  },
+  {
     "path": "/api/practice-sessions/[id]/answer",
     "tier": "student",
     "filePath": "src/app/api/practice-sessions/[id]/answer/route.ts",

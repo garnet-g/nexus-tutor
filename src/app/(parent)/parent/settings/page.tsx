@@ -1,8 +1,12 @@
 import Link from "next/link";
 
+import { ParentNotificationPreferencesForm } from "@/features/parent-dashboard/components/ParentNotificationPreferencesForm";
 import { ParentSettingsForm } from "@/features/parent-dashboard/components/ParentSettingsForm";
 import { getSessionUser } from "@/server/services/authService";
-import { getParentProductPreferences } from "@/server/services/parentPreferencesService";
+import {
+  getParentNotificationPreferences,
+  getParentProductPreferences,
+} from "@/server/services/parentPreferencesService";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +18,10 @@ export default async function ParentSettingsPage() {
     return null;
   }
 
-  const productPreferences = await getParentProductPreferences(parentId);
+  const [productPreferences, notificationPreferences] = await Promise.all([
+    getParentProductPreferences(parentId),
+    getParentNotificationPreferences(parentId),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -31,6 +38,7 @@ export default async function ParentSettingsPage() {
       </div>
 
       <ParentSettingsForm initial={productPreferences} />
+      <ParentNotificationPreferencesForm initial={notificationPreferences} />
     </div>
   );
 }

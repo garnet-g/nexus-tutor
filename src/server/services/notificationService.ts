@@ -3,6 +3,7 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendCelcomSms } from "@/lib/celcom/celcomClient";
 import { sendResendEmail } from "@/lib/resend/resendClient";
+import { isParentNotificationEnabled } from "@/server/services/parentPreferencesService";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
@@ -55,7 +56,13 @@ export async function sendParentLinkSuccessNotification(input: {
   parentPhone: string | null;
   studentName: string;
 }): Promise<void> {
-  if (!input.parentPhone) {
+  const enabled = await isParentNotificationEnabled(
+    input.parentId,
+    "link_updates",
+    "sms",
+  );
+
+  if (!enabled || !input.parentPhone) {
     return;
   }
 
@@ -228,12 +235,23 @@ export async function sendWeeklyStreakNotification(input: {
 }
 
 export async function sendWeeklyParentReportEmail(input: {
+  parentId: string;
   recipientEmail: string;
   studentName: string;
   studyMinutes: number;
   healthScore: number;
   weakTopics: string;
 }): Promise<void> {
+  const enabled = await isParentNotificationEnabled(
+    input.parentId,
+    "weekly_report",
+    "email",
+  );
+
+  if (!enabled) {
+    return;
+  }
+
   const emailTemplate = await loadEmailTemplate("weekly_parent_report");
   const subject =
     emailTemplate !== null
