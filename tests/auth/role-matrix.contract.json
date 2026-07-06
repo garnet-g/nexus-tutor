@@ -867,6 +867,14 @@
     ]
   },
   {
+    "path": "/api/parents/linked-students/[studentId]",
+    "tier": "parent",
+    "filePath": "src/app/api/parents/linked-students/[studentId]/route.ts",
+    "methods": [
+      "DELETE"
+    ]
+  },
+  {
     "path": "/api/parents/linked-students/[studentId]/weekly-goal",
     "tier": "parent",
     "filePath": "src/app/api/parents/linked-students/[studentId]/weekly-goal/route.ts",

@@ -328,6 +328,29 @@ async function getWeakTopics(studentId: string): Promise<string[]> {
     .filter(Boolean);
 }
 
+export async function unlinkParentFromStudent(
+  parentId: string,
+  studentId: string,
+): Promise<void> {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("student_parent_links")
+    .update({ link_status: "revoked" })
+    .eq("parent_id", parentId)
+    .eq("student_id", studentId)
+    .eq("link_status", "active")
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data) {
+    throw new Error("NOT_FOUND");
+  }
+}
+
 export async function getLinkedStudentsOverview(
   parentId: string,
 ): Promise<LinkedStudentOverview[]> {

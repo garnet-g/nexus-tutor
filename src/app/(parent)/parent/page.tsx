@@ -2,6 +2,8 @@ import { ParentDashboard } from "@/features/parent-dashboard/components/ParentDa
 import { getSessionUser } from "@/server/services/authService";
 import { getLinkedStudentsOverview } from "@/server/services/parentLinkService";
 
+export const dynamic = "force-dynamic";
+
 export default async function ParentDashboardPage() {
   const sessionUser = await getSessionUser();
   const profile = sessionUser?.parentProfile;

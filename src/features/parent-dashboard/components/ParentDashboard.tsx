@@ -105,11 +105,41 @@ export function ParentDashboard({ linkedStudents }: ParentDashboardProps) {
                     {student.curriculum} · {student.gradeLevel}
                   </p>
                 </div>
-                {student.linkedAt ? (
-                  <p className="text-xs text-muted-foreground">
-                    Linked {new Date(student.linkedAt).toLocaleDateString()}
-                  </p>
-                ) : null}
+                <div className="flex flex-col items-end gap-2">
+                  {student.linkedAt ? (
+                    <p className="text-xs text-muted-foreground">
+                      Linked {new Date(student.linkedAt).toLocaleDateString()}
+                    </p>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="rounded-lg border border-destructive/40 px-3 py-1.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
+                    onClick={() => {
+                      if (
+                        !window.confirm(
+                          `Unlink ${student.fullName}? You will lose access to their progress immediately.`,
+                        )
+                      ) {
+                        return;
+                      }
+
+                      void (async () => {
+                        const response = await fetch(
+                          `/api/parents/linked-students/${student.studentId}`,
+                          { method: "DELETE" },
+                        );
+                        if (!response.ok) {
+                          window.alert("Could not unlink this student.");
+                          return;
+                        }
+
+                        window.location.reload();
+                      })();
+                    }}
+                  >
+                    Unlink student
+                  </button>
+                </div>
               </div>
 
               <dl className="mt-4 grid gap-4 sm:grid-cols-3">

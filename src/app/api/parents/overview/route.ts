@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 import { getLinkedStudentsOverview } from "@/server/services/parentLinkService";
 import { parentApiError, requireParentProfile } from "@/server/services/parentContext";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const parentContext = await requireParentProfile();
 

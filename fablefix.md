@@ -209,3 +209,9 @@ Started: 2026-07-06T10:30:00+03:00
 - **What was done:** Weekly goal reads moved to parent anon client (RLS `student_weekly_goals_parent_linked`); link verification at call site via `verifyActiveParentStudentLink`; `GET /api/parents/overview` and `GET /api/parents/linked-students/[studentId]/weekly-goal` for authenticated parent request path.
 - **Acceptance evidence:** `tests/parent/parentWeeklyGoalIsolation.test.ts` — parent A + unlinked student B ⇒ `404 NOT_LINKED`; linked + `parent_visible=true` ⇒ goal; linked + `parent_visible=false` ⇒ null; overview excludes student B. `tests/rls/parentAccess.test.ts` documents weekly-goal parent policy.
 - **Assumptions made:** `getParentVisibleWeeklyGoal` intentionally has no link check — authorization is enforced by RLS + link gate in `getParentWeeklyGoalForLinkedStudent` / overview link query only.
+- **Commit:** 9395205 fix(PR-062): parent weekly goal RLS isolation via authenticated API path
+
+### PR-059 — Parent unlink with immediate revocation
+- **Status:** DONE_VERIFIED
+- **What was done:** `unlinkParentFromStudent` sets `link_status=revoked`; `DELETE /api/parents/linked-students/[studentId]`; confirm UI on `ParentDashboard`; `export const dynamic = "force-dynamic"` on parent page + overview API (no stale cache).
+- **Acceptance evidence:** `tests/parent/parentUnlink.test.ts` — after DELETE, next `GET /api/parents/overview` returns zero linked students.
