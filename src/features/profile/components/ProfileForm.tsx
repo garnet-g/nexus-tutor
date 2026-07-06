@@ -141,6 +141,8 @@ export function ProfileForm({
 
         className="space-y-6"
 
+        noValidate
+
       >
 
 
