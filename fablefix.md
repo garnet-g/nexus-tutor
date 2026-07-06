@@ -215,3 +215,14 @@ Started: 2026-07-06T10:30:00+03:00
 - **Status:** DONE_VERIFIED
 - **What was done:** `unlinkParentFromStudent` sets `link_status=revoked`; `DELETE /api/parents/linked-students/[studentId]`; confirm UI on `ParentDashboard`; `export const dynamic = "force-dynamic"` on parent page + overview API (no stale cache).
 - **Acceptance evidence:** `tests/parent/parentUnlink.test.ts` — after DELETE, next `GET /api/parents/overview` returns zero linked students.
+- **Commit:** 6448068 fix(PR-059): parent unlink with immediate revocation on next request
+
+### PR-060 — Parent settings (product preferences)
+- **Status:** DONE_VERIFIED
+- **What was done:** `product_preferences` JSONB on `parent_profiles`; `GET/PATCH /api/parents/settings`; `/parent/settings` page with `ParentSettingsForm` (display name, contact phone, dashboard layout). No email/password/identity — auth track seam documented below.
+- **Acceptance evidence:** `tests/parent/parentSettings.test.ts` — PATCH persists preferences to `product_preferences` + profile columns.
+- **Assumptions made:** Product prefs mirror `full_name` / `phone_number` when display name or contact phone are edited; preferred language defaults to `en` until UI exposes it.
+- **Commit:** _(pending)_
+
+### Auth track seam (account identity)
+- Parent settings and notification prefs are **product-layer only**. Account email, password, and `account_deletion_requests` belong to the fenced auth track — do not implement here.

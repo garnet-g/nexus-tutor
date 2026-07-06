@@ -23,6 +23,9 @@ export default async function ParentLayout({
             Nexus Parent
           </Link>
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <Link href="/parent/settings" className="hover:text-foreground">
+              Settings
+            </Link>
             <span>{sessionUser?.parentProfile?.full_name ?? "Parent"}</span>
             <ThemeToggle />
             <form action={signOutAction}>

@@ -5,6 +5,11 @@
     "filePath": "src/app/(parent)/parent/page.tsx"
   },
   {
+    "path": "/parent/settings",
+    "tier": "parent",
+    "filePath": "src/app/(parent)/parent/settings/page.tsx"
+  },
+  {
     "path": "/login",
     "tier": "public",
     "filePath": "src/app/(public)/(auth)/login/page.tsx"
@@ -880,6 +885,15 @@
     "filePath": "src/app/api/parents/linked-students/[studentId]/weekly-goal/route.ts",
     "methods": [
       "GET"
+    ]
+  },
+  {
+    "path": "/api/parents/settings",
+    "tier": "parent",
+    "filePath": "src/app/api/parents/settings/route.ts",
+    "methods": [
+      "GET",
+      "PATCH"
     ]
   },
   {
