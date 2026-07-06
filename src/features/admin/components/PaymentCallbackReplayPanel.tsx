@@ -28,7 +28,7 @@ export function PaymentCallbackReplayPanel({
     setMessage(null);
 
     try {
-      const response = await fetch("/api/admin/payments/replay-callback", {
+      const response = await fetch("/api/admin/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ eventId }),

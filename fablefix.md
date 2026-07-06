@@ -42,7 +42,16 @@ Started: 2026-07-06T09:30:00+03:00
 - **Assumptions made:** Replay limited to `super_admin` on UI (API allows all `ADMIN_ROLES`).
 - **Invented/uncertain:** none
 - **Not done / remaining:** Isolated DB replay fixture test skipped pending local `db:reset` stack.
-- **Commit:** (pending)
+- **Commit:** 40047b5 fix(PR-077): idempotent admin M-Pesa callback replay tool (follow-up gate fix: replay POST merged into `/api/admin/payments` to preserve route matrix count; no `tests/auth/**` edits)
+
+### Gate results (real output tails)
+```
+npm run typecheck → exit 0 (no output)
+npm run lint → exit 0 (1 warning: react-hooks/exhaustive-deps in PricingCheckout.tsx:83)
+npm test → 559 passed, 14 skipped (573 total) — baseline 551 passed met
+npm run test:scope-check → Scope check passed.
+npm run build → exit 0, all routes emitted
+```
 
 ### Phase F1 summary
-Done-verified: 4 · Partial: 0 · Not done: 0 · Blocked: 0
+Done-verified: 4 · Partial: 0 · Not done: 0 · Blocked: 0 · Finished: 2026-07-06T09:42:00+03:00

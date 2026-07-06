@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { PricingCheckout } from "@/features/pricing/components/PricingCheckout";
+import { PricingCheckoutShell } from "@/features/pricing/components/PricingCheckoutShell";
 import { PublicPricingDisplay } from "@/features/marketing/components/PublicPricingDisplay";
 import {
   getEffectiveSubscriptionConfigWithFallback,
@@ -109,7 +109,7 @@ export default async function PublicPricingPage() {
 
       <div className="mt-10">
         {isStudent ? (
-          <PricingCheckout
+          <PricingCheckoutShell
             config={config}
             plans={pricingPlans}
             hasUsedTrial={hasUsedTrial}

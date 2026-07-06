@@ -13,7 +13,6 @@ import {
 } from "@/features/pricing/components/PricingPlanComparison";
 import {
   clearPendingPayment,
-  readPendingPayment,
   savePendingPayment,
 } from "@/features/pricing/lib/pendingPaymentStorage";
 import type { EffectiveSubscriptionConfig } from "@/lib/platform/getPlatformSettings";
@@ -31,6 +30,7 @@ interface PricingCheckoutProps {
   plans: PricingPlan[];
   hasUsedTrial: boolean;
   currentPlanCode: string;
+  initialPendingPaymentId?: string | null;
 }
 
 const TERMINAL_STATUSES = new Set([
@@ -47,37 +47,40 @@ export function PricingCheckout({
   plans,
   hasUsedTrial,
   currentPlanCode,
+  initialPendingPaymentId = null,
 }: PricingCheckoutProps) {
   const paidPlans = plans.filter((plan) => plan.planCode !== "free");
   const [selectedPlanId, setSelectedPlanId] = useState(paidPlans[0]?.id ?? "");
   const [phoneNumber, setPhoneNumber] = useState("+254");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(Boolean(initialPendingPaymentId));
   const [error, setError] = useState<string | null>(null);
   const [checkoutRecoverable, setCheckoutRecoverable] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-  const [isResumingPayment, setIsResumingPayment] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(
+    initialPendingPaymentId ? "processing" : null,
+  );
+  const [isResumingPayment, setIsResumingPayment] = useState(
+    Boolean(initialPendingPaymentId),
+  );
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const selectedPlan = paidPlans.find((plan) => plan.id === selectedPlanId);
 
   useEffect(() => {
-    const pending = readPendingPayment();
-    if (!pending) {
+    if (!initialPendingPaymentId) {
       return;
     }
 
-    setIsSubmitting(true);
-    setError(null);
-    setIsResumingPayment(true);
-    startPolling(pending.mpesaPaymentId);
+    savePendingPayment({ mpesaPaymentId: initialPendingPaymentId });
+    void pollPaymentStatus(initialPendingPaymentId);
+    pollTimerRef.current = setInterval(() => {
+      void pollPaymentStatus(initialPendingPaymentId);
+    }, POLL_INTERVAL_MS);
 
     return () => {
-      if (pollTimerRef.current) {
-        clearInterval(pollTimerRef.current);
-      }
+      stopPolling();
     };
-  }, []);
+  }, [initialPendingPaymentId]);
 
   function stopPolling() {
     if (pollTimerRef.current) {

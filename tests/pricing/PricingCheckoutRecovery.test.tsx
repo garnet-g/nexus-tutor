@@ -70,6 +70,7 @@ describe("PricingCheckout pending payment recovery", () => {
         plans={plans}
         hasUsedTrial={false}
         currentPlanCode="free"
+        initialPendingPaymentId={paymentId}
       />,
     );
 
