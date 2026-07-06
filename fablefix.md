@@ -546,6 +546,7 @@ Started: 2026-07-06T10:30:00+03:00
 ### PR-076 — Payment reconciliation runbook + dry-run
 - **Status:** DONE_VERIFIED
 - **Dry-run:** `npm test` includes `tests/mpesa/paymentExpiry.test.ts` + `tests/mpesa/paymentReplayTool.test.ts` (isolated DB suite; runs in full `npm test` after `db:reset`). Tabletop: `expireStalePayments()` marks stale pending rows; `replayCallbackEvent()` idempotent on callback events.
+- **Launch rollout enablement (go-live operator step):** Student utility features ship **dark-by-default** (`defaultEnabled: false` in `src/lib/admin/featureRegistry.ts:8-21`). Before announcing Study Search / Offline / Concept Library to all subscribers, enable each key (see PR-078 launch table below). Payment reconciliation itself has no rollout gate.
 
 ### PR-078 — Provider outage runbooks + tabletop
 - **Status:** DONE_VERIFIED
@@ -553,9 +554,475 @@ Started: 2026-07-06T10:30:00+03:00
   - **AI outage:** `NEX_PROVIDER_MODE=mock` — Nex chat returns mock adapter responses; admin `/admin/health` shows Nex probe configured.
   - **Payment outage:** `e2e/pricing-checkout.spec.ts` routes STK 502 → user sees recoverable checkout error.
   - **Cron outage:** missing `CRON_SECRET` in staging/prod → health probe `misconfigured`; dev optional.
+- **Launch rollout enablement runbook (production go-live):**
 
-## Phase F8 gate status
-- **Status:** DONE_VERIFIED except PR-086 (human gate) and pre-existing `form-reliability` E2E failure (out of F8 scope).
+| Feature key | Routes gated | Default in prod | Admin UI action | SQL (global enable) |
+|---|---|---|---|---|
+| `student.study_search` | `/study-search` | **off** (`featureRegistry.ts:9-11`) | `/admin/rollouts` → Rollout matrix → **Enable** toggle on existing row, **or** create row via API (preset dropdown lacks `student.*` keys — `AdminFeatureRolloutsPanel.tsx:11-17`) | `INSERT INTO admin_feature_rollouts (feature_key, display_name, is_enabled, scope, scope_value) VALUES ('student.study_search', 'Study search', true, 'global', NULL) ON CONFLICT (feature_key, scope, scope_value) DO UPDATE SET is_enabled = true;` |
+| `student.offline_packs` | `/offline`, `/api/students/offline-packs` | **off** (`featureRegistry.ts:13-16`) | Same — matrix toggle after row exists (`AdminFeatureRolloutsPanel.tsx:64-86` POSTs `/api/admin/feature-rollouts`) | `… ('student.offline_packs', 'Offline packs', true, 'global', NULL) …` |
+| `student.concept_library` | `/library` | **off** (`featureRegistry.ts:18-20`) | Same | `… ('student.concept_library', 'Concept library', true, 'global', NULL) …` |
+
+**API alternative (super_admin session cookie):**
+```http
+POST /api/admin/feature-rollouts
+Content-Type: application/json
+
+{"featureKey":"student.study_search","displayName":"Study search","isEnabled":true,"scope":"global","scopeValue":null}
+```
+(repeat for `student.offline_packs`, `student.concept_library`)
+
+**F2 UI verification:** Toggle path wired — `toggleRollout` → `POST /api/admin/feature-rollouts` → `upsertFeatureRollout` → `clearFeatureRolloutCache` (`adminOpsService.ts` + `feature-rollouts/route.ts:57`). Seed proves student-scoped rows flip (`scripts/seed-dev-users.ts:360-375`). Preset dropdown cannot *create* `student.*` rows without API/SQL first; once rows exist, matrix toggle is sufficient.
+
+### PR-029 / PR-082 — Dark-by-default production note
+- **PR-029:** All three registry keys enforce server-side gates (`requireStudentFeature` on `/study-search`, `/offline`, `/library`; `requireStudentFeatureApi` on offline-packs API). With **no** rollout row, `evaluateFeatureRollout` returns `defaultEnabled: false` → routes 404 / API `FEATURE_DISABLED`.
+- **PR-082:** E2E utilities spec requires seeded student-scoped rollouts (`seed-dev-users.ts`); **production ships dark** until operator runs launch enablement above.
+
+### E2E triage — `form-reliability.spec.ts` (newly exposed, not pre-existing)
+- **Status:** FIXED (program-owned product bug)
+- **Failing assertion:** `e2e/form-reliability.spec.ts:117-125` — after `sessionGoalMinutes.fill("1")` + submit, expects `#profile-sessionGoalMinutes-error` visible with `/at least 5 minutes/i` and `aria-describedby`.
+- **Root cause:** `ProfileForm.tsx:366` `min={5}` triggered **native HTML5 validation**, blocking form submit before `updateProfileAction` (`profileActions.ts:73-110`) could return Zod `fieldErrors.sessionGoalMinutes`. `FieldError` (`field-error.tsx:8-10`) renders `null` without a server message — not an auth-track fence issue.
+- **Fix:** `noValidate` on profile `<form>` (`ProfileForm.tsx:138-144`) so server-side Zod messages surface (same pattern as teacher waitlist test `form-reliability.spec.ts:38-40`).
+- **Acceptance evidence:** `npm run test:e2e:ci` — `form-reliability.spec.ts` 4/4 passed including "Validation messages + rehydration on success" (15.7s).
+- **Commit:** `2df6a93` fix(e2e-triage): allow profile form server validation past HTML5 min
+
+## Phase F8 gate status (updated finish-line)
+- **Status:** DONE_VERIFIED except PR-086 (human gate)
 - **db:reset:** green (seed includes parent, premium student, utility rollouts)
-- **test:e2e:ci:** 30 passed / 32 total (1 pre-existing failure)
+- **test:e2e:ci:** **31 passed**, **1 flaky** (landing axe color-contrast on stat `28m` — serious, retried green), **0 failed** — `form-reliability` green after triage fix
 
+---
+
+## FINAL — Master table (89 items)
+
+| Item | Phase | Status | One-line note |
+|------|-------|--------|---------------|
+| PR-047 | F1 | DONE_VERIFIED | Durable burst limits on stk-push + status |
+| PR-123 | F1 | DONE_VERIFIED | sessionStorage pending-payment recovery |
+| PR-140 | F1 | DONE_VERIFIED | Recoverable provider-down checkout UX |
+| PR-077 | F1 | DONE_VERIFIED | Idempotent admin callback replay tool |
+| PR-028 | F2 | DONE_VERIFIED | Role assign syncs `app_metadata.userRole` |
+| PR-075 | F2 | DONE_VERIFIED | Last super-admin + self-demotion guards |
+| PR-029 | F2 | DONE_VERIFIED | Server rollouts gate study/offline/library routes+API; **dark-by-default in prod** |
+| PR-030 | F2 | DONE_VERIFIED | Student 360 entitlement debug uses real rollout eval |
+| PR-031 | F2 | DONE_VERIFIED | Fail-closed audit with role compensation |
+| PR-032 | F2 | DONE_VERIFIED | Audit insert handles Supabase `{ error }` |
+| PR-049b | F2 | DONE_VERIFIED | Admin burst guards on content/settings routes |
+| PR-033 | F3 | DONE_VERIFIED | Curriculum FTS study search |
+| PR-034 | F3 | DONE_VERIFIED | Server-backed lesson bookmarks |
+| PR-035 | F3 | DONE_VERIFIED | Practice misses → saved items |
+| PR-036 | F3 | DONE_VERIFIED | Mistake journal idempotent upsert |
+| PR-038 | F3 | DONE_VERIFIED | Focus session persisted timer |
+| PR-101 | F3 | DONE_VERIFIED | Complete focus session terminal (409 on cancel) |
+| PR-039 | F3 | DONE_VERIFIED | Offline packs SW + cache |
+| PR-104 | F3 | DONE_VERIFIED | Logout purges offline caches |
+| PR-105 | F3 | DONE_VERIFIED | Per-user offline cache namespace |
+| PR-040 | F3 | DONE_VERIFIED | Concept library browse + Studio publish |
+| PR-041 | F3 | DONE_VERIFIED | Learning memory honest projection |
+| PR-102 | F3 | DONE_VERIFIED | Nex memory UI redacts raw JSON |
+| PR-063 | F3 | DONE_VERIFIED | Readiness session-aware CTAs |
+| PR-037 | F4 | DONE_VERIFIED | Parent dashboard weekly goal when visible |
+| PR-062 | F4 | DONE_VERIFIED | Parent weekly goal RLS isolation |
+| PR-059 | F4 | DONE_VERIFIED | Parent unlink + immediate revocation |
+| PR-060 | F4 | DONE_VERIFIED | Parent product settings page |
+| PR-061 | F4 | DONE_VERIFIED | Notification preference suppression |
+| PR-129 | F4 | DONE_VERIFIED | Notification retry + idempotency |
+| PR-130 | F4 | DONE_VERIFIED | Notification DLQ operator path |
+| PR-131 | F4 | DONE_VERIFIED | Idempotent weekly-report cron |
+| PR-132 | F4 | DONE_VERIFIED | Africa/Nairobi week boundary tests |
+| PR-057 | F4 | DONE_VERIFIED | Notification retention job (DEC-006) |
+| PR-058 | F4 | DONE_VERIFIED | Log/export PII redaction |
+| PR-107 | F4 | DONE_VERIFIED | Unified retention policy (learning/notifications) |
+| PR-128 | F4 | DONE_VERIFIED | View-as impersonation retention |
+| PR-133 | F4 | DONE_VERIFIED | Seat reclaim on subscription lapse |
+| PR-134 | F4 | DONE_VERIFIED | Family resubscribe reactivation |
+| PR-066 | F5 | DONE_VERIFIED | Admin reports CSV export |
+| PR-126 | F5 | DONE_VERIFIED | CSV formula injection escaping |
+| PR-067 | F5 | DONE_VERIFIED | Communications send (DEC-013 option B) |
+| PR-068 | F5 | DONE_VERIFIED | Experiment assignment + rollout precedence |
+| PR-069 | F5 | DONE_VERIFIED | Bulk action executor |
+| PR-070 | F5 | DONE_VERIFIED | Approval gates executor |
+| PR-125 | F5 | DONE_VERIFIED | Four-eyes bulk approval separation |
+| PR-071 | F5 | DONE_VERIFIED | Saved views reapply filters |
+| PR-072 | F5 | DONE_VERIFIED | Admin entity search role-filtered |
+| PR-073 | F5 | DONE_VERIFIED | Content calendar review dates |
+| PR-042 | F6 | DONE_VERIFIED | DEC-002 PROD_READY 21-question threshold |
+| PR-043 | F6 | DONE_VERIFIED | Readiness labels match DEC-002 |
+| PR-135 | F6 | DONE_VERIFIED | `npm run test:coverage-matrix` executable |
+| PR-136 | F6 | DONE_VERIFIED | Studio publish blocks under-covered topics |
+| PR-106 | F6 | DONE_VERIFIED | Mock exam copy DEC-007 accurate |
+| PR-050 | F6 | DONE_VERIFIED | MVP scope-lock updated |
+| PR-051 | F6 | DONE_VERIFIED | Docs say Next.js 16.2.9 |
+| PR-052 | F6 | DONE_VERIFIED | Route-count reconciliation script |
+| PR-053 | F6 | DONE_VERIFIED | User-flow docs cover utilities |
+| PR-141 | F6 | DONE_VERIFIED | Platform-settings 60s cache documented |
+| PR-019 | F7 | DONE_VERIFIED | Environment-aware CSP |
+| PR-020 | F7 | DONE_VERIFIED | Frame-ancestors protection |
+| PR-021 | F7 | DONE_VERIFIED | X-Content-Type-Options nosniff |
+| PR-022 | F7 | DONE_VERIFIED | Referrer-Policy |
+| PR-023 | F7 | DONE_VERIFIED | Permissions-Policy camera/mic on Nex only |
+| PR-024 | F7 | DONE_VERIFIED | HSTS HTTPS production/staging |
+| PR-139 | F7 | DONE_VERIFIED | nex-camera 6/6 under shipped headers |
+| PR-103 | F7 | DONE_VERIFIED | Cache-Control private on auth routes |
+| PR-025 | F7 | DONE_VERIFIED | robots.ts disallows private routes |
+| PR-026 | F7 | DONE_VERIFIED | sitemap.ts public routes only |
+| PR-027 | F7 | DONE_VERIFIED | Manifest + OG + canonical |
+| PR-097 | F7 | CONFIG_COMPLETE | Sentry client wiring done; staging DSN event **human gate** |
+| PR-098 | F7 | CONFIG_COMPLETE | Release tags/PII policy in config; staging event **human gate** |
+| PR-045 | F7 | DONE_VERIFIED | Provider probe matrix with timeouts |
+| PR-064 | F7 | DONE_VERIFIED | `cache()` on `getSessionUser` |
+| PR-065 | F7 | PARTIAL | Lab server-timing instrumentation only; no prod p95 dashboard |
+| PR-087 | F7 | DONE_VERIFIED | LHCI perf 0.81 / a11y·bp·seo 1.00 |
+| PR-074 | F7 | DONE_VERIFIED | Route-group error.tsx + recovery E2E |
+| PR-138 | F7 | DONE_VERIFIED | axe automated smoke (landing/login) |
+| PR-137 | F7 | BLOCKED | Windows Narrator + Edge manual gate (DEC-011) |
+| PR-079 | F8 | DONE_VERIFIED | parent-journey E2E green |
+| PR-080 | F8 | DONE_VERIFIED | admin-journey E2E green |
+| PR-081 | F8 | DONE_VERIFIED | studio publish E2E green |
+| PR-082 | F8 | DONE_VERIFIED | student-utilities E2E (seed rollouts); prod **dark-by-default** |
+| PR-083 | F8 | DONE_VERIFIED | pricing checkout + nex-camera 6/6 |
+| PR-084 | F8 | DONE_VERIFIED | RLS suite on reset DB |
+| PR-085 | F8 | DONE_VERIFIED | Concurrency invariants green |
+| PR-086 | F8 | BLOCKED | Real-provider staging checklist — human gate |
+| PR-076 | F8 | DONE_VERIFIED | Payment reconciliation runbook + dry-run |
+| PR-078 | F8 | DONE_VERIFIED | Outage runbooks + **launch rollout enablement table** |
+
+**Totals:** DONE_VERIFIED 82 · CONFIG_COMPLETE 2 · PARTIAL 1 · BLOCKED 2 · NOT_DONE 0 · OUT_OF_SCOPE 0
+
+---
+
+## FINAL — Honesty audit
+
+### Global assumptions
+- Burst limit numeric ceilings (PR-047) chosen conservatively; not in ledger.
+- Africa/Nairobi timezone for weekly reports (PR-132) unless DEC overrides.
+- `sessionStorage` acceptable for payment reload recovery (PR-123).
+- DEC-001 rollout-before-entitlements precedence implemented as coded in `featureRolloutService.ts`.
+- E2E credentials `student@nexus.local` / `NexusDev1` from `e2e/global-setup.ts` — not production secrets.
+- LHCI performance 0.81 accepted as lab evidence per DEC-005; not production RUM.
+- npm audit failures are **devDependency** chain (`@lhci/cli` → `tmp`/`uuid`); not runtime app deps.
+
+### Self-audit — highest-risk unverified claims
+1. **Sentry (PR-097/098):** Config files wired; no staging DSN event captured in this run — treat runtime error reporting as unproven until human gate passes.
+2. **Launch rollouts (PR-029/082/078):** Enforcement code verified by unit tests + E2E with seed rows; **production global enablement not executed** — subscribers see 404 until operator runs SQL/API table above.
+3. **PR-065:** `measureServerPhase` + dev `console.warn` only; no continuous p95 ≤800ms production dashboard.
+4. **PR-086:** M-Pesa sandbox, live AI, Celcom/Resend, cron — checklist written, not executed against staging.
+5. **PR-137 / DEC-011:** axe passes on landing/login; landing stat contrast **flaky** under CI (1 retry) — Narrator journeys not run.
+6. **PR-077 isolated DB replay:** Unit tests pass; full isolated `TEST_DATABASE_URL` integration skipped when stack absent.
+7. **Offline SW (PR-039/104):** Playwright offline test passes in CI harness; real device install UX not manually verified.
+8. **Account lifecycle seams (PR-107, PR-104 logout purge):** Auth-track owns logout internals; purge hooked at student shell boundary per coordination fence.
+
+### Human-gate list (must pass before charging / wide launch)
+| Gate | Owner | What remains |
+|------|-------|--------------|
+| PR-086 | Ops | Staging real-provider smoke (AI, M-Pesa sandbox, cron, SMS) |
+| PR-097/098 | Ops | Deliberate Sentry event on staging with DSN + release tag |
+| PR-137 | QA/a11y | Windows Narrator + Edge journey checklist (DEC-011) |
+| DEC-002/006/007 | Product | Ratify readiness thresholds, retention policy, mock-exam language in governance review |
+| Launch rollout enablement | Ops | Enable `student.study_search`, `student.offline_packs`, `student.concept_library` globally when ready (PR-078 table) |
+| Remote migration deploy | Human | `supabase db push --linked` forbidden in this program — apply migrations to production Supabase manually after audit |
+
+### Where the run stopped
+Run completed all phases F1–F8. `deploy:check` passes through **build**; **`npm audit --audit-level=moderate` exits 1** on `@lhci/cli` transitive advisories (see output below). No unexplained E2E failures after form-reliability triage.
+
+### `npm run test:e2e:ci` summary (2026-07-06 finish-line)
+```
+npm run build → exit 0
+playwright test → 31 passed, 1 flaky (a11y landing color-contrast on stat), 0 failed (3.1m)
+form-reliability.spec.ts → 4/4 passed (including ProfileForm validation + rehydration)
+nex-camera.spec.ts → 6/6 passed (prior F7 run under production server)
+Credentials: E2E_STUDENT_EMAIL=student@nexus.local E2E_STUDENT_PASSWORD=NexusDev1 (global-setup defaults)
+```
+
+### `npm run deploy:check` final output (verbatim)
+```
+> nexus@0.1.0 deploy:check
+> npm run env:check && npm run lint && npm run typecheck && npm test && npm run test:scope-check && npm run build && npm audit --audit-level=moderate
+
+
+> nexus@0.1.0 env:check
+> tsx scripts/validateProductionEnv.ts
+
+env:check passed
+
+> nexus@0.1.0 lint
+> eslint
+
+
+C:\Users\gar\Desktop\Garnet Labs\nexus\src\app\(student)\focus\page.tsx
+  1:10  warning  'Clock3' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\gar\Desktop\Garnet Labs\nexus\src\app\api\admin\bulk-actions\execute\route.ts
+  12:10  warning  'ADMIN_ROLES' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\gar\Desktop\Garnet Labs\nexus\src\features\pricing\components\PricingCheckout.tsx
+  83:6  warning  React Hook useEffect has a missing dependency: 'pollPaymentStatus'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\gar\Desktop\Garnet Labs\nexus\src\server\services\studentExperienceService.ts
+  50:6  warning  'FocusSessionInput' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\gar\Desktop\Garnet Labs\nexus\tests\admin\auditFailClosed.test.ts
+  130:18  warning  '_column' is defined but never used  @typescript-eslint/no-unused-vars
+  130:35  warning  'values' is defined but never used   @typescript-eslint/no-unused-vars
+
+C:\Users\gar\Desktop\Garnet Labs\nexus\tests\family\familyLifecycle.test.ts
+  24:25  warning  'args' is defined but never used   @typescript-eslint/no-unused-vars
+  95:34  warning  'value' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\gar\Desktop\Garnet Labs\nexus\tests\student\focusSession.test.ts
+  8:7  warning  'select' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\gar\Desktop\Garnet Labs\nexus\tests\student\mistakeJournal.test.ts
+  106:3  warning  'recordPracticeSessionMistakesNonFatal' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 10 problems (0 errors, 10 warnings)
+
+
+> nexus@0.1.0 typecheck
+> tsc --noEmit
+
+
+> nexus@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.8 C:/Users/gar/Desktop/Garnet Labs/nexus
+
+
+ Test Files  157 passed | 9 skipped (166)
+      Tests  662 passed | 14 skipped (676)
+   Start at  19:43:16
+   Duration  103.26s (transform 19.90s, setup 0ms, import 149.50s, tests 21.35s, environment 832.99s)
+
+
+> nexus@0.1.0 test:scope-check
+> tsx scripts/scope-check.ts
+
+Scope check passed.
+
+> nexus@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 31.4s
+  Running TypeScript ...
+  Finished TypeScript in 27.9s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/93) ...
+  Generating static pages using 11 workers (23/93) 
+  Generating static pages using 11 workers (46/93) 
+  Generating static pages using 11 workers (69/93) 
+✓ Generating static pages using 11 workers (93/93) in 1377ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ƒ /admin
+├ ƒ /admin/ai-quality
+├ ƒ /admin/alerts
+├ ƒ /admin/approvals
+├ ƒ /admin/assessment
+├ ƒ /admin/audit-log
+├ ƒ /admin/beta-invites
+├ ƒ /admin/bulk-actions
+├ ƒ /admin/campaigns
+├ ƒ /admin/communications
+├ ƒ /admin/content
+├ ƒ /admin/content-calendar
+├ ƒ /admin/experiments
+├ ƒ /admin/health
+├ ƒ /admin/inbox
+├ ƒ /admin/nex-ops
+├ ƒ /admin/outcomes
+├ ƒ /admin/payments
+├ ƒ /admin/platform-settings
+├ ƒ /admin/reports
+├ ƒ /admin/revenue-ops
+├ ƒ /admin/roles
+├ ƒ /admin/rollouts
+├ ƒ /admin/saved-views
+├ ƒ /admin/search
+├ ƒ /admin/studio
+├ ƒ /admin/studio/[lessonId]
+├ ƒ /admin/studio/new
+├ ƒ /admin/studio/review
+├ ƒ /admin/support
+├ ƒ /admin/usage-stats
+├ ƒ /admin/users
+├ ƒ /admin/users/[id]
+├ ƒ /admin/users/[id]/view
+├ ƒ /api/admin/alerts
+├ ƒ /api/admin/approvals
+├ ƒ /api/admin/assessment/calibrations
+├ ƒ /api/admin/audit-log
+├ ƒ /api/admin/beta-invites
+├ ƒ /api/admin/bulk-actions/execute
+├ ƒ /api/admin/communications
+├ ƒ /api/admin/communications/send
+├ ƒ /api/admin/content/assist
+├ ƒ /api/admin/content/concept-references/publish
+├ ƒ /api/admin/content/drafts/lesson
+├ ƒ /api/admin/content/drafts/lesson/[id]
+├ ƒ /api/admin/content/drafts/lesson/create
+├ ƒ /api/admin/content/media/upload
+├ ƒ /api/admin/content/review/approve
+├ ƒ /api/admin/content/review/archive
+├ ƒ /api/admin/content/review/lessons/[lessonId]/versions
+├ ƒ /api/admin/content/review/lessons/[lessonId]/versions/restore
+├ ƒ /api/admin/content/review/queue
+├ ƒ /api/admin/content/review/request-changes
+├ ƒ /api/admin/content/review/submit
+├ ƒ /api/admin/content/studio/subtopics/[subtopicId]/lessons
+├ ƒ /api/admin/content/studio/subtopics/[subtopicId]/lessons/reorder
+├ ƒ /api/admin/content/studio/topics/[topicId]/questions
+├ ƒ /api/admin/content/studio/topics/[topicId]/questions/bulk
+├ ƒ /api/admin/experiments
+├ ƒ /api/admin/experiments/assign
+├ ƒ /api/admin/feature-rollouts
+├ ƒ /api/admin/nex-ops
+├ ƒ /api/admin/nex-ops/flags
+├ ƒ /api/admin/nex-ops/flags/[id]
+├ ƒ /api/admin/outcomes
+├ ƒ /api/admin/outcomes/parent-sms
+├ ƒ /api/admin/payments
+├ ƒ /api/admin/payments/coupons
+├ ƒ /api/admin/payments/coupons/[id]
+├ ƒ /api/admin/platform-settings
+├ ƒ /api/admin/reports/export
+├ ƒ /api/admin/roles
+├ ƒ /api/admin/saved-views
+├ ƒ /api/admin/search
+├ ƒ /api/admin/support-cases
+├ ƒ /api/admin/usage-stats
+├ ƒ /api/admin/users
+├ ƒ /api/admin/users/[id]/comp
+├ ƒ /api/admin/users/[id]/impersonate
+├ ƒ /api/admin/users/[id]/profile
+├ ƒ /api/celcom/webhook
+├ ƒ /api/cron/data-retention
+├ ƒ /api/cron/notification-outbox
+├ ƒ /api/cron/weekly-reports
+├ ƒ /api/diagnostic-assessments
+├ ƒ /api/diagnostic-assessments/[id]/start
+├ ƒ /api/diagnostic-assessments/[id]/submit
+├ ƒ /api/exam-simulator/[id]/submit
+├ ƒ /api/exam-simulator/start
+├ ƒ /api/family/invite-code
+├ ƒ /api/family/join
+├ ƒ /api/lessons/[id]/complete
+├ ƒ /api/lessons/[id]/viewed
+├ ƒ /api/mock-exams/[id]/submit
+├ ƒ /api/mock-exams/generate
+├ ƒ /api/mpesa/callback/[secret]
+├ ƒ /api/mpesa/status
+├ ƒ /api/mpesa/stk-push
+├ ƒ /api/nex/camera
+├ ƒ /api/nex/chat
+├ ƒ /api/nex/voice
+├ ƒ /api/parents/link
+├ ƒ /api/parents/linked-students/[studentId]
+├ ƒ /api/parents/linked-students/[studentId]/weekly-goal
+├ ƒ /api/parents/notification-preferences
+├ ƒ /api/parents/overview
+├ ƒ /api/parents/settings
+├ ƒ /api/practice-sessions
+├ ƒ /api/practice-sessions/[id]/answer
+├ ƒ /api/practice-sessions/[id]/complete
+├ ƒ /api/students/focus-sessions
+├ ƒ /api/students/invite-code
+├ ƒ /api/students/mistakes
+├ ƒ /api/students/offline-packs
+├ ƒ /api/students/saved-items
+├ ƒ /api/students/search
+├ ƒ /api/students/weekly-goal
+├ ƒ /api/study-plans
+├ ƒ /api/study-plans/tasks/[id]
+├ ƒ /api/subscriptions/trial
+├ ƒ /api/waitlist/teacher
+├ ƒ /assignment-help
+├ ƒ /auth/callback
+├ ƒ /continue
+├ ƒ /dashboard
+├ ƒ /diagnostic
+├ ○ /e2e-force-error
+├ ƒ /exam-prep
+├ ƒ /exam-simulator
+├ ƒ /focus
+├ ƒ /learn
+├ ƒ /learn/[topicId]
+├ ƒ /learn/[topicId]/[lessonId]
+├ ƒ /library
+├ ƒ /login
+├ ○ /manifest.webmanifest
+├ ƒ /mistakes
+├ ƒ /mock-exams
+├ ƒ /nex
+├ ƒ /nex-memory
+├ ƒ /offline
+├ ƒ /onboarding
+├ ƒ /parent
+├ ƒ /parent/settings
+├ ƒ /practice
+├ ƒ /pricing
+├ ƒ /profile
+├ ƒ /progress
+├ ƒ /readiness
+├ ƒ /revision
+├ ○ /robots.txt
+├ ƒ /saved
+├ ƒ /signup
+├ ○ /sitemap.xml
+├ ƒ /study-plan
+├ ƒ /study-search
+├ ƒ /tasks
+├ ○ /waitlist/teacher
+├ ƒ /weak-areas
+└ ƒ /weekly-goal
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+# npm audit report
+
+tmp  <=0.2.5
+Severity: high
+tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter - https://github.com/advisories/GHSA-52f5-9888-hmc6
+tmp has Path Traversal via unsanitized prefix/postfix that enables directory escape - https://github.com/advisories/GHSA-ph9p-34f9-6g65
+fix available via `npm audit fix --force`
+Will install @lhci/cli@0.1.0, which is a breaking change
+node_modules/external-editor/node_modules/tmp
+node_modules/tmp
+  @lhci/cli  *
+  Depends on vulnerable versions of inquirer
+  Depends on vulnerable versions of tmp
+  Depends on vulnerable versions of uuid
+  node_modules/@lhci/cli
+  external-editor  >=1.1.1
+  Depends on vulnerable versions of tmp
+  node_modules/external-editor
+    inquirer  3.0.0 - 8.2.6 || 9.0.0 - 9.3.7
+    Depends on vulnerable versions of external-editor
+    node_modules/inquirer
+
+uuid  <11.1.1
+Severity: moderate
+uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided - https://github.com/advisories/GHSA-w5hq-g745-h8pq
+fix available via `npm audit fix --force`
+Will install @lhci/cli@0.1.0, which is a breaking change
+node_modules/uuid
+
+5 vulnerabilities (2 low, 2 moderate, 1 high)
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+```
+**deploy:check exit code:** 1 (audit only; all prior steps exit 0)
+
+**Finish-line commits:** `2df6a93` fix(e2e-triage) · `a0688c2` fix deploy gates · this doc commit `docs(fablefix): final remediation execution report`
