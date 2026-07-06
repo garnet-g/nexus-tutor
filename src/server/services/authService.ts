@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { learningPreferencesToDb } from "@/schemas/profileSchemas";
@@ -27,7 +29,7 @@ function getRoleFromAppMetadata(
   return null;
 }
 
-export async function getSessionUser(): Promise<SessionUser | null> {
+export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   try {
     const supabase = await createClient();
     const sessionResult = await supabase.auth.getSession();
@@ -108,7 +110,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   } catch {
     return null;
   }
-}
+});
 
 export async function setUserRole(
   userId: string,
