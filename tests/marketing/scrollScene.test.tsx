@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ScrollScene } from "@/app/(public)/_landing/ScrollScene";
@@ -29,7 +29,7 @@ describe("ScrollScene", () => {
     expect(screen.getByText("progress:1")).toBeDefined();
   });
 
-  it("pins to a tall section and scrubs from the top when motion is allowed", () => {
+  it("pins to a tall section and scrubs from the top when motion is allowed", async () => {
     stubMatchMedia(false);
     vi.spyOn(Element.prototype, "getBoundingClientRect").mockReturnValue({
       top: 0,
@@ -45,9 +45,10 @@ describe("ScrollScene", () => {
     const { container } = render(
       <ScrollScene length={3}>{(p) => <p>progress:{p}</p>}</ScrollScene>,
     );
+    // Pinning is deferred behind requestAnimationFrame, so wait for it.
     const section = container.querySelector("section");
-    expect(section?.style.height).toBe("300vh");
+    await waitFor(() => expect(section?.style.height).toBe("300vh"));
     // jsdom innerHeight is 768: scrollable = 2304 - 768, top = 0 -> progress 0
-    expect(screen.getByText("progress:0")).toBeDefined();
+    await waitFor(() => expect(screen.getByText("progress:0")).toBeDefined());
   });
 });

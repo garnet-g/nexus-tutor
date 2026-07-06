@@ -1,24 +1,34 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const landingPageSource = readFileSync(
-  join(process.cwd(), "src/app/(public)/page.tsx"),
-  "utf8",
-);
+const landingDir = join(process.cwd(), "src/app/(public)/_landing");
+const source = [
+  readFileSync(join(process.cwd(), "src/app/(public)/page.tsx"), "utf8"),
+  ...readdirSync(landingDir)
+    .filter((file) => file.endsWith(".tsx"))
+    .map((file) => readFileSync(join(landingDir, file), "utf8")),
+].join("\n");
 
 describe("public landing page positioning", () => {
-  it("opens with an AI revision control room for Form 1-Form 4 exam prep", () => {
-    expect(landingPageSource).toContain("AI revision control room");
-    expect(landingPageSource).toContain("Form 1");
-    expect(landingPageSource).toContain("Form 4");
-    expect(landingPageSource).toContain("mock exam");
-    expect(landingPageSource).toContain("weak-topic");
+  it("positions Nexus as a student-voiced AI tutor for KCSE exam prep", () => {
+    expect(source).toContain("Your AI tutor for KCSE");
+    expect(source).toContain("Form 1");
+    expect(source).toContain("Form 4");
+    expect(source).toContain("mock");
+    expect(source).toContain("Topics still costing you marks");
+  });
+
+  it("bans internal jargon on the public page", () => {
+    expect(source).not.toContain("Socratic");
+    expect(source).not.toContain("control room");
+    expect(source).not.toContain("weak-topic");
+    expect(source).not.toContain("mastery");
   });
 
   it("keeps the public page away from generic three-card marketing structure", () => {
-    expect(landingPageSource).not.toContain("PILLARS.map");
-    expect(landingPageSource).not.toContain("md:grid-cols-3");
-    expect(landingPageSource).not.toContain("One companion, from your first question");
+    expect(source).not.toContain("PILLARS.map");
+    expect(source).not.toContain("md:grid-cols-3");
+    expect(source).not.toContain("One companion, from your first question");
   });
 });

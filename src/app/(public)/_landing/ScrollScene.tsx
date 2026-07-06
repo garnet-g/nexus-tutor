@@ -45,8 +45,13 @@ export function ScrollScene({
 
   useEffect(() => {
     if (prefersStatic()) return;
-    const small = window.innerWidth < 640;
-    setVhLength(small && lengthSm ? lengthSm : length);
+    // Defer past the effect body (same pattern as Reveal.tsx) so pinning
+    // does not trigger a cascading render during mount.
+    const raf = requestAnimationFrame(() => {
+      const small = window.innerWidth < 640;
+      setVhLength(small && lengthSm ? lengthSm : length);
+    });
+    return () => cancelAnimationFrame(raf);
   }, [length, lengthSm]);
 
   useEffect(() => {
@@ -67,7 +72,7 @@ export function ScrollScene({
       if (!raf) raf = requestAnimationFrame(update);
     };
 
-    update();
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
