@@ -1,4 +1,5 @@
 import { StudentAppShell } from "@/components/student/StudentAppShell";
+import { OfflineRuntimeBootstrap } from "@/features/student/components/OfflineRuntimeBootstrap";
 import { getSessionUser } from "@/server/services/authService";
 import { getStudentChromeData } from "@/server/services/studentExperienceService";
 
@@ -30,6 +31,7 @@ export default async function StudentLayout({
 
   return (
     <StudentAppShell
+      studentId={profile?.id}
       studentName={profile?.full_name ?? "Student"}
       currentStreak={currentStreak}
       totalXp={totalXp}
@@ -37,6 +39,7 @@ export default async function StudentLayout({
       navBadges={navBadges}
       diagnosticComplete={diagnosticComplete}
     >
+      <OfflineRuntimeBootstrap studentId={profile?.id} />
       {children}
     </StudentAppShell>
   );

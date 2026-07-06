@@ -1,0 +1,16 @@
+{
+  "name": "Nexus Study",
+  "short_name": "Nexus",
+  "description": "Offline study packs for Nexus students",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0f1419",
+  "theme_color": "#0f1419",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

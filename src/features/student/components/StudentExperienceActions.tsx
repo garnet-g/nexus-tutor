@@ -265,32 +265,59 @@ export function FocusStatusButton({
 }
 
 export function OfflinePackButton({
+  studentId,
   packKey,
   title,
   description,
   sizeKb,
+  cacheUrls,
 }: {
+  studentId: string;
   packKey: string;
   title: string;
   description: string;
   sizeKb: number;
+  cacheUrls: string[];
 }) {
-  const { state, run } = useApiAction();
+  const router = useRouter();
+  const [state, setState] = useState<ApiState>("idle");
+
   return (
     <button
       type="button"
-      onClick={() =>
-        run("/api/students/offline-packs", {
-          method: "POST",
-          body: JSON.stringify({
-            packKey,
-            title,
-            description,
-            status: "downloaded",
-            sizeKb,
-          }),
-        })
-      }
+      onClick={() => {
+        void (async () => {
+          setState("saving");
+          try {
+            const response = await fetch("/api/students/offline-packs", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                packKey,
+                title,
+                description,
+                status: "downloaded",
+                sizeKb,
+              }),
+            });
+
+            if (!response.ok) {
+              setState("error");
+              return;
+            }
+
+            const { rememberOfflineStudentNamespace, cacheOfflinePackUrls } =
+              await import("@/lib/offline/offlineStorage");
+
+            rememberOfflineStudentNamespace(studentId);
+            await cacheOfflinePackUrls(studentId, packKey, cacheUrls);
+            setState("saved");
+            router.refresh();
+          } catch {
+            setState("error");
+          }
+        })();
+      }}
       className="rounded-xl bg-nexus-primary px-3 py-1.5 text-xs font-semibold text-nexus-text-inverse"
     >
       {state === "saving" ? "Preparing..." : "Prepare pack"}

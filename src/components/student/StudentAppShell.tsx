@@ -27,10 +27,10 @@ import { NexMark } from "@/components/NexMark";
 import { StudySearchPalette } from "@/components/student/StudySearchPalette";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ToastProvider } from "@/components/ui/Toast";
+import { StudentSignOutButton } from "@/features/student/components/StudentSignOutButton";
 import { STUDENT_NAV_GROUPS } from "@/features/student/studentExperience";
 import { levelFromXp } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
-import { signOutAction } from "@/server/actions/authActions";
 
 type NavItem = {
   href: string;
@@ -87,6 +87,7 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 interface StudentAppShellProps {
+  studentId?: string | null;
   studentName: string;
   currentStreak: number;
   totalXp: number;
@@ -97,6 +98,7 @@ interface StudentAppShellProps {
 }
 
 export function StudentAppShell({
+  studentId,
   studentName,
   currentStreak,
   totalXp,
@@ -185,14 +187,10 @@ export function StudentAppShell({
                   </p>
                 </div>
               </div>
-              <form action={signOutAction}>
-                <button
-                  type="submit"
-                  className="mt-2 w-full rounded-xl px-2 py-2 text-left text-xs font-medium text-muted-foreground transition-colors hover:bg-nexus-sunken hover:text-foreground"
-                >
-                  Sign out
-                </button>
-              </form>
+              <StudentSignOutButton
+                studentId={studentId}
+                className="mt-2 w-full rounded-xl px-2 py-2 text-left text-xs font-medium text-muted-foreground transition-colors hover:bg-nexus-sunken hover:text-foreground"
+              />
             </div>
           </div>
         </aside>
