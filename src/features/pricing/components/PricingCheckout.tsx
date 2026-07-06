@@ -11,6 +11,11 @@ import {
   formatPlanAmountKes,
   PricingPlanComparison,
 } from "@/features/pricing/components/PricingPlanComparison";
+import {
+  clearPendingPayment,
+  readPendingPayment,
+  savePendingPayment,
+} from "@/features/pricing/lib/pendingPaymentStorage";
 import type { EffectiveSubscriptionConfig } from "@/lib/platform/getPlatformSettings";
 import { cn } from "@/lib/utils";
 
@@ -50,11 +55,22 @@ export function PricingCheckout({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  const [isResumingPayment, setIsResumingPayment] = useState(false);
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const selectedPlan = paidPlans.find((plan) => plan.id === selectedPlanId);
 
   useEffect(() => {
+    const pending = readPendingPayment();
+    if (!pending) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+    setIsResumingPayment(true);
+    startPolling(pending.mpesaPaymentId);
+
     return () => {
       if (pollTimerRef.current) {
         clearInterval(pollTimerRef.current);
@@ -98,6 +114,7 @@ export function PricingCheckout({
       if (payload.data.status === "verified-paid") {
         stopPolling();
         setIsSubmitting(false);
+        clearPendingPayment();
         setSuccess(
           `${payload.data.planName} is now active. Thank you for your payment.`,
         );
@@ -107,6 +124,7 @@ export function PricingCheckout({
       if (TERMINAL_STATUSES.has(payload.data.status)) {
         stopPolling();
         setIsSubmitting(false);
+        clearPendingPayment();
         setError(
           payload.data.failureHint ??
             "Payment did not complete. You can try again — no charge was applied.",
@@ -122,6 +140,7 @@ export function PricingCheckout({
   }
 
   function startPolling(mpesaPaymentId: string) {
+    savePendingPayment({ mpesaPaymentId });
     setPaymentStatus("processing");
     void pollPaymentStatus(mpesaPaymentId);
 
@@ -192,6 +211,7 @@ export function PricingCheckout({
       }
 
       setSuccess("STK push sent. Complete payment on your phone.");
+      setIsResumingPayment(false);
       startPolling(payload.data.mpesaPaymentId);
       pollingStarted = true;
     } catch {
@@ -294,7 +314,12 @@ export function PricingCheckout({
               {success}
             </p>
           ) : null}
-          {paymentStatus && !success && !error ? (
+          {isResumingPayment ? (
+            <p className="text-sm text-muted-foreground" role="status">
+              Resuming your pending payment…
+            </p>
+          ) : null}
+          {paymentStatus && !error ? (
             <p className="text-sm text-muted-foreground" role="status">
               {paymentStatus === "provider-pending"
                 ? "Confirming payment with M-Pesa…"

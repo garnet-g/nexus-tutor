@@ -12,4 +12,14 @@ Started: 2026-07-06T09:30:00+03:00
 - **Assumptions made:** Burst ceilings: stk-push 5/account, 3/phone, 10/IP per 60s; status 30/account, 30/IP per 60s (not specified in ledger; conservative defaults). Reused `MPESA_CALLBACK_PEPPER` for HMAC pepper (same pattern as callback secret hashing).
 - **Invented/uncertain:** Exact numeric limits are not in ledger/DEC; chosen to mirror Phase 05 nex/practice burst patterns.
 - **Not done / remaining:** Callback route IP limit not added (ledger row cites stk-push + status start paths only; architect amendment mentions callback — deferred as out of explicit accept test).
+- **Commit:** 1b23cf2 fix(PR-047): durable burst limits on payment endpoints
+
+### PR-123 — Recoverable pending payment on reload
+- **Status:** DONE_VERIFIED
+- **What was done:** `src/features/pricing/lib/pendingPaymentStorage.ts` (sessionStorage snapshot); `PricingCheckout.tsx` saves on poll start, clears on terminal, resumes on mount; `tests/pricing/PricingCheckoutRecovery.test.tsx`.
+- **Trace chain (Tracer):** Page reload → `PricingCheckout.tsx:63-74` `readPendingPayment` → `startPolling` → `pollPaymentStatus` → `fetch /api/mpesa/status` (`PricingCheckout.tsx:90-92`) → `src/app/api/mpesa/status/route.ts` GET handler → DB `mpesa_payments` → JSON status → UI `isResumingPayment` + `paymentStatus` labels (`PricingCheckout.tsx:313-324`).
+- **Acceptance evidence:** `npm test -- tests/pricing/PricingCheckoutRecovery.test.tsx` — 1 passed.
+- **Assumptions made:** sessionStorage is acceptable persistence for reload recovery (ledger does not specify storage mechanism).
+- **Invented/uncertain:** Copy for "Resuming your pending payment…" authored without product input.
+- **Not done / remaining:** nothing
 - **Commit:** (pending)
