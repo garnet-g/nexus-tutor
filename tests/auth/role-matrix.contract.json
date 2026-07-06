@@ -859,6 +859,22 @@
     ]
   },
   {
+    "path": "/api/parents/overview",
+    "tier": "parent",
+    "filePath": "src/app/api/parents/overview/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/parents/linked-students/[studentId]/weekly-goal",
+    "tier": "parent",
+    "filePath": "src/app/api/parents/linked-students/[studentId]/weekly-goal/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
     "path": "/api/practice-sessions/[id]/answer",
     "tier": "student",
     "filePath": "src/app/api/practice-sessions/[id]/answer/route.ts",

@@ -4,6 +4,7 @@ import { randomBytes } from "node:crypto";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { getKcseMathRevisionHubForStudent } from "@/server/services/kcseMathRevisionService";
 import { getWeekStartDate } from "@/server/services/studentExperienceService";
 
@@ -208,18 +209,37 @@ export async function linkParentToStudent(
   };
 }
 
+export async function verifyActiveParentStudentLink(
+  supabase: SupabaseClient,
+  parentId: string,
+  studentId: string,
+): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("student_parent_links")
+    .select("id")
+    .eq("parent_id", parentId)
+    .eq("student_id", studentId)
+    .eq("link_status", "active")
+    .maybeSingle();
+
+  if (error) {
+    return false;
+  }
+
+  return Boolean(data);
+}
+
 export async function getParentVisibleWeeklyGoal(
+  supabase: SupabaseClient,
   studentId: string,
 ): Promise<ParentVisibleWeeklyGoal | null> {
-  const admin = createAdminClient();
   const weekStart = getWeekStartDate();
 
-  const { data, error } = await admin
+  const { data, error } = await supabase
     .from("student_weekly_goals")
     .select("target_minutes, target_tasks, note, week_start_date")
     .eq("student_id", studentId)
     .eq("week_start_date", weekStart)
-    .eq("parent_visible", true)
     .maybeSingle();
 
   if (error || !data) {
@@ -232,6 +252,20 @@ export async function getParentVisibleWeeklyGoal(
     note: (data.note as string | null) ?? null,
     weekStartDate: String(data.week_start_date),
   };
+}
+
+export async function getParentWeeklyGoalForLinkedStudent(
+  parentId: string,
+  studentId: string,
+): Promise<ParentVisibleWeeklyGoal | null | "NOT_LINKED"> {
+  const supabase = await createClient();
+  const linked = await verifyActiveParentStudentLink(supabase, parentId, studentId);
+
+  if (!linked) {
+    return "NOT_LINKED";
+  }
+
+  return getParentVisibleWeeklyGoal(supabase, studentId);
 }
 
 async function getWeeklyStudyMinutes(studentId: string): Promise<number> {
@@ -330,7 +364,7 @@ export async function getLinkedStudentsOverview(
 
     const [weeklyStudyMinutes, weeklyGoal, healthScore, weakTopics, revisionHub] = await Promise.all([
       getWeeklyStudyMinutes(studentId),
-      getParentVisibleWeeklyGoal(studentId),
+      getParentVisibleWeeklyGoal(supabase, studentId),
       getLatestHealthScore(studentId),
       getWeakTopics(studentId),
       getKcseMathRevisionHubForStudent({

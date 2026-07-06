@@ -6,7 +6,12 @@ const rlsMigrationPath = join(
   process.cwd(),
   "supabase/migrations/20250613120300_enable_rls.sql",
 );
+const experienceToolsMigrationPath = join(
+  process.cwd(),
+  "supabase/migrations/20260625060211_student_experience_tools.sql",
+);
 const rlsSql = readFileSync(rlsMigrationPath, "utf8");
+const experienceToolsSql = readFileSync(experienceToolsMigrationPath, "utf8");
 
 const STUDENT_MUTABLE_TABLES = [
   "student_profiles",
@@ -81,5 +86,14 @@ describe("parent RLS access policies", () => {
     );
 
     expect(parentLinkedPolicies.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("restricts parent weekly goal reads to parent_visible linked students", () => {
+    expect(experienceToolsSql).toContain(
+      "CREATE POLICY student_weekly_goals_parent_linked",
+    );
+    expect(experienceToolsSql).toContain("parent_visible = true");
+    expect(experienceToolsSql).toContain("public.auth_parent_id()");
+    expect(experienceToolsSql).toContain("link_status = 'active'");
   });
 });

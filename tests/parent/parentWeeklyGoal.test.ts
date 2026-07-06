@@ -5,36 +5,34 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const maybeSingle = vi.fn();
 
-vi.mock("@/lib/supabase/admin", () => ({
-  createAdminClient: vi.fn(() => ({
-    from: () => ({
-      select: () => ({
+const supabase = {
+  from: () => ({
+    select: () => ({
+      eq: () => ({
         eq: () => ({
-          eq: () => ({
-            eq: () => ({
-              maybeSingle,
-            }),
-          }),
+          maybeSingle,
         }),
       }),
     }),
-  })),
-}));
+  }),
+};
 
 import { getParentVisibleWeeklyGoal } from "@/server/services/parentLinkService";
 
-describe("getParentVisibleWeeklyGoal", () => {
+describe("getParentVisibleWeeklyGoal (parent RLS client)", () => {
   beforeEach(() => {
     maybeSingle.mockReset();
   });
 
-  it("returns null when no parent-visible goal exists", async () => {
+  it("returns null when RLS hides the row", async () => {
     maybeSingle.mockResolvedValue({ data: null, error: null });
 
-    await expect(getParentVisibleWeeklyGoal("student-1")).resolves.toBeNull();
+    await expect(
+      getParentVisibleWeeklyGoal(supabase as never, "student-1"),
+    ).resolves.toBeNull();
   });
 
-  it("returns mapped goal when parent_visible row exists", async () => {
+  it("returns mapped goal when parent RLS allows the row", async () => {
     maybeSingle.mockResolvedValue({
       data: {
         target_minutes: 180,
@@ -45,7 +43,9 @@ describe("getParentVisibleWeeklyGoal", () => {
       error: null,
     });
 
-    await expect(getParentVisibleWeeklyGoal("student-1")).resolves.toEqual({
+    await expect(
+      getParentVisibleWeeklyGoal(supabase as never, "student-1"),
+    ).resolves.toEqual({
       targetMinutes: 180,
       targetTasks: 6,
       note: "Finish algebra revision",
