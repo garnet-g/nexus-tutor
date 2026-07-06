@@ -1,5 +1,6 @@
 import { BarChart3, Clock3, Target } from "lucide-react";
 
+import { ReadinessExamCta } from "@/features/student/components/ReadinessExamCta";
 import {
   EmptyStudentState,
   LinkedPanel,
@@ -7,10 +8,12 @@ import {
   StudentPageHeader,
 } from "@/features/student/components/StudentExperienceBlocks";
 import { requireStudentExperience } from "@/features/student/server/requireStudentExperience";
+import { getReadinessExamContext } from "@/server/services/readinessExamService";
 
 export default async function ExamReadinessPage() {
   const experience = await requireStudentExperience();
   const latest = experience.recentMockResults[0];
+  const examContext = await getReadinessExamContext(experience.profile.id);
 
   return (
     <div className="space-y-6 nexus-enter">
@@ -59,6 +62,13 @@ export default async function ExamReadinessPage() {
         />
       </div>
 
+      <ReadinessExamCta
+        planCode={experience.planCode}
+        topicId={examContext.topicId ?? experience.recommendedTopic?.topicId ?? null}
+        activeSimulatorSessionId={examContext.activeSimulatorSessionId}
+        readyMockSessionId={examContext.readyMockSessionId}
+      />
+
       <section className="grid gap-4 lg:grid-cols-2">
         <LinkedPanel
           href="/exam-prep"
@@ -67,9 +77,9 @@ export default async function ExamReadinessPage() {
           icon={Clock3}
         />
         <LinkedPanel
-          href="/exam-simulator"
-          title="Exam simulator"
-          description="Practice under timed conditions when you are ready."
+          href="/mock-exams"
+          title="Mock exams"
+          description="Review generated papers and past results."
           icon={Clock3}
         />
       </section>
