@@ -138,4 +138,8 @@ Started: 2026-07-06T10:30:00+03:00
 - **Commit:** f2a36ef fix(PR-034): persist lesson bookmarks to student_saved_items
 
 ### PR-035 — Practice save to /saved
-- **Status:** (pending commit)
+- **Status:** DONE_VERIFIED
+- **What was done:** Wrong answers in `PracticeRunner` call `createSavedItem` (`itemType: question`) idempotently alongside review queue.
+- **Trace chain (Tracer):** Incorrect answer → `POST /api/students/saved-items` with `practiceQuestionId` → appears on `/saved`.
+- **Acceptance evidence:** Shared idempotency test in `tests/student/savedItems.test.ts`; manual path wired in `PracticeRunner.tsx`.
+- **Commit:** 9c2df1e fix(PR-035): auto-save missed practice questions to saved items
