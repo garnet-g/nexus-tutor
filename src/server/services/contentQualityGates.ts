@@ -1,6 +1,6 @@
 import "server-only";
 
-import { ACTIVE_SUBJECT_CODES } from "@/lib/curriculum/contentModel";
+import { ACTIVE_SUBJECT_CODES, getTopicReadinessLabel, isTopicLearnReady, isTopicProdReady } from "@/lib/curriculum/contentModel";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { lessonContentSchema } from "@/schemas/lessonContentSchemas";
 import { generatedQuestionSchema } from "@/schemas/contentGenerationSchemas";
@@ -277,6 +277,132 @@ export async function runQuestionQualityGates(questionId: string): Promise<Conte
     }
     return fail(["Could not validate question quality gates."]);
   }
+}
+
+async function loadTopicReadinessSnapshot(topicId: string): Promise<{
+  readinessLabel: ReturnType<typeof getTopicReadinessLabel>;
+  questionCounts: { easy: number; medium: number; hard: number };
+  publishedLessonCount: number;
+  subtopicCount: number;
+  subtopicsWithLesson: number;
+}> {
+  const admin = createAdminClient();
+
+  const { data: subtopics } = await admin
+    .from("subtopics")
+    .select("id")
+    .eq("topic_id", topicId)
+    .eq("is_active", true);
+  const subtopicIds = (subtopics ?? []).map((row) => row.id);
+  const subtopicCount = subtopicIds.length;
+
+  let publishedLessonCount = 0;
+  let subtopicsWithLesson = 0;
+  if (subtopicIds.length > 0) {
+    const { data: lessons } = await admin
+      .from("lessons")
+      .select("subtopic_id")
+      .in("subtopic_id", subtopicIds)
+      .eq("review_status", "published")
+      .eq("is_active", true);
+    publishedLessonCount = lessons?.length ?? 0;
+    subtopicsWithLesson = new Set((lessons ?? []).map((row) => row.subtopic_id)).size;
+  }
+
+  const { data: questions } = await admin
+    .from("practice_questions")
+    .select("difficulty")
+    .eq("topic_id", topicId)
+    .eq("review_status", "published")
+    .eq("is_active", true);
+
+  const questionCounts = { easy: 0, medium: 0, hard: 0 };
+  for (const question of questions ?? []) {
+    const difficulty = question.difficulty as keyof typeof questionCounts;
+    if (difficulty in questionCounts) {
+      questionCounts[difficulty] += 1;
+    }
+  }
+
+  return {
+    readinessLabel: getTopicReadinessLabel({
+      publishedLessonCount,
+      subtopicCount,
+      subtopicsWithLesson,
+      questionCounts,
+    }),
+    questionCounts,
+    publishedLessonCount,
+    subtopicCount,
+    subtopicsWithLesson,
+  };
+}
+
+export async function runTopicProdReadyPublishGate(
+  topicId: string,
+): Promise<ContentGateResult> {
+  try {
+    const snapshot = await loadTopicReadinessSnapshot(topicId);
+    if (snapshot.readinessLabel !== "PROD_READY") {
+      return pass();
+    }
+
+    const meetsProdBar =
+      isTopicLearnReady(
+        snapshot.publishedLessonCount,
+        snapshot.subtopicCount,
+        snapshot.subtopicsWithLesson,
+      ) && isTopicProdReady(snapshot.questionCounts);
+
+    if (!meetsProdBar) {
+      return fail([
+        "Topic cannot be published as production-ready until DEC-002 coverage is met (≥7 questions per difficulty band and a published lesson for every subtopic).",
+      ]);
+    }
+
+    return pass();
+  } catch {
+    return fail(["Could not validate topic production readiness gate."]);
+  }
+}
+
+export async function resolveTopicIdForContent(input: {
+  kind: "lesson" | "question";
+  id: string;
+}): Promise<string> {
+  const admin = createAdminClient();
+
+  if (input.kind === "question") {
+    const { data, error } = await admin
+      .from("practice_questions")
+      .select("topic_id")
+      .eq("id", input.id)
+      .maybeSingle();
+    if (error || !data?.topic_id) {
+      throw new Error("NOT_FOUND");
+    }
+    return data.topic_id;
+  }
+
+  const { data: lesson, error: lessonError } = await admin
+    .from("lessons")
+    .select("subtopic_id")
+    .eq("id", input.id)
+    .maybeSingle();
+  if (lessonError || !lesson?.subtopic_id) {
+    throw new Error("NOT_FOUND");
+  }
+
+  const { data: subtopic, error: subtopicError } = await admin
+    .from("subtopics")
+    .select("topic_id")
+    .eq("id", lesson.subtopic_id)
+    .maybeSingle();
+  if (subtopicError || !subtopic?.topic_id) {
+    throw new Error("NOT_FOUND");
+  }
+
+  return subtopic.topic_id;
 }
 
 export async function runContentQualityGates(input: {

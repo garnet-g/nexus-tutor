@@ -2,7 +2,7 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { contentReviewActionSchema, type ContentReviewServiceInput } from "@/schemas/contentApprovalSchemas";
-import { runContentQualityGates } from "@/server/services/contentQualityGates";
+import { runContentQualityGates, runTopicProdReadyPublishGate, resolveTopicIdForContent } from "@/server/services/contentQualityGates";
 import type { LessonContent } from "@/types/curriculum";
 
 export type ReviewStatus = "draft" | "in_review" | "published" | "archived";
@@ -153,6 +153,14 @@ async function publishContent(input: {
   if (!gates.passed) {
     const error = new Error("GATE_FAILED");
     (error as Error & { gateErrors: string[] }).gateErrors = gates.errors;
+    throw error;
+  }
+
+  const topicId = await resolveTopicIdForContent({ kind: input.kind, id: input.id });
+  const prodGate = await runTopicProdReadyPublishGate(topicId);
+  if (!prodGate.passed) {
+    const error = new Error("GATE_FAILED");
+    (error as Error & { gateErrors: string[] }).gateErrors = prodGate.errors;
     throw error;
   }
 
