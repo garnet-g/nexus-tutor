@@ -150,4 +150,4 @@ Started: 2026-07-06T10:30:00+03:00
 - **Trace chain (Tracer):** Practice complete → `completePracticeSession` → `recordPracticeSessionMistakes` → wrong `practice_attempts` rows → `student_mistake_journal` upsert by `question_id`. Mock submit → `recordMockExamMistakes` → same table.
 - **Acceptance evidence:** `tests/student/mistakeJournal.test.ts` — second upsert updates existing row, no duplicate insert.
 - **Assumptions made:** Dedup key is `(student_id, question_id)` when `practice_question_id` is present; mock rows without `practice_question_id` insert without dedup.
-- **Commit:** (pending)
+- **Commit:** bc4b9de fix(PR-036): auto-populate mistake journal from practice and mock exams
