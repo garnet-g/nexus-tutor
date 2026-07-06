@@ -273,12 +273,25 @@ Started: 2026-07-06T10:30:00+03:00
 - **Acceptance evidence:** policy doc + retention cron deletes learning summaries; auth deletion explicitly out of scope.
 - **Commit:** dbd3467 docs(PR-107): unified retention policy for notification and learning data
 
-### PR-133 + PR-134 — Family lifecycle on lapse and resubscribe
+### PR-133 — Family seat reclaim on subscription lapse
 - **Status:** DONE_VERIFIED
-- **What was done:** RPCs `reclaim_family_group_on_lapse` + `reactivate_family_group_on_resubscribe` (Phase 05 `FOR UPDATE` seat pattern); `processExpiredFamilySubscriptions` in cron; members lose family entitlements on owner lapse; resubscribe + `join_family_group` relink path.
-- **Acceptance evidence:** `tests/family/familyLifecycle.test.ts`.
-- **Assumptions made:** Owner retains group row (inactive) on lapse; members must rejoin after resubscribe (no auto-relink).
+- **What was done:** RPC `reclaim_family_group_on_lapse`; `processExpiredFamilySubscriptions` in `/api/cron/data-retention`; members lose family entitlements when owner subscription lapses.
+- **Acceptance evidence:** `tests/family/familyLifecycle.test.ts` (lapse path).
 - **Commit:** df2d42d fix(PR-133,PR-134): family seat reclaim on lapse and resubscribe relink
+
+### PR-134 — Family resubscribe reactivation (production path)
+- **Status:** DONE_VERIFIED
+- **What was done:** `maybeReactivateFamilyGroupAfterFamilyPayment` wired into `processVerifiedMpesaPayment` (`subscriptionService.ts`) after family-plan M-Pesa activation; archives duplicate group row if payment RPC created one while a reclaimed group exists.
+- **Tracer chain (production trigger → entitlements):**
+  1. `POST /api/mpesa/callback/[secret]` — `src/app/api/mpesa/callback/[secret]/route.ts:126` calls `processVerifiedMpesaPayment`
+  2. Payment activation — `src/server/services/subscriptionService.ts:178` (`processVerifiedMpesaPayment`) loads payment plan + owner student
+  3. Subscription RPC — `subscriptionService.ts:198` → `process_verified_mpesa_payment` (creates/activates `student_subscriptions`)
+  4. Family reactivation — `subscriptionService.ts:228` → `maybeReactivateFamilyGroupAfterFamilyPayment` (`familySubscriptionService.ts:175`)
+  5. Seat RPC — `familySubscriptionService.ts:228` → `reactivate_family_group_on_resubscribe` (sets `family_groups.is_active=true`, `seat_count=1`)
+  6. Member entitlements — **not auto-restored**; former members regain family plan only via `POST /api/family/join` → `join_family_group` RPC (`familySubscriptionService.ts:87`) which updates `student_subscriptions` per member
+- **Product decision (explicit):** **Must-rejoin** — resubscribe reactivates the owner's group and preserves invite code, but removed members do **not** auto-restore; they must submit the invite code again. Rationale: lapse is treated as consent reset for linked students.
+- **Acceptance evidence:** `tests/family/familyResubscribePaymentPath.test.ts` (payment activation reactivates owner group); `tests/family/familyLifecycle.test.ts` (member rejoin after payment path).
+- **Commit:** _(pending)_
 
 ## Phase F4 gate status
 - **Status:** DONE_VERIFIED — all ledger items PR-037 through PR-134 complete for Phase 08 family/notifications scope.

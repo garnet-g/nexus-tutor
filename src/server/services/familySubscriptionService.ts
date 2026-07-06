@@ -137,6 +137,79 @@ export async function getFamilyGroupMembers(studentId: string): Promise<
   );
 }
 
+export async function findReclaimedFamilyGroupForOwner(
+  ownerStudentId: string,
+): Promise<{ id: string; inviteCode: string } | null> {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("family_groups")
+    .select("id, invite_code")
+    .eq("owner_student_id", ownerStudentId)
+    .eq("is_active", false)
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return {
+    id: data.id,
+    inviteCode: data.invite_code,
+  };
+}
+
+async function archiveDuplicateFamilyGroup(familyGroupId: string): Promise<void> {
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("family_groups")
+    .update({ is_active: false, seat_count: 0, updated_at: new Date().toISOString() })
+    .eq("id", familyGroupId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+/** Called after a successful family-plan payment when the owner has a reclaimed group. */
+export async function maybeReactivateFamilyGroupAfterFamilyPayment(input: {
+  ownerStudentId: string;
+  studentSubscriptionId: string;
+  activatedFamilyGroupId?: string;
+}): Promise<{ familyGroupId: string; inviteCode: string } | null> {
+  const reclaimed = await findReclaimedFamilyGroupForOwner(input.ownerStudentId);
+  if (!reclaimed) {
+    return null;
+  }
+
+  const reactivated = await reactivateFamilyGroupOnResubscribe({
+    studentSubscriptionId: input.studentSubscriptionId,
+    ownerStudentId: input.ownerStudentId,
+  });
+
+  if (
+    input.activatedFamilyGroupId &&
+    input.activatedFamilyGroupId !== reactivated.familyGroupId
+  ) {
+    await archiveDuplicateFamilyGroup(input.activatedFamilyGroupId);
+  }
+
+  return reactivated;
+}
+
+export async function isFamilyGroupActiveForOwner(ownerStudentId: string): Promise<boolean> {
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("family_groups")
+    .select("id")
+    .eq("owner_student_id", ownerStudentId)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  return Boolean(data);
+}
+
 export async function reclaimFamilyGroupOnLapse(
   studentSubscriptionId: string,
 ): Promise<{ reclaimed: boolean; removedMembers: number }> {

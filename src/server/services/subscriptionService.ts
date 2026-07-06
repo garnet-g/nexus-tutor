@@ -2,6 +2,9 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getEffectiveSubscriptionConfig } from "@/lib/platform/getPlatformSettings";
+import {
+  maybeReactivateFamilyGroupAfterFamilyPayment,
+} from "@/server/services/familySubscriptionService";
 import { canTransition } from "@/lib/mpesa/paymentStateMachine";
 import {
   buildCallbackIdempotencyKey,
@@ -180,6 +183,22 @@ export async function processVerifiedMpesaPayment(
 ): Promise<ProcessVerifiedMpesaPaymentResult> {
   const supabase = createAdminClient();
   const config = await getEffectiveSubscriptionConfig();
+
+  const { data: paymentRow } = await supabase
+    .from("mpesa_payments")
+    .select("student_id, subscription_plans(plan_code)")
+    .eq("id", input.mpesaPaymentId)
+    .maybeSingle();
+
+  const ownerStudentId =
+    typeof paymentRow?.student_id === "string" ? paymentRow.student_id : null;
+  const planCode =
+    paymentRow?.subscription_plans &&
+    typeof paymentRow.subscription_plans === "object" &&
+    "plan_code" in paymentRow.subscription_plans
+      ? String((paymentRow.subscription_plans as { plan_code?: string }).plan_code ?? "")
+      : "";
+
   const { data, error } = await supabase.rpc("process_verified_mpesa_payment", {
     p_payment_id: input.mpesaPaymentId,
     p_receipt: input.mpesaReceiptNumber,
@@ -198,16 +217,32 @@ export async function processVerifiedMpesaPayment(
   }
 
   const result = data as Record<string, unknown>;
+  const activated = result.activated === true;
+  const subscriptionId =
+    typeof result.subscriptionId === "string" ? result.subscriptionId : undefined;
+  let familyGroupId =
+    typeof result.familyGroupId === "string" ? result.familyGroupId : undefined;
+  let familyInviteCode =
+    typeof result.familyInviteCode === "string" ? result.familyInviteCode : undefined;
+
+  if (activated && planCode === "family" && ownerStudentId && subscriptionId) {
+    const reactivated = await maybeReactivateFamilyGroupAfterFamilyPayment({
+      ownerStudentId,
+      studentSubscriptionId: subscriptionId,
+      activatedFamilyGroupId: familyGroupId,
+    });
+
+    if (reactivated) {
+      familyGroupId = reactivated.familyGroupId;
+      familyInviteCode = reactivated.inviteCode;
+    }
+  }
+
   return {
-    activated: result.activated === true,
-    subscriptionId:
-      typeof result.subscriptionId === "string" ? result.subscriptionId : undefined,
-    familyGroupId:
-      typeof result.familyGroupId === "string" ? result.familyGroupId : undefined,
-    familyInviteCode:
-      typeof result.familyInviteCode === "string"
-        ? result.familyInviteCode
-        : undefined,
+    activated,
+    subscriptionId,
+    familyGroupId,
+    familyInviteCode,
   };
 }
 
