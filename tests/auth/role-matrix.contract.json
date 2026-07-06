@@ -495,6 +495,14 @@
     ]
   },
   {
+    "path": "/api/admin/content/concept-references/publish",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/content/concept-references/publish/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
     "path": "/api/admin/content/studio/subtopics/[subtopicId]/lessons/reorder",
     "tier": "admin",
     "filePath": "src/app/api/admin/content/studio/subtopics/[subtopicId]/lessons/reorder/route.ts",
@@ -882,6 +890,14 @@
       "GET",
       "POST",
       "PATCH"
+    ]
+  },
+  {
+    "path": "/api/students/search",
+    "tier": "student",
+    "filePath": "src/app/api/students/search/route.ts",
+    "methods": [
+      "GET"
     ]
   },
   {

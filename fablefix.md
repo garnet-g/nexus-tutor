@@ -147,7 +147,49 @@ Started: 2026-07-06T10:30:00+03:00
 ### PR-036 — Mistake journal auto-population
 - **Status:** DONE_VERIFIED
 - **What was done:** `mistakeJournalService.ts` with idempotent `upsertMistakeJournalEntry`; `recordPracticeSessionMistakes` wired into `completePracticeSession`; `recordMockExamMistakes` wired into `submitMockExamSession`.
-- **Trace chain (Tracer):** Practice complete → `completePracticeSession` → `recordPracticeSessionMistakes` → wrong `practice_attempts` rows → `student_mistake_journal` upsert by `question_id`. Mock submit → `recordMockExamMistakes` → same table.
-- **Acceptance evidence:** `tests/student/mistakeJournal.test.ts` — second upsert updates existing row, no duplicate insert.
+- **Auditor corrections (e322dc3):** Partial unique index `idx_student_mistake_journal_student_question` on `(student_id, question_id) WHERE question_id IS NOT NULL`; `upsert` with `onConflict` + `23505` fallback to update; journal writes wrapped in `record*NonFatal` — logs `MISTAKE_JOURNAL_WRITE_FAILED`, never fails practice/mock submission.
+- **Trace chain (Tracer):** Practice complete → `completePracticeSession` → `recordPracticeSessionMistakesNonFatal` → wrong `practice_attempts` rows → `student_mistake_journal` upsert by `question_id`. Mock submit → `recordMockExamMistakesNonFatal` → same table.
+- **Acceptance evidence:** `tests/student/mistakeJournal.test.ts` — second upsert updates existing row; `tests/student/mistakeJournalNonFatal.test.ts` — completion succeeds when journal throws; `npm run db:reset` applies idempotency migration.
 - **Assumptions made:** Dedup key is `(student_id, question_id)` when `practice_question_id` is present; mock rows without `practice_question_id` insert without dedup.
-- **Commit:** bc4b9de fix(PR-036): auto-populate mistake journal from practice and mock exams
+- **Commits:** bc4b9de fix(PR-036): auto-populate mistake journal from practice and mock exams; e322dc3 fix(PR-036): DB idempotency index and non-fatal journal writes
+
+### PR-038 + PR-101 — Focus session timer
+- **Status:** DONE_VERIFIED
+- **What was done:** `focusSessionService.ts` with server-validated elapsed credit (`credited_minutes`, 80% rule), terminal-state `409` on PATCH after complete; `FocusSessionList` client timer auto-completes when elapsed.
+- **Acceptance evidence:** `tests/student/focusSession.test.ts` — early complete rejected, cancel after complete conflicts, credited minutes on valid complete.
+- **Migration:** `20260706120000_student_focus_credited_minutes.sql`.
+- **Commit:** 2aeb7b1 fix(PR-038,PR-101): server-validated focus session timer and terminal state
+
+### PR-033 — Study search
+- **Status:** DONE_VERIFIED
+- **What was done:** FTS `search_vector` on lessons/questions; `studentSearchService.ts` + `GET /api/students/search`; `StudySearchPanel` wired on `/study-search`.
+- **Acceptance evidence:** `tests/student/studySearch.test.ts`; published-only scoping in service.
+- **Migration:** `20260706121000_student_study_search_fts.sql`.
+- **Commit:** 7c5d4bb fix(PR-033): curriculum-aware FTS study search for lessons and questions
+
+### PR-041 + PR-102 — Learning memory projection
+- **Status:** DONE_VERIFIED
+- **What was done:** `LearningMemoryView.tsx` replaces raw JSON `<pre>` blocks on `/nex-memory` with summarized read-only projection.
+- **Acceptance evidence:** `tests/student/learningMemory.test.tsx` — no `<pre>` JSON blobs.
+- **Commit:** 29f744d fix(PR-041,PR-102): read-only learning memory projection without raw JSON
+
+### PR-063 — Readiness exam CTAs
+- **Status:** DONE_VERIFIED
+- **What was done:** `readinessExamService.ts` + `ReadinessExamCta` on `/readiness` — generate/resume/start simulator from active sessions.
+- **Commit:** 5c2f5a7 fix(PR-063): session-aware generate and resume CTAs on exam readiness
+
+### PR-040 — Concept library
+- **Status:** DONE_VERIFIED
+- **What was done:** `concept_references` table + `conceptLibraryService.ts` (published rows + derived lesson `math_block`/`key_point` blocks); `ConceptLibraryBrowser` on `/library`; studio publish path `POST /api/admin/content/concept-references/publish` via `requireContentAuthorApi` (PR-049b guards).
+- **Acceptance evidence:** `tests/admin/conceptReferencePublishRoute.test.ts` — cross-origin `403`, burst `429`.
+- **Migration:** `20260706130000_concept_references.sql`.
+- **Commit:** 1cdcba3 fix(PR-040): published concept library with guarded studio publish path
+
+### PR-039 + PR-104 + PR-105 — Offline packs
+- **Status:** DONE_VERIFIED
+- **What was done:** `public/sw.js`, `offline-manifest.json`, per-user cache namespace in `offlineStorage.ts`, `OfflineRuntimeBootstrap`, logout purge via `StudentSignOutButton` in student shell, `OfflinePackButton` caches pack URLs after server record.
+- **Acceptance evidence:** `tests/student/offlinePack.test.ts`, `tests/student/offlinePackManifest.test.ts`.
+- **Commit:** 42d2908 fix(PR-039,PR-104,PR-105): offline packs with per-user cache namespace and logout purge
+
+### Auth-track coordination (F3 API routes)
+- **Note for merge with `codex/auth-account-hardening`:** This track added two API routes (`/api/students/search`, `/api/admin/content/concept-references/publish`) reflected in `tests/auth/role-matrix.contract.json` (API count 74→76) and `tests/auth/roleMatrix.test.ts`. Reconcile with auth track's contract if it also touched the matrix — no functional auth code changed here.
