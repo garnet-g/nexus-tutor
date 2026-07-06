@@ -1,4 +1,6 @@
-import { MIN_QUESTIONS_TO_START_PRACTICE } from "@/lib/curriculum/practiceCoverage";
+import {
+  MIN_QUESTIONS_TO_START_PRACTICE,
+} from "@/lib/curriculum/practiceCoverage";
 
 export const COMMON_KCSE_SUBJECT_CODES = [
   "mathematics",
@@ -36,6 +38,7 @@ export type ActiveSubjectCode = (typeof ACTIVE_SUBJECT_CODES)[number];
 export const MIN_TOPICS_PER_SUBJECT = 3;
 export const MIN_LESSONS_PER_TOPIC = 3;
 export const MIN_PRACTICE_QUESTIONS_PER_TOPIC = 21;
+export const MIN_QUESTIONS_PER_BAND_FOR_PROD = 7;
 
 export function isTier1SubjectCode(
   subjectCode: string,
@@ -61,7 +64,8 @@ export function isTopicLearnReady(
   );
 }
 
-export function isTopicPracticeReady(counts: {
+/** Session-startable: at least one band meets the 5-question practice minimum. */
+export function isTopicSessionStartable(counts: {
   easy: number;
   medium: number;
   hard: number;
@@ -71,6 +75,28 @@ export function isTopicPracticeReady(counts: {
     (counts.easy >= MIN_QUESTIONS_TO_START_PRACTICE ||
       counts.medium >= MIN_QUESTIONS_TO_START_PRACTICE ||
       counts.hard >= MIN_QUESTIONS_TO_START_PRACTICE)
+  );
+}
+
+/** @deprecated Use isTopicSessionStartable — kept for existing imports. */
+export function isTopicPracticeReady(counts: {
+  easy: number;
+  medium: number;
+  hard: number;
+}): boolean {
+  return isTopicSessionStartable(counts);
+}
+
+/** DEC-002 production bar: ≥7 questions in every difficulty band (21 total). */
+export function isTopicProdReady(counts: {
+  easy: number;
+  medium: number;
+  hard: number;
+}): boolean {
+  return (
+    counts.easy >= MIN_QUESTIONS_PER_BAND_FOR_PROD &&
+    counts.medium >= MIN_QUESTIONS_PER_BAND_FOR_PROD &&
+    counts.hard >= MIN_QUESTIONS_PER_BAND_FOR_PROD
   );
 }
 
@@ -85,15 +111,19 @@ export function getTopicReadinessLabel(input: {
     input.subtopicCount,
     input.subtopicsWithLesson,
   );
-  const practiceReady = isTopicPracticeReady(input.questionCounts);
+  const sessionStartable = isTopicSessionStartable(input.questionCounts);
+  const prodReady = isTopicProdReady(input.questionCounts);
 
-  if (learnReady && practiceReady) {
+  if (learnReady && prodReady) {
     return "PROD_READY";
+  }
+  if (learnReady && sessionStartable) {
+    return "PRACTICE_READY";
   }
   if (learnReady) {
     return "LEARN_READY";
   }
-  if (practiceReady) {
+  if (sessionStartable) {
     return "PRACTICE_READY";
   }
   return "NOT_READY";
