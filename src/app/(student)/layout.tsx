@@ -2,7 +2,7 @@ import { StudentAppShell } from "@/components/student/StudentAppShell";
 import { OfflineRuntimeBootstrap } from "@/features/student/components/OfflineRuntimeBootstrap";
 import {
   isWithinServerTimingBudget,
-  recordServerTiming,
+  measureServerPhase,
 } from "@/lib/observability/serverTiming";
 import { getSessionUser } from "@/server/services/authService";
 import { getStudentChromeData } from "@/server/services/studentExperienceService";
@@ -12,10 +12,10 @@ export default async function StudentLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const sessionStart = performance.now();
-  const sessionUser = await getSessionUser();
-  const sessionMs = performance.now() - sessionStart;
-  recordServerTiming("session", sessionMs);
+  const { value: sessionUser, durationMs: sessionMs } = await measureServerPhase(
+    "session",
+    () => getSessionUser(),
+  );
 
   if (process.env.NODE_ENV !== "production" && !isWithinServerTimingBudget(sessionMs)) {
     console.warn(`[server-timing] session lookup ${sessionMs.toFixed(1)}ms exceeds budget`);

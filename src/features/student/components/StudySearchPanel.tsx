@@ -20,7 +20,6 @@ export function StudySearchPanel() {
 
   useEffect(() => {
     if (query.trim().length < 2) {
-      setHits([]);
       return;
     }
 
@@ -42,6 +41,8 @@ export function StudySearchPanel() {
     return () => window.clearTimeout(handle);
   }, [query]);
 
+  const visibleHits = query.trim().length < 2 ? [] : hits;
+
   return (
     <div className="space-y-4 rounded-2xl border border-nexus-border bg-nexus-surface p-4">
       <label className="block text-sm font-medium text-foreground">
@@ -59,9 +60,9 @@ export function StudySearchPanel() {
 
       {loading ? <p className="text-sm text-muted-foreground">Searching…</p> : null}
 
-      {hits.length > 0 ? (
+      {visibleHits.length > 0 ? (
         <ul className="space-y-2">
-          {hits.map((hit) => (
+          {visibleHits.map((hit) => (
             <li key={`${hit.kind}-${hit.id}`}>
               <Link
                 href={hit.href}

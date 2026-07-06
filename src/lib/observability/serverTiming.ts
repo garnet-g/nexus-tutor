@@ -25,3 +25,14 @@ export const SERVER_TIMING_BUDGET_MS = 800;
 export function isWithinServerTimingBudget(durationMs: number): boolean {
   return durationMs <= SERVER_TIMING_BUDGET_MS;
 }
+
+export async function measureServerPhase<T>(
+  label: string,
+  fn: () => Promise<T>,
+): Promise<{ value: T; durationMs: number }> {
+  const start = performance.now();
+  const value = await fn();
+  const durationMs = performance.now() - start;
+  recordServerTiming(label, durationMs);
+  return { value, durationMs };
+}

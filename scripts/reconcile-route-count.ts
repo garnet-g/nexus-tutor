@@ -3,7 +3,7 @@
  * PR-052: reconcile documented screen counts against app page.tsx files.
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, extname } from "node:path";
+import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..");
 const APP_DIR = join(ROOT, "src", "app");
