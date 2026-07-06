@@ -4,7 +4,7 @@
 **Timeline:** First 90 days  
 **Goal:** Validate that students and parents use an AI-powered study companion for CBC and KCSE — not "Can we build Khan Academy?"
 
-**Authority:** This document locks V1 scope. Conflicts with [PRD](./prd.md) long-term vision are intentional deferrals. See [Product Principles](./product-principles.md) for mission and Nex-first rules.
+**Authority:** This document locks V1 scope. Conflicts with [PRD](./prd.md) long-term vision are intentional deferrals. Live routes are reconciled against `nexus-map.md` and `npm run test:route-reconciliation` (70 `page.tsx` routes as of 2026-07-06).
 
 ---
 
@@ -32,7 +32,7 @@ Parent observes via lightweight Parent Dashboard.
 | Item | Detail |
 |------|--------|
 | Curricula | CBC + KCSE |
-| Subject | **Mathematics only** |
+| Subject | **Mathematics primary**; live student surfaces also include science, english, kiswahili, chemistry per `nexus-map.md` |
 | Content types | Notes, examples, short quiz per lesson |
 | Videos | ❌ Not in V1 |
 
@@ -61,7 +61,7 @@ Parent observes via lightweight Parent Dashboard.
 
 ### Tech Stack (Locked)
 
-- Next.js 15, TypeScript, Tailwind, shadcn/ui
+- Next.js 16.2.9, TypeScript, Tailwind, shadcn/ui
 - Supabase (Auth + Postgres + RLS)
 - Nex: **Gemini Flash** primary (`GEMINI_API_KEY`), **OpenAI** fallback (`OPENAI_API_KEY`)
 - Vercel hosting

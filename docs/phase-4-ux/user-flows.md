@@ -176,7 +176,35 @@ flowchart TD
 
 ---
 
-## 10. Acceptance Criteria (Flow-Level)
+## 10. Student utility flows (post-MVP utilities)
+
+| Utility | Route | Purpose |
+|---------|-------|---------|
+| Exam prep | `/exam-prep` | Generate KCSE-style mock practice materials |
+| Mock exams | `/mock-exams` | Build and run generated mock exams |
+| Exam simulator | `/exam-simulator` | Timed simulator sessions |
+| Study search | `/study-search` | Search lessons and practice content |
+| Mistake journal | `/mistakes` | Review missed questions |
+| Focus mode | `/focus` | Timed study sessions |
+| Weak areas | `/weak-areas` | Target low-mastery topics |
+| Assignment help | `/assignment-help` | Nex-guided homework help |
+
+---
+
+## 11. Admin operational flows
+
+| Workflow | Route | Purpose |
+|----------|-------|---------|
+| Reports export | `/admin/reports` | CSV export with audit trail |
+| Communications | `/admin/communications` | Template library + operational send |
+| Approvals / bulk actions | `/admin/approvals`, `/admin/bulk-actions` | Four-eyes bulk execution |
+| Content review | `/admin/studio/review` | Publish gate for lessons/questions |
+| Payments ops | `/admin/payments` | Ledger + operator tools |
+| Platform settings | `/admin/platform-settings` | Live pricing/limits (60s cache) |
+
+---
+
+## 12. Acceptance Criteria (Flow-Level)
 
 - [ ] New student completes full journey in <15 minutes
 - [ ] Diagnostic blocks dashboard until complete

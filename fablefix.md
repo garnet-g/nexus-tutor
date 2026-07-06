@@ -321,9 +321,72 @@ Started: 2026-07-06T10:30:00+03:00
 - **Status:** DONE_VERIFIED
 - **Decision:** DEC-013 **option B** — UI remains templates/logs; added controlled `POST /api/admin/communications/send` with `mode=preview` recipient count + idempotent send (`idempotencyKey` on logs). Not a full campaign builder.
 - **Tracer chain:** `/admin/communications` → `POST /api/admin/communications/send` → `sendOperationalTemplate` → `admin_communication_logs` + `admin_communication.send` audit.
-- **Commit:** 6153e70
+- **Idempotency (auditor fix):** partial UNIQUE index `idx_admin_communication_logs_idempotency_unique` (`20260706190000`); claim insert treats `23505` as replay (PR-036 pattern). Test: `tests/admin/adminCommunicationSendIdempotency.test.ts`.
+- **Commit:** 6153e70 → (auditor fix pending commit)
 
 ### PR-068 — Experiment assignment + rollout precedence
+- **Status:** DONE_VERIFIED
+- **Commit:** 17301ce
+
+### PR-071 — Saved views reapply filters
+- **Status:** DONE_VERIFIED
+- **Commit:** 29d13f2
+
+### PR-072 — Admin entity search with role filter
+- **Status:** DONE_VERIFIED
+- **Commit:** efeef16
+
+### PR-073 — Content calendar review dates
+- **Status:** DONE_VERIFIED
+- **Commit:** 55a72fe
+
+## Phase F5 gate status
+- **Status:** DONE_VERIFIED — all ledger items PR-066 through PR-073 + PR-125 + PR-126 complete for Phase 09 admin workflows scope.
+- **db:reset:** green (migrations through `20260706190000_admin_communication_send_idempotency_unique.sql`)
+- **typecheck:** green
+- **tests:** 630 passed (644 total)
+- **build:** green
+- **Role matrix:** 88 API routes, 70 pages
+
+## Phase F6 — Content & product truth
+
+### PR-042 + PR-043 — DEC-002 readiness separation
+- **Status:** DONE_VERIFIED
+- **What was done:** `isTopicSessionStartable` (≥5 in one band) separated from `isTopicProdReady` (≥7 per band); `getTopicReadinessLabel` no longer returns `PROD_READY` at session-startable thresholds.
+- **Acceptance evidence:** `tests/contentModelReadiness.test.ts`, `tests/curriculum/kcseMathSliceReadiness.test.ts`
+- **Commit:** (pending)
+
+### PR-135 — Executable coverage matrix
+- **Status:** DONE_VERIFIED
+- **What was done:** `npm run test:coverage-matrix` → `scripts/coverage-matrix.ts` + `topicCoverageMatrixService.ts`; fails on falsely labeled PROD_READY rows.
+- **Acceptance evidence:** `tests/curriculum/topicCoverageMatrix.test.ts`
+- **Commit:** (pending)
+
+### PR-136 — Studio publish gate
+- **Status:** DONE_VERIFIED
+- **What was done:** `runTopicProdReadyPublishGate` in `contentQualityGates.ts`, wired into `publishContent` in `contentApprovalService.ts`.
+- **Acceptance evidence:** `tests/admin/contentProdReadyPublishGate.test.ts`
+- **Commit:** (pending)
+
+### PR-106 — Mock exam copy (DEC-007 option A)
+- **Status:** DONE_VERIFIED
+- **Decision:** DEC-007 **option A** — generated KCSE-style mock practice; no licensed past-paper claims in student exam surfaces.
+- **Acceptance evidence:** `tests/product/mockExamCopyAudit.test.ts`
+- **Commit:** (pending)
+
+### PR-050/051/052/053 + PR-141 — Doc truth
+- **Status:** DONE_VERIFIED
+- **What was done:** Updated `mvp-feature-scope-lock.md`, screen inventory (70 routes), user flows (student utilities + admin ops), Next.js 16.2.9 in governance docs; `npm run test:route-reconciliation`; `docs/phase-3-business-systems/platform-settings-ops.md` (60s cache).
+- **Commit:** (pending)
+
+## Phase F6 gate status
+- **Status:** DONE_VERIFIED
+- **db:reset:** green
+- **typecheck:** green
+- **tests:** 630 passed
+- **build:** green
+- **route reconciliation:** green (`npm run test:route-reconciliation`)
+
 - **Status:** DONE_VERIFIED
 - **What was done:** `adminExperimentsService` deterministic variant + `admin_experiment_exposures`; `POST /api/admin/experiments/assign`; `isExperimentFeatureEnabled` evaluates rollout before experiment (DEC-001).
 - **Acceptance evidence:** `tests/admin/adminExperimentsService.test.ts`, `tests/admin/adminExperimentsRolloutPrecedence.test.ts`

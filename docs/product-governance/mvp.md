@@ -370,7 +370,7 @@ longest_streak
 Tech Stack
 Frontend
 
-Next.js 15
+Next.js 16.2.9
 
 TypeScript
 

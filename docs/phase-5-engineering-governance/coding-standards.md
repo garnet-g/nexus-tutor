@@ -7,7 +7,7 @@
 ## 1. Language & Framework
 
 - **TypeScript** strict mode enabled
-- **Next.js 15** App Router
+- **Next.js 16** App Router
 - **React 19** patterns (Server Components default)
 - **Tailwind CSS** for styling — no CSS modules unless exception approved
 - **shadcn/ui** for base components

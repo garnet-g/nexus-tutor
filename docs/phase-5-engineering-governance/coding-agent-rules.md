@@ -108,7 +108,7 @@ Do not bypass the Nex pipeline (Mode Detection → Socratic Engine → Gemini Fl
 
 | No duplicate abstractions | Check if function/table/route already exists |
 
-| Match stack | Next.js 15 App Router, Supabase, shadcn — not Pages Router, not Prisma unless added |
+| Match stack | Next.js 16 App Router, Supabase, shadcn — not Pages Router, not Prisma unless added |
 
 
 

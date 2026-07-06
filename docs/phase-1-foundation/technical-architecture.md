@@ -1,7 +1,7 @@
 # Technical Architecture
 
 **Version:** 1.0  
-**Stack:** Next.js 15 · TypeScript · Tailwind · shadcn/ui · Supabase · Vercel · Nex (Gemini Flash primary, OpenAI fallback)
+**Stack:** Next.js 16.2.9 · TypeScript · Tailwind · shadcn/ui · Supabase · Vercel · Nex (Gemini Flash primary, OpenAI fallback)
 
 ---
 
