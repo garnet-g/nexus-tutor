@@ -135,7 +135,7 @@ describe("recordAdminAudit", () => {
     );
   });
 
-  it("never throws when the insert rejects, and logs the failure", async () => {
+  it("returns ok:false when the insert rejects, and logs the failure", async () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     insert.mockRejectedValueOnce(new Error("db down"));
 
@@ -145,15 +145,16 @@ describe("recordAdminAudit", () => {
         actorRole: "super_admin",
         action: "content.generate",
       }),
-    ).resolves.toBeUndefined();
+    ).resolves.toEqual({ ok: false, error: "db down" });
 
     expect(consoleSpy).toHaveBeenCalledWith(
       "ADMIN_AUDIT_RECORD_FAILED",
+      "content.generate",
       expect.any(Error),
     );
   });
 
-  it("never throws when createAdminClient itself throws", async () => {
+  it("returns ok:false when createAdminClient itself throws", async () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const { createAdminClient } = await import("@/lib/supabase/admin");
     vi.mocked(createAdminClient).mockImplementationOnce(() => {
@@ -166,10 +167,11 @@ describe("recordAdminAudit", () => {
         actorRole: "super_admin",
         action: "content.generate",
       }),
-    ).resolves.toBeUndefined();
+    ).resolves.toEqual({ ok: false, error: "missing service role key" });
 
     expect(consoleSpy).toHaveBeenCalledWith(
       "ADMIN_AUDIT_RECORD_FAILED",
+      "content.generate",
       expect.any(Error),
     );
   });
