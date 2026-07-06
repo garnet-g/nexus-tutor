@@ -11,6 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:scope-check": "tsx scripts/scope-check.ts",
+    "test:coverage-matrix": "tsx --tsconfig tsconfig.scripts.json scripts/coverage-matrix.ts",
+    "test:route-reconciliation": "tsx scripts/reconcile-route-count.ts",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
