@@ -30,6 +30,7 @@ import type {
   PracticeCurriculumTopic,
 } from "@/types/practice";
 import { awardStudyActivity } from "@/server/services/studyActivityService";
+import { recordPracticeSessionMistakes } from "@/server/services/mistakeJournalService";
 
 function calculateLevel(totalXp: number): number {
   return Math.max(1, Math.floor(totalXp / 100) + 1);
@@ -768,6 +769,8 @@ export async function completePracticeSession(
       })
       .eq("id", progress.id);
   }
+
+  await recordPracticeSessionMistakes(profile.id, sessionId);
 
   return {
     practiceScore,

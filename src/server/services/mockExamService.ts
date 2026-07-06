@@ -45,6 +45,7 @@ function toOptionStrings(value: unknown): string[] | null {
 import type { MockExamStyle } from "@/schemas/mockExamSchemas";
 import { studentHasMockExamAccess } from "@/schemas/mockExamSchemas";
 import { getStudentPlanCode } from "@/server/services/nexUsageService";
+import { recordMockExamMistakes } from "@/server/services/mistakeJournalService";
 
 async function loadPracticePool(
   curriculum: string,
@@ -313,7 +314,7 @@ export async function submitMockExamSession(
   const { data: questions } = await admin
     .from("mock_exam_questions")
     .select(
-      "id, topic_id, question_text, question_type, options, correct_answer, difficulty, sort_order, explanation, topics(title)",
+      "id, topic_id, practice_question_id, question_text, question_type, options, correct_answer, difficulty, sort_order, explanation, topics(title)",
     )
     .eq("mock_exam_session_id", mockExamSessionId)
     .order("sort_order", { ascending: true });
@@ -394,6 +395,19 @@ export async function submitMockExamSession(
     .eq("id", mockExamSessionId);
 
   await applyMockExamProgressUpdates(profile, scored.marked);
+
+  await recordMockExamMistakes(
+    profile.id,
+    questions.map((question) => ({
+      id: question.id,
+      topic_id: question.topic_id,
+      practice_question_id: question.practice_question_id ?? null,
+      question_text: question.question_text,
+      correct_answer: question.correct_answer,
+      explanation: question.explanation ?? null,
+    })),
+    scored.marked,
+  );
 
   return {
     resultId: result.id,

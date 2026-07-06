@@ -143,3 +143,11 @@ Started: 2026-07-06T10:30:00+03:00
 - **Trace chain (Tracer):** Incorrect answer → `POST /api/students/saved-items` with `practiceQuestionId` → appears on `/saved`.
 - **Acceptance evidence:** Shared idempotency test in `tests/student/savedItems.test.ts`; manual path wired in `PracticeRunner.tsx`.
 - **Commit:** 9c2df1e fix(PR-035): auto-save missed practice questions to saved items
+
+### PR-036 — Mistake journal auto-population
+- **Status:** DONE_VERIFIED
+- **What was done:** `mistakeJournalService.ts` with idempotent `upsertMistakeJournalEntry`; `recordPracticeSessionMistakes` wired into `completePracticeSession`; `recordMockExamMistakes` wired into `submitMockExamSession`.
+- **Trace chain (Tracer):** Practice complete → `completePracticeSession` → `recordPracticeSessionMistakes` → wrong `practice_attempts` rows → `student_mistake_journal` upsert by `question_id`. Mock submit → `recordMockExamMistakes` → same table.
+- **Acceptance evidence:** `tests/student/mistakeJournal.test.ts` — second upsert updates existing row, no duplicate insert.
+- **Assumptions made:** Dedup key is `(student_id, question_id)` when `practice_question_id` is present; mock rows without `practice_question_id` insert without dedup.
+- **Commit:** (pending)
