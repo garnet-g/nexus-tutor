@@ -11,6 +11,7 @@ import {
 } from "@/server/services/studentContext";
 import {
   deleteSavedItem,
+  deleteSavedItemByReference,
   listSavedItems,
   saveStudentItem,
 } from "@/server/services/studentExperienceService";
@@ -76,6 +77,18 @@ export async function DELETE(request: Request) {
 
     const url = new URL(request.url);
     const id = url.searchParams.get("id");
+    const itemType = url.searchParams.get("itemType");
+    const itemId = url.searchParams.get("itemId");
+
+    if (itemType && itemId) {
+      await deleteSavedItemByReference(
+        studentContext.profile.id,
+        itemType as "question" | "lesson" | "topic" | "note",
+        itemId,
+      );
+      return NextResponse.json({ success: true, data: { deleted: true } });
+    }
+
     if (!id) {
       return apiErrorResponse("VALIDATION_ERROR", "Saved item id is required.", 400);
     }

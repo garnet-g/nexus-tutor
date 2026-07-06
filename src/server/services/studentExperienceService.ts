@@ -257,7 +257,43 @@ export async function listSavedItems(studentId: string) {
   }));
 }
 
+export async function findSavedItemByReference(
+  studentId: string,
+  itemType: "question" | "lesson" | "topic" | "note",
+  itemId: string,
+) {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("student_saved_items")
+    .select("id")
+    .eq("student_id", studentId)
+    .eq("item_type", itemType)
+    .eq("item_id", itemId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data ? { id: String(data.id) } : null;
+}
+
 export async function saveStudentItem(studentId: string, input: SavedItemInput) {
+  if (input.itemId) {
+    const existing = await findSavedItemByReference(
+      studentId,
+      input.itemType,
+      input.itemId,
+    );
+    if (existing) {
+      const items = await listSavedItems(studentId);
+      const match = items.find((item) => item.id === existing.id);
+      if (match) {
+        return match;
+      }
+    }
+  }
+
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("student_saved_items")
@@ -277,7 +313,31 @@ export async function saveStudentItem(studentId: string, input: SavedItemInput) 
     throw new Error(error?.message ?? "Could not save item.");
   }
 
-  return data;
+  return {
+    id: data.id as string,
+    itemType: data.item_type as "question" | "lesson" | "topic" | "note",
+    itemId: data.item_id as string | null,
+    title: data.title as string,
+    description: data.description as string | null,
+    href: data.href as string,
+    metadata: (data.metadata ?? {}) as Record<string, unknown>,
+    createdAt: data.created_at as string,
+    updatedAt: data.updated_at as string,
+  };
+}
+
+export async function deleteSavedItemByReference(
+  studentId: string,
+  itemType: "question" | "lesson" | "topic" | "note",
+  itemId: string,
+) {
+  const existing = await findSavedItemByReference(studentId, itemType, itemId);
+  if (!existing) {
+    return false;
+  }
+
+  await deleteSavedItem(studentId, existing.id);
+  return true;
 }
 
 export async function deleteSavedItem(studentId: string, id: string) {

@@ -6,6 +6,7 @@ import { getSessionUser } from "@/server/services/authService";
 import { getLesson, getTopicDetail } from "@/server/services/curriculumService";
 
 import { getLessonProgressState } from "@/server/services/lessonProgressService";
+import { findSavedItemByReference } from "@/server/services/studentExperienceService";
 
 interface LessonPageProps {
   params: Promise<{ topicId: string; lessonId: string }>;
@@ -20,7 +21,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
     redirect("/login");
   }
 
-  const [lesson, topic, progressState] = await Promise.all([
+  const [lesson, topic, progressState, savedBookmark] = await Promise.all([
     getLesson(lessonId, profile.curriculum, profile.grade_level),
     getTopicDetail(topicId, profile.curriculum, profile.grade_level),
     getLessonProgressState(profile.id, lessonId).catch(() => ({
@@ -28,6 +29,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
       completedAt: null,
       lastViewedAt: null,
     })),
+    findSavedItemByReference(profile.id, "lesson", lessonId).catch(() => null),
   ]);
 
   if (!lesson || lesson.topicId !== topicId || !topic) {
@@ -52,6 +54,9 @@ export default async function LessonPage({ params }: LessonPageProps) {
         lesson={lesson}
         orderedLessonIds={orderedLessonIds}
         initialProgress={progressState}
+        initialBookmark={
+          savedBookmark ? { savedItemId: savedBookmark.id } : null
+        }
       />
     </div>
   );

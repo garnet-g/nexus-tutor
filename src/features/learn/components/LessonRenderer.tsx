@@ -10,12 +10,16 @@ interface LessonRendererProps {
     completedAt: string | null;
     lastViewedAt: string | null;
   };
+  initialBookmark?: {
+    savedItemId: string;
+  } | null;
 }
 
 export function LessonRenderer({
   lesson,
   orderedLessonIds,
   initialProgress,
+  initialBookmark = null,
 }: LessonRendererProps) {
   return (
     <LessonReader
@@ -23,6 +27,7 @@ export function LessonRenderer({
       lesson={lesson}
       orderedLessonIds={orderedLessonIds}
       initialProgress={initialProgress}
+      initialBookmark={initialBookmark}
     />
   );
 }

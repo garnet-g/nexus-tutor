@@ -20,6 +20,11 @@ import type {
 import { cn } from "@/lib/utils";
 
 import { LessonContentBlocks } from "@/features/learn/components/LessonContentBlocks";
+import {
+  createSavedItem,
+  removeSavedItem,
+  removeSavedItemByReference,
+} from "@/features/student/lib/savedItemsClient";
 
 import "katex/dist/katex.min.css";
 
@@ -31,10 +36,21 @@ interface LessonReaderProps {
     completedAt: string | null;
     lastViewedAt: string | null;
   };
+  initialBookmark?: {
+    savedItemId: string;
+  } | null;
 }
 
 function bookmarkKey(lessonId: string) {
   return `nexus-lesson-bookmark:${lessonId}`;
+}
+
+function readLegacyBookmark(lessonId: string) {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return window.localStorage.getItem(bookmarkKey(lessonId)) === "1";
 }
 
 async function postLessonViewed(lessonId: string) {
@@ -176,6 +192,7 @@ export function LessonReader({
   lesson,
   orderedLessonIds,
   initialProgress,
+  initialBookmark = null,
 }: LessonReaderProps) {
   const { toast } = useToast();
   const openedAtRef = useRef(0);
@@ -185,10 +202,12 @@ export function LessonReader({
     initialProgress.status === "completed",
   );
   const [bookmarked, setBookmarked] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      window.localStorage.getItem(bookmarkKey(lesson.id)) === "1",
+    () => Boolean(initialBookmark?.savedItemId) || readLegacyBookmark(lesson.id),
   );
+  const [savedItemId, setSavedItemId] = useState<string | null>(
+    initialBookmark?.savedItemId ?? null,
+  );
+  const [bookmarkPending, setBookmarkPending] = useState(false);
 
   const lessonIndex = orderedLessonIds.indexOf(lesson.id);
   const lessonNumber = lessonIndex >= 0 ? lessonIndex + 1 : 1;
@@ -261,17 +280,80 @@ export function LessonReader({
     [isCompleted, lesson.id, toast],
   );
 
-  function toggleBookmark() {
+  useEffect(() => {
+    if (initialBookmark?.savedItemId || !readLegacyBookmark(lesson.id)) {
+      return;
+    }
+
+    void (async () => {
+      try {
+        const created = await createSavedItem({
+          itemType: "lesson",
+          itemId: lesson.id,
+          title: lesson.title,
+          description: lesson.topicTitle,
+          href: `/learn/${lesson.topicId}/${lesson.id}`,
+          metadata: { topicId: lesson.topicId },
+        });
+        setSavedItemId(created.id);
+        window.localStorage.removeItem(bookmarkKey(lesson.id));
+      } catch {
+        // Keep legacy bookmark until the student retries.
+      }
+    })();
+  }, [initialBookmark?.savedItemId, lesson.id, lesson.title, lesson.topicId, lesson.topicTitle]);
+
+  async function toggleBookmark() {
+    if (bookmarkPending) {
+      return;
+    }
+
     const next = !bookmarked;
-    setBookmarked(next);
-    window.localStorage.setItem(bookmarkKey(lesson.id), next ? "1" : "0");
-    toast({
-      tone: next ? "success" : "info",
-      title: next ? "Bookmark saved" : "Bookmark removed",
-      description: next
-        ? "You can return to this lesson any time from your topic path."
-        : undefined,
-    });
+    setBookmarkPending(true);
+
+    try {
+      if (next) {
+        const created = await createSavedItem({
+          itemType: "lesson",
+          itemId: lesson.id,
+          title: lesson.title,
+          description: lesson.topicTitle,
+          href: `/learn/${lesson.topicId}/${lesson.id}`,
+          metadata: { topicId: lesson.topicId },
+        });
+        setSavedItemId(created.id);
+        setBookmarked(true);
+        window.localStorage.removeItem(bookmarkKey(lesson.id));
+        toast({
+          tone: "success",
+          title: "Lesson saved",
+          description: "Find it any time on your Saved page.",
+        });
+        return;
+      }
+
+      if (savedItemId) {
+        await removeSavedItem(savedItemId);
+      } else {
+        await removeSavedItemByReference("lesson", lesson.id);
+      }
+
+      setSavedItemId(null);
+      setBookmarked(false);
+      window.localStorage.removeItem(bookmarkKey(lesson.id));
+      toast({
+        tone: "info",
+        title: "Bookmark removed",
+      });
+    } catch {
+      toast({
+        tone: "error",
+        title: "Could not update bookmark",
+        description: "Check your connection and try again.",
+      });
+    } finally {
+      setBookmarkPending(false);
+    }
   }
 
   return (
@@ -289,7 +371,8 @@ export function LessonReader({
           </div>
           <button
             type="button"
-            onClick={toggleBookmark}
+            onClick={() => void toggleBookmark()}
+            disabled={bookmarkPending}
             aria-pressed={bookmarked}
             aria-label={bookmarked ? "Remove bookmark" : "Bookmark lesson"}
             className="flex size-11 items-center justify-center rounded-xl border border-nexus-border bg-nexus-surface text-nexus-primary"
