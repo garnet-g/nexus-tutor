@@ -5,18 +5,41 @@ import { cn } from "@/lib/utils";
 
 import "./globals.css";
 
-// Primary typeface: Geist — a clean, neutral, free (OFL) geometric sans with no
-// decorative flourishes. Used site-wide for both body and display via the font
-// variables in globals.css.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://nexus.garnetlabs.africa";
+
 const geist = Geist({
   variable: "--font-geist",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Nexus — Your AI study companion",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Nexus — Your AI study companion",
+    template: "%s | Nexus",
+  },
   description:
     "Nexus is the trusted academic companion for CBC and KCSE students. Learn with Nex, diagnose your strengths, and practice Mathematics.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_KE",
+    url: SITE_URL,
+    siteName: "Nexus",
+    title: "Nexus — Your AI study companion",
+    description:
+      "Nexus is the trusted academic companion for CBC and KCSE students.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nexus — Your AI study companion",
+    description:
+      "Nexus is the trusted academic companion for CBC and KCSE students.",
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
