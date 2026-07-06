@@ -18,6 +18,7 @@ import {
   removeFromReviewQueue,
   type ReviewQuestion,
 } from "@/lib/practice/reviewQueue";
+import { createSavedItem } from "@/features/student/lib/savedItemsClient";
 import { cn } from "@/lib/utils";
 
 interface PracticeQuestion {
@@ -203,6 +204,18 @@ export function PracticeRunner({
           topicId,
           topicTitle,
         });
+        void createSavedItem({
+          itemType: "question",
+          itemId: currentQuestion.practiceQuestionId,
+          title: formatStudentQuestionText(currentQuestion.questionText).slice(0, 160),
+          description: topicTitle,
+          href: `/practice?topicId=${topicId}`,
+          metadata: {
+            topicId,
+            subtopicId: subtopicId ?? null,
+            difficulty: currentQuestion.difficulty,
+          },
+        }).catch(() => undefined);
         onReviewQueueChange?.();
       }
 

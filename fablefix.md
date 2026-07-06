@@ -84,13 +84,13 @@ Started: 2026-07-06T10:00:00+03:00
 - **Commit:** 46598b1 fix(PR-075): block last super-admin demotion and self-demotion
 
 ### PR-031 — Fail-closed audit on critical mutations
-- **Status:** PARTIAL → corrected in follow-up (see below)
+- **Status:** DONE_VERIFIED (auditor correction applied)
 - **Prior gap (auditor):** Role mutation committed before audit write; 503 returned while assignment persisted unaudited.
 - **Correction:** `assignAdminRoleWithAudit` snapshots ledger + runtime role, compensates via `revertAdminRoleAssignmentSnapshot` on `AdminAuditWriteError` before rethrowing.
 - **Trace chain (Tracer):** `POST /api/admin/roles` → `captureAdminRoleAssignmentSnapshot` → `assignAdminRole` → `recordAdminAudit` fails → `revertAdminRoleAssignmentSnapshot` (delete + restore rows + `setCanonicalUserRole`) → `503 AUDIT_WRITE_FAILED`.
 - **Acceptance evidence:** `tests/admin/auditFailClosed.test.ts` — 503 + `assignmentRows` empty + runtime role restored after audit failure.
 - **Assumptions made:** DEC-009 option A with compensation (option b) — no durable audit-intent table; full snapshot revert.
-- **Commit:** (pending correction commit)
+- **Commit:** 06f4ca9 fix(PR-031): compensate role assignment when audit write fails
 
 ### PR-029 — Feature rollout enforcement
 - **Status:** DONE_VERIFIED
@@ -126,3 +126,16 @@ npm run build → exit 0, all routes emitted
 
 ### Phase F2 summary
 Done-verified: 7 · Partial: 0 · Not done: 0 · Blocked: 0 · Finished: 2026-07-06T10:15:00+03:00
+
+## Phase F3 — Student utilities
+Started: 2026-07-06T10:30:00+03:00
+
+### PR-034 — Lesson bookmarks server-backed
+- **Status:** DONE_VERIFIED
+- **What was done:** `LessonReader` POST/DELETE `/api/students/saved-items` (`itemType: lesson`); server loads bookmark via `findSavedItemByReference`; legacy localStorage migrated on load; idempotent `saveStudentItem`.
+- **Trace chain (Tracer):** Bookmark click → `createSavedItem` → `POST /api/students/saved-items` → `student_saved_items` insert → `/saved` lists row via `listSavedItems`.
+- **Acceptance evidence:** `tests/student/savedItems.test.ts` — duplicate lesson bookmark does not re-insert.
+- **Commit:** f2a36ef fix(PR-034): persist lesson bookmarks to student_saved_items
+
+### PR-035 — Practice save to /saved
+- **Status:** (pending commit)
