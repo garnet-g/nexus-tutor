@@ -239,4 +239,42 @@ Started: 2026-07-06T10:30:00+03:00
 - **What was done:** `notification_outbox` table with unified state machine (`pending` → `retry_scheduled` → `sent` | `dead_letter`); `notificationOutboxService.ts` with idempotency keys, bounded backoff (30s→1h), `enqueueAndTrySendNotification`, `processNotificationOutboxBatch`; parent link SMS + weekly report email routed through outbox; `GET/POST /api/cron/notification-outbox`; DLQ count on `/admin/health` via `getNotificationOutboxHealthItem`.
 - **Acceptance evidence:** `tests/parent/notificationRetry.test.ts` — duplicate idempotency key ⇒ one row; provider failure ⇒ 5 attempts then `dead_letter`; successful send ⇒ no duplicate dispatch; DLQ surfaces in health summary.
 - **Assumptions made:** `max_attempts=5` with backoff `[30s, 2m, 10m, 30m, 1h]`; immediate send attempt on enqueue via `enqueueAndTrySendNotification`; cron drains retry-scheduled rows.
-- **Commit:** c024672 fix(PR-129,PR-130): notification outbox retry state machine and DLQ health
+- **Commit:** a3d6daf fix(PR-129,PR-130): notification outbox retry state machine and DLQ health
+
+### PR-131 + PR-132 — Idempotent weekly-report cron + Nairobi week boundaries
+- **Status:** DONE_VERIFIED
+- **What was done:** `week_start_date` on `parent_reports` with partial unique index `(parent_id, student_id, week_start_date)` for weekly reports; `generateWeeklyReportForLink` skips duplicate weeks before email; weekly email still routes through outbox idempotency key `weekly_report_email:{parentId}:{studentId}:{weekStart}`; `getWeekStartDate` uses `Intl` `Africa/Nairobi` Monday-based weeks.
+- **Acceptance evidence:** `tests/parent/weeklyReportCronIdempotency.test.ts` — double invoke ⇒ one email; `tests/parent/weeklyReportTimezone.test.ts` — Sunday/Monday Nairobi cutover.
+- **Assumptions made:** **Africa/Nairobi** timezone; weeks start **Monday** (Sunday belongs to the week that began the prior Monday).
+- **Commit:** 0ea13f6 fix(PR-131,PR-132): idempotent weekly report cron and Nairobi week boundaries
+- **Status:** DONE_VERIFIED
+- **What was done:** `src/lib/privacy/retentionPolicy.ts` (90-day notification logs per DEC-006 option A); `retentionEnforcementService.ts` deletes aged `celcom_sms_logs`, `resend_email_logs`, completed `notification_outbox` rows; `GET|POST /api/cron/data-retention` (Bearer `CRON_SECRET`, fail-closed).
+- **Acceptance evidence:** `tests/privacy/retentionEnforcement.test.ts`.
+- **Assumptions made:** DEC-006 unresolved in register — implemented repository-standard **90 days** (notification-spec + security-standards).
+- **Commit:** 5b87d69 fix(PR-057): enforce DEC-006 notification log retention via cron job
+- **Status:** DONE_VERIFIED
+- **What was done:** `src/lib/privacy/redaction.ts` + `notificationLogSerializer.ts` redact phone/body/subject for operator exports.
+- **Acceptance evidence:** `tests/privacy/notificationRedaction.test.ts` — snapshot contains no raw phone or message body.
+- **Commit:** 99e45ec fix(PR-058): redact phone and message body in notification log exports
+- **Status:** DONE_VERIFIED
+- **What was done:** `admin_impersonation_sessions` purged 90 days after `expires_at` in retention cron.
+- **Acceptance evidence:** `tests/privacy/impersonationRetention.test.ts`.
+- **Commit:** 0e72cab fix(PR-128): purge expired view-as impersonation sessions in retention cron
+- **Status:** DONE_VERIFIED
+- **What was done:** `docs/product-governance/data-retention-policy.md`; parent learning reports (`parent_reports`, `weekly_reports`) enforced at **365 days**; auth-track seam for `account_deletion_requests` documented, not built.
+- **Acceptance evidence:** policy doc + retention cron deletes learning summaries; auth deletion explicitly out of scope.
+- **Commit:** _(pending)_
+
+### PR-133 + PR-134 — Family lifecycle on lapse and resubscribe
+- **Status:** DONE_VERIFIED
+- **What was done:** RPCs `reclaim_family_group_on_lapse` + `reactivate_family_group_on_resubscribe` (Phase 05 `FOR UPDATE` seat pattern); `processExpiredFamilySubscriptions` in cron; members lose family entitlements on owner lapse; resubscribe + `join_family_group` relink path.
+- **Acceptance evidence:** `tests/family/familyLifecycle.test.ts`.
+- **Assumptions made:** Owner retains group row (inactive) on lapse; members must rejoin after resubscribe (no auto-relink).
+- **Commit:** _(pending)_
+
+## Phase F4 gate status
+- **db:reset:** green (migrations through `20260706170000_family_lapse_reclaim.sql`)
+- **typecheck:** green
+- **tests:** 612 passed (626 total)
+- **build:** green
+- **Role matrix:** 83 API routes, 70 pages
