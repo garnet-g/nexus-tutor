@@ -72,7 +72,7 @@ function registryDefault(featureKey: string): boolean {
 
 /**
  * DEC-001 assumption (option A): rollout rows are evaluated before entitlements.
- * Experiments are not wired here yet (Phase 09 / PR-068).
+ * Experiments are layered in adminExperimentsService.isExperimentFeatureEnabled (PR-068).
  */
 export async function isFeatureEnabled(
   featureKey: string,

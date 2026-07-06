@@ -420,6 +420,14 @@
     ]
   },
   {
+    "path": "/api/admin/communications/send",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/communications/send/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
     "path": "/api/admin/content/assist",
     "tier": "admin",
     "filePath": "src/app/api/admin/content/assist/route.ts",
@@ -562,6 +570,23 @@
     "methods": [
       "GET",
       "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/experiments/assign",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/experiments/assign/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/search",
+    "tier": "admin",
+    "filePath": "src/app/api/admin/search/route.ts",
+    "methods": [
+      "GET"
     ]
   },
   {
