@@ -321,29 +321,33 @@ Started: 2026-07-06T10:30:00+03:00
 - **Status:** DONE_VERIFIED
 - **Decision:** DEC-013 **option B** — UI remains templates/logs; added controlled `POST /api/admin/communications/send` with `mode=preview` recipient count + idempotent send (`idempotencyKey` on logs). Not a full campaign builder.
 - **Tracer chain:** `/admin/communications` → `POST /api/admin/communications/send` → `sendOperationalTemplate` → `admin_communication_logs` + `admin_communication.send` audit.
-- **Commit:** (pending)
+- **Commit:** 6153e70
 
 ### PR-068 — Experiment assignment + rollout precedence
 - **Status:** DONE_VERIFIED
 - **What was done:** `adminExperimentsService` deterministic variant + `admin_experiment_exposures`; `POST /api/admin/experiments/assign`; `isExperimentFeatureEnabled` evaluates rollout before experiment (DEC-001).
 - **Acceptance evidence:** `tests/admin/adminExperimentsService.test.ts`, `tests/admin/adminExperimentsRolloutPrecedence.test.ts`
-- **Commit:** (pending)
+- **Commit:** 17301ce
 
 ### PR-071 — Saved views reapply filters
 - **Status:** DONE_VERIFIED
 - **What was done:** `buildSavedViewHref` appends saved `filters` as query string; saved view cards link with filters (e.g. `/admin/payments?status=failed`).
 - **Acceptance evidence:** `tests/admin/savedViewsApply.test.ts`
-- **Commit:** (pending)
+- **Commit:** 29d13f2
 
 ### PR-072 — Admin entity search with role filter
 - **Status:** DONE_VERIFIED
 - **What was done:** `GET /api/admin/search?q=` + `/admin/search` form; `searchAdminEntities` filters indexed types for `support` role.
-- **Commit:** (pending)
+- **Commit:** efeef16
 
 ### PR-073 — Content calendar review dates
 - **Status:** DONE_VERIFIED
 - **What was done:** `getContentCalendarDashboard` filters `dueThisWeek` by `submittedAt` within current UTC week from review queue.
-- **Commit:** (pending)
+- **Commit:** 55a72fe
 
 ## Phase F5 gate status
-- **Status:** IN_PROGRESS
+- **Status:** DONE_VERIFIED — all ledger items PR-066 through PR-073 + PR-125 + PR-126 complete for Phase 09 admin workflows scope.
+- **typecheck:** green
+- **tests:** 625 passed (639 total)
+- **build:** green
+- **Role matrix:** 88 API routes, 70 pages
