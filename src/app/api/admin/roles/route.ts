@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { adminRoleAssignmentSchema } from "@/schemas/adminPlatformSchemas";
 import { recordAdminAudit, AdminAuditWriteError } from "@/server/services/adminAuditService";
 import {
-  assignAdminRole,
+  assignAdminRoleWithAudit,
   LastSuperAdminError,
   SelfDemotionError,
 } from "@/server/services/adminRoleService";
@@ -55,22 +55,23 @@ export async function POST(request: Request) {
       );
     }
 
-    const assignment = await assignAdminRole({
+    const assignment = await assignAdminRoleWithAudit({
       assignment: parsed.data,
       actorUserId: auth.userId,
-    });
-
-    await recordAdminAudit({
-      actorUserId: auth.userId,
-      actorRole: auth.role,
-      action: "admin_role.assign",
-      targetType: "admin_role_assignment",
-      targetId: assignment.id,
-      metadata: {
-        userId: assignment.userId,
-        roleKey: assignment.roleKey,
+      writeAudit: async (createdAssignment) => {
+        await recordAdminAudit({
+          actorUserId: auth.userId,
+          actorRole: auth.role,
+          action: "admin_role.assign",
+          targetType: "admin_role_assignment",
+          targetId: createdAssignment.id,
+          metadata: {
+            userId: createdAssignment.userId,
+            roleKey: createdAssignment.roleKey,
+          },
+          request,
+        });
       },
-      request,
     });
 
     return NextResponse.json(

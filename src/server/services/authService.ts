@@ -153,49 +153,6 @@ export async function setUserRole(
   }
 }
 
-export async function setCanonicalUserRole(
-  userId: string,
-  role: UserRole,
-): Promise<void> {
-  const admin = createAdminClient();
-  const { data: existingUser, error: readError } =
-    await admin.auth.admin.getUserById(userId);
-
-  if (readError) {
-    throw new Error(readError.message);
-  }
-
-  const previousRole = getRoleFromAppMetadata(
-    existingUser.user?.app_metadata as Record<string, unknown> | undefined,
-  );
-  const existingMetadata =
-    (existingUser.user?.app_metadata as Record<string, unknown> | undefined) ??
-    {};
-  const sessionVersion =
-    typeof existingMetadata.sessionVersion === "number"
-      ? existingMetadata.sessionVersion
-      : 1;
-
-  const { error } = await admin.auth.admin.updateUserById(userId, {
-    app_metadata: {
-      ...existingMetadata,
-      userRole: role,
-      sessionVersion,
-    },
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (previousRole && previousRole !== role) {
-    const { revokeAllSessions } = await import(
-      "@/server/services/sessionRevocationService"
-    );
-    await revokeAllSessions(userId, `role_changed:${previousRole}->${role}`);
-  }
-}
-
 export async function createStudentProfile(input: {
   userId: string;
   fullName: string;

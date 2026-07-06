@@ -69,10 +69,11 @@ Started: 2026-07-06T10:00:00+03:00
 
 ### PR-028 — Role assignment syncs runtime claim
 - **Status:** DONE_VERIFIED
-- **What was done:** `adminRoleService.ts` upserts ledger + `setCanonicalUserRole` via `authService.ts`; `roles/route.ts` uses service; `mode: assign|replace_runtime` on schema (DEC-008). `getStudent360Data` rollout wiring included in same service file.
-- **Trace chain (Tracer):** `POST /api/admin/roles` → `assignAdminRole` (`adminRoleService.ts:177-196`) → `syncRuntimeRoleForUser` → `setCanonicalUserRole` (`authService.ts:156-189`) → `updateUserById` app_metadata.userRole.
+- **What was done:** `adminRoleService.ts` upserts ledger + `setCanonicalUserRole` (local to admin role service per auth-track fence); `roles/route.ts` uses service; `mode: assign|replace_runtime` on schema (DEC-008). `getStudent360Data` rollout wiring included in same service file.
+- **Trace chain (Tracer):** `POST /api/admin/roles` → `assignAdminRoleWithAudit` → `assignAdminRole` (`adminRoleService.ts`) → `syncRuntimeRoleForUser` → `setCanonicalUserRole` (`adminRoleService.ts`) → `updateUserById` app_metadata.userRole.
 - **Acceptance evidence:** `tests/admin/roleMutationRuntime.test.ts` — sync test passed.
 - **Assumptions made:** DEC-008 — `app_metadata.userRole` is canonical runtime claim; ledger is write-through on assign.
+- **Fence correction:** `setCanonicalUserRole` removed from forbidden `authService.ts`; relocated to `adminRoleService.ts` (behavior unchanged).
 - **Commit:** 5562af8 fix(PR-028): sync admin role ledger to app_metadata.userRole
 
 ### PR-075 — Last-admin / self-demotion guards
@@ -83,12 +84,13 @@ Started: 2026-07-06T10:00:00+03:00
 - **Commit:** 46598b1 fix(PR-075): block last super-admin demotion and self-demotion
 
 ### PR-031 — Fail-closed audit on critical mutations
-- **Status:** DONE_VERIFIED
-- **What was done:** `CRITICAL_ADMIN_AUDIT_ACTIONS` set in `adminAuditService.ts`; default fail-closed for listed actions; `roles/route.ts` maps `AdminAuditWriteError` → 503 `AUDIT_WRITE_FAILED`.
-- **Trace chain (Tracer):** `POST /api/admin/roles` → `assignAdminRole` succeeds → `recordAdminAudit` (`roles/route.ts:63-74`) → insert error → `AdminAuditWriteError` → `503` (`roles/route.ts:81-91`).
-- **Acceptance evidence:** `tests/admin/auditFailClosed.test.ts` — 503 on simulated audit failure.
-- **Assumptions made:** DEC-009 option A (abort mutation when audit write fails).
-- **Commit:** b305444 fix(PR-031): fail-closed admin audit on critical mutations
+- **Status:** PARTIAL → corrected in follow-up (see below)
+- **Prior gap (auditor):** Role mutation committed before audit write; 503 returned while assignment persisted unaudited.
+- **Correction:** `assignAdminRoleWithAudit` snapshots ledger + runtime role, compensates via `revertAdminRoleAssignmentSnapshot` on `AdminAuditWriteError` before rethrowing.
+- **Trace chain (Tracer):** `POST /api/admin/roles` → `captureAdminRoleAssignmentSnapshot` → `assignAdminRole` → `recordAdminAudit` fails → `revertAdminRoleAssignmentSnapshot` (delete + restore rows + `setCanonicalUserRole`) → `503 AUDIT_WRITE_FAILED`.
+- **Acceptance evidence:** `tests/admin/auditFailClosed.test.ts` — 503 + `assignmentRows` empty + runtime role restored after audit failure.
+- **Assumptions made:** DEC-009 option A with compensation (option b) — no durable audit-intent table; full snapshot revert.
+- **Commit:** (pending correction commit)
 
 ### PR-029 — Feature rollout enforcement
 - **Status:** DONE_VERIFIED
