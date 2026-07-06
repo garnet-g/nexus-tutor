@@ -14,6 +14,15 @@ function isLocalSupabase(): boolean {
 }
 
 export default async function globalSetup(): Promise<void> {
+  process.env.E2E_STUDENT_EMAIL ??= "student@nexus.local";
+  process.env.E2E_STUDENT_PASSWORD ??= "NexusDev1";
+  process.env.E2E_PARENT_EMAIL ??= "parent@nexus.local";
+  process.env.E2E_PARENT_PASSWORD ??= "NexusDev1";
+  process.env.E2E_SUPPORT_EMAIL ??= "support@nexus.local";
+  process.env.E2E_SUPPORT_PASSWORD ??= "NexusDev1";
+  process.env.E2E_SUPER_ADMIN_EMAIL ??= "admin@nexus.local";
+  process.env.E2E_SUPER_ADMIN_PASSWORD ??= "NexusDev1";
+
   if (!isLocalSupabase()) {
     return;
   }
