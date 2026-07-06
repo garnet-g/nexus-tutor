@@ -390,6 +390,21 @@
   }
 }
 
+@keyframes nexusScrollCue {
+  0% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  70% {
+    transform: translateY(10px);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
 @keyframes nexusFadeRise {
   from {
     opacity: 0;
