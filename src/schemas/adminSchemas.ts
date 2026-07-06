@@ -82,6 +82,14 @@ export const paymentsQuerySchema = z.object({
 
 export type PaymentsQueryInput = z.infer<typeof paymentsQuerySchema>;
 
+export const paymentCallbackReplaySchema = z.object({
+  eventId: z.string().uuid("Invalid callback event id"),
+});
+
+export type PaymentCallbackReplayInput = z.infer<
+  typeof paymentCallbackReplaySchema
+>;
+
 export const outcomesQuerySchema = z.object({
   curriculum: z.enum(["CBC", "KCSE"]).optional(),
   gradeLevel: z.string().max(40).optional(),

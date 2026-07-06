@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { CouponManagerPanel } from "@/features/admin/components/CouponManagerPanel";
+import { PaymentCallbackReplayPanel } from "@/features/admin/components/PaymentCallbackReplayPanel";
 import { FilterTabs, PageHeader, Panel, StatCard } from "@/features/admin/components/adminUi";
 import { PaymentsLedgerTable } from "@/features/admin/components/PaymentsLedgerTable";
 import { paymentsQuerySchema } from "@/schemas/adminSchemas";
@@ -126,6 +127,8 @@ export default async function PaymentsPage({
         initialCoupons={coupons}
         canWrite={auth.role === "super_admin"}
       />
+
+      <PaymentCallbackReplayPanel canWrite={auth.role === "super_admin"} />
 
       <Panel
         title="Recent ledger"

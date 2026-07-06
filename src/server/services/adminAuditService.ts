@@ -36,6 +36,7 @@ export type AdminAuditAction =
   | "parent.sms.send"
   | "coupon.create"
   | "coupon.deactivate"
+  | "payments.replay_callback"
   | "support_case.create"
   | "support_case.update"
   | "feature_rollout.upsert"

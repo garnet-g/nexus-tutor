@@ -1,6 +1,7 @@
 import "server-only";
 
 import { queryStkPush } from "@/lib/mpesa/mpesaClient";
+import { isTerminal } from "@/lib/mpesa/paymentStateMachine";
 import { validateQueryProof } from "@/lib/mpesa/paymentProof";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -117,20 +118,58 @@ export async function reconcilePayment(mpesaPaymentId: string): Promise<{
   };
 }
 
-/** PR-077 stub: replay a stored callback event for ops reconciliation */
-export async function replayCallbackEvent(eventId: string): Promise<{ replayed: boolean }> {
+/** PR-077: idempotent operator replay of a stored callback event */
+export async function replayCallbackEvent(eventId: string): Promise<{
+  replayed: boolean;
+  reason?: string;
+  status?: string;
+}> {
   const supabase = createAdminClient();
 
   const { data: event } = await supabase
     .from("mpesa_callback_events")
-    .select("mpesa_payment_id")
+    .select(
+      "id, mpesa_payment_id, is_processed, checkout_request_id, result_code",
+    )
     .eq("id", eventId)
     .maybeSingle();
 
   if (!event?.mpesa_payment_id) {
-    return { replayed: false };
+    return { replayed: false, reason: "event_not_found" };
   }
 
-  await reconcilePayment(event.mpesa_payment_id);
-  return { replayed: true };
+  const { data: payment } = await supabase
+    .from("mpesa_payments")
+    .select("payment_status")
+    .eq("id", event.mpesa_payment_id)
+    .maybeSingle();
+
+  if (!payment) {
+    return { replayed: false, reason: "payment_not_found" };
+  }
+
+  if (event.is_processed && isTerminal(payment.payment_status)) {
+    return {
+      replayed: false,
+      reason: "already_processed",
+      status: payment.payment_status,
+    };
+  }
+
+  const result = await reconcilePayment(event.mpesa_payment_id);
+
+  if (!event.is_processed) {
+    await supabase
+      .from("mpesa_callback_events")
+      .update({
+        is_processed: true,
+        processed_at: new Date().toISOString(),
+      })
+      .eq("id", event.id);
+  }
+
+  return {
+    replayed: true,
+    status: result.status,
+  };
 }
