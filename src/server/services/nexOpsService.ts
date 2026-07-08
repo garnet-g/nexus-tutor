@@ -3,7 +3,7 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { unwrapSupabaseRelation } from "@/lib/utils";
 
-export type NexOpsProvider = "gemini" | "openai" | "mock";
+export type NexOpsProvider = "gemini" | "openai" | "mock" | "cache";
 export type NexOpsReviewStatus = "open" | "resolved" | "escalated";
 
 export interface NexOpsMessageRow {
@@ -115,6 +115,10 @@ export function getNexOpsPricingConfig(): NexOpsPricingConfig {
         inputUsdPerMillion: 0,
         outputUsdPerMillion: 0,
       },
+      cache: {
+        inputUsdPerMillion: 0,
+        outputUsdPerMillion: 0,
+      },
     },
   };
 }
@@ -144,7 +148,9 @@ function parseMetadata(value: unknown): Record<string, unknown> {
 }
 
 function parseProvider(metadata: Record<string, unknown>): NexOpsProvider {
-  return metadata.provider === "openai" || metadata.provider === "mock"
+  return metadata.provider === "openai" ||
+    metadata.provider === "mock" ||
+    metadata.provider === "cache"
     ? metadata.provider
     : "gemini";
 }
@@ -163,6 +169,10 @@ function providerLabel(provider: NexOpsProvider): string {
 
   if (provider === "mock") {
     return "Mock";
+  }
+
+  if (provider === "cache") {
+    return "Cache";
   }
 
   return "Gemini";
