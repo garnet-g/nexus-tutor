@@ -1,7 +1,10 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendWeeklyParentReportEmail } from "@/server/services/notificationService";
+import {
+  sendParentWeeklyWhatsAppReport,
+  sendWeeklyParentReportEmail,
+} from "@/server/services/notificationService";
 import { getStudentPlanCode } from "@/server/services/subscriptionService";
 
 /** Monday-based week start in Africa/Nairobi (see tests/parent/weeklyReportTimezone.test.ts). */
@@ -112,7 +115,12 @@ export async function generateWeeklyReportForLink(input: {
   parentId: string;
   studentId: string;
   weekStartDate?: string;
-}): Promise<{ reportId: string; emailed: boolean; skipped?: boolean }> {
+}): Promise<{
+  reportId: string;
+  emailed: boolean;
+  whatsapped?: boolean;
+  skipped?: boolean;
+}> {
   const admin = createAdminClient();
   const weekStart = input.weekStartDate ?? getWeekStartDate();
 
@@ -142,7 +150,7 @@ export async function generateWeeklyReportForLink(input: {
   }
 
   const planCode = await getStudentPlanCode(input.studentId);
-  const isPremiumLinked = planCode === "premium" || planCode === "family";
+  const isPremiumLinked = planCode !== "free";
 
   const [studyMinutes, health, weakTopics, studentProfile, parentProfile] =
     await Promise.all([
@@ -156,7 +164,7 @@ export async function generateWeeklyReportForLink(input: {
         .single(),
       admin
         .from("parent_profiles")
-        .select("email")
+        .select("email, phone_number")
         .eq("id", input.parentId)
         .single(),
     ]);
@@ -229,12 +237,28 @@ export async function generateWeeklyReportForLink(input: {
     emailed = true;
   }
 
-  return { reportId: parentReport.id, emailed };
+  let whatsapped = false;
+  if (isPremiumLinked && parentProfile.data?.phone_number) {
+    await sendParentWeeklyWhatsAppReport({
+      parentId: input.parentId,
+      studentId: input.studentId,
+      weekStart,
+      parentPhone: parentProfile.data.phone_number,
+      studentName,
+      studyMinutes,
+      healthScore: health.healthScore,
+      weakTopics: weakTopics.join(", ") || "None identified",
+    });
+    whatsapped = true;
+  }
+
+  return { reportId: parentReport.id, emailed, whatsapped };
 }
 
 export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
   processed: number;
   emailed: number;
+  whatsapped: number;
   skipped: number;
   errors: string[];
 }> {
@@ -248,6 +272,7 @@ export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
 
   let processed = 0;
   let emailed = 0;
+  let whatsapped = 0;
   let skipped = 0;
   const errors: string[] = [];
 
@@ -261,8 +286,13 @@ export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
       processed += 1;
       if (result.skipped) {
         skipped += 1;
-      } else if (result.emailed) {
-        emailed += 1;
+      } else {
+        if (result.emailed) {
+          emailed += 1;
+        }
+        if (result.whatsapped) {
+          whatsapped += 1;
+        }
       }
     } catch (error) {
       errors.push(
@@ -273,7 +303,7 @@ export async function runWeeklyReportsForAllLinkedStudents(): Promise<{
     }
   }
 
-  return { processed, emailed, skipped, errors };
+  return { processed, emailed, whatsapped, skipped, errors };
 }
 
 export interface StudentWeeklySummary {

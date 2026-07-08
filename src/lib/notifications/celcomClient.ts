@@ -110,6 +110,105 @@ export async function sendCelcomSms(
   };
 }
 
+export interface SendCelcomWhatsAppInput {
+  phoneNumber: string;
+  messageBody: string;
+  templateCode?: string;
+  studentId?: string;
+  parentId?: string;
+}
+
+export interface SendCelcomWhatsAppResult {
+  celcomMessageId: string;
+  whatsappStatus: "queued" | "sent" | "delivered" | "failed";
+  isMock: boolean;
+  mockMetadata?: ReturnType<typeof createMockAdapterMetadata>;
+}
+
+export async function sendCelcomWhatsApp(
+  input: SendCelcomWhatsAppInput,
+): Promise<SendCelcomWhatsAppResult> {
+  assertNotificationsConfiguredForLiveMode("whatsapp");
+
+  const useMock = isNotificationsMockAllowed() || !isCelcomConfigured();
+  if (!useMock && !isCelcomConfigured()) {
+    assertNotificationsConfiguredForLiveMode("whatsapp");
+  }
+
+  const supabase = createAdminClient();
+
+  if (!useMock) {
+    let celcomMessageId = `WA-${randomUUID()}`;
+    let whatsappStatus: SendCelcomWhatsAppResult["whatsappStatus"] = "queued";
+    let sentAt: string | null = null;
+
+    const response = await fetch("https://api.celcomafrica.com/whatsapp/send", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.CELCOM_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        partnerId: process.env.CELCOM_PARTNER_ID,
+        senderId: process.env.CELCOM_WHATSAPP_SENDER_ID ?? process.env.CELCOM_SHORTCODE,
+        phoneNumber: input.phoneNumber,
+        message: input.messageBody,
+      }),
+    });
+
+    if (!response.ok) {
+      whatsappStatus = "failed";
+    } else {
+      const payload = (await response.json()) as { messageId?: string };
+      celcomMessageId = payload.messageId ?? celcomMessageId;
+      whatsappStatus = "sent";
+      sentAt = new Date().toISOString();
+    }
+
+    await supabase.from("celcom_whatsapp_logs").insert({
+      student_id: input.studentId ?? null,
+      parent_id: input.parentId ?? null,
+      phone_number: input.phoneNumber,
+      message_body: input.messageBody,
+      template_code: input.templateCode ?? null,
+      celcom_message_id: celcomMessageId,
+      whatsapp_status: whatsappStatus,
+      sent_at: sentAt,
+    });
+
+    return {
+      celcomMessageId,
+      whatsappStatus,
+      isMock: false,
+    };
+  }
+
+  if (!isNotificationsMockAllowed()) {
+    assertNotificationsConfiguredForLiveMode("whatsapp");
+  }
+
+  const mockMetadata = createMockAdapterMetadata();
+  const celcomMessageId = `MOCK-WA-${randomUUID()}`;
+
+  await supabase.from("celcom_whatsapp_logs").insert({
+    student_id: input.studentId ?? null,
+    parent_id: input.parentId ?? null,
+    phone_number: input.phoneNumber,
+    message_body: input.messageBody,
+    template_code: input.templateCode ?? null,
+    celcom_message_id: celcomMessageId,
+    whatsapp_status: "queued",
+    sent_at: null,
+  });
+
+  return {
+    celcomMessageId,
+    whatsappStatus: "queued",
+    isMock: true,
+    mockMetadata,
+  };
+}
+
 export async function sendCelcomOtp(input: {
   phoneNumber: string;
   otpCode: string;

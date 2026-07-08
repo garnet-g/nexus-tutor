@@ -290,6 +290,51 @@ export async function sendWeeklyParentReportEmail(input: {
   });
 }
 
+export async function sendParentWeeklyWhatsAppReport(input: {
+  parentId: string;
+  studentId: string;
+  weekStart: string;
+  parentPhone: string;
+  studentName: string;
+  studyMinutes: number;
+  healthScore: number;
+  weakTopics: string;
+}): Promise<void> {
+  const enabled = await isParentNotificationEnabled(
+    input.parentId,
+    "weekly_report",
+    "sms",
+  );
+
+  if (!enabled) {
+    return;
+  }
+
+  const studyHours = Math.round((input.studyMinutes / 60) * 10) / 10;
+  const messageBody = [
+    `*Weekly progress: ${input.studentName}*`,
+    "",
+    `Study time: ${studyHours}h (${input.studyMinutes} min)`,
+    `Academic health score: ${Math.round(input.healthScore)}%`,
+    `Focus areas: ${input.weakTopics}`,
+    "",
+    `View the full dashboard: ${APP_URL}/parent`,
+  ].join("\n");
+
+  await enqueueAndTrySendNotification({
+    idempotencyKey: `weekly_report_whatsapp:${input.parentId}:${input.studentId}:${input.weekStart}`,
+    channel: "whatsapp",
+    payload: {
+      type: "whatsapp",
+      phoneNumber: input.parentPhone,
+      messageBody,
+      templateCode: "weekly_parent_report_whatsapp",
+      parentId: input.parentId,
+      studentId: input.studentId,
+    },
+  });
+}
+
 export async function handleCelcomDeliveryReport(payload: unknown): Promise<void> {
   if (!payload || typeof payload !== "object") {
     return;

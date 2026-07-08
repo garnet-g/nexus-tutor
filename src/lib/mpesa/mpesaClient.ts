@@ -217,6 +217,84 @@ export async function queryStkPush(
   };
 }
 
+export interface TransactionStatusQueryResult {
+  accepted: boolean;
+  responseDescription: string;
+  isMock: boolean;
+}
+
+/**
+ * Daraja's TransactionStatusQuery is asynchronous: this call only confirms
+ * Safaricom accepted the request. The actual result arrives on ResultURL,
+ * so callers must treat `accepted` as "queued for verification", not proof
+ * of payment — never activate a subscription from this response alone.
+ */
+export async function queryTransactionStatus(input: {
+  mpesaReceiptNumber: string;
+  resultUrl: string;
+  queueTimeoutUrl: string;
+}): Promise<TransactionStatusQueryResult> {
+  assertMpesaConfiguredForLiveMode();
+
+  if (isMpesaMockAllowed() || !isMpesaConfigured()) {
+    if (!isMpesaMockAllowed()) {
+      assertMpesaConfiguredForLiveMode();
+    }
+
+    return {
+      accepted: true,
+      responseDescription: "Accept the service request successfully.",
+      isMock: true,
+    };
+  }
+
+  const accessToken = await getDarajaAccessToken();
+  const baseUrl =
+    process.env.MPESA_ENV === "production"
+      ? "https://api.safaricom.co.ke"
+      : "https://sandbox.safaricom.co.ke";
+
+  const response = await fetch(`${baseUrl}/mpesa/transactionstatus/v1/query`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      Initiator: process.env.MPESA_INITIATOR_NAME,
+      SecurityCredential: process.env.MPESA_SECURITY_CREDENTIAL,
+      CommandID: "TransactionStatusQuery",
+      TransactionID: input.mpesaReceiptNumber,
+      PartyA: process.env.MPESA_SHORTCODE,
+      IdentifierType: "4",
+      ResultURL: input.resultUrl,
+      QueueTimeOutURL: input.queueTimeoutUrl,
+      Remarks: "Manual reconciliation",
+      Occasion: "",
+    }),
+  });
+
+  const payload = (await response.json()) as {
+    ResponseCode?: string;
+    ResponseDescription?: string;
+    errorMessage?: string;
+  };
+
+  if (!response.ok || payload.ResponseCode !== "0") {
+    throw new Error(
+      payload.errorMessage ??
+        payload.ResponseDescription ??
+        "M-Pesa transaction status query failed",
+    );
+  }
+
+  return {
+    accepted: true,
+    responseDescription: payload.ResponseDescription ?? "Accepted",
+    isMock: false,
+  };
+}
+
 export function mapMpesaResultCodeToStatus(resultCode: number): string {
   if (resultCode === 0) {
     return "provider-pending";

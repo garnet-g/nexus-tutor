@@ -286,6 +286,14 @@ export async function executeApprovedBulkAction(input: {
     );
   }
 
+  // Four-eyes: the approver/executor must differ from the requester (DEC-009)
+  if (approval.requestedBy === input.actorUserId) {
+    throw new BulkActionExecutionError(
+      "FORBIDDEN",
+      "The actor who requested this bulk action cannot also execute it.",
+    );
+  }
+
   const metadata = approval.metadata ?? {};
   if (typeof metadata.executedAt === "string") {
     const summary = asExecutionSummary(metadata.executionSummary);

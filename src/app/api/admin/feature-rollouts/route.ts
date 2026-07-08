@@ -8,6 +8,7 @@ import {
   listFeatureRollouts,
   upsertFeatureRollout,
 } from "@/server/services/adminOpsService";
+import { clearFeatureRolloutCache } from "@/server/services/featureRolloutService";
 import { requireAdminApi } from "@/server/services/requireAdminApi";
 
 export async function GET(request: Request) {
@@ -58,6 +59,9 @@ export async function POST(request: Request) {
       rollout: parsed.data,
       actorUserId: auth.userId,
     });
+
+    // Bust the 30-second in-memory cache so the change is visible immediately
+    clearFeatureRolloutCache();
 
     await recordAdminAudit({
       actorUserId: auth.userId,

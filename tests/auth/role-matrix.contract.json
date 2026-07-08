@@ -1091,5 +1091,76 @@
     "methods": [
       "POST"
     ]
+  },
+  {
+    "path": "/practice-papers",
+    "tier": "student",
+    "filePath": "src/app/(student)/practice-papers/page.tsx"
+  },
+  {
+    "path": "/practice-papers/[id]/attempt",
+    "tier": "student",
+    "filePath": "src/app/(student)/practice-papers/[id]/attempt/page.tsx"
+  },
+  {
+    "path": "/practice-papers/attempts/[attemptId]/results",
+    "tier": "student",
+    "filePath": "src/app/(student)/practice-papers/attempts/[attemptId]/results/page.tsx"
+  },
+  {
+    "path": "/api/past-papers",
+    "tier": "student",
+    "filePath": "src/app/api/past-papers/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/past-papers/[id]",
+    "tier": "student",
+    "filePath": "src/app/api/past-papers/[id]/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/past-papers/[id]/start",
+    "tier": "student",
+    "filePath": "src/app/api/past-papers/[id]/start/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/past-papers/attempts/[attemptId]/submit",
+    "tier": "student",
+    "filePath": "src/app/api/past-papers/attempts/[attemptId]/submit/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/past-papers/attempts/[attemptId]/mark",
+    "tier": "student",
+    "filePath": "src/app/api/past-papers/attempts/[attemptId]/mark/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/past-papers/attempts/[attemptId]/results",
+    "tier": "student",
+    "filePath": "src/app/api/past-papers/attempts/[attemptId]/results/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/mpesa/reconcile-manual",
+    "tier": "student",
+    "filePath": "src/app/api/mpesa/reconcile-manual/route.ts",
+    "methods": [
+      "POST"
+    ]
   }
 ]

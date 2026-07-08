@@ -22,12 +22,24 @@ export function verifyCallbackSecret(secret: string, storedHash: string): boolea
   return timingSafeEqual(Buffer.from(computed), Buffer.from(storedHash));
 }
 
-export function buildCallbackUrl(secret: string): string {
-  const origin =
+function getAppOrigin(): string {
+  return (
     process.env.APP_ORIGIN?.trim() ||
     process.env.NEXT_PUBLIC_APP_URL?.trim() ||
-    "http://localhost:3000";
-  return `${origin.replace(/\/$/, "")}/api/mpesa/callback/${secret}`;
+    "http://localhost:3000"
+  ).replace(/\/$/, "");
+}
+
+export function buildCallbackUrl(secret: string): string {
+  return `${getAppOrigin()}/api/mpesa/callback/${secret}`;
+}
+
+export function buildTransactionStatusResultUrl(): string {
+  return `${getAppOrigin()}/api/mpesa/transaction-status-result`;
+}
+
+export function buildTransactionStatusTimeoutUrl(): string {
+  return `${getAppOrigin()}/api/mpesa/transaction-status-timeout`;
 }
 
 export function buildCallbackIdempotencyKey(input: {

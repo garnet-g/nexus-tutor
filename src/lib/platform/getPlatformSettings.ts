@@ -225,7 +225,7 @@ export function getNexDailyLimit(
   config: EffectiveSubscriptionConfig,
   planCode: string,
 ): number {
-  if (planCode === "premium" || planCode === "family") {
+  if (planCode !== "free") {
     return config.limits.premiumNex;
   }
 
@@ -236,7 +236,7 @@ export function getPracticeDailyLimit(
   config: EffectiveSubscriptionConfig,
   planCode: string,
 ): number {
-  if (planCode === "premium" || planCode === "family") {
+  if (planCode !== "free") {
     return config.limits.premiumPractice;
   }
 

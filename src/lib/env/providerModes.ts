@@ -132,14 +132,16 @@ export function assertMpesaConfiguredForLiveMode(): void {
 }
 
 export function assertNotificationsConfiguredForLiveMode(
-  channel: "sms" | "email",
+  channel: "sms" | "email" | "whatsapp",
 ): void {
   if (isNotificationsMockAllowed()) {
     return;
   }
 
-  if (channel === "sms" && !isCelcomConfigured()) {
-    throw new ConfigurationError("Celcom SMS is not configured for live mode");
+  if ((channel === "sms" || channel === "whatsapp") && !isCelcomConfigured()) {
+    throw new ConfigurationError(
+      `Celcom ${channel} is not configured for live mode`,
+    );
   }
 
   if (channel === "email" && !isResendConfigured()) {

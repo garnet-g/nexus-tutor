@@ -7,10 +7,7 @@ import { CreditCard, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { inputVariants } from "@/components/ui/Input";
-import {
-  formatPlanAmountKes,
-  PricingPlanComparison,
-} from "@/features/pricing/components/PricingPlanComparison";
+import { PricingPlanComparison } from "@/features/pricing/components/PricingPlanComparison";
 import {
   clearPendingPayment,
   savePendingPayment,
@@ -42,6 +39,19 @@ const TERMINAL_STATUSES = new Set([
 
 const POLL_INTERVAL_MS = 2500;
 
+function getBillingCycleSuffix(planCode: string): string {
+  if (planCode.includes("daily")) {
+    return "/day";
+  }
+  if (planCode.includes("weekly")) {
+    return "/week";
+  }
+  if (planCode.includes("termly")) {
+    return "/term";
+  }
+  return "/mo";
+}
+
 export function PricingCheckout({
   config,
   plans,
@@ -64,7 +74,16 @@ export function PricingCheckout({
   );
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const [mpesaCode, setMpesaCode] = useState("");
+  const [isManualSubmitting, setIsManualSubmitting] = useState(false);
+  const [manualError, setManualError] = useState<string | null>(null);
+  const [manualSuccess, setManualSuccess] = useState<string | null>(null);
+
   const selectedPlan = paidPlans.find((plan) => plan.id === selectedPlanId);
+  const showManualFallback =
+    Boolean(selectedPlan) &&
+    (checkoutRecoverable ||
+      (paymentStatus !== null && paymentStatus !== "verified-paid"));
 
   useEffect(() => {
     if (!initialPendingPaymentId) {
@@ -266,6 +285,52 @@ export function PricingCheckout({
     }
   }
 
+  async function handleManualReconcile(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!selectedPlan) {
+      return;
+    }
+
+    setIsManualSubmitting(true);
+    setManualError(null);
+    setManualSuccess(null);
+
+    try {
+      const response = await fetch("/api/mpesa/reconcile-manual", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subscriptionPlanId: selectedPlan.id,
+          mpesaCode,
+        }),
+      });
+
+      const payload = (await response.json()) as {
+        success: boolean;
+        data?: { status: string; activated: boolean; message: string };
+        error?: { message: string };
+      };
+
+      if (!response.ok || !payload.success || !payload.data) {
+        setManualError(payload.error?.message ?? "Could not verify this code.");
+        return;
+      }
+
+      setManualSuccess(payload.data.message);
+      setMpesaCode("");
+
+      if (payload.data.activated) {
+        stopPolling();
+        clearPendingPayment();
+        setPaymentStatus("verified-paid");
+      }
+    } catch {
+      setManualError("Network error. Please try again.");
+    } finally {
+      setIsManualSubmitting(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       <PricingPlanComparison config={config} highlightPlan="premium" compact />
@@ -273,7 +338,7 @@ export function PricingCheckout({
       <SectionCard title="Choose a paid plan">
         <div className="grid gap-3 sm:grid-cols-2">
           {paidPlans.map((plan) => {
-            const amount = formatPlanAmountKes(config, plan.planCode);
+            const amount = plan.amountKes;
             const isSelected = plan.id === selectedPlanId;
 
             return (
@@ -291,7 +356,9 @@ export function PricingCheckout({
                 <h2 className="font-heading text-lg font-semibold">{plan.name}</h2>
                 <p className="mt-2 font-heading text-2xl font-semibold tabular">
                   KES {amount.toLocaleString()}
-                  <span className="text-base font-normal opacity-80">/mo</span>
+                  <span className="text-base font-normal opacity-80">
+                    {getBillingCycleSuffix(plan.planCode)}
+                  </span>
                 </p>
                 <p className="mt-2 text-sm opacity-90">
                   {plan.planCode === "family"
@@ -332,7 +399,7 @@ export function PricingCheckout({
         title="Pay with M-Pesa"
         description={
           selectedPlan
-            ? `Subscribe to ${selectedPlan.name} for KES ${formatPlanAmountKes(config, selectedPlan.planCode).toLocaleString()}/month.`
+            ? `Subscribe to ${selectedPlan.name} for KES ${selectedPlan.amountKes.toLocaleString()}${getBillingCycleSuffix(selectedPlan.planCode)}.`
             : "Select a plan to continue."
         }
       >
@@ -383,6 +450,60 @@ export function PricingCheckout({
           </Button>
         </form>
       </SectionCard>
+
+      {showManualFallback && selectedPlan ? (
+        <SectionCard
+          title="Pay via Lipa na M-Pesa"
+          description="If the STK push doesn't arrive, pay manually using Paybill and confirm your transaction code below."
+        >
+          <div className="space-y-4">
+            <div className="rounded-[14px] border border-nexus-border bg-nexus-sunken p-4 text-sm text-foreground">
+              <p>Go to M-Pesa &gt; Lipa na M-Pesa &gt; Paybill</p>
+              <p className="mt-1">
+                Business number: <span className="font-medium">{process.env.NEXT_PUBLIC_MPESA_PAYBILL ?? "[Paybill]"}</span>
+              </p>
+              <p className="mt-1">
+                Account number: <span className="font-medium">{selectedPlan.planCode}</span>
+              </p>
+              <p className="mt-1">
+                Amount: <span className="font-medium">KES {selectedPlan.amountKes.toLocaleString()}</span>
+              </p>
+            </div>
+
+            <form onSubmit={handleManualReconcile} className="space-y-3">
+              <label className="block space-y-2 text-sm">
+                <span className="font-medium text-foreground">M-Pesa transaction code</span>
+                <input
+                  type="text"
+                  value={mpesaCode}
+                  onChange={(event) => setMpesaCode(event.target.value.toUpperCase())}
+                  placeholder="e.g. QAB1C2D3E4"
+                  className={cn(inputVariants(), "min-h-12 uppercase")}
+                  required
+                />
+              </label>
+              {manualError ? (
+                <p className="text-sm text-nexus-danger" role="alert">
+                  {manualError}
+                </p>
+              ) : null}
+              {manualSuccess ? (
+                <p className="text-sm text-nexus-success" role="status">
+                  {manualSuccess}
+                </p>
+              ) : null}
+              <Button
+                type="submit"
+                variant="outline"
+                disabled={isManualSubmitting || !mpesaCode}
+                className="min-h-12"
+              >
+                {isManualSubmitting ? "Verifying..." : "Confirm transaction code"}
+              </Button>
+            </form>
+          </div>
+        </SectionCard>
+      ) : null}
 
       <p className="text-center text-sm text-muted-foreground">
         <Link href="/dashboard" className="text-nexus-primary hover:underline">

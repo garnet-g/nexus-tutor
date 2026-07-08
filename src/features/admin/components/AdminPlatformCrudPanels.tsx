@@ -212,6 +212,7 @@ export function AdminRolesPanel({
 }) {
   const [assignments, setAssignments] = useState(initialAssignments);
   const [submitting, setSubmitting] = useState(false);
+  const [revoking, setRevoking] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   async function assignRole(formData: FormData) {
@@ -243,6 +244,30 @@ export function AdminRolesPanel({
     });
     setMessage("Role assigned.");
   }
+
+  async function revokeRole(userId: string, roleKey: string) {
+    const rowKey = `${userId}:${roleKey}`;
+    setRevoking(rowKey);
+    setMessage(null);
+    const response = await fetch("/api/admin/roles", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, roleKey }),
+    });
+    const body = await response.json();
+    setRevoking(null);
+
+    if (!response.ok || !body.success) {
+      setMessage(body.error?.message ?? "Could not revoke role.");
+      return;
+    }
+
+    setAssignments((current) =>
+      current.filter((item) => !(item.userId === userId && item.roleKey === roleKey)),
+    );
+    setMessage("Role revoked.");
+  }
+
 
   return (
     <div className="grid gap-5 lg:grid-cols-[360px_1fr]">
@@ -280,17 +305,31 @@ export function AdminRolesPanel({
         <Panel title="Assignments" description={`${assignments.length} assigned operational role${assignments.length === 1 ? "" : "s"}`} padded={false}>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead><tr className="border-b border-nexus-border text-left text-xs uppercase tracking-wide text-muted-foreground"><th className="px-5 py-3 font-medium">User</th><th className="px-5 py-3 font-medium">Role</th><th className="px-5 py-3 font-medium">Assigned</th></tr></thead>
+              <thead><tr className="border-b border-nexus-border text-left text-xs uppercase tracking-wide text-muted-foreground"><th className="px-5 py-3 font-medium">User</th><th className="px-5 py-3 font-medium">Role</th><th className="px-5 py-3 font-medium">Assigned</th><th className="px-5 py-3 text-right font-medium">Action</th></tr></thead>
               <tbody>
                 {assignments.length === 0 ? (
-                  <tr><td colSpan={3} className="px-5 py-10 text-center text-muted-foreground">No role assignments yet.</td></tr>
-                ) : assignments.map((assignment) => (
-                  <tr key={assignment.id} className="border-b border-nexus-border last:border-0">
-                    <td className="px-5 py-3 font-mono text-xs text-muted-foreground">{assignment.userId}</td>
-                    <td className="px-5 py-3"><StatusBadge tone="info">{getRoleLabel(assignment.roleKey)}</StatusBadge></td>
-                    <td className="px-5 py-3 text-xs text-muted-foreground">{new Date(assignment.createdAt).toLocaleDateString("en-KE")}</td>
-                  </tr>
-                ))}
+                  <tr><td colSpan={4} className="px-5 py-10 text-center text-muted-foreground">No role assignments yet.</td></tr>
+                ) : assignments.map((assignment) => {
+                  const rowKey = `${assignment.userId}:${assignment.roleKey}`;
+                  return (
+                    <tr key={assignment.id} className="border-b border-nexus-border last:border-0">
+                      <td className="px-5 py-3 font-mono text-xs text-muted-foreground">{assignment.userId}</td>
+                      <td className="px-5 py-3"><StatusBadge tone="info">{getRoleLabel(assignment.roleKey)}</StatusBadge></td>
+                      <td className="px-5 py-3 text-xs text-muted-foreground">{new Date(assignment.createdAt).toLocaleDateString("en-KE")}</td>
+                      <td className="px-5 py-3 text-right">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={revoking === rowKey}
+                          onClick={() => revokeRole(assignment.userId, assignment.roleKey)}
+                        >
+                          {revoking === rowKey ? "Revoking…" : "Revoke"}
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

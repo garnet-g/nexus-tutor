@@ -47,7 +47,7 @@ export async function hasUsedFreeTrial(studentId: string): Promise<boolean> {
 }
 
 export function canAccessExamStudyPlan(planCode: string): boolean {
-  return planCode === "premium" || planCode === "family";
+  return planCode !== "free";
 }
 
 async function getFreePlanId(): Promise<string> {
@@ -150,6 +150,10 @@ export async function startFreeTrial(studentId: string): Promise<{
 }
 
 export async function resolvePlanAmountKes(planCode: string): Promise<number> {
+  if (planCode === "free") {
+    return 0;
+  }
+
   const config = await getEffectiveSubscriptionConfig();
 
   if (planCode === "family") {
@@ -160,7 +164,15 @@ export async function resolvePlanAmountKes(planCode: string): Promise<number> {
     return config.pricing.premiumAmountKes;
   }
 
-  return 0;
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("subscription_plans")
+    .select("amount_kes")
+    .eq("plan_code", planCode)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  return data?.amount_kes ?? 0;
 }
 
 export interface ProcessVerifiedMpesaPaymentInput {

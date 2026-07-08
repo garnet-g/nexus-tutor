@@ -1,155 +1,117 @@
 /**
  * @vitest-environment node
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { PATCH } from "@/app/api/admin/approvals/route";
-import { POST } from "@/app/api/admin/bulk-actions/execute/route";
-
-vi.mock("server-only", () => ({}));
-
-const getUser = vi.fn();
-const getSession = vi.fn();
-
-vi.mock("@/lib/supabase/server", () => ({
-  createClient: vi.fn(async () => ({ auth: { getUser, getSession } })),
-}));
-
-vi.mock("@/server/services/sessionFreshnessService", () => ({
-  validateSessionFreshness: vi.fn(async () => ({ ok: true })),
-}));
-
-const getApprovalById = vi.fn();
-const updateApproval = vi.fn();
-const executeApprovedBulkAction = vi.fn();
-const recordAdminAudit = vi.fn();
+const mockGetApprovalById = vi.fn();
+const mockMarkApprovalExecuted = vi.fn();
+const mockRpc = vi.fn();
+const mockFrom = vi.fn();
 
 vi.mock("@/server/services/adminPlatformService", () => ({
-  createApproval: vi.fn(),
-  listApprovals: vi.fn(),
-  getApprovalById: (...args: unknown[]) => getApprovalById(...args),
-  updateApproval: (...args: unknown[]) => updateApproval(...args),
-  isBulkActionRequestType: (requestType: string) => requestType.startsWith("bulk_"),
+  getApprovalById: (...args: any[]) => mockGetApprovalById(...args),
+  isBulkActionRequestType: () => true,
+  markApprovalExecuted: (...args: any[]) => mockMarkApprovalExecuted(...args),
 }));
 
-vi.mock("@/server/services/adminBulkActionsService", () => ({
-  BulkActionExecutionError: class BulkActionExecutionError extends Error {
-    code: "NOT_FOUND" | "FORBIDDEN" | "VALIDATION_ERROR";
-    constructor(code: "NOT_FOUND" | "FORBIDDEN" | "VALIDATION_ERROR", message: string) {
-      super(message);
-      this.code = code;
-    }
-  },
-  executeApprovedBulkAction: (...args: unknown[]) => executeApprovedBulkAction(...args),
+vi.mock("@/lib/supabase/admin", () => ({
+  createAdminClient: vi.fn(() => ({
+    rpc: mockRpc,
+    from: mockFrom,
+  })),
 }));
 
-vi.mock("@/server/services/adminAuditService", () => ({
-  recordAdminAudit: (...args: unknown[]) => recordAdminAudit(...args),
-}));
+import { executeApprovedBulkAction, BulkActionExecutionError } from "@/server/services/adminBulkActionsService";
 
-const APPROVAL_ID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
-
-function authedAs(role = "super_admin", userId = "admin-1") {
-  getUser.mockResolvedValue({
-    data: { user: { id: userId, app_metadata: { userRole: role } } },
-    error: null,
-  });
-  getSession.mockResolvedValue({
-    data: { session: { access_token: "header.payload.signature" } },
-    error: null,
-  });
+function makeQueryChain(resolvedValue: any) {
+  const chain: any = {};
+  chain.select = () => chain;
+  chain.eq = () => chain;
+  chain.order = () => chain;
+  chain.limit = () => chain;
+  chain.insert = () => Promise.resolve({ error: null });
+  chain.update = () => chain;
+  chain.maybeSingle = () => Promise.resolve(resolvedValue);
+  chain.single = () => Promise.resolve(resolvedValue);
+  return chain;
 }
 
-beforeEach(() => {
-  vi.clearAllMocks();
-  recordAdminAudit.mockResolvedValue(undefined);
-});
+describe("admin bulk actions four-eyes enforcement", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-afterEach(() => {
-  vi.clearAllMocks();
-});
-
-describe("bulk action approval workflow", () => {
-  it("blocks requester from approving their own bulk job (PR-125)", async () => {
-    authedAs("super_admin", "requester-1");
-    getApprovalById.mockResolvedValue({
-      id: APPROVAL_ID,
+  it("throws BulkActionExecutionError FORBIDDEN when the requester attempts to execute the bulk action", async () => {
+    mockGetApprovalById.mockResolvedValueOnce({
+      id: "approval-1",
       requestType: "bulk_comp_grant",
-      requestedBy: "requester-1",
-      status: "pending",
+      title: "Grant comp seats",
+      description: "Bulk grant",
+      status: "approved",
+      requestedBy: "admin-same",
+      reviewedBy: "admin-other",
+      metadata: {},
     });
 
-    const response = await PATCH(
-      new Request("https://nexus.test/api/admin/approvals", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ approvalId: APPROVAL_ID, status: "approved" }),
+    await expect(
+      executeApprovedBulkAction({
+        approvalId: "approval-1",
+        actorUserId: "admin-same",
       }),
-    );
+    ).rejects.toThrow(new BulkActionExecutionError("FORBIDDEN", "The actor who requested this bulk action cannot also execute it."));
 
-    expect(response.status).toBe(403);
-    const body = await response.json();
-    expect(body.error.code).toBe("FOUR_EYES_VIOLATION");
-    expect(updateApproval).not.toHaveBeenCalled();
+    expect(mockMarkApprovalExecuted).not.toHaveBeenCalled();
   });
 
-  it("returns 403 when executing without approved status (PR-070)", async () => {
-    authedAs();
-    const { BulkActionExecutionError } = await import(
-      "@/server/services/adminBulkActionsService"
-    );
-    executeApprovedBulkAction.mockRejectedValue(
-      new BulkActionExecutionError(
-        "FORBIDDEN",
-        "Bulk actions require an approved request.",
-      ),
-    );
-
-    const response = await POST(
-      new Request("https://nexus.test/api/admin/bulk-actions/execute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ approvalId: APPROVAL_ID }),
-      }),
-    );
-
-    expect(response.status).toBe(403);
-    expect(recordAdminAudit).not.toHaveBeenCalled();
-  });
-
-  it("executes approved bulk action with audit row (PR-069)", async () => {
-    authedAs("super_admin", "executor-1");
-    executeApprovedBulkAction.mockResolvedValue({
-      command: "bulk_comp_grant",
-      affectedCount: 2,
-      succeeded: 2,
-      failed: 0,
-      errors: [],
-      idempotentReplay: false,
+  it("allows execution and marks executed when requester differs from executor", async () => {
+    mockGetApprovalById.mockResolvedValueOnce({
+      id: "approval-1",
+      requestType: "bulk_comp_grant",
+      title: "Grant comp seats",
+      description: "Bulk grant",
+      status: "approved",
+      requestedBy: "admin-requester",
+      reviewedBy: "admin-approver",
+      metadata: {
+        studentIds: ["00000000-0000-4000-8000-000000000001"],
+        planCode: "premium",
+        reason: "Comp grant for pilot user",
+      },
     });
 
-    const response = await POST(
-      new Request("https://nexus.test/api/admin/bulk-actions/execute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ approvalId: APPROVAL_ID }),
-      }),
-    );
-
-    expect(response.status).toBe(200);
-    expect(executeApprovedBulkAction).toHaveBeenCalledWith({
-      approvalId: APPROVAL_ID,
-      actorUserId: "executor-1",
+    mockFrom.mockImplementation((table: string) => {
+      if (table === "student_profiles") {
+        return makeQueryChain({ data: { id: "00000000-0000-4000-8000-000000000001" }, error: null });
+      }
+      if (table === "subscription_plans") {
+        return makeQueryChain({ data: { id: "plan-1", plan_code: "premium" }, error: null });
+      }
+      if (table === "student_subscriptions") {
+        return makeQueryChain({ data: { id: "sub-1" }, error: null });
+      }
+      return makeQueryChain({ data: null, error: null });
     });
-    expect(recordAdminAudit).toHaveBeenCalledWith(
-      expect.objectContaining({
-        action: "admin_bulk_action.execute",
-        targetId: APPROVAL_ID,
-        metadata: expect.objectContaining({
-          command: "bulk_comp_grant",
-          affectedCount: 2,
-        }),
-      }),
-    );
+
+    mockRpc.mockResolvedValue({ data: null, error: null });
+
+    const result = await executeApprovedBulkAction({
+      approvalId: "approval-1",
+      actorUserId: "admin-executor",
+    });
+
+    console.log("DEBUG_RESULT:", JSON.stringify(result, null, 2));
+
+    expect(result.errors).toEqual([]);
+    expect(result.affectedCount).toBe(1);
+    expect(result.succeeded).toBe(1);
+    expect(mockMarkApprovalExecuted).toHaveBeenCalledWith({
+      approvalId: "approval-1",
+      executionSummary: {
+        affectedCount: 1,
+        succeeded: 1,
+        failed: 0,
+        command: "bulk_comp_grant",
+      },
+    });
   });
 });

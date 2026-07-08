@@ -6,6 +6,7 @@ import { adminRoleAssignmentSchema } from "@/schemas/adminPlatformSchemas";
 import { recordAdminAudit, AdminAuditWriteError } from "@/server/services/adminAuditService";
 import {
   assignAdminRoleWithAudit,
+  revokeAdminRole,
   LastSuperAdminError,
   SelfDemotionError,
 } from "@/server/services/adminRoleService";
@@ -110,6 +111,63 @@ export async function POST(request: Request) {
       {
         success: false,
         error: { code: "INTERNAL_ERROR", message: "Could not assign role." },
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const auth = await requireAdminApi(request, ["super_admin"]);
+    if (!auth.ok) {
+      return auth.response;
+    }
+
+    const { userId, roleKey } = (await request.json()) as {
+      userId?: string;
+      roleKey?: string;
+    };
+
+    if (!userId || !roleKey) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "VALIDATION_ERROR", message: "userId and roleKey are required." },
+        },
+        { status: 400 },
+      );
+    }
+
+    await revokeAdminRole({ userId, roleKey, actorUserId: auth.userId });
+
+    await recordAdminAudit({
+      actorUserId: auth.userId,
+      actorRole: auth.role,
+      action: "admin_role.assign",
+      targetType: "admin_role_assignment",
+      targetId: userId,
+      metadata: { userId, roleKey, action: "revoke" },
+      request,
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof LastSuperAdminError || error instanceof SelfDemotionError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: error.code, message: error.message },
+        },
+        { status: 403 },
+      );
+    }
+
+    console.error("ADMIN_ROLES_DELETE_FAILED", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: { code: "INTERNAL_ERROR", message: "Could not revoke role." },
       },
       { status: 500 },
     );

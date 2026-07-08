@@ -3,6 +3,14 @@
     {
       "path": "/api/cron/weekly-reports",
       "schedule": "0 5 * * 1"
+    },
+    {
+      "path": "/api/cron/notification-outbox",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/data-retention",
+      "schedule": "0 3 * * *"
     }
   ]
 }

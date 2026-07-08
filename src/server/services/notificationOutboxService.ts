@@ -1,11 +1,11 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendCelcomSms } from "@/lib/celcom/celcomClient";
+import { sendCelcomSms, sendCelcomWhatsApp } from "@/lib/celcom/celcomClient";
 import { sendResendEmail } from "@/lib/resend/resendClient";
 import type { AdminHealthPresentationItem } from "@/lib/health/types";
 
-export type NotificationOutboxChannel = "sms" | "email";
+export type NotificationOutboxChannel = "sms" | "email" | "whatsapp";
 
 export type NotificationOutboxStatus =
   | "pending"
@@ -31,7 +31,19 @@ export type EmailOutboxPayload = {
   parentId?: string;
 };
 
-export type NotificationOutboxPayload = SmsOutboxPayload | EmailOutboxPayload;
+export type WhatsAppOutboxPayload = {
+  type: "whatsapp";
+  phoneNumber: string;
+  messageBody: string;
+  templateCode?: string;
+  studentId?: string;
+  parentId?: string;
+};
+
+export type NotificationOutboxPayload =
+  | SmsOutboxPayload
+  | EmailOutboxPayload
+  | WhatsAppOutboxPayload;
 
 export type NotificationOutboxRow = {
   id: string;
@@ -75,6 +87,22 @@ async function defaultOutboxSendHandler(row: NotificationOutboxRow): Promise<voi
 
     if (result.smsStatus === "failed") {
       throw new Error("SMS provider returned failed status.");
+    }
+
+    return;
+  }
+
+  if (row.payload.type === "whatsapp") {
+    const result = await sendCelcomWhatsApp({
+      phoneNumber: row.payload.phoneNumber,
+      messageBody: row.payload.messageBody,
+      templateCode: row.payload.templateCode,
+      studentId: row.payload.studentId,
+      parentId: row.payload.parentId,
+    });
+
+    if (result.whatsappStatus === "failed") {
+      throw new Error("WhatsApp provider returned failed status.");
     }
 
     return;

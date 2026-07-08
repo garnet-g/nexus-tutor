@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 import { checkRateLimit } from "@/lib/rateLimit/durableLimiter";
 
-export type PaymentBurstAction = "stk-push" | "status";
+export type PaymentBurstAction = "stk-push" | "status" | "manual-reconcile";
 
 const WINDOW_SECONDS = 60;
 
@@ -16,6 +16,7 @@ const LIMITS: Record<
 > = {
   "stk-push": { account: 5, ip: 10, phone: 3 },
   status: { account: 30, ip: 30 },
+  "manual-reconcile": { account: 5, ip: 10 },
 };
 
 function getRateLimitPepper(): string {
