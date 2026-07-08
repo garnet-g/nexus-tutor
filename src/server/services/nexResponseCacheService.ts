@@ -22,11 +22,15 @@ export async function getCachedExplainResponse(
   const cacheKey = buildCacheKey(topicId, studentMessage);
   const admin = createAdminClient();
 
-  const { data } = await admin
+  const { data, error } = await admin
     .from("nex_response_cache")
     .select("response_text, created_at")
     .eq("cache_key", cacheKey)
     .maybeSingle();
+
+  if (error) {
+    console.error("NEX_RESPONSE_CACHE_READ_FAILED", { error });
+  }
 
   if (!data) {
     return null;
@@ -40,6 +44,9 @@ export async function getCachedExplainResponse(
   await admin
     .from("nex_response_cache")
     .update({
+      // Fixed to 1 rather than incremented: Supabase .update() can't express
+      // hit_count = hit_count + 1 without an RPC. This is an approximate
+      // "was hit" signal only, not a true count.
       hit_count: 1,
       last_hit_at: new Date().toISOString(),
     })
@@ -56,7 +63,7 @@ export async function storeExplainResponse(
   const cacheKey = buildCacheKey(topicId, studentMessage);
   const admin = createAdminClient();
 
-  await admin.from("nex_response_cache").upsert(
+  const { error } = await admin.from("nex_response_cache").upsert(
     {
       cache_key: cacheKey,
       topic_id: topicId,
@@ -67,4 +74,8 @@ export async function storeExplainResponse(
     },
     { onConflict: "cache_key" },
   );
+
+  if (error) {
+    console.error("NEX_RESPONSE_CACHE_WRITE_FAILED", { error });
+  }
 }
