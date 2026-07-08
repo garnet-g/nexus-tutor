@@ -93,4 +93,27 @@ describe("callNexModel", () => {
     const [url] = fetchMock.mock.calls[0] as unknown as [string];
     expect(url).toContain("/models/gemini-3.5-flash-lite:generateContent");
   });
+
+  it("routes the Gemini judge call to the lite model tier", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: '{"revealsFinalAnswer": false, "reason": "ok"}' }],
+            },
+          },
+        ],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { callNexJudge } = await import("@/lib/nex/callNexModel");
+    await callNexJudge("Solve 3x + 5 = 20", "What operation is attached to x?");
+
+    const [url] = fetchMock.mock.calls[0] as unknown as [string];
+    expect(url).toContain("/models/gemini-3.5-flash-lite:generateContent");
+  });
 });

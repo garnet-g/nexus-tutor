@@ -18,7 +18,7 @@ import {
   OPENAI_MODEL,
   streamOpenAI,
 } from "./openaiClient";
-import { getGeminiTextModel, getGeminiThinkingLevel } from "./modelConfig";
+import { getGeminiTextModelForTier, getGeminiThinkingLevel } from "./modelConfig";
 
 const LLM_TIMEOUT_MS = 20_000;
 
@@ -173,7 +173,7 @@ export async function callNexJudge(
 
   if (hasGemini) {
     const apiKey = process.env.GEMINI_API_KEY!;
-    const model = getGeminiTextModel();
+    const model = getGeminiTextModelForTier("lite");
     const judgePrompt = `You are a validator for a Socratic tutor. The student has NOT attempted the homework yet (first turn).
 
 Student question: ${studentMessage}
