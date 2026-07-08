@@ -15,6 +15,10 @@ import {
   recordHintDelivered,
   updateSocraticState,
 } from "./socraticTutorEngine";
+import {
+  getCachedExplainResponse,
+  storeExplainResponse,
+} from "@/server/services/nexResponseCacheService";
 import type {
   GenerateNexResponseInput,
   GenerateNexResponseResult,
@@ -42,6 +46,19 @@ export async function generateNexResponse(
     input.studentMessage,
     sessionMode,
   );
+
+  if (sessionMode === "explain" && input.topicId) {
+    const cached = await getCachedExplainResponse(input.topicId, input.studentMessage);
+    if (cached) {
+      return {
+        response: cached,
+        sessionMode,
+        metadata,
+        provider: "cache",
+        validationPassed: true,
+      };
+    }
+  }
 
   const [studentMemory, curriculumContext] = await Promise.all([
     input.studentMemory
@@ -160,6 +177,12 @@ export async function generateNexResponse(
     response = getValidationFallback();
   } else if (sessionMode === "homework") {
     metadata = recordHintDelivered(metadata);
+  }
+
+  if (sessionMode === "explain" && input.topicId && validationPassed) {
+    void storeExplainResponse(input.topicId, input.studentMessage, response).catch(
+      () => undefined,
+    );
   }
 
   return {
