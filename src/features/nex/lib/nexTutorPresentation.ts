@@ -29,6 +29,13 @@ const FOLLOW_UP_PROMPTS: Record<NexVisibleMode, string[]> = {
   revision: ["Make a plan", "Test weak topics", "Summarise this"],
 };
 
+const TOPIC_FOLLOW_UP_TEMPLATES: Record<NexVisibleMode, string> = {
+  explain: "Quiz me on {topic}",
+  practice: "Another {topic} question",
+  homework: "Show me a similar {topic} problem",
+  revision: "Test my weak spots in {topic}",
+};
+
 const STARTER_PROMPTS: Record<NexVisibleMode, string[]> = {
   explain: [
     "Explain {topic} simply",
@@ -97,8 +104,19 @@ export function getModeHelperText(mode: NexVisibleMode): string {
   return MODE_HELPER_TEXT[mode];
 }
 
-export function getFollowUpPromptsForMode(mode: NexVisibleMode): string[] {
-  return FOLLOW_UP_PROMPTS[mode];
+export function getFollowUpPromptsForMode(
+  mode: NexVisibleMode,
+  topicTitle?: string | null,
+): string[] {
+  const base = FOLLOW_UP_PROMPTS[mode];
+  const safeTopic = topicTitle?.trim();
+
+  if (!safeTopic) {
+    return base;
+  }
+
+  const topicPrompt = TOPIC_FOLLOW_UP_TEMPLATES[mode].replace("{topic}", safeTopic);
+  return [base[0], base[1], topicPrompt];
 }
 
 export function getStarterPromptsForMode(
