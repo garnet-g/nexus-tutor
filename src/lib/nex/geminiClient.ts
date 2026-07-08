@@ -10,17 +10,6 @@ import { isGeminiConfigured } from "@/lib/env/providerModes";
 
 const LLM_TIMEOUT_MS = 20_000;
 
-export function buildConversationText(
-  messages: NexModelCallInput["messages"],
-): string {
-  return messages
-    .map(
-      (message) =>
-        `${message.role === "student" ? "Student" : "Nex"}: ${message.content}`,
-    )
-    .join("\n\n");
-}
-
 export interface GeminiContentPart {
   role: "user" | "model";
   parts: [{ text: string }];
