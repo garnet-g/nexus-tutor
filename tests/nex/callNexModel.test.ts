@@ -73,4 +73,24 @@ describe("callNexModel", () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it("calls Gemini with an explicit model override when provided", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        candidates: [{ content: { parts: [{ text: "Lite tier reply." }] } }],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await callNexModel({
+      systemPrompt: "You are Nex.",
+      messages: [{ role: "student", content: "What is a fraction?" }],
+      modelOverride: "gemini-3.5-flash-lite",
+    });
+
+    const [url] = fetchMock.mock.calls[0] as unknown as [string];
+    expect(url).toContain("/models/gemini-3.5-flash-lite:generateContent");
+  });
 });

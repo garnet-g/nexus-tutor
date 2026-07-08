@@ -66,7 +66,7 @@ export async function callGemini(input: NexModelCallInput): Promise<string> {
   try {
     const conversation = buildConversationText(input.messages);
     const prompt = `${input.systemPrompt}\n\nConversation so far:\n${conversation}\n\nNex:`;
-    const model = getGeminiTextModel();
+    const model = input.modelOverride ?? getGeminiTextModel();
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
@@ -128,7 +128,7 @@ export async function streamGemini(
   try {
     const conversation = buildConversationText(input.messages);
     const prompt = `${input.systemPrompt}\n\nConversation so far:\n${conversation}\n\nNex:`;
-    const model = getGeminiTextModel();
+    const model = input.modelOverride ?? getGeminiTextModel();
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`,

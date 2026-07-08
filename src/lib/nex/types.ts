@@ -81,6 +81,7 @@ export interface NexModelCallInput {
   messages: NexMessageTurn[];
   maxTokens?: number;
   allowOpenAIFallback?: boolean;
+  modelOverride?: string;
 }
 
 export interface NexModelCallResult {
