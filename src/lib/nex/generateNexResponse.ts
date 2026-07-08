@@ -8,6 +8,8 @@ import { callNexModel, streamNexModel } from "./callNexModel";
 import { detectNexMode } from "./detectNexMode";
 import { loadCurriculumContext } from "./loadCurriculumContext";
 import { loadStudentMemory } from "./loadStudentMemory";
+import { getGeminiTextModelForTier } from "./modelConfig";
+import { selectModelTier } from "./modelTiering";
 import {
   buildSocraticOverlays,
   recordHintDelivered,
@@ -83,6 +85,10 @@ export async function generateNexResponse(
     learningPreferenceHints,
   });
 
+  const tier = selectModelTier(sessionMode, input.studentMessage);
+  const modelOverride =
+    tier === "lite" ? getGeminiTextModelForTier("lite") : undefined;
+
   const invokeModel = async (
     systemPrompt: string,
     streamChunks: boolean,
@@ -90,6 +96,7 @@ export async function generateNexResponse(
     const modelInput = {
       systemPrompt,
       messages: recentMessages,
+      modelOverride,
     };
 
     if (streamChunks && input.onChunk) {
