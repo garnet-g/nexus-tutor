@@ -42,3 +42,6 @@ next-env.d.ts
 
 # brainstorming visual-companion scratch
 .superpowers/
+
+# isolated feature worktrees
+.worktrees/
