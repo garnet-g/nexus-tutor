@@ -37,6 +37,9 @@ export async function getCachedVoice(contentHash: string): Promise<CachedVoice |
     .download(row.storage_path);
 
   if (error || !blob) {
+    if (error) {
+      console.error("NEX_VOICE_CACHE_READ_FAILED", { error });
+    }
     return null;
   }
 

@@ -401,7 +401,7 @@ export async function POST(request: Request) {
         voiceHash,
         Buffer.from(speech.audioBase64, "base64"),
         speech.mimeType,
-        speech.provider,
+        cacheProvider,
       ).catch(() => undefined);
     }
 
