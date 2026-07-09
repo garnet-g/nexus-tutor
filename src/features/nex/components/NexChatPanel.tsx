@@ -16,6 +16,7 @@ import {
   type NexVisibleMode,
 } from "@/features/nex/components/NexModeSelector";
 import { NexFollowUpChips } from "@/features/nex/components/NexFollowUpChips";
+import { NexReviewBanner } from "@/features/nex/components/NexReviewBanner";
 import { NexMessageContent } from "@/features/nex/components/NexMessageContent";
 import { NexScratchpad } from "@/features/nex/components/NexScratchpad";
 import { NexThinkingIndicator } from "@/features/nex/components/NexThinkingIndicator";
@@ -334,6 +335,14 @@ export function NexChatPanel({
       />
 
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4 no-scrollbar">
+        <NexReviewBanner
+          onSelectReview={(review) =>
+            handleStarterPrompt(
+              `Can you give me a quick check on ${review.description}?`,
+            )
+          }
+          className="mb-3"
+        />
         {messages.length === 0 && !isSending ? (
           <NexChatEmptyState
             mode={sessionMode}
