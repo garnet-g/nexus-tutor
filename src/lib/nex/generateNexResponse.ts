@@ -114,6 +114,8 @@ export async function generateNexResponse(
       systemPrompt,
       messages: recentMessages,
       modelOverride,
+      mode: sessionMode,
+      sessionId: input.sessionId,
     };
 
     if (streamChunks && input.onChunk) {

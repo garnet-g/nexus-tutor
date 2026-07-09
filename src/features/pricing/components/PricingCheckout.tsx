@@ -340,6 +340,7 @@ export function PricingCheckout({
           {paidPlans.map((plan) => {
             const amount = plan.amountKes;
             const isSelected = plan.id === selectedPlanId;
+            const isTermly = plan.planCode === "premium_termly";
 
             return (
               <button
@@ -347,23 +348,38 @@ export function PricingCheckout({
                 type="button"
                 onClick={() => setSelectedPlanId(plan.id)}
                 className={cn(
-                  "min-h-[120px] rounded-[18px] border p-5 text-left transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                  "relative min-h-[120px] rounded-[18px] border p-5 text-left transition-all hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                   isSelected
                     ? "border-nexus-primary bg-nexus-primary text-nexus-text-inverse shadow-card"
                     : "border-nexus-border bg-nexus-surface text-foreground hover:bg-nexus-sunken",
                 )}
               >
-                <h2 className="font-heading text-lg font-semibold">{plan.name}</h2>
+                {isTermly && (
+                  <span className={cn(
+                    "absolute top-3 right-3 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow-sm",
+                    isSelected ? "bg-nexus-surface text-nexus-primary" : "bg-nexus-success text-nexus-text-inverse"
+                  )}>
+                    Save 25%
+                  </span>
+                )}
+                <h2 className="font-heading text-lg font-semibold flex items-center gap-1.5">
+                  {plan.name}
+                  {plan.planCode === "premium" && (
+                    <Sparkles className={cn("size-3.5", isSelected ? "text-nexus-text-inverse" : "text-nexus-primary")} />
+                  )}
+                </h2>
                 <p className="mt-2 font-heading text-2xl font-semibold tabular">
                   KES {amount.toLocaleString()}
-                  <span className="text-base font-normal opacity-80">
+                  <span className="text-base font-normal opacity-85 ml-0.5">
                     {getBillingCycleSuffix(plan.planCode)}
                   </span>
                 </p>
-                <p className="mt-2 text-sm opacity-90">
+                <p className="mt-2 text-xs opacity-90 leading-relaxed">
                   {plan.planCode === "family"
-                    ? `Up to ${config.limits.familyMaxStudents} students`
-                    : `${config.limits.premiumNex} Nex · ${config.limits.premiumPractice} practice/day`}
+                    ? `Up to ${config.limits.familyMaxStudents} students · Parent reports dashboard`
+                    : plan.planCode === "premium_termly"
+                      ? `${config.limits.premiumNex} Nex · past papers + AI marking (Best Value)`
+                      : `${config.limits.premiumNex} Nex · ${config.limits.premiumPractice} practice/day`}
                 </p>
               </button>
             );

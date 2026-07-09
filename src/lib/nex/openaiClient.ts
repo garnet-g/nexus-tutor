@@ -31,7 +31,7 @@ export async function callOpenAI(input: NexModelCallInput): Promise<string> {
       body: JSON.stringify({
         model: OPENAI_MODEL,
         temperature: 0.7,
-        max_tokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
+        max_tokens: input.maxTokens ?? getNexModelMaxOutputTokens(input.mode),
         messages: [
           { role: "system", content: input.systemPrompt },
           ...input.messages.map((message) => ({
@@ -91,7 +91,7 @@ export async function streamOpenAI(
       body: JSON.stringify({
         model: OPENAI_MODEL,
         temperature: 0.7,
-        max_tokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
+        max_tokens: input.maxTokens ?? getNexModelMaxOutputTokens(input.mode),
         stream: true,
         messages: [
           { role: "system", content: input.systemPrompt },

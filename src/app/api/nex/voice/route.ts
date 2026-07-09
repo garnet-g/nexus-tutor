@@ -352,6 +352,7 @@ export async function POST(request: Request) {
       topicId: activeTopicId,
       recentMessages,
       studentProfile,
+      sessionId,
     });
 
     if (

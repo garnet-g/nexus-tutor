@@ -19,13 +19,13 @@ const baseSubtopicContext = {
 };
 
 describe("assertSubjectInGenerationScope", () => {
-  it("allows chemistry and kiswahili", () => {
-    expect(() => assertSubjectInGenerationScope("chemistry")).not.toThrow();
-    expect(() => assertSubjectInGenerationScope("kiswahili")).not.toThrow();
+  it("allows mathematics only", () => {
     expect(() => assertSubjectInGenerationScope("mathematics")).not.toThrow();
   });
 
-  it("rejects unknown subject codes with SCOPE_VIOLATION", () => {
+  it("rejects other subject codes with SCOPE_VIOLATION", () => {
+    expect(() => assertSubjectInGenerationScope("chemistry")).toThrow("SCOPE_VIOLATION");
+    expect(() => assertSubjectInGenerationScope("kiswahili")).toThrow("SCOPE_VIOLATION");
     expect(() => assertSubjectInGenerationScope("history")).toThrow("SCOPE_VIOLATION");
     expect(() => assertSubjectInGenerationScope("cambridge")).toThrow("SCOPE_VIOLATION");
   });

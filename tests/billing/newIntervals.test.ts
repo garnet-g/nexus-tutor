@@ -23,7 +23,7 @@ describe("process_verified_mpesa_payment billing-cycle intervals", () => {
 
     expect(sql).toMatch(/'premium_daily',\s*'Premium Daily',\s*20,\s*'daily'/i);
     expect(sql).toMatch(/'premium_weekly',\s*'Premium Weekly',\s*150,\s*'weekly'/i);
-    expect(sql).toMatch(/'premium_termly',\s*'Premium Termly',\s*1800,\s*'termly'/i);
+    expect(sql).toMatch(/'premium_termly',\s*'Premium Termly',\s*2400,\s*'termly'/i);
   });
 
   it("derives the subscription period end from the plan's billing_cycle", () => {

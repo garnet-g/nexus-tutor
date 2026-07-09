@@ -42,10 +42,20 @@ export function getGeminiThinkingLevel(): string {
   );
 }
 
-export function getNexModelMaxOutputTokens(): number {
-  const value = Number(process.env.NEX_MODEL_MAX_OUTPUT_TOKENS);
-  if (Number.isFinite(value) && value >= 500) {
-    return Math.floor(value);
+export function getNexModelMaxOutputTokens(mode?: string): number {
+  const envValue = Number(process.env.NEX_MODEL_MAX_OUTPUT_TOKENS);
+  if (Number.isFinite(envValue) && envValue >= 500) {
+    return Math.floor(envValue);
+  }
+
+  if (mode === "hint" || mode === "quick-turn") {
+    return 400;
+  }
+  if (mode === "explain") {
+    return 1000;
+  }
+  if (mode === "exam" || mode === "marking" || mode === "assessment") {
+    return 1600;
   }
 
   return DEFAULT_NEX_MODEL_MAX_OUTPUT_TOKENS;

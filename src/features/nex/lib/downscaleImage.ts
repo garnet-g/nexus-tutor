@@ -1,4 +1,4 @@
-export const MAX_IMAGE_DIMENSION = 1280;
+export const MAX_IMAGE_DIMENSION = 768;
 const JPEG_QUALITY = 0.82;
 
 /**

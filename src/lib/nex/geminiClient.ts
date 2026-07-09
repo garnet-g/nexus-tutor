@@ -7,6 +7,7 @@ import {
   getNexModelMaxOutputTokens,
 } from "@/lib/nex/modelConfig";
 import { isGeminiConfigured } from "@/lib/env/providerModes";
+import { getOrCreateContextCache } from "@/server/services/contextCacheService";
 
 const LLM_TIMEOUT_MS = 20_000;
 
@@ -73,22 +74,40 @@ export async function callGemini(input: NexModelCallInput): Promise<string> {
       throw new Error("Gemini request requires at least one conversation message");
     }
 
+    let cacheName: string | null = null;
+    if (input.sessionId && input.messages.length >= 6) {
+      cacheName = await getOrCreateContextCache({
+        sessionId: input.sessionId,
+        systemPrompt: input.systemPrompt,
+        messages: input.messages,
+        model,
+      });
+    }
+
+    const requestBody: Record<string, unknown> = {
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: input.maxTokens ?? getNexModelMaxOutputTokens(input.mode),
+        thinkingConfig: {
+          thinkingLevel: getGeminiThinkingLevel(),
+        },
+      },
+    };
+
+    if (cacheName) {
+      requestBody.cachedContent = cacheName;
+      requestBody.contents = buildGeminiContents(input.messages.slice(6));
+    } else {
+      requestBody.systemInstruction = { parts: [{ text: input.systemPrompt }] };
+      requestBody.contents = buildGeminiContents(input.messages);
+    }
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: input.systemPrompt }] },
-          contents: buildGeminiContents(input.messages),
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
-            thinkingConfig: {
-              thinkingLevel: getGeminiThinkingLevel(),
-            },
-          },
-        }),
+        body: JSON.stringify(requestBody),
         signal: controller.signal,
       },
     );
@@ -138,22 +157,40 @@ export async function streamGemini(
       throw new Error("Gemini request requires at least one conversation message");
     }
 
+    let cacheName: string | null = null;
+    if (input.sessionId && input.messages.length >= 6) {
+      cacheName = await getOrCreateContextCache({
+        sessionId: input.sessionId,
+        systemPrompt: input.systemPrompt,
+        messages: input.messages,
+        model,
+      });
+    }
+
+    const requestBody: Record<string, unknown> = {
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: input.maxTokens ?? getNexModelMaxOutputTokens(input.mode),
+        thinkingConfig: {
+          thinkingLevel: getGeminiThinkingLevel(),
+        },
+      },
+    };
+
+    if (cacheName) {
+      requestBody.cachedContent = cacheName;
+      requestBody.contents = buildGeminiContents(input.messages.slice(6));
+    } else {
+      requestBody.systemInstruction = { parts: [{ text: input.systemPrompt }] };
+      requestBody.contents = buildGeminiContents(input.messages);
+    }
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: input.systemPrompt }] },
-          contents: buildGeminiContents(input.messages),
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
-            thinkingConfig: {
-              thinkingLevel: getGeminiThinkingLevel(),
-            },
-          },
-        }),
+        body: JSON.stringify(requestBody),
         signal: controller.signal,
       },
     );

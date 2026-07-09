@@ -27,10 +27,6 @@ export type Tier1SubjectCode = (typeof TIER1_SUBJECT_CODES)[number];
 /** Subjects whose content may be generated via the admin pipeline AND surfaced to students. */
 export const ACTIVE_SUBJECT_CODES = [
   "mathematics",
-  "science",
-  "english",
-  "kiswahili",
-  "chemistry",
 ] as const;
 
 export type ActiveSubjectCode = (typeof ACTIVE_SUBJECT_CODES)[number];

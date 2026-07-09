@@ -31,7 +31,69 @@ export default async function PublicPricingPage() {
     planCode: string;
     name: string;
     amountKes: number;
+    billingCycle: string;
   }> = [];
+
+  try {
+    const admin = createAdminClient();
+    const { data: plans } = await admin
+      .from("subscription_plans")
+      .select("id, plan_code, name, amount_kes, billing_cycle, is_active")
+      .eq("is_active", true)
+      .order("amount_kes", { ascending: true });
+
+    pricingPlans =
+      plans?.map((plan) => ({
+        id: plan.id,
+        planCode: plan.plan_code,
+        name: plan.name,
+        amountKes:
+          plan.plan_code === "premium"
+            ? config.pricing.premiumAmountKes
+            : plan.plan_code === "family"
+              ? config.pricing.familyAmountKes
+              : plan.amount_kes,
+        billingCycle: plan.billing_cycle,
+      })) ?? [];
+  } catch {
+    pricingPlans = [
+      {
+        id: "premium_daily",
+        planCode: "premium_daily",
+        name: "Premium Daily",
+        amountKes: 20,
+        billingCycle: "daily",
+      },
+      {
+        id: "premium_weekly",
+        planCode: "premium_weekly",
+        name: "Premium Weekly",
+        amountKes: 150,
+        billingCycle: "weekly",
+      },
+      {
+        id: "premium",
+        planCode: "premium",
+        name: "Premium Monthly",
+        amountKes: config.pricing.premiumAmountKes,
+        billingCycle: "monthly",
+      },
+      {
+        id: "premium_termly",
+        planCode: "premium_termly",
+        name: "Premium Termly",
+        amountKes: 2400,
+        billingCycle: "termly",
+      },
+      {
+        id: "family",
+        planCode: "family",
+        name: "Family Monthly",
+        amountKes: config.pricing.familyAmountKes,
+        billingCycle: "monthly",
+      },
+    ];
+  }
 
   let planCode = "free";
   let hasUsedTrial = false;
@@ -41,43 +103,6 @@ export default async function PublicPricingPage() {
       getStudentPlanCode(studentProfile.id),
       hasUsedFreeTrial(studentProfile.id),
     ]);
-
-    try {
-      const admin = createAdminClient();
-      const { data: plans } = await admin
-        .from("subscription_plans")
-        .select("id, plan_code, name, amount_kes, is_active")
-        .eq("is_active", true)
-        .order("amount_kes", { ascending: true });
-
-      pricingPlans =
-        plans?.map((plan) => ({
-          id: plan.id,
-          planCode: plan.plan_code,
-          name: plan.name,
-          amountKes:
-            plan.plan_code === "premium"
-              ? config.pricing.premiumAmountKes
-              : plan.plan_code === "family"
-                ? config.pricing.familyAmountKes
-                : plan.amount_kes,
-        })) ?? [];
-    } catch {
-      pricingPlans = [
-        {
-          id: "premium",
-          planCode: "premium",
-          name: "Premium",
-          amountKes: config.pricing.premiumAmountKes,
-        },
-        {
-          id: "family",
-          planCode: "family",
-          name: "Family",
-          amountKes: config.pricing.familyAmountKes,
-        },
-      ];
-    }
   }
 
   return (
@@ -116,7 +141,7 @@ export default async function PublicPricingPage() {
             currentPlanCode={planCode}
           />
         ) : (
-          <PublicPricingDisplay config={config} />
+          <PublicPricingDisplay config={config} plans={pricingPlans} />
         )}
       </div>
     </div>

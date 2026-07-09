@@ -66,4 +66,14 @@ describe("Nex Gemini model config", () => {
 
     restoreEnv("NEX_GEMINI_TEXT_MODEL_LITE", previous);
   });
+
+  it("returns dynamic max output tokens depending on session/tutor mode", () => {
+    expect(getNexModelMaxOutputTokens("hint")).toBe(400);
+    expect(getNexModelMaxOutputTokens("quick-turn")).toBe(400);
+    expect(getNexModelMaxOutputTokens("explain")).toBe(1000);
+    expect(getNexModelMaxOutputTokens("exam")).toBe(1600);
+    expect(getNexModelMaxOutputTokens("marking")).toBe(1600);
+    expect(getNexModelMaxOutputTokens("assessment")).toBe(1600);
+    expect(getNexModelMaxOutputTokens(undefined)).toBe(1600);
+  });
 });

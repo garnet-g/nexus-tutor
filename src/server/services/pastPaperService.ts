@@ -348,6 +348,43 @@ export async function markAttemptQuestionWithAI(
     throw new Error("QUESTION_NOT_FOUND");
   }
 
+  if (input.studentAnswer && (!input.imageBytes || input.imageBytes.length === 0)) {
+    const normalizedInput = input.studentAnswer.trim();
+
+    const { data: cachedAnswer } = await admin
+      .from("past_paper_answers")
+      .select("score, feedback")
+      .eq("question_id", questionId)
+      .not("score", "is", null)
+      .not("feedback", "is", null)
+      .ilike("student_answer", normalizedInput)
+      .limit(1)
+      .maybeSingle();
+
+    if (cachedAnswer) {
+      const score = cachedAnswer.score!;
+      const feedback = cachedAnswer.feedback!;
+
+      await admin
+        .from("past_paper_answers")
+        .upsert(
+          {
+            attempt_id: attemptId,
+            question_id: questionId,
+            student_answer: input.studentAnswer,
+            ocr_image_url: null,
+            score,
+            feedback,
+          },
+          { onConflict: "attempt_id,question_id" },
+        );
+
+      await recomputeAttemptScoreIfMarked(attemptId);
+
+      return { score, maxMarks: question.marks, feedback };
+    }
+  }
+
   let ocrImageUrl: string | null = null;
 
   if (input.imageBytes && input.mimeType) {

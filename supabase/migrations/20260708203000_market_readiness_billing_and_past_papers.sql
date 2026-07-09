@@ -7,7 +7,7 @@ INSERT INTO public.subscription_plans (plan_code, name, amount_kes, billing_cycl
 VALUES
   ('premium_daily', 'Premium Daily', 20, 'daily', true),
   ('premium_weekly', 'Premium Weekly', 150, 'weekly', true),
-  ('premium_termly', 'Premium Termly', 1800, 'termly', true)
+  ('premium_termly', 'Premium Termly', 2400, 'termly', true)
 ON CONFLICT (plan_code) DO UPDATE
   SET name = EXCLUDED.name,
       amount_kes = EXCLUDED.amount_kes,

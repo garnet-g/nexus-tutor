@@ -82,6 +82,8 @@ export interface NexModelCallInput {
   maxTokens?: number;
   allowOpenAIFallback?: boolean;
   modelOverride?: string;
+  mode?: string;
+  sessionId?: string | null;
 }
 
 export interface NexModelCallResult {
@@ -112,6 +114,7 @@ export interface GenerateNexResponseInput {
   studentMemory?: StudentMemoryContext | null;
   curriculumContext?: CurriculumContext | null;
   regenerateStrict?: boolean;
+  sessionId?: string | null;
 }
 
 export interface GenerateNexResponseResult {

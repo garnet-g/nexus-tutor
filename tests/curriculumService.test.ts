@@ -15,9 +15,10 @@ describe("curriculumService", () => {
     expect(TIER1_SUBJECT_CODES).not.toContain("cambridge");
   });
 
-  it("extends active subject codes for tier 2 pipeline subjects", () => {
-    expect(ACTIVE_SUBJECT_CODES).toContain("kiswahili");
-    expect(ACTIVE_SUBJECT_CODES).toContain("chemistry");
+  it("only activates mathematics for maths-only platform launch", () => {
+    expect(ACTIVE_SUBJECT_CODES).toContain("mathematics");
+    expect(ACTIVE_SUBJECT_CODES).not.toContain("kiswahili");
+    expect(ACTIVE_SUBJECT_CODES).not.toContain("chemistry");
   });
 
   it("allows topics at or one grade above the student", () => {

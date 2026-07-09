@@ -288,6 +288,7 @@ export async function POST(request: Request) {
       recentMessages,
       studentProfile,
       learningPreferences,
+      sessionId,
     };
 
     if (useStreaming) {
