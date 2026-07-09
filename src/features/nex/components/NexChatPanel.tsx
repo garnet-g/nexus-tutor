@@ -377,7 +377,11 @@ export function NexChatPanel({
                   )}
                 </article>
                 {isLatestNex && showFollowUps ? (
-                  <NexFollowUpChips mode={sessionMode} onSelect={handleFollowUp} />
+                  <NexFollowUpChips
+                    mode={sessionMode}
+                    topicTitle={topicTitle}
+                    onSelect={handleFollowUp}
+                  />
                 ) : null}
               </div>
             );
