@@ -1162,5 +1162,21 @@
     "methods": [
       "POST"
     ]
+  },
+  {
+    "path": "/api/nex/reviews/due",
+    "tier": "student",
+    "filePath": "src/app/api/nex/reviews/due/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/nex/reviews/[id]/resolve",
+    "tier": "student",
+    "filePath": "src/app/api/nex/reviews/[id]/resolve/route.ts",
+    "methods": [
+      "POST"
+    ]
   }
 ]

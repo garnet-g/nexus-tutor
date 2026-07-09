@@ -68,7 +68,7 @@ describe("role matrix committed contract", () => {
     const manifestFiles = new Set(ROLE_MATRIX_MANIFEST.map((entry) => entry.filePath));
 
     expect(pages).toHaveLength(74);
-    expect(apis).toHaveLength(95);
+    expect(apis).toHaveLength(97);
     expect(ROLE_MATRIX_MANIFEST).toHaveLength(pages.length + apis.length);
 
     for (const filePath of [...pages, ...apis]) {
