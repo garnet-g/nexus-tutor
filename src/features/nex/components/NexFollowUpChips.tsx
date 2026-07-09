@@ -8,6 +8,7 @@ import type { NexVisibleMode } from "@/features/nex/components/NexModeSelector";
 
 interface NexFollowUpChipsProps {
   mode: NexVisibleMode;
+  topicTitle?: string | null;
   onSelect: (prompt: string) => void;
   disabled?: boolean;
   className?: string;
@@ -15,11 +16,12 @@ interface NexFollowUpChipsProps {
 
 export function NexFollowUpChips({
   mode,
+  topicTitle,
   onSelect,
   disabled = false,
   className,
 }: NexFollowUpChipsProps) {
-  const prompts = getFollowUpPromptsForMode(mode);
+  const prompts = getFollowUpPromptsForMode(mode, topicTitle);
 
   return (
     <div

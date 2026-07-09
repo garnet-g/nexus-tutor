@@ -73,4 +73,80 @@ describe("callNexModel", () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it("calls Gemini with an explicit model override when provided", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        candidates: [{ content: { parts: [{ text: "Lite tier reply." }] } }],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await callNexModel({
+      systemPrompt: "You are Nex.",
+      messages: [{ role: "student", content: "What is a fraction?" }],
+      modelOverride: "gemini-3.5-flash-lite",
+    });
+
+    const [url] = fetchMock.mock.calls[0] as unknown as [string];
+    expect(url).toContain("/models/gemini-3.5-flash-lite:generateContent");
+  });
+
+  it("routes the Gemini judge call to the lite model tier", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: '{"revealsFinalAnswer": false, "reason": "ok"}' }],
+            },
+          },
+        ],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { callNexJudge } = await import("@/lib/nex/callNexModel");
+    await callNexJudge("Solve 3x + 5 = 20", "What operation is attached to x?");
+
+    const [url] = fetchMock.mock.calls[0] as unknown as [string];
+    expect(url).toContain("/models/gemini-3.5-flash-lite:generateContent");
+  });
+
+  it("sends conversation turns as a native contents array with a separate systemInstruction", async () => {
+    process.env.GEMINI_API_KEY = "test-gemini-key";
+
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        candidates: [{ content: { parts: [{ text: "Reply." }] } }],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await callNexModel({
+      systemPrompt: "You are Nex.",
+      messages: [
+        { role: "student", content: "Explain fractions." },
+        { role: "nex", content: "A fraction is a part of a whole." },
+        { role: "student", content: "Give me an example." },
+      ],
+    });
+
+    const [, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    const body = JSON.parse(String(init.body)) as {
+      systemInstruction?: { parts?: Array<{ text?: string }> };
+      contents?: Array<{ role?: string; parts?: Array<{ text?: string }> }>;
+    };
+
+    expect(body.systemInstruction?.parts?.[0]?.text).toBe("You are Nex.");
+    expect(body.contents).toEqual([
+      { role: "user", parts: [{ text: "Explain fractions." }] },
+      { role: "model", parts: [{ text: "A fraction is a part of a whole." }] },
+      { role: "user", parts: [{ text: "Give me an example." }] },
+    ]);
+  });
 });

@@ -5,6 +5,7 @@ import { Camera, Lock } from "lucide-react";
 import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { downscaleImageFile } from "@/features/nex/lib/downscaleImage";
 import type { CameraMode } from "@/schemas/cameraSchemas";
 import type { NexMode } from "@/lib/nex/types";
 import { cn } from "@/lib/utils";
@@ -91,8 +92,10 @@ export function CameraCaptureButton({
     setIsUploading(true);
 
     try {
+      const uploadFile = await downscaleImageFile(file).catch(() => file);
+
       const body = new FormData();
-      body.append("image", file);
+      body.append("image", uploadFile);
       body.append("sessionMode", sessionMode);
       if (sessionId) {
         body.append("nexSessionId", sessionId);

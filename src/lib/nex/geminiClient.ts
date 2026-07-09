@@ -10,15 +10,18 @@ import { isGeminiConfigured } from "@/lib/env/providerModes";
 
 const LLM_TIMEOUT_MS = 20_000;
 
-export function buildConversationText(
+export interface GeminiContentPart {
+  role: "user" | "model";
+  parts: [{ text: string }];
+}
+
+export function buildGeminiContents(
   messages: NexModelCallInput["messages"],
-): string {
-  return messages
-    .map(
-      (message) =>
-        `${message.role === "student" ? "Student" : "Nex"}: ${message.content}`,
-    )
-    .join("\n\n");
+): GeminiContentPart[] {
+  return messages.map((message) => ({
+    role: message.role === "student" ? "user" : "model",
+    parts: [{ text: message.content }],
+  }));
 }
 
 export function getMockNexResponse(input: NexModelCallInput): string {
@@ -64,9 +67,11 @@ export async function callGemini(input: NexModelCallInput): Promise<string> {
   const timer = setTimeout(() => controller.abort(), LLM_TIMEOUT_MS);
 
   try {
-    const conversation = buildConversationText(input.messages);
-    const prompt = `${input.systemPrompt}\n\nConversation so far:\n${conversation}\n\nNex:`;
-    const model = getGeminiTextModel();
+    const model = input.modelOverride ?? getGeminiTextModel();
+
+    if (input.messages.length === 0) {
+      throw new Error("Gemini request requires at least one conversation message");
+    }
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
@@ -74,7 +79,8 @@ export async function callGemini(input: NexModelCallInput): Promise<string> {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: { parts: [{ text: input.systemPrompt }] },
+          contents: buildGeminiContents(input.messages),
           generationConfig: {
             temperature: 0.7,
             maxOutputTokens: input.maxTokens ?? getNexModelMaxOutputTokens(),
@@ -126,9 +132,11 @@ export async function streamGemini(
   const timer = setTimeout(() => controller.abort(), LLM_TIMEOUT_MS);
 
   try {
-    const conversation = buildConversationText(input.messages);
-    const prompt = `${input.systemPrompt}\n\nConversation so far:\n${conversation}\n\nNex:`;
-    const model = getGeminiTextModel();
+    const model = input.modelOverride ?? getGeminiTextModel();
+
+    if (input.messages.length === 0) {
+      throw new Error("Gemini request requires at least one conversation message");
+    }
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`,
@@ -136,7 +144,8 @@ export async function streamGemini(
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: { parts: [{ text: input.systemPrompt }] },
+          contents: buildGeminiContents(input.messages),
           generationConfig: {
             temperature: 0.7,
             maxOutputTokens: input.maxTokens ?? getNexModelMaxOutputTokens(),

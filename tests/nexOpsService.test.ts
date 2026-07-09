@@ -69,6 +69,7 @@ describe("nexOpsService", () => {
           gemini: { inputUsdPerMillion: 1, outputUsdPerMillion: 2 },
           openai: { inputUsdPerMillion: 10, outputUsdPerMillion: 20 },
           mock: { inputUsdPerMillion: 0, outputUsdPerMillion: 0 },
+          cache: { inputUsdPerMillion: 0, outputUsdPerMillion: 0 },
         },
       },
     });
@@ -144,5 +145,48 @@ describe("nexOpsService", () => {
       }),
     ]);
     expect(snapshot.summary.openFlaggedCount).toBe(1);
+  });
+
+  it("buckets cache-served explain responses as cache at zero cost, not gemini", () => {
+    const snapshot = buildNexOpsSnapshot({
+      now: baseNow,
+      usdToKesRate: 130,
+      messages: [
+        row({
+          id: "student-cache",
+          role: "student",
+          message_content: "e".repeat(400),
+          created_at: "2026-06-22T05:50:00.000Z",
+        }),
+        row({
+          id: "nex-cache",
+          role: "nex",
+          message_content: "f".repeat(800),
+          metadata: { provider: "cache", validationPassed: true },
+          created_at: "2026-06-22T05:51:00.000Z",
+        }),
+      ],
+      pricing: {
+        ...getNexOpsPricingConfig(),
+        providerRates: {
+          gemini: { inputUsdPerMillion: 1, outputUsdPerMillion: 2 },
+          openai: { inputUsdPerMillion: 10, outputUsdPerMillion: 20 },
+          mock: { inputUsdPerMillion: 0, outputUsdPerMillion: 0 },
+          cache: { inputUsdPerMillion: 0, outputUsdPerMillion: 0 },
+        },
+      },
+    });
+
+    expect(snapshot.byProvider).toEqual([
+      expect.objectContaining({
+        provider: "Cache",
+        providerKey: "cache",
+        messages: 1,
+        estimatedTokens: 300,
+        estimatedCostUsd: 0,
+        estimatedCostKes: 0,
+      }),
+    ]);
+    expect(snapshot.summary.estimatedCostUsd).toBe(0);
   });
 });

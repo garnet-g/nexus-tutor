@@ -81,11 +81,12 @@ export interface NexModelCallInput {
   messages: NexMessageTurn[];
   maxTokens?: number;
   allowOpenAIFallback?: boolean;
+  modelOverride?: string;
 }
 
 export interface NexModelCallResult {
   content: string;
-  provider: "gemini" | "openai" | "mock";
+  provider: "gemini" | "openai" | "mock" | "cache";
 }
 
 export type ValidationResult =
@@ -117,6 +118,6 @@ export interface GenerateNexResponseResult {
   response: string;
   sessionMode: NexMode;
   metadata: NexSessionMetadata;
-  provider: "gemini" | "openai" | "mock";
+  provider: "gemini" | "openai" | "mock" | "cache";
   validationPassed: boolean;
 }

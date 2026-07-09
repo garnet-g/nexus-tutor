@@ -15,6 +15,11 @@ import type { NexMode } from "@/lib/nex/types";
 import { transcribeVoiceAudio } from "@/lib/nex/voiceTranscribe";
 import { synthesizeVoiceResponse } from "@/lib/nex/voiceSynthesize";
 import {
+  getCachedVoice,
+  hashVoiceContent,
+  storeCachedVoice,
+} from "@/server/services/nexVoiceCacheService";
+import {
   getEffectiveSubscriptionConfigWithFallback,
   getNexDailyLimit,
 } from "@/lib/platform/getPlatformSettings";
@@ -31,6 +36,7 @@ import {
   getStudentPlanCode,
   incrementNexDailyUsage,
 } from "@/server/services/nexUsageService";
+import { awardStudyActivity } from "@/server/services/studyActivityService";
 import {
   isVoiceMimeType,
   studentHasVoiceAccess,
@@ -38,6 +44,8 @@ import {
   VOICE_MAX_DURATION_SECONDS,
   voiceUploadFieldsSchema,
 } from "@/schemas/voiceSchemas";
+
+const NEX_SESSION_XP = 5;
 
 export async function POST(request: Request) {
   try {
@@ -310,7 +318,16 @@ export async function POST(request: Request) {
         );
       }
 
-      sessionId = createdSession.id;
+      const newSessionId = createdSession.id;
+      sessionId = newSessionId;
+
+      void awardStudyActivity({
+        studentId: studentProfile.id,
+        activityType: "nex",
+        activityId: newSessionId,
+        durationSeconds: 0,
+        xpEarned: NEX_SESSION_XP,
+      }).catch(() => undefined);
     }
 
     await supabase.from("nex_messages").insert({
@@ -350,6 +367,7 @@ export async function POST(request: Request) {
           studentProfile.id,
           misconception.errorCode,
           misconception.description,
+          activeTopicId,
         ).catch(() => undefined);
       }
     }
@@ -367,7 +385,26 @@ export async function POST(request: Request) {
       ).catch(() => undefined);
     }
 
-    const speech = await synthesizeVoiceResponse({ text: nexResult.response });
+    const cacheProvider = nexResult.provider === "cache" ? "gemini" : nexResult.provider;
+    const voiceHash = hashVoiceContent(nexResult.response, cacheProvider);
+    const cachedVoice = await getCachedVoice(voiceHash);
+
+    const speech = cachedVoice
+      ? {
+          audioBase64: Buffer.from(cachedVoice.audioBytes).toString("base64"),
+          mimeType: cachedVoice.mimeType,
+          provider: cacheProvider as "gemini" | "openai" | "mock",
+        }
+      : await synthesizeVoiceResponse({ text: nexResult.response });
+
+    if (!cachedVoice) {
+      void storeCachedVoice(
+        voiceHash,
+        Buffer.from(speech.audioBase64, "base64"),
+        speech.mimeType,
+        cacheProvider,
+      ).catch(() => undefined);
+    }
 
     const { data: nexMessage, error: nexMessageError } = await supabase
       .from("nex_messages")

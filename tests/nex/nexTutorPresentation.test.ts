@@ -67,3 +67,30 @@ describe("nexTutorPresentation", () => {
     ]);
   });
 });
+
+describe("getFollowUpPromptsForMode", () => {
+  it("returns the static prompts when no topic title is given", () => {
+    expect(getFollowUpPromptsForMode("explain")).toEqual([
+      "Show another example",
+      "Explain simpler",
+      "Quiz me",
+    ]);
+  });
+
+  it("replaces the last prompt with a topic-specific one when a topic title is given", () => {
+    const prompts = getFollowUpPromptsForMode("explain", "Fractions");
+
+    expect(prompts).toHaveLength(3);
+    expect(prompts[0]).toBe("Show another example");
+    expect(prompts[1]).toBe("Explain simpler");
+    expect(prompts[2]).toBe("Quiz me on Fractions");
+  });
+
+  it("ignores a blank topic title", () => {
+    expect(getFollowUpPromptsForMode("homework", "   ")).toEqual([
+      "Give me a hint",
+      "Check my step",
+      "What should I try next?",
+    ]);
+  });
+});

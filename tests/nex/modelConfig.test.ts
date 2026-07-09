@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  getGeminiTextModelForTier,
   getGeminiThinkingLevel,
   getGeminiTextModel,
   getGeminiTtsModel,
@@ -50,5 +51,19 @@ describe("Nex Gemini model config", () => {
     restoreEnv("NEX_GEMINI_TTS_MODEL", previousTts);
     restoreEnv("NEX_GEMINI_THINKING_LEVEL", previousThinking);
     restoreEnv("NEX_MODEL_MAX_OUTPUT_TOKENS", previousMaxTokens);
+  });
+
+  it("exposes a lite model tier separate from the standard text model", () => {
+    expect(getGeminiTextModelForTier("standard")).toBe(getGeminiTextModel());
+    expect(getGeminiTextModelForTier("lite")).toBe("gemini-3.5-flash-lite");
+  });
+
+  it("allows the lite model to be overridden by environment variable", () => {
+    const previous = process.env.NEX_GEMINI_TEXT_MODEL_LITE;
+    process.env.NEX_GEMINI_TEXT_MODEL_LITE = "gemini-flash-lite-latest";
+
+    expect(getGeminiTextModelForTier("lite")).toBe("gemini-flash-lite-latest");
+
+    restoreEnv("NEX_GEMINI_TEXT_MODEL_LITE", previous);
   });
 });
