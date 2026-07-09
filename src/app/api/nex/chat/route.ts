@@ -30,9 +30,11 @@ import {
   resolveMisconceptionFromMessage,
   shouldPersistMisconception,
 } from "@/server/services/misconceptionService";
+import { awardStudyActivity } from "@/server/services/studyActivityService";
 
 /** Per-student burst ceiling above the daily quota (PR-048). */
 const NEX_CHAT_BURST_PER_MINUTE = 20;
+const NEX_SESSION_XP = 5;
 
 export async function POST(request: Request) {
   try {
@@ -225,7 +227,16 @@ export async function POST(request: Request) {
         );
       }
 
-      sessionId = createdSession.id;
+      const newSessionId = createdSession.id;
+      sessionId = newSessionId;
+
+      void awardStudyActivity({
+        studentId: studentProfile.id,
+        activityType: "nex",
+        activityId: newSessionId,
+        durationSeconds: 0,
+        xpEarned: NEX_SESSION_XP,
+      }).catch(() => undefined);
     }
 
     const { error: studentMessageError } = await supabase

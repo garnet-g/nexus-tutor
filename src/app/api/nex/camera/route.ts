@@ -42,8 +42,10 @@ import {
   getStudentPlanCode,
   incrementNexDailyUsage,
 } from "@/server/services/nexUsageService";
+import { awardStudyActivity } from "@/server/services/studyActivityService";
 
 const SIGNED_URL_TTL_SECONDS = 3600;
+const NEX_SESSION_XP = 5;
 
 export async function POST(request: Request) {
   try {
@@ -321,7 +323,16 @@ export async function POST(request: Request) {
         );
       }
 
-      sessionId = createdSession.id;
+      const newSessionId = createdSession.id;
+      sessionId = newSessionId;
+
+      void awardStudyActivity({
+        studentId: studentProfile.id,
+        activityType: "nex",
+        activityId: newSessionId,
+        durationSeconds: 0,
+        xpEarned: NEX_SESSION_XP,
+      }).catch(() => undefined);
     }
 
     const messageMetadata = {

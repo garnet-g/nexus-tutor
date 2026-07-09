@@ -31,6 +31,7 @@ import {
   getStudentPlanCode,
   incrementNexDailyUsage,
 } from "@/server/services/nexUsageService";
+import { awardStudyActivity } from "@/server/services/studyActivityService";
 import {
   isVoiceMimeType,
   studentHasVoiceAccess,
@@ -38,6 +39,8 @@ import {
   VOICE_MAX_DURATION_SECONDS,
   voiceUploadFieldsSchema,
 } from "@/schemas/voiceSchemas";
+
+const NEX_SESSION_XP = 5;
 
 export async function POST(request: Request) {
   try {
@@ -310,7 +313,16 @@ export async function POST(request: Request) {
         );
       }
 
-      sessionId = createdSession.id;
+      const newSessionId = createdSession.id;
+      sessionId = newSessionId;
+
+      void awardStudyActivity({
+        studentId: studentProfile.id,
+        activityType: "nex",
+        activityId: newSessionId,
+        durationSeconds: 0,
+        xpEarned: NEX_SESSION_XP,
+      }).catch(() => undefined);
     }
 
     await supabase.from("nex_messages").insert({
