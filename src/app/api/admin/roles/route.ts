@@ -153,6 +153,19 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    if (error instanceof AdminAuditWriteError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "AUDIT_WRITE_FAILED",
+            message: "Role revoke could not be audited.",
+          },
+        },
+        { status: 503 },
+      );
+    }
+
     if (error instanceof LastSuperAdminError || error instanceof SelfDemotionError) {
       return NextResponse.json(
         {

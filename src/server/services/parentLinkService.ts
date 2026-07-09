@@ -26,6 +26,8 @@ export interface LinkedStudentOverview {
   weeklyStudyMinutes: number;
   weeklyGoal: ParentVisibleWeeklyGoal | null;
   healthScore: number | null;
+  predictedGrade: string | null;
+  latestMockScore: number | null;
   weakTopics: string[];
   mathReadinessScore: number | null;
   mathReadinessLabel: string | null;
@@ -302,6 +304,38 @@ async function getLatestHealthScore(studentId: string): Promise<number | null> {
   return Number(data.health_score);
 }
 
+async function getLatestPredictedGrade(studentId: string): Promise<string | null> {
+  const admin = createAdminClient();
+
+  const { data } = await admin
+    .from("academic_health_scores")
+    .select("predicted_grade")
+    .eq("student_id", studentId)
+    .order("calculated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  return (data?.predicted_grade as string | null) ?? null;
+}
+
+async function getLatestMockScore(studentId: string): Promise<number | null> {
+  const admin = createAdminClient();
+
+  const { data } = await admin
+    .from("mock_exam_results")
+    .select("score_percentage")
+    .eq("student_id", studentId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (data?.score_percentage === null || data?.score_percentage === undefined) {
+    return null;
+  }
+
+  return Number(data.score_percentage);
+}
+
 async function getWeakTopics(studentId: string): Promise<string[]> {
   const admin = createAdminClient();
 
@@ -385,10 +419,12 @@ export async function getLinkedStudentsOverview(
     const gradeLevel = String((profile as { grade_level?: string }).grade_level ?? "");
     const curriculum = String((profile as { curriculum?: string }).curriculum ?? "");
 
-    const [weeklyStudyMinutes, weeklyGoal, healthScore, weakTopics, revisionHub] = await Promise.all([
+    const [weeklyStudyMinutes, weeklyGoal, healthScore, predictedGrade, latestMockScore, weakTopics, revisionHub] = await Promise.all([
       getWeeklyStudyMinutes(studentId),
       getParentVisibleWeeklyGoal(supabase, studentId),
       getLatestHealthScore(studentId),
+      getLatestPredictedGrade(studentId),
+      getLatestMockScore(studentId),
       getWeakTopics(studentId),
       getKcseMathRevisionHubForStudent({
         studentId,
@@ -406,6 +442,8 @@ export async function getLinkedStudentsOverview(
       weeklyStudyMinutes,
       weeklyGoal,
       healthScore,
+      predictedGrade,
+      latestMockScore,
       weakTopics,
       mathReadinessScore: revisionHub?.readiness.score ?? null,
       mathReadinessLabel: revisionHub?.readiness.label ?? null,

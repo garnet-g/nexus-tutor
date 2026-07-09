@@ -5,7 +5,7 @@ export interface NexTeachingSection {
   content: string;
 }
 
-type NexVisibleMode = Exclude<NexMode, "assessment">;
+type NexVisibleMode = NexMode;
 
 const MODE_LABELS: Record<NexMode, string> = {
   explain: "Explain",
@@ -20,6 +20,7 @@ const MODE_HELPER_TEXT: Record<NexVisibleMode, string> = {
   practice: "Nex asks one question at a time and adapts after your answer.",
   homework: "Nex gives hints before answers so you learn the method.",
   revision: "Nex helps recap weak areas, plan study time, and drill exam-style questions.",
+  assessment: "Nex checks what you know, identifies gaps, then guides what to revise next.",
 };
 
 const FOLLOW_UP_PROMPTS: Record<NexVisibleMode, string[]> = {
@@ -27,6 +28,7 @@ const FOLLOW_UP_PROMPTS: Record<NexVisibleMode, string[]> = {
   practice: ["Harder", "Easier", "Another question"],
   homework: ["Give me a hint", "Check my step", "What should I try next?"],
   revision: ["Make a plan", "Test weak topics", "Summarise this"],
+  assessment: ["Start assessment", "Next question", "Show my gaps"],
 };
 
 const TOPIC_FOLLOW_UP_TEMPLATES: Record<NexVisibleMode, string> = {
@@ -34,6 +36,7 @@ const TOPIC_FOLLOW_UP_TEMPLATES: Record<NexVisibleMode, string> = {
   practice: "Another {topic} question",
   homework: "Show me a similar {topic} problem",
   revision: "Test my weak spots in {topic}",
+  assessment: "Assess me on {topic}",
 };
 
 const STARTER_PROMPTS: Record<NexVisibleMode, string[]> = {
@@ -57,6 +60,11 @@ const STARTER_PROMPTS: Record<NexVisibleMode, string[]> = {
     "Test my weak areas in {topic}",
     "Summarise what I should remember about {topic}",
   ],
+  assessment: [
+    "Assess my understanding of {topic}",
+    "Ask me one exam-style question on {topic}",
+    "Show me my gaps in {topic}",
+  ],
 };
 
 const DEFAULT_STARTER_PROMPTS: Record<NexVisibleMode, string[]> = {
@@ -79,6 +87,11 @@ const DEFAULT_STARTER_PROMPTS: Record<NexVisibleMode, string[]> = {
     "Build a 30-minute revision plan for tomorrow",
     "What should I revise before my mock exam?",
     "Summarise the key topics I should review",
+  ],
+  assessment: [
+    "Assess my understanding of algebra",
+    "Ask me one KCSE-style question",
+    "Show my top weak areas from this chat",
   ],
 };
 

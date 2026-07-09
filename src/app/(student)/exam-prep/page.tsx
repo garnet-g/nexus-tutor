@@ -21,10 +21,14 @@ export default async function ExamPrepPage() {
     redirect("/diagnostic");
   }
 
-  const [subjects, planCode] = await Promise.all([
+  const [allSubjects, planCode] = await Promise.all([
     getSubjectsForStudent(profile.curriculum, profile.grade_level),
     getStudentPlanCode(profile.id),
   ]);
+  const subjects = allSubjects.filter((subject) => subject.code === "mathematics");
+  const isUpperForm =
+    profile.grade_level.toLowerCase().includes("form 3") ||
+    profile.grade_level.toLowerCase().includes("form 4");
 
   const topicsBySubjectId: Record<
     string,
@@ -46,9 +50,14 @@ export default async function ExamPrepPage() {
           Exam Prep
         </h1>
         <p className="text-sm text-muted-foreground sm:text-base">
-          Generate personalized study materials and mock exams based on your
-          curriculum.
+          Build a KCSE-style math exam run from your current readiness and start
+          a timed simulator in one flow.
         </p>
+        {isUpperForm ? (
+          <p className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground">
+            {profile.grade_level} exam track
+          </p>
+        ) : null}
       </div>
 
       <ExamPrepWizard

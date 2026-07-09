@@ -12,7 +12,10 @@ export interface EffectiveSubscriptionConfig {
     familyMaxStudents: number;
   };
   pricing: {
+    premiumDailyAmountKes: number;
+    premiumWeeklyAmountKes: number;
     premiumAmountKes: number;
+    premiumTermlyAmountKes: number;
     familyAmountKes: number;
   };
   promotion: {
@@ -98,7 +101,10 @@ function buildConfigFromDefaults(): EffectiveSubscriptionConfig {
       familyMaxStudents: DEFAULTS.familyMaxStudents,
     },
     pricing: {
+      premiumDailyAmountKes: DEFAULTS.premiumDailyAmountKes,
+      premiumWeeklyAmountKes: DEFAULTS.premiumWeeklyAmountKes,
       premiumAmountKes: DEFAULTS.premiumAmountKes,
+      premiumTermlyAmountKes: DEFAULTS.premiumTermlyAmountKes,
       familyAmountKes: DEFAULTS.familyAmountKes,
     },
     promotion: {
@@ -130,7 +136,10 @@ async function loadPlatformSettingsMap(): Promise<Record<string, unknown>> {
 }
 
 async function loadSubscriptionPlans(): Promise<{
+  premiumDaily: number;
+  premiumWeekly: number;
   premium: number;
+  premiumTermly: number;
   family: number;
 }> {
   try {
@@ -138,26 +147,47 @@ async function loadSubscriptionPlans(): Promise<{
     const { data, error } = await supabase
       .from("subscription_plans")
       .select("plan_code, amount_kes")
-      .in("plan_code", ["premium", "family"]);
+      .in("plan_code", [
+        "premium_daily",
+        "premium_weekly",
+        "premium",
+        "premium_termly",
+        "family",
+      ]);
 
     if (error || !data) {
       return {
+        premiumDaily: DEFAULTS.premiumDailyAmountKes,
+        premiumWeekly: DEFAULTS.premiumWeeklyAmountKes,
         premium: DEFAULTS.premiumAmountKes,
+        premiumTermly: DEFAULTS.premiumTermlyAmountKes,
         family: DEFAULTS.familyAmountKes,
       };
     }
 
+    const premiumDaily =
+      data.find((plan) => plan.plan_code === "premium_daily")?.amount_kes ??
+      DEFAULTS.premiumDailyAmountKes;
+    const premiumWeekly =
+      data.find((plan) => plan.plan_code === "premium_weekly")?.amount_kes ??
+      DEFAULTS.premiumWeeklyAmountKes;
     const premium =
       data.find((plan) => plan.plan_code === "premium")?.amount_kes ??
       DEFAULTS.premiumAmountKes;
+    const premiumTermly =
+      data.find((plan) => plan.plan_code === "premium_termly")?.amount_kes ??
+      DEFAULTS.premiumTermlyAmountKes;
     const family =
       data.find((plan) => plan.plan_code === "family")?.amount_kes ??
       DEFAULTS.familyAmountKes;
 
-    return { premium, family };
+    return { premiumDaily, premiumWeekly, premium, premiumTermly, family };
   } catch {
     return {
+      premiumDaily: DEFAULTS.premiumDailyAmountKes,
+      premiumWeekly: DEFAULTS.premiumWeeklyAmountKes,
       premium: DEFAULTS.premiumAmountKes,
+      premiumTermly: DEFAULTS.premiumTermlyAmountKes,
       family: DEFAULTS.familyAmountKes,
     };
   }
@@ -203,7 +233,10 @@ export async function getEffectiveSubscriptionConfig(): Promise<EffectiveSubscri
       ),
     },
     pricing: {
+      premiumDailyAmountKes: plans.premiumDaily,
+      premiumWeeklyAmountKes: plans.premiumWeekly,
       premiumAmountKes: resolvePromoPrice(plans.premium, settings),
+      premiumTermlyAmountKes: plans.premiumTermly,
       familyAmountKes: plans.family,
     },
     promotion: {
@@ -245,6 +278,33 @@ export function getPracticeDailyLimit(
 
 export function clearPlatformSettingsCache(): void {
   cachedConfig = null;
+}
+
+export function getPlanAmountKesFromConfig(
+  config: EffectiveSubscriptionConfig,
+  planCode: string,
+): number {
+  if (planCode === "free") {
+    return 0;
+  }
+
+  if (planCode === "family") {
+    return config.pricing.familyAmountKes;
+  }
+
+  if (planCode === "premium_daily") {
+    return config.pricing.premiumDailyAmountKes;
+  }
+
+  if (planCode === "premium_weekly") {
+    return config.pricing.premiumWeeklyAmountKes;
+  }
+
+  if (planCode === "premium_termly") {
+    return config.pricing.premiumTermlyAmountKes;
+  }
+
+  return config.pricing.premiumAmountKes;
 }
 
 export async function getEffectiveSubscriptionConfigWithFallback(): Promise<EffectiveSubscriptionConfig> {

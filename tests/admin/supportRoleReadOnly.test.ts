@@ -6,9 +6,14 @@ import { PATCH as platformSettingsPATCH } from "@/app/api/admin/platform-setting
 vi.mock("server-only", () => ({}));
 
 const getUser = vi.fn();
+const getSession = vi.fn();
 
 vi.mock("@/lib/supabase/server", () => ({
-  createClient: vi.fn(async () => ({ auth: { getUser } })),
+  createClient: vi.fn(async () => ({ auth: { getUser, getSession } })),
+}));
+
+vi.mock("@/server/services/sessionFreshnessService", () => ({
+  validateSessionFreshness: vi.fn(async () => ({ ok: true })),
 }));
 
 // These modules are imported by the routes; mutating paths must never be reached
@@ -43,6 +48,11 @@ function authedAs(role: string, userId = "support-1") {
 
 beforeEach(() => {
   getUser.mockReset();
+  getSession.mockReset();
+  getSession.mockResolvedValue({
+    data: { session: { access_token: "token" } },
+    error: null,
+  });
   createBetaInvite.mockReset();
   recordAdminAudit.mockReset();
 });

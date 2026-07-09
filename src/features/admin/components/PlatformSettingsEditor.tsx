@@ -7,6 +7,7 @@ import { Checkbox, Field, Input } from "@/features/admin/components/adminForm";
 import { EmptyState, Panel, StatCard } from "@/features/admin/components/adminUi";
 import { toastError, toastSuccess } from "@/features/admin/components/toast";
 import type { EffectiveSubscriptionConfig } from "@/lib/platform/getPlatformSettings";
+import type { NexOpsPricingConfig } from "@/server/services/nexOpsService";
 
 interface AuditLogEntry {
   id: string;
@@ -22,12 +23,14 @@ interface PlatformSettingsEditorProps {
   initialConfig: EffectiveSubscriptionConfig;
   initialAuditLog: AuditLogEntry[];
   initialContentAutoApproveEnabled: boolean;
+  initialNexOpsPricing: NexOpsPricingConfig;
 }
 
 export function PlatformSettingsEditor({
   initialConfig,
   initialAuditLog,
   initialContentAutoApproveEnabled,
+  initialNexOpsPricing,
 }: PlatformSettingsEditorProps) {
   const [config, setConfig] = useState(initialConfig);
   const [auditLog, setAuditLog] = useState(initialAuditLog);
@@ -40,12 +43,25 @@ export function PlatformSettingsEditor({
     premiumDailyNexMessageLimit: initialConfig.limits.premiumNex,
     premiumDailyPracticeSessionLimit: initialConfig.limits.premiumPractice,
     familyMaxStudents: initialConfig.limits.familyMaxStudents,
+    premiumDailyAmountKes: initialConfig.pricing.premiumDailyAmountKes,
+    premiumWeeklyAmountKes: initialConfig.pricing.premiumWeeklyAmountKes,
     premiumAmountKes: initialConfig.pricing.premiumAmountKes,
+    premiumTermlyAmountKes: initialConfig.pricing.premiumTermlyAmountKes,
     familyAmountKes: initialConfig.pricing.familyAmountKes,
     promotionIsActive: initialConfig.promotion.isActive,
     promotionTitle: initialConfig.promotion.title ?? "",
     promotionEndsAt: initialConfig.promotion.endsAt ?? "",
     promotionPremiumAmountKes: "",
+    nexOpsCharsPerToken: initialNexOpsPricing.charsPerToken,
+    nexOpsUsdToKesRate: initialNexOpsPricing.usdToKesRate,
+    nexOpsGeminiInputUsdPerMillion:
+      initialNexOpsPricing.providerRates.gemini.inputUsdPerMillion,
+    nexOpsGeminiOutputUsdPerMillion:
+      initialNexOpsPricing.providerRates.gemini.outputUsdPerMillion,
+    nexOpsOpenaiInputUsdPerMillion:
+      initialNexOpsPricing.providerRates.openai.inputUsdPerMillion,
+    nexOpsOpenaiOutputUsdPerMillion:
+      initialNexOpsPricing.providerRates.openai.outputUsdPerMillion,
     contentAutoApproveEnabled: initialContentAutoApproveEnabled,
   });
 
@@ -103,8 +119,20 @@ export function PlatformSettingsEditor({
     <div className="space-y-6">
       <section className="grid gap-4 sm:grid-cols-2">
         <StatCard
+          label="Premium daily (KES)"
+          value={config.pricing.premiumDailyAmountKes.toLocaleString()}
+        />
+        <StatCard
+          label="Premium weekly (KES)"
+          value={config.pricing.premiumWeeklyAmountKes.toLocaleString()}
+        />
+        <StatCard
           label="Premium price (KES)"
           value={config.pricing.premiumAmountKes.toLocaleString()}
+        />
+        <StatCard
+          label="Premium termly (KES)"
+          value={config.pricing.premiumTermlyAmountKes.toLocaleString()}
         />
         <StatCard
           label="Family price (KES)"
@@ -190,6 +218,39 @@ export function PlatformSettingsEditor({
                 }
               />
             </Field>
+            <Field label="Premium daily amount (KES)">
+              <Input
+                type="number"
+                min={1}
+                max={100000}
+                value={form.premiumDailyAmountKes}
+                onChange={(event) =>
+                  updateNumberField("premiumDailyAmountKes", event.target.value)
+                }
+              />
+            </Field>
+            <Field label="Premium weekly amount (KES)">
+              <Input
+                type="number"
+                min={1}
+                max={100000}
+                value={form.premiumWeeklyAmountKes}
+                onChange={(event) =>
+                  updateNumberField("premiumWeeklyAmountKes", event.target.value)
+                }
+              />
+            </Field>
+            <Field label="Premium termly amount (KES)">
+              <Input
+                type="number"
+                min={1}
+                max={100000}
+                value={form.premiumTermlyAmountKes}
+                onChange={(event) =>
+                  updateNumberField("premiumTermlyAmountKes", event.target.value)
+                }
+              />
+            </Field>
             <Field label="Family amount (KES)">
               <Input
                 type="number"
@@ -256,6 +317,96 @@ export function PlatformSettingsEditor({
                 }
               />
             </Field>
+          </div>
+
+          <div className="space-y-4 border-t border-nexus-border pt-5">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              Nex cost assumptions
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Characters per token">
+                <Input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={form.nexOpsCharsPerToken}
+                  onChange={(event) =>
+                    updateNumberField("nexOpsCharsPerToken", event.target.value)
+                  }
+                />
+              </Field>
+              <Field label="USD to KES rate">
+                <Input
+                  type="number"
+                  min={1}
+                  max={500}
+                  value={form.nexOpsUsdToKesRate}
+                  onChange={(event) =>
+                    updateNumberField("nexOpsUsdToKesRate", event.target.value)
+                  }
+                />
+              </Field>
+              <Field label="Gemini input USD / million tokens">
+                <Input
+                  type="number"
+                  min={0}
+                  max={10000}
+                  step="0.01"
+                  value={form.nexOpsGeminiInputUsdPerMillion}
+                  onChange={(event) =>
+                    updateNumberField(
+                      "nexOpsGeminiInputUsdPerMillion",
+                      event.target.value,
+                    )
+                  }
+                />
+              </Field>
+              <Field label="Gemini output USD / million tokens">
+                <Input
+                  type="number"
+                  min={0}
+                  max={10000}
+                  step="0.01"
+                  value={form.nexOpsGeminiOutputUsdPerMillion}
+                  onChange={(event) =>
+                    updateNumberField(
+                      "nexOpsGeminiOutputUsdPerMillion",
+                      event.target.value,
+                    )
+                  }
+                />
+              </Field>
+              <Field label="OpenAI input USD / million tokens">
+                <Input
+                  type="number"
+                  min={0}
+                  max={10000}
+                  step="0.01"
+                  value={form.nexOpsOpenaiInputUsdPerMillion}
+                  onChange={(event) =>
+                    updateNumberField(
+                      "nexOpsOpenaiInputUsdPerMillion",
+                      event.target.value,
+                    )
+                  }
+                />
+              </Field>
+              <Field label="OpenAI output USD / million tokens">
+                <Input
+                  type="number"
+                  min={0}
+                  max={10000}
+                  step="0.01"
+                  value={form.nexOpsOpenaiOutputUsdPerMillion}
+                  onChange={(event) =>
+                    updateNumberField(
+                      "nexOpsOpenaiOutputUsdPerMillion",
+                      event.target.value,
+                    )
+                  }
+                />
+              </Field>
+            </div>
           </div>
 
           <div className="space-y-4 border-t border-nexus-border pt-5">

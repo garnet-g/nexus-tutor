@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ClipboardList,
   BookOpen,
   Lightbulb,
   RotateCcw,
@@ -10,9 +11,7 @@ import {
 
 import type { NexMode } from "@/lib/nex/types";
 import { cn } from "@/lib/utils";
-
-/** V1 in-scope text modes only — assessment is server-detectable but not selectable here. */
-export type NexVisibleMode = Exclude<NexMode, "assessment">;
+export type NexVisibleMode = NexMode;
 
 interface ModeOption {
   value: NexVisibleMode;
@@ -46,6 +45,12 @@ export const NEX_VISIBLE_MODES: ModeOption[] = [
     description: "Plans and recap for exams",
     icon: RotateCcw,
   },
+  {
+    value: "assessment",
+    label: "Assessment",
+    description: "Check understanding and identify gaps",
+    icon: ClipboardList,
+  },
 ];
 
 interface NexModeSelectorProps {
@@ -66,7 +71,7 @@ export function NexModeSelector({
       className={cn(
         compact
           ? "flex gap-2 overflow-x-auto pb-1 no-scrollbar"
-          : "grid grid-cols-2 gap-2 sm:grid-cols-4",
+          : "grid grid-cols-2 gap-2 sm:grid-cols-5",
       )}
       role="radiogroup"
       aria-label="Nex session mode"
@@ -114,9 +119,5 @@ export function NexModeSelector({
 }
 
 export function toVisibleMode(mode: NexMode): NexVisibleMode {
-  if (mode === "assessment") {
-    return "homework";
-  }
-
   return mode;
 }

@@ -10,7 +10,7 @@ export default async function LearningMemoryPage() {
       <StudentPageHeader
         eyebrow="Nex"
         title="Learning memory"
-        description="A read-only view of what Nexus uses to personalize support — not raw internal data."
+        description="A simple view of what Nex is using right now to guide your learning."
         action={{ href: "/profile", label: "Edit profile" }}
       />
       <LearningMemoryView experience={experience} />

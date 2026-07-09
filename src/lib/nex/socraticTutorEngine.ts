@@ -120,6 +120,28 @@ export function updateSocraticState(
     return updateAssessmentState(next, studentMessage);
   }
 
+  if (sessionMode === "practice") {
+    if (!isStudentAttempt(studentMessage)) {
+      return next;
+    }
+
+    if (isLikelyMisconception(studentMessage)) {
+      next.consecutiveIncorrect = (next.consecutiveIncorrect ?? 0) + 1;
+      next.consecutiveCorrect = 0;
+      if ((next.consecutiveIncorrect ?? 0) >= 2) {
+        next.difficulty = "easy";
+      }
+      return next;
+    }
+
+    next.consecutiveCorrect = (next.consecutiveCorrect ?? 0) + 1;
+    next.consecutiveIncorrect = 0;
+    if ((next.consecutiveCorrect ?? 0) >= 2) {
+      next.difficulty = next.difficulty === "easy" ? "medium" : "hard";
+    }
+    return next;
+  }
+
   if (sessionMode !== "homework") {
     return next;
   }

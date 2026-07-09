@@ -31,10 +31,44 @@ import {
   shouldPersistMisconception,
 } from "@/server/services/misconceptionService";
 import { awardStudyActivity } from "@/server/services/studyActivityService";
+import { generateStudyPlanForStudent } from "@/server/services/studyPlanService";
 
 /** Per-student burst ceiling above the daily quota (PR-048). */
 const NEX_CHAT_BURST_PER_MINUTE = 20;
 const NEX_SESSION_XP = 5;
+
+async function resolveMathTopicIdFromMessage(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  message: string,
+): Promise<string | null> {
+  const normalized = message.toLowerCase().trim();
+  if (!normalized) {
+    return null;
+  }
+
+  const { data: subject } = await supabase
+    .from("subjects")
+    .select("id")
+    .eq("code", "mathematics")
+    .maybeSingle();
+
+  if (!subject) {
+    return null;
+  }
+
+  const { data: topics } = await supabase
+    .from("topics")
+    .select("id, title")
+    .eq("subject_id", subject.id)
+    .eq("is_active", true)
+    .limit(150);
+
+  const match = (topics ?? []).find((topic) =>
+    normalized.includes(String(topic.title ?? "").toLowerCase()),
+  );
+
+  return match?.id ?? null;
+}
 
 export async function POST(request: Request) {
   try {
@@ -154,6 +188,9 @@ export async function POST(request: Request) {
     let sessionMetadata = parseSessionMetadata(undefined);
     let recentMessages: Array<{ role: "student" | "nex"; content: string }> = [];
     let activeTopicId = topicId ?? null;
+    if (!activeTopicId) {
+      activeTopicId = await resolveMathTopicIdFromMessage(supabase, studentMessage);
+    }
 
     if (sessionId) {
       const { data: existingSession, error: sessionError } = await supabase
@@ -344,6 +381,10 @@ export async function POST(request: Request) {
                   nexResult.metadata.correctCount ?? 0,
                   nexResult.metadata.assessmentQuestionCount ?? 3,
                 ).catch(() => undefined);
+                await generateStudyPlanForStudent(studentProfile, {
+                  planType: "daily",
+                  dailyGoalMinutes: 20,
+                }).catch(() => undefined);
               }
 
               const { data: nexMessage, error: nexMessageError } = await supabase
@@ -443,6 +484,10 @@ export async function POST(request: Request) {
         nexResult.metadata.correctCount ?? 0,
         nexResult.metadata.assessmentQuestionCount ?? 3,
       ).catch(() => undefined);
+      await generateStudyPlanForStudent(studentProfile, {
+        planType: "daily",
+        dailyGoalMinutes: 20,
+      }).catch(() => undefined);
     }
 
     const { data: nexMessage, error: nexMessageError } = await supabase

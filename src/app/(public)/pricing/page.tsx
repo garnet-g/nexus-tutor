@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { PricingCheckoutShell } from "@/features/pricing/components/PricingCheckoutShell";
 import { PublicPricingDisplay } from "@/features/marketing/components/PublicPricingDisplay";
 import {
+  getPlanAmountKesFromConfig,
   getEffectiveSubscriptionConfigWithFallback,
 } from "@/lib/platform/getPlatformSettings";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -47,12 +48,7 @@ export default async function PublicPricingPage() {
         id: plan.id,
         planCode: plan.plan_code,
         name: plan.name,
-        amountKes:
-          plan.plan_code === "premium"
-            ? config.pricing.premiumAmountKes
-            : plan.plan_code === "family"
-              ? config.pricing.familyAmountKes
-              : plan.amount_kes,
+        amountKes: getPlanAmountKesFromConfig(config, plan.plan_code) || plan.amount_kes,
         billingCycle: plan.billing_cycle,
       })) ?? [];
   } catch {
@@ -61,14 +57,14 @@ export default async function PublicPricingPage() {
         id: "premium_daily",
         planCode: "premium_daily",
         name: "Premium Daily",
-        amountKes: 20,
+        amountKes: config.pricing.premiumDailyAmountKes,
         billingCycle: "daily",
       },
       {
         id: "premium_weekly",
         planCode: "premium_weekly",
         name: "Premium Weekly",
-        amountKes: 150,
+        amountKes: config.pricing.premiumWeeklyAmountKes,
         billingCycle: "weekly",
       },
       {
@@ -82,7 +78,7 @@ export default async function PublicPricingPage() {
         id: "premium_termly",
         planCode: "premium_termly",
         name: "Premium Termly",
-        amountKes: 2400,
+        amountKes: config.pricing.premiumTermlyAmountKes,
         billingCycle: "termly",
       },
       {

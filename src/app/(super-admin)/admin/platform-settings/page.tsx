@@ -5,6 +5,7 @@ import { PlatformSettingsEditor } from "@/features/admin/components/PlatformSett
 import { getEffectiveSubscriptionConfigWithFallback } from "@/lib/platform/getPlatformSettings";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isContentAutoApproveEnabled } from "@/server/services/contentApprovalService";
+import { getNexOpsPricingConfigFromPlatformSettings } from "@/server/services/nexOpsService";
 import { requireSuperAdmin } from "@/server/services/superAdminGuard";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +28,7 @@ export default async function PlatformSettingsPage() {
 
   const config = await getEffectiveSubscriptionConfigWithFallback();
   const contentAutoApproveEnabled = await isContentAutoApproveEnabled();
+  const nexOpsPricing = await getNexOpsPricingConfigFromPlatformSettings();
 
   let auditLog: AuditLogEntry[] = [];
 
@@ -56,6 +58,7 @@ export default async function PlatformSettingsPage() {
         initialConfig={config}
         initialAuditLog={auditLog}
         initialContentAutoApproveEnabled={contentAutoApproveEnabled}
+        initialNexOpsPricing={nexOpsPricing}
       />
     </>
   );

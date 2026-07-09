@@ -2,8 +2,10 @@ import "server-only";
 
 import { z } from "zod";
 
+import { sendResendEmail } from "@/lib/resend/resendClient";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendParentSms } from "@/server/services/adminParentNotifyService";
+import { unwrapSupabaseRelation } from "@/lib/utils";
 
 export const adminCommunicationPreviewSchema = z.object({
   templateKey: z.string().trim().min(3).max(80),
@@ -101,6 +103,28 @@ async function resolveTargetStudentIds(studentIds?: string[]): Promise<string[]>
     throw new Error(error.message);
   }
   return (data ?? []).map((row) => String(row.id));
+}
+
+async function resolveParentEmail(studentId: string): Promise<string | null> {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("student_parent_links")
+    .select("parent_profiles(email)")
+    .eq("student_id", studentId)
+    .eq("link_status", "active")
+    .order("linked_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const parent = unwrapSupabaseRelation<{ email?: string | null }>(
+    data?.parent_profiles ?? null,
+  );
+  const email = parent?.email?.trim();
+  return email && email.length > 3 ? email : null;
 }
 
 async function loadExistingSendResult(
@@ -203,7 +227,24 @@ export async function sendOperationalTemplate(input: {
         failed += 1;
       }
     } else {
-      sent += 1;
+      const parentEmail = await resolveParentEmail(studentId);
+      if (!parentEmail) {
+        failed += 1;
+        continue;
+      }
+
+      const emailResult = await sendResendEmail({
+        recipientEmail: parentEmail,
+        emailSubject: template.title,
+        emailBody: template.body,
+        templateCode: template.template_key,
+      });
+
+      if (emailResult.emailStatus === "failed" || emailResult.emailStatus === "bounced") {
+        failed += 1;
+      } else {
+        sent += 1;
+      }
     }
   }
 
@@ -217,7 +258,7 @@ export async function sendOperationalTemplate(input: {
   const { error: updateError } = await admin
     .from("admin_communication_logs")
     .update({
-      status: failed > 0 && sent === 0 ? "failed" : template.channel === "email" ? "mocked" : "sent",
+      status: failed > 0 && sent === 0 ? "failed" : "sent",
       metadata: completedMetadata,
     })
     .eq("idempotency_key", input.send.idempotencyKey);

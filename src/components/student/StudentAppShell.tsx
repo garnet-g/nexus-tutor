@@ -53,7 +53,8 @@ const NAV_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "/weak-areas": Target,
   "/mistakes": BookMarked,
   "/readiness": BarChart3,
-  "/mock-exams": Clock3,
+  "/exam-prep": Clock3,
+  "/assignment-help": Brain,
   "/nex": Brain,
   "/nex-memory": Brain,
   "/saved": BookMarked,
@@ -76,9 +77,9 @@ const DESKTOP_NAV_GROUPS = STUDENT_NAV_GROUPS.map((group) => ({
 const MOBILE_NAV: NavItem[] = [
   { href: "/dashboard", label: "Today", icon: Home },
   { href: "/learn", label: "Learn", icon: BookOpen },
-  { href: "/tasks", label: "Tasks", icon: ListChecks },
-  { href: "/nex", label: "Nex", nex: true },
-  { href: "/practice", label: "Practice", icon: Target },
+  { href: "/exam-prep", label: "Exam Prep", icon: Clock3 },
+  { href: "/nex", label: "Help", nex: true },
+  { href: "/profile", label: "More", icon: User },
 ];
 
 function isActive(pathname: string, href: string): boolean {

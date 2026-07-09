@@ -6,17 +6,9 @@ import {
   getEffectiveSubscriptionConfig,
   clearPlatformSettingsCache,
 } from "@/lib/platform/getPlatformSettings";
-import { enforceAdminMutationGuards } from "@/lib/security/originCheck";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import { platformSettingsPatchSchema } from "@/schemas/adminSchemas";
-
-function getRoleFromAppMetadata(
-  appMetadata: Record<string, unknown> | undefined,
-): string | null {
-  const role = appMetadata?.userRole;
-  return typeof role === "string" ? role : null;
-}
+import { requireAdminApi } from "@/server/services/requireAdminApi";
 
 const PLATFORM_SETTING_MAP: Record<string, string> = {
   freeDailyNexMessageLimit: "free_daily_nex_message_limit",
@@ -28,7 +20,21 @@ const PLATFORM_SETTING_MAP: Record<string, string> = {
   promotionTitle: "promotion_title",
   promotionEndsAt: "promotion_ends_at",
   promotionPremiumAmountKes: "promotion_premium_amount_kes",
+  nexOpsCharsPerToken: "nex_ops_chars_per_token",
+  nexOpsUsdToKesRate: "nex_ops_usd_to_kes_rate",
+  nexOpsGeminiInputUsdPerMillion: "nex_ops_gemini_input_usd_per_million",
+  nexOpsGeminiOutputUsdPerMillion: "nex_ops_gemini_output_usd_per_million",
+  nexOpsOpenaiInputUsdPerMillion: "nex_ops_openai_input_usd_per_million",
+  nexOpsOpenaiOutputUsdPerMillion: "nex_ops_openai_output_usd_per_million",
   contentAutoApproveEnabled: "content_auto_approve_enabled",
+};
+
+const SUBSCRIPTION_PLAN_FIELD_MAP: Record<string, string> = {
+  premiumDailyAmountKes: "premium_daily",
+  premiumWeeklyAmountKes: "premium_weekly",
+  premiumAmountKes: "premium",
+  premiumTermlyAmountKes: "premium_termly",
+  familyAmountKes: "family",
 };
 
 async function upsertPlatformSetting(
@@ -83,43 +89,42 @@ async function appendAuditLog(input: {
   });
 }
 
+async function updateSubscriptionPlanAmount(input: {
+  userId: string;
+  planCode: string;
+  amountKes: number;
+  changeReason?: string;
+}): Promise<void> {
+  const admin = createAdminClient();
+  const { data: existingPlan } = await admin
+    .from("subscription_plans")
+    .select("amount_kes")
+    .eq("plan_code", input.planCode)
+    .maybeSingle();
+
+  await admin
+    .from("subscription_plans")
+    .update({
+      amount_kes: input.amountKes,
+      updated_by_user_id: input.userId,
+    })
+    .eq("plan_code", input.planCode);
+
+  await appendAuditLog({
+    userId: input.userId,
+    changeType: "subscription_plan",
+    settingKey: `${input.planCode}.amount_kes`,
+    previousValue: existingPlan?.amount_kes ?? null,
+    newValue: input.amountKes,
+    changeReason: input.changeReason,
+  });
+}
+
 export async function PATCH(request: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "UNAUTHORIZED",
-            message: "Missing or invalid session.",
-          },
-        },
-        { status: 401 },
-      );
-    }
-
-    if (getRoleFromAppMetadata(user.app_metadata) !== "super_admin") {
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "FORBIDDEN",
-            message: "Super admin access required.",
-          },
-        },
-        { status: 403 },
-      );
-    }
-
-    const guardError = await enforceAdminMutationGuards(request, user.id);
-    if (guardError) {
-      return guardError;
+    const auth = await requireAdminApi(request, ["super_admin"]);
+    if (!auth.ok) {
+      return auth.response;
     }
 
     const body = await request.json();
@@ -151,11 +156,11 @@ export async function PATCH(request: Request) {
       const { previousValue, newValue } = await upsertPlatformSetting(
         settingKey,
         value,
-        user.id,
+        auth.userId,
       );
 
       await appendAuditLog({
-        userId: user.id,
+        userId: auth.userId,
         changeType: inputKey.startsWith("promotion")
           ? "promotion"
           : "platform_setting",
@@ -166,52 +171,16 @@ export async function PATCH(request: Request) {
       });
     }
 
-    if (changes.premiumAmountKes !== undefined) {
-      const { data: existingPlan } = await admin
-        .from("subscription_plans")
-        .select("amount_kes")
-        .eq("plan_code", "premium")
-        .maybeSingle();
+    for (const [inputKey, planCode] of Object.entries(SUBSCRIPTION_PLAN_FIELD_MAP)) {
+      const value = changes[inputKey as keyof typeof changes];
+      if (typeof value !== "number") {
+        continue;
+      }
 
-      await admin
-        .from("subscription_plans")
-        .update({
-          amount_kes: changes.premiumAmountKes,
-          updated_by_user_id: user.id,
-        })
-        .eq("plan_code", "premium");
-
-      await appendAuditLog({
-        userId: user.id,
-        changeType: "subscription_plan",
-        settingKey: "premium.amount_kes",
-        previousValue: existingPlan?.amount_kes ?? null,
-        newValue: changes.premiumAmountKes,
-        changeReason: changes.changeReason,
-      });
-    }
-
-    if (changes.familyAmountKes !== undefined) {
-      const { data: existingPlan } = await admin
-        .from("subscription_plans")
-        .select("amount_kes")
-        .eq("plan_code", "family")
-        .maybeSingle();
-
-      await admin
-        .from("subscription_plans")
-        .update({
-          amount_kes: changes.familyAmountKes,
-          updated_by_user_id: user.id,
-        })
-        .eq("plan_code", "family");
-
-      await appendAuditLog({
-        userId: user.id,
-        changeType: "subscription_plan",
-        settingKey: "family.amount_kes",
-        previousValue: existingPlan?.amount_kes ?? null,
-        newValue: changes.familyAmountKes,
+      await updateSubscriptionPlanAmount({
+        userId: auth.userId,
+        planCode,
+        amountKes: value,
         changeReason: changes.changeReason,
       });
     }

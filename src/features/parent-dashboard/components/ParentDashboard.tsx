@@ -142,7 +142,7 @@ export function ParentDashboard({ linkedStudents }: ParentDashboardProps) {
                 </div>
               </div>
 
-              <dl className="mt-4 grid gap-4 sm:grid-cols-3">
+              <dl className="mt-4 grid gap-4 sm:grid-cols-4">
                 <div>
                   <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     Study time (7 days)
@@ -161,6 +161,20 @@ export function ParentDashboard({ linkedStudents }: ParentDashboardProps) {
                       ? `${student.healthScore.toFixed(0)}%`
                       : "—"}
                   </dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Predicted grade
+                  </dt>
+                  <dd className="mt-1 text-2xl font-semibold text-foreground">
+                    {student.predictedGrade ?? "—"}
+                  </dd>
+                  <p className="text-xs text-muted-foreground">
+                    Latest mock:{" "}
+                    {student.latestMockScore !== null
+                      ? `${student.latestMockScore.toFixed(0)}%`
+                      : "N/A"}
+                  </p>
                 </div>
                 <div>
                   <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">

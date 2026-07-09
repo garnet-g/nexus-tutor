@@ -3,7 +3,10 @@ import "server-only";
 import { NextResponse } from "next/server";
 
 import { adminFeatureRolloutUpsertSchema } from "@/schemas/adminOpsSchemas";
-import { recordAdminAudit } from "@/server/services/adminAuditService";
+import {
+  AdminAuditWriteError,
+  recordAdminAudit,
+} from "@/server/services/adminAuditService";
 import {
   listFeatureRollouts,
   upsertFeatureRollout,
@@ -80,6 +83,19 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, data: { rollout } });
   } catch (error) {
+    if (error instanceof AdminAuditWriteError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "AUDIT_WRITE_FAILED",
+            message: "Rollout update could not be audited.",
+          },
+        },
+        { status: 503 },
+      );
+    }
+
     console.error("ADMIN_FEATURE_ROLLOUTS_POST_FAILED", error);
     return NextResponse.json(
       {

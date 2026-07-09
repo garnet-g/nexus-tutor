@@ -60,7 +60,7 @@ export function ReadinessExamCta({
         throw new Error(startBody.error?.message ?? "Could not start the exam simulator.");
       }
 
-      router.push(`/exam-simulator?sessionId=${startBody.data.examSimulatorSessionId}`);
+      router.push(`/exam-simulator?sessionId=${startBody.data.simulatorSessionId}`);
     } catch (startError) {
       setError(
         startError instanceof Error
@@ -78,7 +78,9 @@ export function ReadinessExamCta({
         Timed practice
       </p>
       <p className="mt-2 text-lg font-semibold text-foreground">
-        {activeSimulatorSessionId ? "Resume your exam simulator" : "Start a timed mock exam"}
+        {activeSimulatorSessionId
+          ? "Resume your KCSE-style simulator"
+          : "Start a timed KCSE-style mock"}
       </p>
       <p className="mt-1 text-sm text-muted-foreground">
         {premiumAccess

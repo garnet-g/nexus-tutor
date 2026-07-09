@@ -34,6 +34,9 @@ export default async function StudyPlanPage() {
   ]);
 
   const canGenerateExamPlan = canAccessExamStudyPlan(planCode);
+  const isUpperForm =
+    profile.grade_level.toLowerCase().includes("form 3") ||
+    profile.grade_level.toLowerCase().includes("form 4");
 
   return (
     <div className="space-y-6 nexus-enter">
@@ -48,6 +51,11 @@ export default async function StudyPlanPage() {
           Daily goals and weak-topic prioritisation from your diagnostic and
           practice performance.
         </p>
+        {isUpperForm ? (
+          <p className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground">
+            KCSE exam countdown active for {profile.grade_level}
+          </p>
+        ) : null}
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2">

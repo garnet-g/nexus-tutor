@@ -1,7 +1,10 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getEffectiveSubscriptionConfig } from "@/lib/platform/getPlatformSettings";
+import {
+  getEffectiveSubscriptionConfig,
+  getPlanAmountKesFromConfig,
+} from "@/lib/platform/getPlatformSettings";
 import {
   maybeReactivateFamilyGroupAfterFamilyPayment,
 } from "@/server/services/familySubscriptionService";
@@ -150,18 +153,10 @@ export async function startFreeTrial(studentId: string): Promise<{
 }
 
 export async function resolvePlanAmountKes(planCode: string): Promise<number> {
-  if (planCode === "free") {
-    return 0;
-  }
-
   const config = await getEffectiveSubscriptionConfig();
-
-  if (planCode === "family") {
-    return config.pricing.familyAmountKes;
-  }
-
-  if (planCode === "premium") {
-    return config.pricing.premiumAmountKes;
+  const configuredAmount = getPlanAmountKesFromConfig(config, planCode);
+  if (configuredAmount > 0) {
+    return configuredAmount;
   }
 
   const supabase = createAdminClient();

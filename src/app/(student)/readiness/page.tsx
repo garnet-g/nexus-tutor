@@ -21,7 +21,7 @@ export default async function ExamReadinessPage() {
         eyebrow="Exams"
         title="Exam readiness"
         description="A practical view of mock exam performance, current grade direction, and the topics most likely to lift your score."
-        action={{ href: "/mock-exams", label: "Open mock exams" }}
+        action={{ href: "/exam-prep", label: "Open exam prep" }}
       />
 
       <MetricRow
@@ -36,7 +36,7 @@ export default async function ExamReadinessPage() {
       <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         {latest ? (
           <LinkedPanel
-            href="/mock-exams"
+            href="/exam-prep"
             title={`${latest.scorePercentage}% latest mock`}
             description={`Predicted grade ${latest.predictedGrade ?? "not available"} from the most recent result.`}
             eyebrow="Latest result"
@@ -47,8 +47,8 @@ export default async function ExamReadinessPage() {
           <EmptyStudentState
             title="No mock exam result yet"
             description="Complete a mock exam to see readiness, weak topics, and predicted grade movement here."
-            href="/mock-exams"
-            label="Take a mock exam"
+            href="/exam-prep"
+            label="Start exam prep"
           />
         )}
 
@@ -69,6 +69,29 @@ export default async function ExamReadinessPage() {
         readyMockSessionId={examContext.readyMockSessionId}
       />
 
+      {experience.recentMockResults.length > 0 ? (
+        <section className="rounded-2xl border border-nexus-border bg-nexus-surface p-4">
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Recent KCSE-style mocks
+          </p>
+          <div className="mt-3 space-y-2">
+            {experience.recentMockResults.map((result) => (
+              <div
+                key={result.id}
+                className="flex items-center justify-between rounded-xl border border-nexus-border px-3 py-2 text-sm"
+              >
+                <span className="text-foreground">
+                  {new Date(result.createdAt).toLocaleDateString()} · {result.scorePercentage}%
+                </span>
+                <span className="text-muted-foreground">
+                  Grade {result.predictedGrade ?? "N/A"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="grid gap-4 lg:grid-cols-2">
         <LinkedPanel
           href="/exam-prep"
@@ -77,9 +100,9 @@ export default async function ExamReadinessPage() {
           icon={Clock3}
         />
         <LinkedPanel
-          href="/mock-exams"
-          title="Mock exams"
-          description="Review generated papers and past results."
+          href="/exam-prep"
+          title="Exam prep"
+          description="Generate KCSE-style mocks and review your recent results."
           icon={Clock3}
         />
       </section>

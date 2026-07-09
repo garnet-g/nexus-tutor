@@ -253,13 +253,14 @@ export const STUDENT_NAV_GROUPS: StudentNavGroup[] = [
         badgeKey: "mistakesToReview",
       },
       { href: "/readiness", label: "Exam readiness", featureId: "exam-readiness" },
-      { href: "/mock-exams", label: "Mock exams" },
+      { href: "/exam-prep", label: "Exam prep" },
     ],
   },
   {
     label: "Tools",
     items: [
       { href: "/nex", label: "Ask Nex" },
+      { href: "/assignment-help", label: "Assignment help" },
       { href: "/nex-memory", label: "Learning memory", featureId: "learning-memory" },
       {
         href: "/saved",

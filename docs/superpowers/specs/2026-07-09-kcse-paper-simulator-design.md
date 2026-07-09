@@ -116,3 +116,13 @@ Per part: `session_question_id`, `part_label`, `student_answer`, `is_correct` (a
 - AI marking of typed/photographed working (possible future premium add-on).
 - CBC paper fidelity research.
 - Subjects beyond Mathematics (reuse contracts per milestone README apply).
+
+## Relationship to existing "Practice Papers" feature
+
+The codebase already has a separate, unrelated-mechanism feature at `/practice-papers` (`past_papers` / `past_paper_attempts` / `past_paper_answers` tables, `pastPaperService.ts`): real uploaded past KNEC paper PDFs, transcribed into structured questions with official marking schemes, marked by Gemini vision on typed answers or photographed working. It is **not** wired into the mastery/health-score/predicted-grade loop and is **not** touched by this rework.
+
+Decision: **keep both, distinct roles** — no shared tables, no code deleted from the `past_papers` domain.
+- **New `/exam-prep` (this spec):** generated papers from parameterized templates, self-mark against a revealed scheme, unlimited sittings, zero runtime LLM cost, feeds the outcome loop. Optimized for frequent rehearsal.
+- **Existing `/practice-papers`:** real past KNEC papers, AI-marks actual student working via Gemini vision. Optimized for authentic-paper practice and photographed working.
+
+Nav/copy on both surfaces should be tightened during this rework so students understand which is which (e.g. exam-prep copy should say "practice papers, freshly generated every time" rather than anything implying it replaces real past papers).

@@ -46,6 +46,7 @@ import type { MockExamStyle } from "@/schemas/mockExamSchemas";
 import { studentHasMockExamAccess } from "@/schemas/mockExamSchemas";
 import { getStudentPlanCode } from "@/server/services/nexUsageService";
 import { recordMockExamMistakesNonFatal } from "@/server/services/mistakeJournalService";
+import { generateStudyPlanForStudent } from "@/server/services/studyPlanService";
 
 async function loadPracticePool(
   curriculum: string,
@@ -190,7 +191,7 @@ export async function generateMockExamSession(
 async function applyMockExamProgressUpdates(
   profile: StudentProfile,
   marked: Array<{ topicId: string; isCorrect: boolean }>,
-) {
+): Promise<{ healthScore: number; predictedGrade: string | null }> {
   const admin = createAdminClient();
   const topicResults = new Map<string, { correct: number; total: number }>();
 
@@ -242,7 +243,10 @@ async function applyMockExamProgressUpdates(
     .maybeSingle();
 
   if (!subject) {
-    return;
+    return {
+      healthScore: 0,
+      predictedGrade: predictGrade(0, profile.curriculum),
+    };
   }
 
   const { data: allMastery } = await admin
@@ -287,6 +291,8 @@ async function applyMockExamProgressUpdates(
     ),
     predicted_grade: predictedGrade,
   });
+
+  return { healthScore, predictedGrade };
 }
 
 export async function submitMockExamSession(
@@ -361,12 +367,12 @@ export async function submitMockExamSession(
     .limit(1)
     .maybeSingle();
 
-  const predictedGrade = predictGrade(scored.scorePercentage, profile.curriculum);
+  const mockResultGrade = predictGrade(scored.scorePercentage, profile.curriculum);
   const analysis = buildExamAnalysis({
     scorePercentage: scored.scorePercentage,
     weakTopicTitles: [...new Set(weakTopicTitles)],
     previousPredictedGrade: previousHealth?.predicted_grade ?? null,
-    nextPredictedGrade: predictedGrade,
+    nextPredictedGrade: mockResultGrade,
   });
 
   const { data: result, error: resultError } = await admin
@@ -394,7 +400,26 @@ export async function submitMockExamSession(
     .update({ session_status: "completed" })
     .eq("id", mockExamSessionId);
 
-  await applyMockExamProgressUpdates(profile, scored.marked);
+  const progressUpdate = await applyMockExamProgressUpdates(profile, scored.marked);
+
+  await generateStudyPlanForStudent(profile, {
+    planType: "daily",
+    dailyGoalMinutes: 20,
+  });
+
+  analysis.predictedGrade = progressUpdate.predictedGrade ?? analysis.predictedGrade;
+  analysis.predictedGradeDelta =
+    previousHealth?.predicted_grade && previousHealth.predicted_grade !== (progressUpdate.predictedGrade ?? analysis.predictedGrade)
+      ? `${previousHealth.predicted_grade} -> ${progressUpdate.predictedGrade ?? analysis.predictedGrade}`
+      : "unchanged";
+
+  await admin
+    .from("mock_exam_results")
+    .update({
+      predicted_grade: progressUpdate.predictedGrade,
+      predicted_grade_delta: analysis.predictedGradeDelta,
+    })
+    .eq("id", result.id);
 
   await recordMockExamMistakesNonFatal(
     profile.id,

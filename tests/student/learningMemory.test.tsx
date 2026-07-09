@@ -28,7 +28,7 @@ describe("learning memory view", () => {
     const { container } = render(<LearningMemoryView experience={experience} />);
 
     expect(container.querySelector("pre")).toBeNull();
-    expect(screen.getByText(/read-only projection/i)).toBeTruthy();
+    expect(screen.getByText(/what nex is focusing on now/i)).toBeTruthy();
     expect(screen.getByText(/Sign errors in algebra/)).toBeTruthy();
     expect(screen.queryByText(/"studyStyle"/)).toBeNull();
   });

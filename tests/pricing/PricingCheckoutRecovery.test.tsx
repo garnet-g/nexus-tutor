@@ -10,7 +10,13 @@ import { PricingCheckout } from "@/features/pricing/components/PricingCheckout";
 import { PENDING_PAYMENT_STORAGE_KEY } from "@/features/pricing/lib/pendingPaymentStorage";
 
 const config = {
-  pricing: { premiumAmountKes: 799, familyAmountKes: 2499 },
+  pricing: {
+    premiumDailyAmountKes: 20,
+    premiumWeeklyAmountKes: 150,
+    premiumAmountKes: 799,
+    premiumTermlyAmountKes: 2400,
+    familyAmountKes: 2499,
+  },
   limits: {
     premiumNex: 50,
     premiumPractice: 30,

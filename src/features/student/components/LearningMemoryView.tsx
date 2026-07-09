@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Brain, Sparkles } from "lucide-react";
+import { Brain } from "lucide-react";
 
 import { SectionCard } from "@/components/ui/SectionCard";
 import type { StudentExperienceData } from "@/server/services/studentExperienceService";
@@ -32,38 +32,22 @@ export function LearningMemoryView({
   return (
     <div className="space-y-4">
       <SectionCard
-        title="Read-only projection"
-        description="Nexus uses this memory to personalize tutoring. Edit school and learning preferences on your profile."
+        title="What Nex is focusing on now"
+        description="This is the learning context used to personalize your next help session."
       >
-        <p className="text-sm text-muted-foreground">
-          Curriculum {experience.profile.curriculum} · Grade{" "}
-          {experience.profile.grade_level.replace("_", " ")}
+        <p className="text-sm text-foreground">
+          {experience.recommendedTopic?.title ?? "No focus topic yet"}
         </p>
+        {experience.recommendedTopic?.masteryPercentage != null ? (
+          <p className="mt-1 text-sm text-muted-foreground">
+            {experience.recommendedTopic.masteryPercentage}% mastery
+          </p>
+        ) : null}
       </SectionCard>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <SectionCard title="Learning preferences" description="From your profile settings">
-          <p className="text-sm text-foreground">{formatPreferenceSummary(preferences)}</p>
-          <Link href="/profile" className="mt-3 inline-block text-sm font-medium text-nexus-primary">
-            Edit on profile
-          </Link>
-        </SectionCard>
-
-        <SectionCard title="Current focus" description="From diagnostic and practice activity">
-          <p className="text-sm text-foreground">
-            {experience.recommendedTopic?.title ?? "No recommendation yet"}
-          </p>
-          {experience.recommendedTopic?.masteryPercentage != null ? (
-            <p className="mt-1 text-sm text-muted-foreground">
-              {experience.recommendedTopic.masteryPercentage}% mastery
-            </p>
-          ) : null}
-        </SectionCard>
-      </div>
-
       <SectionCard
-        title="Patterns Nex noticed"
-        description="Summarized from practice and tutoring — not raw internal data"
+        title="What Nex has noticed"
+        description="Useful learning patterns only — no hidden scoring data."
       >
         {commonErrors.length > 0 ? (
           <ul className="space-y-2 text-sm text-foreground">
@@ -80,28 +64,11 @@ export function LearningMemoryView({
         )}
       </SectionCard>
 
-      <SectionCard title="Progress signals" description="Health and streak snapshots">
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl bg-nexus-sunken p-3">
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Health</p>
-            <p className="mt-1 text-lg font-semibold text-foreground">
-              {experience.progress.healthScore}
-            </p>
-          </div>
-          <div className="rounded-xl bg-nexus-sunken p-3">
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Streak</p>
-            <p className="mt-1 text-lg font-semibold text-foreground">
-              {experience.progress.currentStreak} days
-            </p>
-          </div>
-          <div className="rounded-xl bg-nexus-sunken p-3">
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">XP</p>
-            <p className="mt-1 flex items-center gap-1 text-lg font-semibold text-foreground">
-              <Sparkles className="size-4 text-nexus-accent" />
-              {experience.progress.totalXp}
-            </p>
-          </div>
-        </div>
+      <SectionCard title="Learning preferences" description="Adjust how Nex supports you.">
+        <p className="text-sm text-foreground">{formatPreferenceSummary(preferences)}</p>
+        <Link href="/profile" className="mt-3 inline-block text-sm font-medium text-nexus-primary">
+          Edit on profile
+        </Link>
       </SectionCard>
 
       <div className="flex items-center gap-2 text-sm text-muted-foreground">

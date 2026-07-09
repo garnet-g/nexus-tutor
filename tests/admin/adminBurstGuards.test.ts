@@ -11,11 +11,16 @@ import { PATCH as platformSettingsPatch } from "@/app/api/admin/platform-setting
 import { checkRateLimit } from "@/lib/rateLimit/durableLimiter";
 
 const getUser = vi.fn();
+const getSession = vi.fn();
 
 vi.mock("@/lib/supabase/server", () => ({
   createClient: vi.fn(async () => ({
-    auth: { getUser },
+    auth: { getUser, getSession },
   })),
+}));
+
+vi.mock("@/server/services/sessionFreshnessService", () => ({
+  validateSessionFreshness: vi.fn(async () => ({ ok: true })),
 }));
 
 vi.mock("@/lib/platform/getPlatformSettings", () => ({
@@ -45,6 +50,10 @@ vi.mock("@/lib/supabase/admin", () => ({
 describe("PR-049b admin burst guards", () => {
   beforeEach(() => {
     vi.mocked(checkRateLimit).mockReset();
+    getSession.mockResolvedValue({
+      data: { session: { access_token: "token" } },
+      error: null,
+    });
     getUser.mockResolvedValue({
       data: { user: { id: "admin-1", app_metadata: { userRole: "super_admin" } } },
       error: null,

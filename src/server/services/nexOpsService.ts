@@ -123,6 +123,87 @@ export function getNexOpsPricingConfig(): NexOpsPricingConfig {
   };
 }
 
+type PlatformSettingRow = { setting_key: string; setting_value: unknown };
+
+function readPlatformNumber(
+  settings: Map<string, unknown>,
+  key: string,
+  fallback: number,
+): number {
+  const value = settings.get(key);
+  return typeof value === "number" && Number.isFinite(value) && value >= 0
+    ? value
+    : fallback;
+}
+
+export async function getNexOpsPricingConfigFromPlatformSettings(): Promise<NexOpsPricingConfig> {
+  const defaults = getNexOpsPricingConfig();
+  const admin = createAdminClient();
+  const settingKeys = [
+    "nex_ops_chars_per_token",
+    "nex_ops_usd_to_kes_rate",
+    "nex_ops_gemini_input_usd_per_million",
+    "nex_ops_gemini_output_usd_per_million",
+    "nex_ops_openai_input_usd_per_million",
+    "nex_ops_openai_output_usd_per_million",
+  ];
+
+  const { data, error } = await admin
+    .from("platform_settings")
+    .select("setting_key, setting_value")
+    .in("setting_key", settingKeys);
+
+  if (error) {
+    return defaults;
+  }
+
+  const settings = new Map<string, unknown>();
+  for (const row of (data ?? []) as PlatformSettingRow[]) {
+    settings.set(row.setting_key, row.setting_value);
+  }
+
+  return {
+    charsPerToken: readPlatformNumber(
+      settings,
+      "nex_ops_chars_per_token",
+      defaults.charsPerToken,
+    ),
+    usdToKesRate: readPlatformNumber(
+      settings,
+      "nex_ops_usd_to_kes_rate",
+      defaults.usdToKesRate,
+    ),
+    providerRates: {
+      gemini: {
+        inputUsdPerMillion: readPlatformNumber(
+          settings,
+          "nex_ops_gemini_input_usd_per_million",
+          defaults.providerRates.gemini.inputUsdPerMillion,
+        ),
+        outputUsdPerMillion: readPlatformNumber(
+          settings,
+          "nex_ops_gemini_output_usd_per_million",
+          defaults.providerRates.gemini.outputUsdPerMillion,
+        ),
+      },
+      openai: {
+        inputUsdPerMillion: readPlatformNumber(
+          settings,
+          "nex_ops_openai_input_usd_per_million",
+          defaults.providerRates.openai.inputUsdPerMillion,
+        ),
+        outputUsdPerMillion: readPlatformNumber(
+          settings,
+          "nex_ops_openai_output_usd_per_million",
+          defaults.providerRates.openai.outputUsdPerMillion,
+        ),
+      },
+      mock: defaults.providerRates.mock,
+      cache: defaults.providerRates.cache,
+    },
+  };
+}
+
 export function estimateTextTokens(text: string, charsPerToken = 4): number {
   const trimmed = text.trim();
   if (!trimmed) {
@@ -363,6 +444,7 @@ export function buildNexOpsSnapshot(input: BuildNexOpsSnapshotInput): NexOpsSnap
 export async function loadNexOpsSnapshot(): Promise<NexOpsSnapshot> {
   const admin = createAdminClient();
   const since = new Date(Date.now() - 7 * ONE_DAY_MS).toISOString();
+  const pricing = await getNexOpsPricingConfigFromPlatformSettings();
 
   const { data, error } = await admin
     .from("nex_messages")
@@ -379,6 +461,7 @@ export async function loadNexOpsSnapshot(): Promise<NexOpsSnapshot> {
 
   return buildNexOpsSnapshot({
     messages: (data ?? []) as NexOpsMessageRow[],
+    pricing,
   });
 }
 

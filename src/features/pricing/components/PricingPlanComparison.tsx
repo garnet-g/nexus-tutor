@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Sparkles, HelpCircle } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import type { EffectiveSubscriptionConfig } from "@/lib/platform/getPlatformSettings";
 import { cn } from "@/lib/utils";
 
@@ -48,10 +48,10 @@ export function PricingPlanComparison({
 
   // Default fallback plans if dynamic list is empty
   const activePlans = plans.length > 0 ? plans : [
-    { id: "premium_daily", planCode: "premium_daily", name: "Premium Daily", amountKes: 20, billingCycle: "daily" },
-    { id: "premium_weekly", planCode: "premium_weekly", name: "Premium Weekly", amountKes: 150, billingCycle: "weekly" },
+    { id: "premium_daily", planCode: "premium_daily", name: "Premium Daily", amountKes: pricing.premiumDailyAmountKes, billingCycle: "daily" },
+    { id: "premium_weekly", planCode: "premium_weekly", name: "Premium Weekly", amountKes: pricing.premiumWeeklyAmountKes, billingCycle: "weekly" },
     { id: "premium", planCode: "premium", name: "Premium Monthly", amountKes: pricing.premiumAmountKes, billingCycle: "monthly" },
-    { id: "premium_termly", planCode: "premium_termly", name: "Premium Termly", amountKes: 2400, billingCycle: "termly" },
+    { id: "premium_termly", planCode: "premium_termly", name: "Premium Termly", amountKes: pricing.premiumTermlyAmountKes, billingCycle: "termly" },
     { id: "family", planCode: "family", name: "Family Monthly", amountKes: pricing.familyAmountKes, billingCycle: "monthly" },
   ];
 
@@ -62,7 +62,15 @@ export function PricingPlanComparison({
   const getPremiumPlanAmount = (cycle: "daily" | "weekly" | "monthly" | "termly") => {
     const code = cycle === "monthly" ? "premium" : `premium_${cycle}`;
     const plan = activePlans.find((p) => p.planCode === code);
-    return plan ? plan.amountKes : cycle === "daily" ? 20 : cycle === "weekly" ? 150 : cycle === "monthly" ? pricing.premiumAmountKes : 2400;
+    return plan
+      ? plan.amountKes
+      : cycle === "daily"
+        ? pricing.premiumDailyAmountKes
+        : cycle === "weekly"
+          ? pricing.premiumWeeklyAmountKes
+          : cycle === "monthly"
+            ? pricing.premiumAmountKes
+            : pricing.premiumTermlyAmountKes;
   };
 
   const currentPremiumPrice = getPremiumPlanAmount(premiumCycle);
@@ -149,7 +157,7 @@ export function PricingPlanComparison({
         )}
       >
         {tiers.map((tier) => {
-          const isHighlighted = tier.id === "premium";
+          const isHighlighted = tier.id === highlightPlan;
 
           return (
             <article
@@ -249,6 +257,18 @@ export function formatPlanAmountKes(
   config: EffectiveSubscriptionConfig,
   planCode: string,
 ): number {
+  if (planCode === "premium_daily") {
+    return config.pricing.premiumDailyAmountKes;
+  }
+
+  if (planCode === "premium_weekly") {
+    return config.pricing.premiumWeeklyAmountKes;
+  }
+
+  if (planCode === "premium_termly") {
+    return config.pricing.premiumTermlyAmountKes;
+  }
+
   if (planCode === "family") {
     return config.pricing.familyAmountKes;
   }
