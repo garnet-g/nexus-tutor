@@ -5,6 +5,14 @@ import { createHash } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const NEX_VOICE_CACHE_BUCKET = "nex-voice-cache";
+// Matches the text-response cache's TTL (nexResponseCacheService.ts). This
+// only stops stale entries from being served on read; it does not reclaim
+// storage for hashes that are never looked up again (most Nex responses are
+// unique per conversation, so this bucket will still accumulate unread
+// objects over time). Reclaiming that requires a periodic cleanup sweep
+// (e.g. added to the data-retention cron) — tracked as a follow-up, out of
+// scope for this cache-correctness fix.
+const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 export function hashVoiceContent(text: string, provider: string): string {
   return createHash("sha256").update(`${provider}:${text.trim()}`).digest("hex");
@@ -20,7 +28,7 @@ export async function getCachedVoice(contentHash: string): Promise<CachedVoice |
 
   const { data: row, error: readError } = await admin
     .from("nex_voice_cache")
-    .select("storage_path, mime_type")
+    .select("storage_path, mime_type, created_at")
     .eq("content_hash", contentHash)
     .maybeSingle();
 
@@ -29,6 +37,11 @@ export async function getCachedVoice(contentHash: string): Promise<CachedVoice |
   }
 
   if (!row) {
+    return null;
+  }
+
+  const ageMs = Date.now() - new Date(row.created_at).getTime();
+  if (ageMs > CACHE_TTL_MS) {
     return null;
   }
 

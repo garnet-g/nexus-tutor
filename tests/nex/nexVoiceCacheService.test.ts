@@ -3,7 +3,12 @@
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-type CacheRow = { content_hash: string; storage_path: string; mime_type: string };
+type CacheRow = {
+  content_hash: string;
+  storage_path: string;
+  mime_type: string;
+  created_at: string;
+};
 const rows = new Map<string, CacheRow>();
 const storedObjects = new Map<string, Uint8Array>();
 
@@ -24,6 +29,7 @@ vi.mock("@/lib/supabase/admin", () => ({
             content_hash: row.content_hash,
             storage_path: row.storage_path as string,
             mime_type: row.mime_type as string,
+            created_at: new Date().toISOString(),
           });
           return Promise.resolve({ data: null, error: null });
         },
@@ -86,5 +92,22 @@ describe("nexVoiceCacheService", () => {
     expect(cached).not.toBeNull();
     expect(cached?.mimeType).toBe("audio/wav");
     expect(Array.from(cached?.audioBytes ?? [])).toEqual([1, 2, 3, 4]);
+  });
+
+  it("treats entries older than the TTL as a miss", async () => {
+    const { hashVoiceContent, storeCachedVoice, getCachedVoice } = await import(
+      "@/server/services/nexVoiceCacheService"
+    );
+
+    const hash = hashVoiceContent("Stale response.", "gemini");
+    await storeCachedVoice(hash, new Uint8Array([9, 9, 9]), "audio/wav", "gemini");
+
+    const row = rows.get(hash);
+    if (row) {
+      row.created_at = new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString();
+    }
+
+    const result = await getCachedVoice(hash);
+    expect(result).toBeNull();
   });
 });
