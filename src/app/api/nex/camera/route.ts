@@ -376,6 +376,7 @@ export async function POST(request: Request) {
           studentProfile.id,
           misconception.errorCode,
           misconception.description,
+          activeTopicId,
         ).catch(() => undefined);
       }
     }

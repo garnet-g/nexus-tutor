@@ -15,6 +15,13 @@ import {
   mergeCommonErrors,
 } from "@/lib/nex/misconceptionPersistence";
 
+const REVIEW_INTERVALS_DAYS = [2, 4, 7, 14];
+
+export function nextReviewIntervalDays(reviewCount: number): number {
+  const index = Math.min(reviewCount, REVIEW_INTERVALS_DAYS.length - 1);
+  return REVIEW_INTERVALS_DAYS[index];
+}
+
 export function resolveMisconceptionFromMessage(
   message: string,
 ): { errorCode: string; description: string } | null {
@@ -33,6 +40,7 @@ export async function persistStudentMisconception(
   studentId: string,
   errorCode: string,
   description: string,
+  topicId: string | null = null,
 ): Promise<void> {
   const admin = createAdminClient();
 
@@ -65,6 +73,68 @@ export async function persistStudentMisconception(
       },
     })
     .eq("id", studentId);
+
+  const { data: existingReview } = await admin
+    .from("nex_misconception_reviews")
+    .select("review_count")
+    .eq("student_id", studentId)
+    .eq("error_code", errorCode)
+    .maybeSingle();
+
+  const reviewCount = existingReview?.review_count ?? 0;
+  const intervalDays = nextReviewIntervalDays(reviewCount);
+  const nextReviewAt = new Date(
+    Date.now() + intervalDays * 24 * 60 * 60 * 1000,
+  ).toISOString();
+
+  await admin.from("nex_misconception_reviews").upsert(
+    {
+      student_id: studentId,
+      topic_id: topicId,
+      error_code: errorCode,
+      description: label,
+      review_count: reviewCount + 1,
+      next_review_at: nextReviewAt,
+      last_reviewed_at: new Date().toISOString(),
+      resolved_at: null,
+    },
+    { onConflict: "student_id,error_code" },
+  );
+}
+
+export async function getDueMisconceptionReviews(
+  studentId: string,
+): Promise<Array<{ id: string; errorCode: string; description: string; topicId: string | null }>> {
+  const admin = createAdminClient();
+
+  const { data } = await admin
+    .from("nex_misconception_reviews")
+    .select("id, error_code, description, topic_id")
+    .eq("student_id", studentId)
+    .is("resolved_at", null)
+    .lte("next_review_at", new Date().toISOString())
+    .order("next_review_at", { ascending: true })
+    .limit(5);
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    errorCode: row.error_code,
+    description: row.description,
+    topicId: row.topic_id,
+  }));
+}
+
+export async function resolveMisconceptionReview(
+  studentId: string,
+  reviewId: string,
+): Promise<void> {
+  const admin = createAdminClient();
+
+  await admin
+    .from("nex_misconception_reviews")
+    .update({ resolved_at: new Date().toISOString() })
+    .eq("id", reviewId)
+    .eq("student_id", studentId);
 }
 
 export async function applyAssessmentMasteryUpdate(
