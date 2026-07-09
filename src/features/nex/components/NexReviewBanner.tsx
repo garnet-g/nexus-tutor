@@ -51,11 +51,24 @@ export function NexReviewBanner({ onSelectReview, className }: NexReviewBannerPr
     return null;
   }
 
-  async function dismiss(reviewId: string) {
+  // "Not now" — hides the banner for this session only. Does not call the
+  // resolve API: dismissing without practicing the item should not mark the
+  // misconception as fixed, or the spaced-review loop stops tracking it the
+  // moment a student clicks past the banner.
+  function dismiss(reviewId: string) {
     setDismissedIds((prev) => new Set(prev).add(reviewId));
-    await fetch(`/api/nex/reviews/${reviewId}/resolve`, { method: "POST" }).catch(
+  }
+
+  // Clicking "Try it" is the closest signal we have that the student is
+  // engaging with the misconception again, so this is what actually closes
+  // the review loop (resolve is fire-and-forget — a failure here shouldn't
+  // block sending the practice prompt).
+  function tryIt(review: DueReview) {
+    setDismissedIds((prev) => new Set(prev).add(review.id));
+    void fetch(`/api/nex/reviews/${review.id}/resolve`, { method: "POST" }).catch(
       () => undefined,
     );
+    onSelectReview(review);
   }
 
   return (
@@ -73,14 +86,14 @@ export function NexReviewBanner({ onSelectReview, className }: NexReviewBannerPr
       <div className="flex shrink-0 items-center gap-2">
         <button
           type="button"
-          onClick={() => onSelectReview(visibleReview)}
+          onClick={() => tryIt(visibleReview)}
           className="min-h-9 rounded-full bg-nexus-primary px-3 text-sm font-medium text-nexus-text-inverse hover:opacity-90"
         >
           Try it
         </button>
         <button
           type="button"
-          onClick={() => void dismiss(visibleReview.id)}
+          onClick={() => dismiss(visibleReview.id)}
           aria-label="Dismiss review"
           className="flex size-9 items-center justify-center rounded-full text-muted-foreground hover:bg-nexus-sunken"
         >
