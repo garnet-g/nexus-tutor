@@ -115,7 +115,7 @@ export function getFollowUpPromptsForMode(
     return base;
   }
 
-  const topicPrompt = TOPIC_FOLLOW_UP_TEMPLATES[mode].replace("{topic}", safeTopic);
+  const topicPrompt = TOPIC_FOLLOW_UP_TEMPLATES[mode].replace("{topic}", () => safeTopic);
   return [base[0], base[1], topicPrompt];
 }
 
