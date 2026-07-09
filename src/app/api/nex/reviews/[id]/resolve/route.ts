@@ -2,6 +2,7 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
+import { enforceSameOrigin } from "@/lib/security/originCheck";
 import { createClient } from "@/lib/supabase/server";
 import { resolveMisconceptionReview } from "@/server/services/misconceptionService";
 
@@ -9,8 +10,13 @@ interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-export async function POST(_request: Request, context: RouteContext) {
+export async function POST(request: Request, context: RouteContext) {
   try {
+    const originError = enforceSameOrigin(request);
+    if (originError) {
+      return originError;
+    }
+
     const { id } = await context.params;
     const supabase = await createClient();
     const {
