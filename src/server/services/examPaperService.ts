@@ -5,7 +5,7 @@ import { randomInt } from "node:crypto";
 import { instantiateTemplate, type ExamPaperTemplateBody } from "@/lib/examPapers/templateInstantiation";
 import { assembleExamPaper, hasSufficientTemplateBank, type TemplateRecord } from "@/lib/examPapers/paperAssembly";
 import { mulberry32 } from "@/lib/examPapers/paramSampler";
-import { calculateEndsAt, EXAM_PAPER_DURATION_MINUTES } from "@/lib/examPapers/sessionTiming";
+import { calculateEndsAt, EXAM_PAPER_DURATION_MINUTES, isSessionExpired } from "@/lib/examPapers/sessionTiming";
 import { parseFormLevel } from "@/lib/examPapers/formScope";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { studentHasExamPaperAccess, FREE_EXAM_PAPER_SAMPLE_QUESTION_COUNT } from "@/schemas/examPaperSchemas";
@@ -182,4 +182,119 @@ export async function generateExamPaperSession(
   }
 
   return { status: "generated", sessionId: session.id, endsAt: endsAt.toISOString(), totalMarks, isSample };
+}
+
+export interface ExamPaperSittingQuestion {
+  sessionQuestionId: string;
+  questionNumber: number;
+  section: "I" | "II";
+  chosen: boolean;
+  renderedStem: string;
+  parts: Array<{ label: string; prompt: string; marks: number; answerType: "numeric" | "short_answer" }>;
+}
+
+export interface ExamPaperSittingView {
+  sessionId: string;
+  paper: 1 | 2;
+  status: string;
+  endsAt: string;
+  totalMarks: number;
+  questions: ExamPaperSittingQuestion[];
+}
+
+export async function getExamPaperSessionForSitting(
+  sessionId: string,
+  studentId: string,
+): Promise<ExamPaperSittingView | null> {
+  const admin = createAdminClient();
+
+  const { data: session } = await admin
+    .from("exam_paper_sessions")
+    .select("id, paper, status, ends_at, total_marks")
+    .eq("id", sessionId)
+    .eq("student_id", studentId)
+    .maybeSingle();
+
+  if (!session) return null;
+
+  let status = session.status;
+  if (status === "in_progress" && isSessionExpired(new Date(session.ends_at))) {
+    await admin.from("exam_paper_sessions").update({ status: "expired" }).eq("id", sessionId);
+    status = "expired";
+  }
+
+  const { data: questions } = await admin
+    .from("exam_paper_session_questions")
+    .select("id, question_number, section, chosen, rendered_stem, rendered_parts")
+    .eq("session_id", sessionId)
+    .order("sort_order", { ascending: true });
+
+  return {
+    sessionId: session.id,
+    paper: session.paper as 1 | 2,
+    status,
+    endsAt: session.ends_at,
+    totalMarks: session.total_marks,
+    questions: (questions ?? []).map((q: any) => ({
+      sessionQuestionId: q.id,
+      questionNumber: q.question_number,
+      section: q.section as "I" | "II",
+      chosen: q.chosen,
+      renderedStem: q.rendered_stem,
+      parts: q.rendered_parts as ExamPaperSittingQuestion["parts"],
+    })),
+  };
+}
+
+export async function chooseSectionTwoQuestions(
+  sessionId: string,
+  studentId: string,
+  sessionQuestionIds: string[],
+): Promise<void> {
+  const admin = createAdminClient();
+
+  const { data: session } = await admin
+    .from("exam_paper_sessions")
+    .select("id, status")
+    .eq("id", sessionId)
+    .eq("student_id", studentId)
+    .maybeSingle();
+
+  if (!session) throw new Error("NOT_FOUND");
+  if (session.status !== "in_progress") throw new Error("CONFLICT");
+
+  const { data: sectionTwoQuestions } = await admin
+    .from("exam_paper_session_questions")
+    .select("id, chosen")
+    .eq("session_id", sessionId)
+    .eq("section", "II");
+
+  const validIds = new Set((sectionTwoQuestions ?? []).map((q: any) => q.id));
+  if (!sessionQuestionIds.every((id) => validIds.has(id))) {
+    throw new Error("VALIDATION");
+  }
+
+  const currentlyChosen = new Set(
+    (sectionTwoQuestions ?? []).filter((q: any) => q.chosen).map((q: any) => q.id),
+  );
+  const beingDeselected = [...currentlyChosen].filter((id) => !sessionQuestionIds.includes(id as string));
+
+  if (beingDeselected.length > 0) {
+    const { data: existingAnswers } = await admin
+      .from("exam_paper_answers")
+      .select("session_question_id")
+      .in("session_question_id", beingDeselected);
+
+    if ((existingAnswers ?? []).length > 0) {
+      throw new Error("CONFLICT");
+    }
+  }
+
+  await admin
+    .from("exam_paper_session_questions")
+    .update({ chosen: false })
+    .eq("session_id", sessionId)
+    .eq("section", "II");
+
+  await admin.from("exam_paper_session_questions").update({ chosen: true }).in("id", sessionQuestionIds);
 }
