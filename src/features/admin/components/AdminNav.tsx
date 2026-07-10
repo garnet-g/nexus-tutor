@@ -161,6 +161,7 @@ export const ADMIN_NAV_GROUPS: NavGroup[] = [
       { href: "/admin/studio", label: "Content", icon: LayersIcon },
       { href: "/admin/content-calendar", label: "Content calendar", icon: ClipboardCheckIcon },
       { href: "/admin/assessment", label: "Assessment", icon: ClipboardCheckIcon },
+      { href: "/admin/exam-papers", label: "Exam papers", icon: ClipboardCheckIcon },
       { href: "/admin/ai-quality", label: "AI quality", icon: CpuIcon },
       { href: "/admin/outcomes", label: "Outcomes", icon: TrendingUpIcon },
     ],
