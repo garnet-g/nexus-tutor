@@ -2,14 +2,18 @@ import "server-only";
 
 import { randomInt } from "node:crypto";
 
+import { computeRollingHealthScore, predictGrade } from "@/lib/diagnostic/healthScoreEngine";
+import { autoMarkExamPaperAnswers, buildVerifiedTopicResults, type AnswerKeyPart, type AutoMarkedPart, type StudentPartAnswer } from "@/lib/examPapers/markingEngine";
 import { instantiateTemplate, type ExamPaperTemplateBody } from "@/lib/examPapers/templateInstantiation";
 import { assembleExamPaper, hasSufficientTemplateBank, type TemplateRecord } from "@/lib/examPapers/paperAssembly";
 import { mulberry32 } from "@/lib/examPapers/paramSampler";
 import { calculateEndsAt, EXAM_PAPER_DURATION_MINUTES, isSessionExpired } from "@/lib/examPapers/sessionTiming";
 import { parseFormLevel } from "@/lib/examPapers/formScope";
+import { computeMasteryUpdates, averageTopicMastery } from "@/lib/mastery/masteryEngine";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { studentHasExamPaperAccess, FREE_EXAM_PAPER_SAMPLE_QUESTION_COUNT } from "@/schemas/examPaperSchemas";
 import { getStudentPlanCode } from "@/server/services/nexUsageService";
+import { generateStudyPlanForStudent } from "@/server/services/studyPlanService";
 import type { StudentProfile } from "@/types/database";
 
 type AdminClient = ReturnType<typeof createAdminClient>;
@@ -297,4 +301,177 @@ export async function chooseSectionTwoQuestions(
     .eq("section", "II");
 
   await admin.from("exam_paper_session_questions").update({ chosen: true }).in("id", sessionQuestionIds);
+}
+
+export interface SubmitExamPaperResult {
+  verifiedMarks: number;
+  totalMarks: number;
+  scorePercentage: number;
+  attemptPredictedGrade: string;
+  rollingPredictedGrade: string;
+}
+
+export async function submitExamPaperFinalAnswers(
+  sessionId: string,
+  profile: StudentProfile,
+  answers: StudentPartAnswer[],
+): Promise<SubmitExamPaperResult> {
+  const admin = createAdminClient();
+
+  const { data: session } = await admin
+    .from("exam_paper_sessions")
+    .select("id, status, total_marks")
+    .eq("id", sessionId)
+    .eq("student_id", profile.id)
+    .maybeSingle();
+
+  if (!session) throw new Error("NOT_FOUND");
+  if (session.status !== "in_progress" && session.status !== "expired") {
+    throw new Error("CONFLICT");
+  }
+
+  const { data: chosenQuestions } = await admin
+    .from("exam_paper_session_questions")
+    .select("id, topic_id")
+    .eq("session_id", sessionId)
+    .eq("chosen", true);
+
+  const chosenIds = (chosenQuestions ?? []).map((q: any) => q.id);
+  const topicByQuestionId = new Map((chosenQuestions ?? []).map((q: any) => [q.id, q.topic_id]));
+
+  const { data: answerKeyRows } = await admin
+    .from("exam_paper_session_answer_keys")
+    .select("session_question_id, answer_key")
+    .in("session_question_id", chosenIds);
+
+  const answerKey: AnswerKeyPart[] = (answerKeyRows ?? []).flatMap((row: any) =>
+    (row.answer_key as Array<{ label: string; computedAnswer: string; tolerance: number; marks: number }>).map(
+      (part) => ({
+        sessionQuestionId: row.session_question_id,
+        partLabel: part.label,
+        topicId: topicByQuestionId.get(row.session_question_id) ?? "",
+        marks: part.marks,
+        answerType: (/^-?\d+(\.\d+)?$/.test(part.computedAnswer) ? "numeric" : "short_answer") as
+          | "numeric"
+          | "short_answer",
+        computedAnswer: part.computedAnswer,
+        tolerance: part.tolerance,
+      }),
+    ),
+  );
+
+  const relevantAnswers = answers.filter((answer) => chosenIds.includes(answer.sessionQuestionId));
+  const autoMarked = autoMarkExamPaperAnswers(answerKey, relevantAnswers);
+
+  for (const part of autoMarked) {
+    const studentAnswer = relevantAnswers.find(
+      (a) => a.sessionQuestionId === part.sessionQuestionId && a.partLabel === part.partLabel,
+    );
+    await admin.from("exam_paper_answers").upsert(
+      {
+        session_question_id: part.sessionQuestionId,
+        part_label: part.partLabel,
+        student_answer: studentAnswer?.studentAnswer ?? null,
+        is_correct: part.isCorrect,
+        auto_marks: part.autoMarks,
+      },
+      { onConflict: "session_question_id,part_label" },
+    );
+  }
+
+  const verifiedMarks = autoMarked.reduce((sum, part) => sum + part.autoMarks, 0);
+  const totalMarks = session.total_marks;
+  const scorePercentage = totalMarks > 0 ? Math.round((verifiedMarks / totalMarks) * 100) : 0;
+
+  await admin
+    .from("exam_paper_sessions")
+    .update({ status: "submitted", verified_marks: verifiedMarks, submitted_at: new Date().toISOString() })
+    .eq("id", sessionId);
+
+  const attemptPredictedGrade = predictGrade(scorePercentage, profile.curriculum);
+  const { predictedGrade: rollingPredictedGrade } = await applyExamPaperOutcomeLoop(admin, profile, autoMarked);
+
+  return { verifiedMarks, totalMarks, scorePercentage, attemptPredictedGrade, rollingPredictedGrade };
+}
+
+async function applyExamPaperOutcomeLoop(
+  admin: AdminClient,
+  profile: StudentProfile,
+  autoMarked: AutoMarkedPart[],
+): Promise<{ healthScore: number; predictedGrade: string }> {
+  const topicResults = buildVerifiedTopicResults(autoMarked);
+
+  const { data: masteryRows } = await admin
+    .from("topic_mastery")
+    .select("topic_id, mastery_percentage")
+    .eq("student_id", profile.id)
+    .in("topic_id", topicResults.map((r) => r.topicId));
+
+  const existingMastery = Object.fromEntries(
+    (masteryRows ?? []).map((row: any) => [row.topic_id, Number(row.mastery_percentage)]),
+  );
+
+  const updates = computeMasteryUpdates(topicResults, existingMastery);
+
+  for (const update of updates) {
+    await admin.from("topic_mastery").upsert(
+      {
+        student_id: profile.id,
+        topic_id: update.topicId,
+        mastery_percentage: update.masteryPercentage,
+        last_practiced_at: new Date().toISOString(),
+      },
+      { onConflict: "student_id,topic_id" },
+    );
+  }
+
+  const { data: subject } = await admin
+    .from("subjects")
+    .select("id")
+    .eq("code", "mathematics")
+    .maybeSingle();
+
+  if (!subject) {
+    return { healthScore: 0, predictedGrade: predictGrade(0, profile.curriculum) };
+  }
+
+  const { data: allMastery } = await admin
+    .from("topic_mastery")
+    .select("mastery_percentage")
+    .eq("student_id", profile.id);
+
+  const { data: diagnosticResult } = await admin
+    .from("diagnostic_results")
+    .select("health_score")
+    .eq("student_id", profile.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const averageMastery = averageTopicMastery(
+    (allMastery ?? []).map((row: any) => ({ topicId: "topic", masteryPercentage: Number(row.mastery_percentage) })),
+  );
+
+  const correctCount = autoMarked.filter((part) => part.isCorrect).length;
+  const recentPerformance = autoMarked.length > 0 ? Math.round((correctCount / autoMarked.length) * 100) : 0;
+
+  const healthScore = computeRollingHealthScore({
+    diagnosticBaseline: Number(diagnosticResult?.health_score ?? 0),
+    averageTopicMastery: averageMastery,
+    recentPracticePerformance: recentPerformance,
+  });
+
+  const predictedGrade = predictGrade(healthScore, profile.curriculum);
+
+  await admin.from("academic_health_scores").insert({
+    student_id: profile.id,
+    subject_id: subject.id,
+    health_score: healthScore,
+    topic_scores: Object.fromEntries(updates.map((u) => [u.topicId, u.masteryPercentage])),
+    predicted_grade: predictedGrade,
+  });
+
+  await generateStudyPlanForStudent(profile, { planType: "daily", dailyGoalMinutes: 20 });
+
+  return { healthScore, predictedGrade };
 }
