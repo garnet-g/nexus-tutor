@@ -3,7 +3,7 @@ import "server-only";
 import { randomInt } from "node:crypto";
 
 import { computeRollingHealthScore, predictGrade } from "@/lib/diagnostic/healthScoreEngine";
-import { autoMarkExamPaperAnswers, buildVerifiedTopicResults, type AnswerKeyPart, type AutoMarkedPart, type StudentPartAnswer } from "@/lib/examPapers/markingEngine";
+import { applySelfMarkedMethodMarks, autoMarkExamPaperAnswers, buildVerifiedTopicResults, composeExamPaperScore, type AnswerKeyPart, type AutoMarkedPart, type SelfMarkClaim, type StudentPartAnswer } from "@/lib/examPapers/markingEngine";
 import { instantiateTemplate, type ExamPaperTemplateBody } from "@/lib/examPapers/templateInstantiation";
 import { assembleExamPaper, hasSufficientTemplateBank, type TemplateRecord } from "@/lib/examPapers/paperAssembly";
 import { mulberry32 } from "@/lib/examPapers/paramSampler";
@@ -474,4 +474,209 @@ async function applyExamPaperOutcomeLoop(
   await generateStudyPlanForStudent(profile, { planType: "daily", dailyGoalMinutes: 20 });
 
   return { healthScore, predictedGrade };
+}
+
+export interface SelfMarkResult {
+  combinedMarks: number;
+  totalMarks: number;
+  percentage: number;
+}
+
+export async function selfMarkExamPaperSession(
+  sessionId: string,
+  studentId: string,
+  claims: SelfMarkClaim[],
+): Promise<SelfMarkResult> {
+  const admin = createAdminClient();
+
+  const { data: session } = await admin
+    .from("exam_paper_sessions")
+    .select("id, status, total_marks")
+    .eq("id", sessionId)
+    .eq("student_id", studentId)
+    .maybeSingle();
+
+  if (!session) throw new Error("NOT_FOUND");
+  if (session.status !== "submitted") throw new Error("CONFLICT");
+
+  const { data: chosenQuestions } = await admin
+    .from("exam_paper_session_questions")
+    .select("id, topic_id")
+    .eq("session_id", sessionId)
+    .eq("chosen", true);
+
+  const chosenIds = (chosenQuestions ?? []).map((q: any) => q.id);
+
+  const [{ data: answerKeyRows }, { data: answerRows }] = await Promise.all([
+    admin.from("exam_paper_session_answer_keys").select("session_question_id, answer_key").in("session_question_id", chosenIds),
+    admin
+      .from("exam_paper_answers")
+      .select("session_question_id, part_label, is_correct, auto_marks")
+      .in("session_question_id", chosenIds),
+  ]);
+
+  const marksByKey = new Map<string, number>();
+  for (const row of answerKeyRows ?? []) {
+    for (const part of (row as any).answer_key as Array<{ label: string; marks: number }>) {
+      marksByKey.set(`${(row as any).session_question_id}::${part.label}`, part.marks);
+    }
+  }
+
+  const autoMarked: AutoMarkedPart[] = (answerRows ?? []).map((row: any) => ({
+    sessionQuestionId: row.session_question_id,
+    partLabel: row.part_label,
+    topicId: "",
+    marks: marksByKey.get(`${row.session_question_id}::${row.part_label}`) ?? 0,
+    isCorrect: row.is_correct ?? false,
+    autoMarks: row.auto_marks ?? 0,
+  }));
+
+  const marked = applySelfMarkedMethodMarks(autoMarked, claims);
+
+  for (const part of marked) {
+    await admin
+      .from("exam_paper_answers")
+      .update({ self_awarded_method_marks: part.selfAwardedMethodMarks })
+      .eq("session_question_id", part.sessionQuestionId)
+      .eq("part_label", part.partLabel);
+  }
+
+  const summary = composeExamPaperScore(marked);
+
+  await admin
+    .from("exam_paper_sessions")
+    .update({ status: "self_marked", self_awarded_marks: summary.selfAwardedMarks })
+    .eq("id", sessionId);
+
+  return {
+    combinedMarks: summary.combinedMarks,
+    totalMarks: session.total_marks,
+    percentage: session.total_marks > 0 ? Math.round((summary.combinedMarks / session.total_marks) * 100) : 0,
+  };
+}
+
+export interface ExamPaperResultPart {
+  label: string;
+  prompt: string;
+  marks: number;
+  studentAnswer: string | null;
+  isCorrect: boolean;
+  autoMarks: number;
+  selfAwardedMethodMarks: number;
+  computedAnswer: string;
+}
+
+export interface ExamPaperResultQuestion {
+  sessionQuestionId: string;
+  questionNumber: number;
+  section: "I" | "II";
+  renderedStem: string;
+  markScheme: Array<{ code: string; text: string }>;
+  parts: ExamPaperResultPart[];
+}
+
+export interface ExamPaperResultsView {
+  sessionId: string;
+  status: string;
+  totalMarks: number;
+  verifiedMarks: number;
+  selfAwardedMarks: number;
+  combinedMarks: number;
+  percentage: number;
+  questions: ExamPaperResultQuestion[];
+}
+
+export async function getExamPaperResults(
+  sessionId: string,
+  studentId: string,
+): Promise<ExamPaperResultsView | null> {
+  const admin = createAdminClient();
+
+  const { data: session } = await admin
+    .from("exam_paper_sessions")
+    .select("id, status, total_marks, verified_marks, self_awarded_marks")
+    .eq("id", sessionId)
+    .eq("student_id", studentId)
+    .maybeSingle();
+
+  if (!session || session.status === "in_progress") return null;
+
+  const { data: questions } = await admin
+    .from("exam_paper_session_questions")
+    .select("id, question_number, section, rendered_stem, rendered_parts")
+    .eq("session_id", sessionId)
+    .eq("chosen", true)
+    .order("sort_order", { ascending: true });
+
+  const questionIds = (questions ?? []).map((q: any) => q.id);
+
+  const [{ data: answerKeyRows }, { data: answerRows }] = await Promise.all([
+    admin
+      .from("exam_paper_session_answer_keys")
+      .select("session_question_id, answer_key, mark_scheme")
+      .in("session_question_id", questionIds),
+    admin
+      .from("exam_paper_answers")
+      .select("session_question_id, part_label, student_answer, is_correct, auto_marks, self_awarded_method_marks")
+      .in("session_question_id", questionIds),
+  ]);
+
+  const keysByQuestion = new Map(
+    (answerKeyRows ?? []).map((row: any) => [
+      row.session_question_id,
+      {
+        answerKey: row.answer_key as Array<{ label: string; computedAnswer: string; marks: number }>,
+        markScheme: row.mark_scheme as Array<{ code: string; text: string }>,
+      },
+    ]),
+  );
+
+  const answersByKey = new Map(
+    (answerRows ?? []).map((row: any) => [`${row.session_question_id}::${row.part_label}`, row]),
+  );
+
+  const resultQuestions: ExamPaperResultQuestion[] = (questions ?? []).map((question: any) => {
+    const renderedParts = question.rendered_parts as Array<{ label: string; prompt: string; marks: number }>;
+    const key = keysByQuestion.get(question.id);
+
+    const parts: ExamPaperResultPart[] = renderedParts.map((part) => {
+      const answer = answersByKey.get(`${question.id}::${part.label}`);
+      const keyEntry = key?.answerKey.find((entry) => entry.label === part.label);
+
+      return {
+        label: part.label,
+        prompt: part.prompt,
+        marks: part.marks,
+        studentAnswer: answer?.student_answer ?? null,
+        isCorrect: answer?.is_correct ?? false,
+        autoMarks: answer?.auto_marks ?? 0,
+        selfAwardedMethodMarks: answer?.self_awarded_method_marks ?? 0,
+        computedAnswer: keyEntry?.computedAnswer ?? "",
+      };
+    });
+
+    return {
+      sessionQuestionId: question.id,
+      questionNumber: question.question_number,
+      section: question.section as "I" | "II",
+      renderedStem: question.rendered_stem,
+      markScheme: key?.markScheme ?? [],
+      parts,
+    };
+  });
+
+  const verifiedMarks = session.verified_marks ?? 0;
+  const selfAwardedMarks = session.self_awarded_marks ?? 0;
+  const combinedMarks = verifiedMarks + selfAwardedMarks;
+
+  return {
+    sessionId: session.id,
+    status: session.status,
+    totalMarks: session.total_marks,
+    verifiedMarks,
+    selfAwardedMarks,
+    combinedMarks,
+    percentage: session.total_marks > 0 ? Math.round((combinedMarks / session.total_marks) * 100) : 0,
+    questions: resultQuestions,
+  };
 }
