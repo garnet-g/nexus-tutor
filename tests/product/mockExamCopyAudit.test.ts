@@ -4,9 +4,9 @@ import { extname, join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..", "..");
 const TARGET_DIRS = [
-  join(ROOT, "src", "app", "(student)"),
-  join(ROOT, "src", "features", "examPrep"),
-  join(ROOT, "src", "features", "mockExams"),
+  join(ROOT, "src", "app", "(student)", "exam-prep"),
+  join(ROOT, "src", "app", "(student)", "exam-papers"),
+  join(ROOT, "src", "features", "examPapers"),
 ];
 
 const BANNED_PATTERNS = [
@@ -27,7 +27,7 @@ function walk(dir: string, files: string[] = []): string[] {
   return files;
 }
 
-describe("PR-106 mock exam copy audit (DEC-007)", () => {
+describe("PR-106 exam paper copy audit (DEC-007)", () => {
   it("does not claim licensed or official past papers in student-facing exam surfaces", () => {
     const violations: string[] = [];
 

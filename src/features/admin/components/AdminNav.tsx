@@ -144,6 +144,7 @@ export const ADMIN_NAV_GROUPS: NavGroup[] = [
       { href: "/admin/inbox", label: "Task inbox", icon: ClipboardCheckIcon },
       { href: "/admin/search", label: "Search", icon: BarChartIcon },
       { href: "/admin/reports", label: "Reports", icon: BarChartIcon },
+      { href: "/admin/outcomes", label: "Outcomes", icon: TrendingUpIcon },
     ],
   },
   {
@@ -163,7 +164,6 @@ export const ADMIN_NAV_GROUPS: NavGroup[] = [
       { href: "/admin/assessment", label: "Assessment", icon: ClipboardCheckIcon },
       { href: "/admin/exam-papers", label: "Exam papers", icon: ClipboardCheckIcon },
       { href: "/admin/ai-quality", label: "AI quality", icon: CpuIcon },
-      { href: "/admin/outcomes", label: "Outcomes", icon: TrendingUpIcon },
     ],
   },
   {
