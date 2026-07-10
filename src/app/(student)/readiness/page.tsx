@@ -64,9 +64,7 @@ export default async function ExamReadinessPage() {
 
       <ReadinessExamCta
         planCode={experience.planCode}
-        topicId={examContext.topicId ?? experience.recommendedTopic?.topicId ?? null}
-        activeSimulatorSessionId={examContext.activeSimulatorSessionId}
-        readyMockSessionId={examContext.readyMockSessionId}
+        activeExamPaperSessionId={examContext.activeExamPaperSessionId}
       />
 
       {experience.recentMockResults.length > 0 ? (
