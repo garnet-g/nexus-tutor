@@ -16,14 +16,6 @@ test.describe("Discovery routes — public", () => {
 });
 
 test.describe("Discovery routes — student", () => {
-  test("mock-exams redirects to exam-prep", async ({ page }) => {
-    test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
-
-    await loginAsStudent(page);
-    await page.goto("/mock-exams");
-    await expect(page).toHaveURL(/\/exam-prep/);
-  });
-
   test("assignment-help loads with homework mode", async ({ page }) => {
     test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
 
@@ -44,7 +36,7 @@ test.describe("Discovery routes — student", () => {
     );
   });
 
-  test("exam-prep page renders wizard", async ({ page }) => {
+  test("exam-prep page renders the current exam experience", async ({ page }) => {
     test.skip(!hasE2eStudentCredentials(), "Seeded student credentials required");
 
     await loginAsStudent(page);
@@ -59,7 +51,9 @@ test.describe("Discovery routes — student", () => {
       page.getByRole("heading", { name: /exam prep/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: /start exam preparation/i }),
+      page
+        .getByRole("button", { name: /start paper 1/i })
+        .or(page.getByText(/CBC exam prep is coming soon/i)),
     ).toBeVisible();
   });
 });

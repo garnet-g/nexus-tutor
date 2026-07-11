@@ -204,9 +204,7 @@ export async function proxy(request: NextRequest) {
 
     pathname.startsWith("/exam-prep") ||
 
-    pathname.startsWith("/mock-exams") ||
-
-    pathname.startsWith("/exam-simulator") ||
+    pathname.startsWith("/exam-papers") ||
 
     pathname.startsWith("/progress") ||
 
@@ -238,9 +236,7 @@ export async function proxy(request: NextRequest) {
 
       pathname.startsWith("/exam-prep") ||
 
-      pathname.startsWith("/mock-exams") ||
-
-      pathname.startsWith("/exam-simulator") ||
+      pathname.startsWith("/exam-papers") ||
 
       pathname.startsWith("/progress") ||
 
@@ -422,9 +418,7 @@ export const config = {
 
     "/exam-prep/:path*",
 
-    "/mock-exams/:path*",
-
-    "/exam-simulator/:path*",
+    "/exam-papers/:path*",
 
     "/progress/:path*",
 

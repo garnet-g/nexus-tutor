@@ -7,14 +7,10 @@ import { Button } from "@/components/ui/Button";
 
 export function ReadinessExamCta({
   planCode,
-  topicId,
-  activeSimulatorSessionId,
-  readyMockSessionId,
+  activeExamPaperSessionId,
 }: {
   planCode: string;
-  topicId: string | null;
-  activeSimulatorSessionId: string | null;
-  readyMockSessionId: string | null;
+  activeExamPaperSessionId: string | null;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -27,45 +23,34 @@ export function ReadinessExamCta({
     setError(null);
 
     try {
-      if (activeSimulatorSessionId) {
-        router.push(`/exam-simulator?sessionId=${activeSimulatorSessionId}`);
+      if (activeExamPaperSessionId) {
+        router.push(`/exam-papers/${activeExamPaperSessionId}`);
         return;
       }
 
-      let mockSessionId = readyMockSessionId;
-
-      if (!mockSessionId) {
-        const generateResponse = await fetch("/api/mock-exams/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            examStyle: "kcse_style",
-            ...(topicId ? { topicId } : {}),
-          }),
-        });
-        const generateBody = await generateResponse.json();
-        if (!generateResponse.ok || !generateBody.success) {
-          throw new Error(generateBody.error?.message ?? "Could not generate a mock exam.");
-        }
-        mockSessionId = generateBody.data.mockExamSessionId as string;
-      }
-
-      const startResponse = await fetch("/api/exam-simulator/start", {
+      const response = await fetch("/api/exam-papers/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mockExamSessionId: mockSessionId }),
+        body: JSON.stringify({ paper: 1 }),
       });
-      const startBody = await startResponse.json();
-      if (!startResponse.ok || !startBody.success) {
-        throw new Error(startBody.error?.message ?? "Could not start the exam simulator.");
+      const body = await response.json();
+      if (!response.ok || !body.success) {
+        throw new Error(body.error?.message ?? "Could not start the exam paper.");
+      }
+      if (body.data.status !== "generated") {
+        throw new Error(
+          body.data.status === "cbc_unavailable"
+            ? "Exam prep for CBC is coming soon."
+            : "The question bank for your form is still being built.",
+        );
       }
 
-      router.push(`/exam-simulator?sessionId=${startBody.data.simulatorSessionId}`);
+      router.push(`/exam-papers/${body.data.sessionId}`);
     } catch (startError) {
       setError(
         startError instanceof Error
           ? startError.message
-          : "Could not start the exam simulator.",
+          : "Could not start the exam paper.",
       );
     } finally {
       setLoading(false);
@@ -78,22 +63,16 @@ export function ReadinessExamCta({
         Timed practice
       </p>
       <p className="mt-2 text-lg font-semibold text-foreground">
-        {activeSimulatorSessionId
-          ? "Resume your KCSE-style simulator"
-          : "Start a timed KCSE-style mock"}
+        {activeExamPaperSessionId ? "Resume your KCSE Paper 1" : "Start a full KCSE Paper 1"}
       </p>
       <p className="mt-1 text-sm text-muted-foreground">
         {premiumAccess
-          ? "Generate or resume a timed session from your current readiness."
-          : "Preview access may limit question count on free plans."}
+          ? "Generate or resume a full timed paper from your current readiness."
+          : "Free plan gives you a 5-question sample."}
       </p>
       {error ? <p className="mt-2 text-sm text-destructive">{error}</p> : null}
       <Button className="mt-4 min-h-11" onClick={() => void startOrResume()} disabled={loading}>
-        {loading
-          ? "Preparing…"
-          : activeSimulatorSessionId
-            ? "Resume simulator"
-            : "Generate and start"}
+        {loading ? "Preparing…" : activeExamPaperSessionId ? "Resume paper" : "Generate and start"}
       </Button>
     </div>
   );

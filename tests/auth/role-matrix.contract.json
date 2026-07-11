@@ -71,9 +71,14 @@
     "filePath": "src/app/(student)/exam-prep/page.tsx"
   },
   {
-    "path": "/exam-simulator",
+    "path": "/exam-papers/[id]",
     "tier": "student",
-    "filePath": "src/app/(student)/exam-simulator/page.tsx"
+    "filePath": "src/app/(student)/exam-papers/[id]/page.tsx"
+  },
+  {
+    "path": "/exam-papers/[id]/results",
+    "tier": "student",
+    "filePath": "src/app/(student)/exam-papers/[id]/results/page.tsx"
   },
   {
     "path": "/focus",
@@ -104,11 +109,6 @@
     "path": "/mistakes",
     "tier": "student",
     "filePath": "src/app/(student)/mistakes/page.tsx"
-  },
-  {
-    "path": "/mock-exams",
-    "tier": "student",
-    "filePath": "src/app/(student)/mock-exams/page.tsx"
   },
   {
     "path": "/nex-memory",
@@ -204,6 +204,11 @@
     "path": "/admin/assessment",
     "tier": "super_admin",
     "filePath": "src/app/(super-admin)/admin/assessment/page.tsx"
+  },
+  {
+    "path": "/admin/exam-papers",
+    "tier": "super_admin",
+    "filePath": "src/app/(super-admin)/admin/exam-papers/page.tsx"
   },
   {
     "path": "/admin/audit-log",
@@ -379,6 +384,31 @@
     "path": "/api/admin/assessment/calibrations",
     "tier": "admin",
     "filePath": "src/app/api/admin/assessment/calibrations/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/exam-papers/templates",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/exam-papers/templates/route.ts",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/exam-papers/templates/[id]/approve",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/exam-papers/templates/[id]/approve/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/admin/exam-papers/templates/preview",
+    "tier": "super_admin",
+    "filePath": "src/app/api/admin/exam-papers/templates/preview/route.ts",
     "methods": [
       "POST"
     ]
@@ -809,17 +839,49 @@
     ]
   },
   {
-    "path": "/api/exam-simulator/[id]/submit",
+    "path": "/api/exam-papers/[id]",
     "tier": "student",
-    "filePath": "src/app/api/exam-simulator/[id]/submit/route.ts",
+    "filePath": "src/app/api/exam-papers/[id]/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/exam-papers/[id]/choose-section-ii",
+    "tier": "student",
+    "filePath": "src/app/api/exam-papers/[id]/choose-section-ii/route.ts",
     "methods": [
       "POST"
     ]
   },
   {
-    "path": "/api/exam-simulator/start",
+    "path": "/api/exam-papers/[id]/results",
     "tier": "student",
-    "filePath": "src/app/api/exam-simulator/start/route.ts",
+    "filePath": "src/app/api/exam-papers/[id]/results/route.ts",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "path": "/api/exam-papers/[id]/self-mark",
+    "tier": "student",
+    "filePath": "src/app/api/exam-papers/[id]/self-mark/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/exam-papers/[id]/submit",
+    "tier": "student",
+    "filePath": "src/app/api/exam-papers/[id]/submit/route.ts",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "path": "/api/exam-papers/generate",
+    "tier": "student",
+    "filePath": "src/app/api/exam-papers/generate/route.ts",
     "methods": [
       "POST"
     ]
@@ -852,22 +914,6 @@
     "path": "/api/lessons/[id]/viewed",
     "tier": "student",
     "filePath": "src/app/api/lessons/[id]/viewed/route.ts",
-    "methods": [
-      "POST"
-    ]
-  },
-  {
-    "path": "/api/mock-exams/[id]/submit",
-    "tier": "student",
-    "filePath": "src/app/api/mock-exams/[id]/submit/route.ts",
-    "methods": [
-      "POST"
-    ]
-  },
-  {
-    "path": "/api/mock-exams/generate",
-    "tier": "student",
-    "filePath": "src/app/api/mock-exams/generate/route.ts",
     "methods": [
       "POST"
     ]

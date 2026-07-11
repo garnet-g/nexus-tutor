@@ -2,7 +2,6 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { unwrapSupabaseRelation } from "@/lib/utils";
-import type { MarkedAnswer } from "@/lib/mockExams/mockExamEngine";
 
 export type MistakeJournalSource = "practice" | "mock_exam" | "manual";
 
@@ -219,36 +218,6 @@ export async function recordPracticeSessionMistakes(
   }
 }
 
-export async function recordMockExamMistakes(
-  studentId: string,
-  questions: Array<{
-    id: string;
-    topic_id: string;
-    practice_question_id: string | null;
-    question_text: string;
-    correct_answer: unknown;
-    explanation: string | null;
-  }>,
-  marked: MarkedAnswer[],
-) {
-  for (const mark of marked.filter((entry) => !entry.isCorrect)) {
-    const question = questions.find((entry) => entry.id === mark.questionId);
-    if (!question) {
-      continue;
-    }
-
-    await upsertMistakeJournalEntry(studentId, {
-      questionId: question.practice_question_id,
-      topicId: question.topic_id,
-      questionText: question.question_text,
-      chosenAnswer: formatStoredAnswer(mark.studentAnswer),
-      correctAnswer: formatStoredAnswer(question.correct_answer),
-      explanation: question.explanation,
-      source: "mock_exam",
-    });
-  }
-}
-
 export async function recordPracticeSessionMistakesNonFatal(
   studentId: string,
   sessionId: string,
@@ -257,28 +226,6 @@ export async function recordPracticeSessionMistakesNonFatal(
     console.error("MISTAKE_JOURNAL_WRITE_FAILED", {
       studentId,
       sessionId,
-      error,
-    });
-  });
-}
-
-export async function recordMockExamMistakesNonFatal(
-  studentId: string,
-  mockExamSessionId: string,
-  questions: Array<{
-    id: string;
-    topic_id: string;
-    practice_question_id: string | null;
-    question_text: string;
-    correct_answer: unknown;
-    explanation: string | null;
-  }>,
-  marked: MarkedAnswer[],
-): Promise<void> {
-  await recordMockExamMistakes(studentId, questions, marked).catch((error) => {
-    console.error("MISTAKE_JOURNAL_WRITE_FAILED", {
-      studentId,
-      mockExamSessionId,
       error,
     });
   });
