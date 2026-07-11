@@ -1,3 +1,5 @@
+import type { ResolvedNexWorkflowContext } from "@/lib/nex/workflowContext";
+
 export type NexMode =
   | "explain"
   | "practice"
@@ -76,6 +78,12 @@ export interface AssembledPrompt {
   conversationMessages: NexMessageTurn[];
 }
 
+export interface NexModelUsage {
+  inputTokens: number | null;
+  outputTokens: number | null;
+  tokenSource: "provider" | "estimated" | "none";
+}
+
 export interface NexModelCallInput {
   systemPrompt: string;
   messages: NexMessageTurn[];
@@ -89,6 +97,12 @@ export interface NexModelCallInput {
 export interface NexModelCallResult {
   content: string;
   provider: "gemini" | "openai" | "mock" | "cache";
+  model?: string;
+  usage?: NexModelUsage;
+  latencyMs?: number;
+  attemptNumber?: number;
+  outcome?: "success" | "error" | "fallback" | "cache_hit";
+  reasonCode?: string | null;
 }
 
 export type ValidationResult =
@@ -113,8 +127,10 @@ export interface GenerateNexResponseInput {
   recentMessages: NexMessageTurn[];
   studentMemory?: StudentMemoryContext | null;
   curriculumContext?: CurriculumContext | null;
+  workflowContext?: ResolvedNexWorkflowContext | null;
   regenerateStrict?: boolean;
   sessionId?: string | null;
+  correlationId?: string | null;
 }
 
 export interface GenerateNexResponseResult {
@@ -123,4 +139,6 @@ export interface GenerateNexResponseResult {
   metadata: NexSessionMetadata;
   provider: "gemini" | "openai" | "mock" | "cache";
   validationPassed: boolean;
+  correlationId?: string | null;
+  regenerationCount?: number;
 }

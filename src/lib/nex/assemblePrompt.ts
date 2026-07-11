@@ -5,6 +5,7 @@ import type {
   NexMode,
   StudentMemoryContext,
 } from "./types";
+import type { ResolvedNexWorkflowContext } from "./workflowContext";
 
 const BASE_SYSTEM_PROMPT = `You are Nex, the AI teacher on Nexus — a personalized learning platform for Kenyan students.
 
@@ -240,10 +241,28 @@ function buildCurriculumContextBlock(context: CurriculumContext): string {
     .join("\n");
 }
 
+function buildWorkflowContextBlock(context: ResolvedNexWorkflowContext): string {
+  const actions =
+    context.allowedActions.length > 0
+      ? context.allowedActions.join(", ")
+      : "general tutoring";
+
+  return [
+    "WORKFLOW CONTEXT:",
+    `- Source: ${context.source}`,
+    `- Attached label: ${context.label}`,
+    `- Allowed actions: ${actions}`,
+    "- Use this only as grounding for the student's current learning surface.",
+    "- Do not invent answer keys, marks, or protected assessment content.",
+    "- If the student removes this context later, treat subsequent turns as general tutoring.",
+  ].join("\n");
+}
+
 export interface AssemblePromptInput {
   mode: NexMode;
   studentMemory?: StudentMemoryContext | null;
   curriculumContext?: CurriculumContext | null;
+  workflowContext?: ResolvedNexWorkflowContext | null;
   overlays?: string[];
   recentMessages: NexMessageTurn[];
   regenerateStrict?: boolean;
@@ -274,6 +293,10 @@ export function assemblePrompt(input: AssemblePromptInput): AssembledPrompt {
 
   if (input.curriculumContext) {
     sections.push(buildCurriculumContextBlock(input.curriculumContext));
+  }
+
+  if (input.workflowContext) {
+    sections.push(buildWorkflowContextBlock(input.workflowContext));
   }
 
   if (input.overlays?.length) {

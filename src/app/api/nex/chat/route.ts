@@ -24,6 +24,7 @@ import {
   getStudentPlanCode,
   incrementNexDailyUsage,
 } from "@/server/services/nexUsageService";
+import { resolveNexWorkflowContext } from "@/server/services/nexWorkflowContextService";
 import {
   applyAssessmentMasteryUpdate,
   persistStudentMisconception,
@@ -32,6 +33,7 @@ import {
 } from "@/server/services/misconceptionService";
 import { awardStudyActivity } from "@/server/services/studyActivityService";
 import { generateStudyPlanForStudent } from "@/server/services/studyPlanService";
+import { randomUUID } from "crypto";
 
 /** Per-student burst ceiling above the daily quota (PR-048). */
 const NEX_CHAT_BURST_PER_MINUTE = 20;
@@ -305,6 +307,35 @@ export async function POST(request: Request) {
       studentProfile.learning_preferences,
     );
 
+    const correlationId = randomUUID();
+    const workflowResolution = await resolveNexWorkflowContext({
+      studentId: studentProfile.id,
+      context: parsed.data.workflowContext,
+    });
+
+    if (workflowResolution.status === "rejected") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "FORBIDDEN",
+            message: "Nex help is not available for this protected assessment context.",
+            details: { reason: workflowResolution.reason },
+          },
+        },
+        { status: 403 },
+      );
+    }
+
+    const resolvedWorkflowContext =
+      workflowResolution.status === "resolved"
+        ? workflowResolution.context
+        : null;
+
+    if (resolvedWorkflowContext?.topicId && !activeTopicId) {
+      activeTopicId = resolvedWorkflowContext.topicId;
+    }
+
     const metadataForRequest = updateSocraticState(
       { ...sessionMetadata },
       studentMessage,
@@ -326,6 +357,8 @@ export async function POST(request: Request) {
       studentProfile,
       learningPreferences,
       sessionId,
+      workflowContext: resolvedWorkflowContext,
+      correlationId,
     };
 
     if (useStreaming) {

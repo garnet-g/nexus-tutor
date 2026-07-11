@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { learningPreferencesSchema } from "@/schemas/profileSchemas";
+import { nexWorkflowContextSchema } from "@/schemas/nexWorkflowContextSchemas";
 
 export const nexModeSchema = z.enum([
   "explain",
@@ -19,6 +20,7 @@ export const nexChatRequestSchema = z.object({
   sessionMode: nexModeSchema.optional(),
   topicId: z.string().uuid().optional().nullable(),
   learningPreferences: learningPreferencesSchema.partial().optional(),
+  workflowContext: nexWorkflowContextSchema.optional(),
 });
 
 export type NexChatRequest = z.infer<typeof nexChatRequestSchema>;

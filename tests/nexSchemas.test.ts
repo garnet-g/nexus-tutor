@@ -13,4 +13,39 @@ describe("nexChatRequestSchema", () => {
 
     expect(result.success).toBe(true);
   });
+
+  it("accepts optional workflowContext without requiring it", () => {
+    const without = nexChatRequestSchema.safeParse({
+      studentMessage: "Help me with this",
+    });
+    expect(without.success).toBe(true);
+
+    const withContext = nexChatRequestSchema.safeParse({
+      studentMessage: "Help me with this",
+      workflowContext: {
+        version: 1,
+        source: "lesson",
+        label: "Fractions",
+        allowedActions: ["explain"],
+        protectedAssessment: false,
+      },
+    });
+    expect(withContext.success).toBe(true);
+  });
+
+  it("rejects workflowContext with unknown keys", () => {
+    const result = nexChatRequestSchema.safeParse({
+      studentMessage: "Help me with this",
+      workflowContext: {
+        version: 1,
+        source: "practice",
+        label: "Practice",
+        allowedActions: ["hint"],
+        protectedAssessment: false,
+        answerKey: "B",
+      },
+    });
+
+    expect(result.success).toBe(false);
+  });
 });
